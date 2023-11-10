@@ -1,4 +1,13 @@
-# Intro to Create a NGINX Webserver Secured via HTTPS
+---
+title: Create a NGINX Webserver Secured via HTTPS
+description: This tutorial shows how to create a NGINX Webserver Secured via HTTPS.
+author: mbifeld@microsoft.com
+ms.topic: article
+ms.date: 11/10/2023
+ms.custom: innovation-engine
+---
+
+# Create a NGINX Webserver Secured via HTTPS
 
 To secure web servers, a Transport Layer Security (TLS), previously known as Secure Sockets Layer (SSL), certificate can be used to encrypt web traffic. These TLS/SSL certificates can be stored in Azure Key Vault, and allow secure deployments of certificates to Linux virtual machines (VMs) in Azure. In this tutorial you learn how to:
 

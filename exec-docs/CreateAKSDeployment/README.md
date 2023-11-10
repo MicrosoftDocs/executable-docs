@@ -1,3 +1,12 @@
+---
+title: Deploy a Scalable & Secure Azure Kubernetes Service cluster using the Azure CLI
+description: This tutorial where we will take you step by step in creating an Azure Kubernetes Web Application that is secured via https.
+author: mbifeld@microsoft.com
+ms.topic: article
+ms.date: 11/10/2023
+ms.custom: innovation-engine
+---
+
 # Quickstart: Deploy a Scalable & Secure Azure Kubernetes Service cluster using the Azure CLI
 
 Welcome to this tutorial where we will take you step by step in creating an Azure Kubernetes Web Application that is secured via https. This tutorial assumes you are logged into Azure CLI already and have selected a subscription to use with the CLI. It also assumes that you have Helm installed ([Instructions can be found here](https://helm.sh/docs/intro/install/)).

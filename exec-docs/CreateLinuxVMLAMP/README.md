@@ -1,3 +1,12 @@
+---
+title: Install a LEMP stack on Azure
+description: This tutorial shows how to install a LEMP stack on Azure.
+author: mbifeld@microsoft.com
+ms.topic: article
+ms.date: 11/10/2023
+ms.custom: innovation-engine
+---
+
 # Install a LEMP stack on Azure
 
 This article walks you through how to deploy an NGINX web server, Azure MySQL Flexible Server, and PHP (the LEMP stack) on an Ubuntu Linux VM in Azure. To see the LEMP server in action, you can optionally install and configure a WordPress site. In this tutorial you learn how to:
