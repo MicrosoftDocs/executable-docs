@@ -1,3 +1,12 @@
+---
+title: Welcome to Exec Docs!
+description: Try out Executable Documentation!
+author: mbifeld
+ms.topic: article
+ms.date: 11/20/2023
+ms.custom: innovation-engine
+---
+
 # Welcome to exec-docs!
 
 ## Next steps
