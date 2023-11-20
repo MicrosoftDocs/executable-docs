@@ -1,7 +1,7 @@
 ---
 title: Create a Linux VM and SSH On Azure
 description: This tutorial shows how to create a Linux VM and SSH On Azure.
-author: mbifeld@microsoft.com
+author: mbifeld
 ms.topic: article
 ms.date: 11/10/2023
 ms.custom: innovation-engine
