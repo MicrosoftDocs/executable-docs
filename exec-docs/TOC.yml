@@ -1,2 +1,17 @@
-- name: Index
-  href: index.md
+items:
+- name: Executable Docs
+  tocHref: /exec-docs/
+  topicHref: /exec-docs/index
+  -items:
+    - name: AKS
+      tocHref: /exec-docs/CreateAKSDeployment/
+      topicHref: /exec-docs/CreateAKSDeployment/
+    - name: VM
+      tocHref: /exec-docs/CreateVMandSSH/
+      topicHref: /exec-docs/CreateVMandSSH/
+    - name: Secure Web Server
+      tocHref: /exec-docs/CreateLinuxVMSecureWebServer/
+      topicHref: /exec-docs/CreateLinuxVMSecureWebServer/
+    - name: LEMP
+      tocHref: /exec-docs/CreateLinuxVMLAMP/
+      topicHref: /exec-docs/CreateLinuxVMLAMP/
