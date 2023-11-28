@@ -2,8 +2,9 @@
 title: Install a LEMP stack on Azure
 description: This tutorial shows how to install a LEMP stack on Azure.
 author: mbifeld
+ms.author: mbifeld
 ms.topic: article
-ms.date: 11/10/2023
+ms.date: 11/28/2023
 ms.custom: innovation-engine
 ---
 

@@ -2,8 +2,9 @@
 title: Deploy a Scalable & Secure Azure Kubernetes Service cluster using the Azure CLI
 description: This tutorial where we will take you step by step in creating an Azure Kubernetes Web Application that is secured via https.
 author: mbifeld
+ms.author: mbifeld
 ms.topic: article
-ms.date: 11/10/2023
+ms.date: 11/28/2023
 ms.custom: innovation-engine
 ---
 

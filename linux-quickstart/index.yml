@@ -1,0 +1,28 @@
+title: Quickstart Linux Workloads on Azure
+summary: AKS allows you to quickly deploy a production ready Kubernetes cluster in Azure. Learn how to use AKS with these quickstarts, tutorials, and samples. # < 160 chars
+
+metadata:
+  title: Quickstart Linux Workloads on Azure
+  description: Quickstart Linux Workloads on Azure
+  author: mbifeld
+  ms.author: mbifeld
+  ms.topic: article
+  ms.date: 11/28/2023
+  ms.custom: innovation-engine
+
+landingContent:
+# Cards and links should be based on top customer tasks or top subjects
+# Start card title with a verb
+  # Card (optional)
+  - title: Quickstart Linux Workloads on Azure
+    linkLists:
+      - linkListType: quickstart
+        links:
+          - text: Deploy an AKS Cluster
+            url: CreateAKSDeployment.md
+          - text: Deploy and SSH into a VM
+            url: CreateVMandSSH.md
+          - text: Create a Secure Web Server
+            url: CreateLinuxVMSecureWebServer.md
+          - text: Install a LEMP stack on Azure
+            url: CreateLinuxVMLAMP.md

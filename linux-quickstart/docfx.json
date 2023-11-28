@@ -44,10 +44,10 @@
       "breadcrumb_path": "/exec-docs/breadcrumb/toc.json",
       "feedback_system": "Standard",
       "permissioned-type": "public",
-      "uhfHeaderId": "exec-docs"
+      "uhfHeaderId": "azure"
     },
     "fileMetadata": {},
     "template": [],
-    "dest": "exec-docs"
+    "dest": "azure"
   }
 }

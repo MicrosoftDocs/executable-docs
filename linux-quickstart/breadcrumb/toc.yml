@@ -1,0 +1,17 @@
+items:
+- name: Linux Quickstart
+  tocHref: azure/linux-quickstart/
+  topicHref: azure/linux-quickstart/index
+  -items:
+    - name: AKS
+      tocHref: azure/linux-quickstart/CreateAKSDeployment/
+      topicHref: azure/linux-quickstart/CreateAKSDeployment/
+    - name: VM
+      tocHref: azure/linux-quickstart/CreateVMandSSH/
+      topicHref: azure/linux-quickstart/CreateVMandSSH/
+    - name: Secure Web Server
+      tocHref: azure/linux-quickstart/CreateLinuxVMSecureWebServer/
+      topicHref: azure/linux-quickstart/CreateLinuxVMSecureWebServer/
+    - name: LEMP
+      tocHref: azure/linux-quickstart/CreateLinuxVMLAMP/
+      topicHref: azure/linux-quickstart/CreateLinuxVMLAMP/
