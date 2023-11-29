@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 - name: Linux Quickstart
   tocHref: azure/linux-quickstart/
   topicHref: azure/linux-quickstart/index
@@ -14,3 +15,8 @@
     - name: LEMP
       tocHref: azure/linux-quickstart/CreateLinuxVMLAMP/
       topicHref: azure/linux-quickstart/CreateLinuxVMLAMP/
+=======
+- name: '<please enter product name here>'
+  tocHref: /
+  topicHref: /
+>>>>>>> 1e0b17800019dfe0a2d87b08b592dea7a6427c2a
