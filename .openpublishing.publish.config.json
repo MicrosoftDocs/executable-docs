@@ -1,9 +1,23 @@
 {
   "docsets_to_publish": [
     {
+      "docset_name": "exec-docs",
+      "build_source_folder": "exec-docs",
+      "build_output_subfolder": "exec-docs",
+      "locale": "en-us",
+      "monikers": [],
+      "moniker_ranges": [],
+      "open_to_public_contributors": true,
+      "type_mapping": {
+        "Conceptual": "Content"
+      },
+      "build_entry_point": "docs",
+      "template_folder": "_themes"
+    },
+    {
       "docset_name": "linux-quickstart",
       "build_source_folder": "linux-quickstart",
-      "build_output_subfolder": "linux-quickstarts",
+      "build_output_subfolder": "linux-quickstart",
       "locale": "en-us",
       "monikers": [],
       "moniker_ranges": [],
