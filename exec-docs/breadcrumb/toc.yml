@@ -1,16 +1,7 @@
-- name: Linux Quickstart
-  tocHref: azure/linux-quickstart/
-  topicHref: azure/linux-quickstart/index
+- name: Azure
+  tocHref: /azure/
+  topicHref: /azure/index
   -items:
-    - name: Deploy an AKS Cluster
-      tocHref: azure/linux-quickstart/CreateAKSDeployment/
-      topicHref: azure/linux-quickstart/CreateAKSDeployment/
-    - name: Deploy and SSH into a VM
-      tocHref: azure/linux-quickstart/CreateVMandSSH/
-      topicHref: azure/linux-quickstart/CreateVMandSSH/
-    - name: Create a Secure Web Server
-      tocHref: azure/linux-quickstart/CreateLinuxVMSecureWebServer/
-      topicHref: azure/linux-quickstart/CreateLinuxVMSecureWebServer/
-    - name: Install a LEMP stack on Azure
-      tocHref: azure/linux-quickstart/CreateLinuxVMLAMP/
-      topicHref: azure/linux-quickstart/CreateLinuxVMLAMP/
+    - name: Linux Quickstart
+      tocHref: azure/linux-quickstart/
+      topicHref: azure/linux-quickstart/index
