@@ -1,5 +1,8 @@
+### YamlMime:Hub
+
 title: Quickstart Linux Workloads on Azure
-summary: AKS allows you to quickly deploy a production ready Kubernetes cluster in Azure. Learn how to use AKS with these quickstarts, tutorials, and samples. # < 160 chars
+summary: Learn how to build and manage powerful applications using Microsoft Azure cloud services.
+brand: azure
 
 metadata:
   title: Quickstart Linux Workloads on Azure
@@ -9,6 +12,7 @@ metadata:
   ms.topic: article
   ms.date: 11/28/2023
   ms.custom: innovation-engine
+# linkListType: architecture | concept | deploy | download | get-started | how-to-guide | learn | overview | quickstart | reference | sample | tutorial | video | whats-new
 
 landingContent:
 # Cards and links should be based on top customer tasks or top subjects
