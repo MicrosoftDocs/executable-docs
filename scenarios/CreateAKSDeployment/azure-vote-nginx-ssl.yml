@@ -1,4 +1,3 @@
-# YamlMime:Module
 ---
 # INGRESS WITH SSL PROD
 apiVersion: networking.k8s.io/v1

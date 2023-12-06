@@ -1,4 +1,3 @@
-# YamlMime:Module
 #!/bin/bash
 #kubectl apply -f - <<EOF
 apiVersion: cert-manager.io/v1
