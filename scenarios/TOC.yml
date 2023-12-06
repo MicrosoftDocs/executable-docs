@@ -6,7 +6,7 @@
   - name: Deploy an AKS Cluster
     href: CreateAKSDeployment/README.md
   - name: Deploy and SSH into a VM
-    href: CreateVMandSSH/README.md
+    href: CreateVMAndSSH/README.md
   - name: Create a Secure Web Server
     href: CreateLinuxVMSecureWebServer/README.md
   - name: Install a LEMP stack on Azure

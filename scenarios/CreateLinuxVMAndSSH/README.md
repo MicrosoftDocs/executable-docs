@@ -127,7 +127,7 @@ ssh -o StrictHostKeyChecking=no $MY_USERNAME@$IP_ADDRESS
 
 # Next Steps
 
-* [VM Documentation](https://learn.microsoft.com/en-us/azure/virtual-machines/)
-* [Use Cloud-Init to initialize a Linux VM on first boot](https://learn.microsoft.com/en-us/azure/virtual-machines/linux/tutorial-automate-vm-deployment)
-* [Create custom VM images](https://learn.microsoft.com/en-us/azure/virtual-machines/linux/tutorial-custom-images)
-* [Load Balance VMs](https://learn.microsoft.com/en-us/azure/load-balancer/quickstart-load-balancer-standard-public-cli)
+* [VM Documentation](https://learn.microsoft.com/azure/virtual-machines/)
+* [Use Cloud-Init to initialize a Linux VM on first boot](https://learn.microsoft.com/azure/virtual-machines/linux/tutorial-automate-vm-deployment)
+* [Create custom VM images](https://learn.microsoft.com/azure/virtual-machines/linux/tutorial-custom-images)
+* [Load Balance VMs](https://learn.microsoft.com/azure/load-balancer/quickstart-load-balancer-standard-public-cli)

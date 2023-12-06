@@ -32,7 +32,7 @@ spec:
 #EOF
 
 # References:
-# https://docs.microsoft.com/en-us/azure/application-gateway/ingress-controller-letsencrypt-certificate-application-gateway
+# https://docs.microsoft.com/azure/application-gateway/ingress-controller-letsencrypt-certificate-application-gateway
 # https://cert-manager.io/docs/configuration/acme/
 # kubectl delete -f clusterIssuer.yaml
 # kubectl apply -f clusterIssuer-prod.yaml

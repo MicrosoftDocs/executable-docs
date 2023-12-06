@@ -49,7 +49,7 @@ To preserve saved environment variables, it's important that this terminal windo
 
 ## Login to Azure using the CLI
 
-In order to run commands against Azure using [the CLI ](https://learn.microsoft.com/en-us/cli/azure/install-azure-cli)you need to login. This is done though the `az login` command:
+In order to run commands against Azure using [the CLI ](https://learn.microsoft.com/cli/azure/install-azure-cli)you need to login. This is done though the `az login` command:
 
 ## Create a resource group
 
@@ -639,7 +639,7 @@ echo $CONTAINER_APP_URL
 
 ## Next Steps
 
-- [Azure Container Apps documentation](https://learn.microsoft.com/en-us/azure/container-apps/)
-- [Azure Database for PostgreSQL documentation](https://learn.microsoft.com/en-us/azure/postgresql/)
-- [Azure Blob Storage documentation](https://learn.microsoft.com/en-us/azure/storage/blobs/)
-- [Azure Computer (AI) Vision Documentation](https://learn.microsoft.com/en-us/azure/ai-services/computer-vision/)
+- [Azure Container Apps documentation](https://learn.microsoft.com/azure/container-apps/)
+- [Azure Database for PostgreSQL documentation](https://learn.microsoft.com/azure/postgresql/)
+- [Azure Blob Storage documentation](https://learn.microsoft.com/azure/storage/blobs/)
+- [Azure Computer (AI) Vision Documentation](https://learn.microsoft.com/azure/ai-services/computer-vision/)

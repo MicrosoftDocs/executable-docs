@@ -24,7 +24,7 @@ landingContent:
           - text: Deploy an AKS Cluster
             url: CreateAKSDeployment/README.md
           - text: Deploy and SSH into a VM
-            url: CreateVMandSSH/README.md
+            url: CreateVMAndSSH/README.md
           - text: Create a Secure Web Server
             url: CreateLinuxVMSecureWebServer/README.md
           - text: Install a LEMP stack on Azure
