@@ -22,10 +22,14 @@ landingContent:
       - linkListType: quickstart
         links:
           - text: Deploy an AKS Cluster
-            url: CreateAKSDeployment.md
+            url: CreateAKSDeployment/README.md
           - text: Deploy and SSH into a VM
-            url: CreateVMandSSH.md
+            url: CreateVMandSSH/README.md
           - text: Create a Secure Web Server
-            url: CreateLinuxVMSecureWebServer.md
+            url: CreateLinuxVMSecureWebServer/README.md
           - text: Install a LEMP stack on Azure
-            url: CreateLinuxVMLAMP.md
+            url: CreateLinuxVMLAMP/README.md
+          - text: Deploy Inspektor Gadget in an Azure Kubernetes Service cluster
+            url: DeployIGonAKS/README.md
+          - text: Deploy a WordPress site on Azure Kubernetes Service
+            url: CreateWordPressDeployment/README.md

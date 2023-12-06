@@ -1,0 +1,17 @@
+- name: Linux Workloads on Azure
+  href: ./index.yml
+- name: Workloads
+  expanded: true
+  items:
+  - name: Deploy an AKS Cluster
+    href: CreateAKSDeployment/README.md
+  - name: Deploy and SSH into a VM
+    href: CreateVMandSSH/README.md
+  - name: Create a Secure Web Server
+    href: CreateLinuxVMSecureWebServer/README.md
+  - name: Install a LEMP stack on Azure
+    href: CreateLinuxVMLAMP/README.md
+  - name: Deploy Inspektor Gadget in an Azure Kubernetes Service cluster
+    href: DeployIGonAKS/README.md
+  - name: Deploy a WordPress site on Azure Kubernetes Service
+    href: CreateWordPressDeployment/README.md

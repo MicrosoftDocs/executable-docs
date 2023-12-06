@@ -2,8 +2,8 @@
   "docsets_to_publish": [
     {
       "docset_name": "exec-docs",
-      "build_source_folder": "exec-docs",
-      "build_output_subfolder": "exec-docs",
+      "build_source_folder": "scenarios",
+      "build_output_subfolder": "scenarios",
       "locale": "en-us",
       "monikers": [],
       "moniker_ranges": [],
