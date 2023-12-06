@@ -2,6 +2,6 @@
   tocHref: /azure/
   topicHref: /azure/index
   -items:
-    - name: Linux Quickstart
-      tocHref: azure/linux-quickstart/
-      topicHref: azure/linux-quickstart/index
+    - name: Linux Workloads
+      tocHref: azure/linux-workloads/
+      topicHref: azure/linux-workloads/index

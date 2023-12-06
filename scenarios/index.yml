@@ -1,7 +1,7 @@
 ### YamlMime:Landing
 
 title: Quickstart Linux Workloads on Azure
-summary: Learn how to build and manage powerful applications using Microsoft Azure cloud services.
+summary: Learn how to build and manage powerful Linux applications using Microsoft Azure.
 
 metadata:
   title: Quickstart Linux Workloads on Azure
@@ -24,7 +24,7 @@ landingContent:
           - text: Deploy an AKS Cluster
             url: CreateAKSDeployment/README.md
           - text: Deploy and SSH into a VM
-            url: CreateVMAndSSH/README.md
+            url: CreateLinuxVMAndSSH/README.md
           - text: Create a Secure Web Server
             url: CreateLinuxVMSecureWebServer/README.md
           - text: Install a LEMP stack on Azure
