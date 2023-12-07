@@ -1,0 +1,7 @@
+- name: Azure
+  tocHref: /azure/
+  topicHref: /azure/index
+  -items:
+    - name: Linux Workloads
+      tocHref: azure/linux-workloads/
+      topicHref: azure/linux-workloads/index

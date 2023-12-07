@@ -2,8 +2,9 @@
 title: Deploy a Scalable & Secure Azure Kubernetes Service cluster using the Azure CLI
 description: This tutorial where we will take you step by step in creating an Azure Kubernetes Web Application that is secured via https.
 author: mbifeld
+ms.author: mbifeld
 ms.topic: article
-ms.date: 11/10/2023
+ms.date: 11/28/2023
 ms.custom: innovation-engine
 ---
 
@@ -112,7 +113,7 @@ Results:
 
 ## Register to AKS Azure Resource Providers
 
-Verify Microsoft.OperationsManagement and Microsoft.OperationalInsights providers are registered on your subscription. These are Azure resource providers required to support [Container insights](https://docs.microsoft.com/en-us/azure/azure-monitor/containers/container-insights-overview). To check the registration status, run the following commands
+Verify Microsoft.OperationsManagement and Microsoft.OperationalInsights providers are registered on your subscription. These are Azure resource providers required to support [Container insights](https://docs.microsoft.com/azure/azure-monitor/containers/container-insights-overview). To check the registration status, run the following commands
 
 ```bash
 az provider register --namespace Microsoft.Insights
@@ -395,7 +396,7 @@ echo "You can now visit your web server at https://$FQDN"
 
 ## Next Steps
 
-- [Azure Kubernetes Service Documentation](https://learn.microsoft.com/en-us/azure/aks/)
-- [Create an Azure Container Registry](https://learn.microsoft.com/en-us/azure/aks/tutorial-kubernetes-prepare-acr?tabs=azure-cli)
-- [Scale your Applciation in AKS](https://learn.microsoft.com/en-us/azure/aks/tutorial-kubernetes-scale?tabs=azure-cli)
-- [Update your application in AKS](https://learn.microsoft.com/en-us/azure/aks/tutorial-kubernetes-app-update?tabs=azure-cli)
+- [Azure Kubernetes Service Documentation](https://learn.microsoft.com/azure/aks/)
+- [Create an Azure Container Registry](https://learn.microsoft.com/azure/aks/tutorial-kubernetes-prepare-acr?tabs=azure-cli)
+- [Scale your Applciation in AKS](https://learn.microsoft.com/azure/aks/tutorial-kubernetes-scale?tabs=azure-cli)
+- [Update your application in AKS](https://learn.microsoft.com/azure/aks/tutorial-kubernetes-app-update?tabs=azure-cli)

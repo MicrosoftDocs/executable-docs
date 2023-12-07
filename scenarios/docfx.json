@@ -5,7 +5,9 @@
       {
         "files": [
           "**/*.md",
-          "**/*.yml"
+          "**/toc.yml",
+          "**/TOC.yml",
+          "**/index.yml"
         ],
         "exclude": [
           "**/obj/**",
@@ -41,13 +43,13 @@
     "overwrite": [],
     "externalReference": [],
     "globalMetadata": {
-      "breadcrumb_path": "/exec-docs/breadcrumb/toc.json",
+      "breadcrumb_path": "/exec-docs/breadcrumb/toc.yml",
       "feedback_system": "Standard",
       "permissioned-type": "public",
-      "uhfHeaderId": "exec-docs"
+      "uhfHeaderId": "azure"
     },
     "fileMetadata": {},
     "template": [],
-    "dest": "exec-docs"
+    "dest": "azure"
   }
 }

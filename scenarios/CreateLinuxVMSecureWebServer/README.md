@@ -2,8 +2,9 @@
 title: Create a NGINX Webserver Secured via HTTPS
 description: This tutorial shows how to create a NGINX Webserver Secured via HTTPS.
 author: mbifeld
+ms.author: mbifeld
 ms.topic: article
-ms.date: 11/10/2023
+ms.date: 11/28/2023
 ms.custom: innovation-engine
 ---
 
