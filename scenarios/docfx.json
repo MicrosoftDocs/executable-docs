@@ -43,7 +43,7 @@
     "overwrite": [],
     "externalReference": [],
     "globalMetadata": {
-      "breadcrumb_path": "/azure/linux-workloads/breadcrumb/toc.yml",
+      "breadcrumb_path": "/azure/linux-workloads/breadcrumb/toc.json",
       "feedback_system": "Standard",
       "permissioned-type": "public",
       "uhfHeaderId": "azure"
