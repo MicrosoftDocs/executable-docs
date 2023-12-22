@@ -15,6 +15,11 @@ jobs:
       run: |
         sudo apt install zip
         zip -r scenarios.zip scenarios
+    # Add the following step to allow the marvinpinto/action-automatic-releases action
+    - name: Allow marvinpinto/action-automatic-releases
+      uses: actions/checkout@v2
+      with:
+        repository: marvinpinto/action-automatic-releases
     - name: Release Exec Doc scripts
       uses: "marvinpinto/action-automatic-releases@latest"
       with:
