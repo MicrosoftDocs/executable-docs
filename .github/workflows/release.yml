@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - live
+  workflow_dispatch:
 
 jobs:
   build-test-release:
