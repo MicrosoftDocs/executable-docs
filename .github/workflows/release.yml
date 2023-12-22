@@ -25,6 +25,7 @@ jobs:
         zip -r ja-jp-scenarios.zip localized/ja-JP/scenarios
         zip -r ko-kr-scenarios.zip localized/ko-KR/scenarios
         zip -r nl-nl-scenarios.zip localized/nl-NL/scenarios
+        zip -r pl-pl-scenarios.zip localized/pl-PL/scenarios
         zip -r pt-br-scenarios.zip localized/pt-BR/scenarios
         zip -r pt-pt-scenarios.zip localized/pt-PT/scenarios
         zip -r ru-ru-scenarios.zip localized/ru-RU/scenarios
