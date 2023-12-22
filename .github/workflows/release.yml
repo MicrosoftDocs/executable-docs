@@ -15,23 +15,35 @@ jobs:
       run: |
         sudo apt install zip
         zip -r scenarios.zip scenarios
-    - name: Setup release
+    - name: Check if Release already exists
+      id: check_release
+      run: echo "::set-output name=exists::$(curl -s -o /dev/null -w "%{http_code}" https://api.github.com/repos/${{ github.repository }}/releases/tags/latest)"
+
+    - name: Create or Update Release
       id: create_release
       uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         tag_name: latest
         release_name: Release ${{ github.run_number }}
-        draft: false
-        prerelease: false
-    - name: Upload Release Asset
-      id: upload-release-asset 
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        body: |
+          Changes in this release.
+      if: steps.check_release.outputs.exists == '404'
+
+    - name: Update Release if it already exists
+      id: update_release
+      uses: actions/create-release@v1
       with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        tag_name: latest
+        release_name: Release ${{ github.run_number }}
+        body: |
+          Changes in this release.
+      if: steps.check_release.outputs.exists == '200'
+
+    - name: Upload scenarios.zip to Release
+      id: upload-release-asset
+      uses: actions/upload-release-asset@v1
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url || steps.update_release.outputs.upload_url }}
         asset_path: ./scenarios.zip
         asset_name: scenarios.zip
         asset_content_type: application/zip
