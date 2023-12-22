@@ -15,12 +15,23 @@ jobs:
       run: |
         sudo apt install zip
         zip -r scenarios.zip scenarios
-    - name: Release Executable Doc Scenarios
-      uses: "marvinpinto/action-automatic-releases@latest"
+    - name: Setup release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        repo_token: ${{ secrets.GITHUB_TOKEN }}
-        title: "ExecDocScenarios"
-        automatic_release_tag: "latest"
-        prerelease: true
-        files: |
-          ./scenarios.zip
+        tag_name: latest
+        release_name: latest
+        draft: false
+        prerelease: false
+    - name: Upload Release Asset
+      id: upload-release-asset 
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./scenarios.zip
+        asset_name: scenarios.zip
+        asset_content_type: application/zip
