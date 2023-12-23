@@ -15,24 +15,24 @@ jobs:
       run: |
         sudo apt install zip
         zip -r scenarios.zip scenarios
-        zip -r cs-cz-scenarios.zip localized/cs-CZ/scenarios
-        zip -r de-de-scenarios.zip localized/de-DE/scenarios
-        zip -r es-es-scenarios.zip localized/es-ES/scenarios
-        zip -r fr-fr-scenarios.zip localized/fr-FR/scenarios
-        zip -r hu-hu-scenarios.zip localized/hu-HU/scenarios
-        zip -r id-id-scenarios.zip localized/id-ID/scenarios
-        zip -r it-it-scenarios.zip localized/it-IT/scenarios
-        zip -r ja-jp-scenarios.zip localized/ja-JP/scenarios
-        zip -r ko-kr-scenarios.zip localized/ko-KR/scenarios
-        zip -r nl-nl-scenarios.zip localized/nl-NL/scenarios
-        zip -r pl-pl-scenarios.zip localized/pl-PL/scenarios
-        zip -r pt-br-scenarios.zip localized/pt-BR/scenarios
-        zip -r pt-pt-scenarios.zip localized/pt-PT/scenarios
-        zip -r ru-ru-scenarios.zip localized/ru-RU/scenarios
-        zip -r sv-se-scenarios.zip localized/sv-SE/scenarios
-        zip -r tr-tr-scenarios.zip localized/tr-TR/scenarios
-        zip -r zh-cn-scenarios.zip localized/zh-CN/scenarios
-        zip -r zh-tw-scenarios.zip localized/zh-TW/scenarios
+        zip -jr cs-cz-scenarios.zip localized/cs-CZ/scenarios
+        zip -jr de-de-scenarios.zip localized/de-DE/scenarios
+        zip -jr es-es-scenarios.zip localized/es-ES/scenarios
+        zip -jr fr-fr-scenarios.zip localized/fr-FR/scenarios
+        zip -jr hu-hu-scenarios.zip localized/hu-HU/scenarios
+        zip -jr id-id-scenarios.zip localized/id-ID/scenarios
+        zip -jr it-it-scenarios.zip localized/it-IT/scenarios
+        zip -jr ja-jp-scenarios.zip localized/ja-JP/scenarios
+        zip -jr ko-kr-scenarios.zip localized/ko-KR/scenarios
+        zip -jr nl-nl-scenarios.zip localized/nl-NL/scenarios
+        zip -jr pl-pl-scenarios.zip localized/pl-PL/scenarios
+        zip -jr pt-br-scenarios.zip localized/pt-BR/scenarios
+        zip -jr pt-pt-scenarios.zip localized/pt-PT/scenarios
+        zip -jr ru-ru-scenarios.zip localized/ru-RU/scenarios
+        zip -jr sv-se-scenarios.zip localized/sv-SE/scenarios
+        zip -jr tr-tr-scenarios.zip localized/tr-TR/scenarios
+        zip -jr zh-cn-scenarios.zip localized/zh-CN/scenarios
+        zip -jr zh-tw-scenarios.zip localized/zh-TW/scenarios
     - name: Setup release
       id: create_release
       uses: actions/create-release@v1
