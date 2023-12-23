@@ -15,17 +15,202 @@ jobs:
       run: |
         sudo apt install zip
         zip -r scenarios.zip scenarios
-    # Add the following step to allow the marvinpinto/action-automatic-releases action
-    - name: Allow marvinpinto/action-automatic-releases
-      uses: actions/checkout@v2
+        zip -r cs-cz-scenarios.zip localized/cs-CZ/scenarios
+        zip -r de-de-scenarios.zip localized/de-DE/scenarios
+        zip -r es-es-scenarios.zip localized/es-ES/scenarios
+        zip -r fr-fr-scenarios.zip localized/fr-FR/scenarios
+        zip -r hu-hu-scenarios.zip localized/hu-HU/scenarios
+        zip -r id-id-scenarios.zip localized/id-ID/scenarios
+        zip -r it-it-scenarios.zip localized/it-IT/scenarios
+        zip -r ja-jp-scenarios.zip localized/ja-JP/scenarios
+        zip -r ko-kr-scenarios.zip localized/ko-KR/scenarios
+        zip -r nl-nl-scenarios.zip localized/nl-NL/scenarios
+        zip -r pl-pl-scenarios.zip localized/pl-PL/scenarios
+        zip -r pt-br-scenarios.zip localized/pt-BR/scenarios
+        zip -r pt-pt-scenarios.zip localized/pt-PT/scenarios
+        zip -r ru-ru-scenarios.zip localized/ru-RU/scenarios
+        zip -r sv-se-scenarios.zip localized/sv-SE/scenarios
+        zip -r tr-tr-scenarios.zip localized/tr-TR/scenarios
+        zip -r zh-cn-scenarios.zip localized/zh-CN/scenarios
+        zip -r zh-tw-scenarios.zip localized/zh-TW/scenarios
+    - name: Setup release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        repository: marvinpinto/action-automatic-releases
-    - name: Release Exec Doc scripts
-      uses: "marvinpinto/action-automatic-releases@latest"
+        tag_name: v${{ github.run_number }}
+        release_name: Release ${{ github.run_number }}
+        draft: false
+        prerelease: false
+    - name: Upload Release Asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        repo_token: ${{ secrets.GITHUB_TOKEN }}
-        title: "ExecDocScenarios"
-        automatic_release_tag: "latest"
-        prerelease: true
-        files: |
-          ./scenarios.zip
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./scenarios.zip
+        asset_name: scenarios.zip
+        asset_content_type: application/zip
+    - name: Upload Release Asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./cs-cz-scenarios.zip
+        asset_name: cs-cz-scenarios.zip
+        asset_content_type: application/zip
+    - name: Upload Release Asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./de-de-scenarios.zip
+        asset_name: de-de-scenarios.zip
+        asset_content_type: application/zip
+    - name: Upload Release Asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./es-es-scenarios.zip
+        asset_name: es-es-scenarios.zip
+        asset_content_type: application/zip
+    - name: Upload Release Asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./fr-fr-scenarios.zip
+        asset_name: fr-fr-scenarios.zip
+        asset_content_type: application/zip
+    - name: Upload Release Asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./hu-hu-scenarios.zip
+        asset_name: hu-hu-scenarios.zip
+        asset_content_type: application/zip
+    - name: Upload Release Asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./id-id-scenarios.zip
+        asset_name: id-id-scenarios.zip
+        asset_content_type: application/zip
+    - name: Upload Release Asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./it-it-scenarios.zip
+        asset_name: it-it-scenarios.zip
+        asset_content_type: application/zip
+    - name: Upload Release Asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./ja-jp-scenarios.zip
+        asset_name: ja-jp-scenarios.zip
+        asset_content_type: application/zip
+    - name: Upload Release Asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./ko-kr-scenarios.zip
+        asset_name: ko-kr-scenarios.zip
+        asset_content_type: application/zip
+    - name: Upload Release Asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./nl-nl-scenarios.zip
+        asset_name: nl-nl-scenarios.zip
+        asset_content_type: application/zip
+    - name: Upload Release Asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./pl-pl-scenarios.zip
+        asset_name: pl-pl-scenarios.zip
+        asset_content_type: application/zip
+    - name: Upload Release Asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./pt-br-scenarios.zip
+        asset_name: pt-br-scenarios.zip
+        asset_content_type: application/zip
+    - name: Upload Release Asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./pt-pt-scenarios.zip
+        asset_name: pt-pt-scenarios.zip
+        asset_content_type: application/zip
+    - name: Upload Release Asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./ru-ru-scenarios.zip
+        asset_name: ru-ru-scenarios.zip
+        asset_content_type: application/zip
+    - name: Upload Release Asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./sv-se-scenarios.zip
+        asset_name: sv-se-scenarios.zip
+        asset_content_type: application/zip
+    - name: Upload Release Asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./tr-tr-scenarios.zip
+        asset_name: tr-tr-scenarios.zip
+        asset_content_type: application/zip
+    - name: Upload Release Asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./zh-cn-scenarios.zip
+        asset_name: zh-cn-scenarios.zip
+        asset_content_type: application/zip
+    - name: Upload Release Asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./zh-tw-scenarios.zip
+        asset_name: zh-tw-scenarios.zip
+        asset_content_type: application/zip
