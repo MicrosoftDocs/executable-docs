@@ -51,7 +51,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./cs-cz-scenarios.zip
+        asset_path: ./cs-CZ-scenarios.zip
         asset_name: cs-cz-scenarios.zip
         asset_content_type: application/zip
     - name: Upload Release Asset
@@ -60,7 +60,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./de-de-scenarios.zip
+        asset_path: ./de-DE-scenarios.zip
         asset_name: de-de-scenarios.zip
         asset_content_type: application/zip
     - name: Upload Release Asset
@@ -69,7 +69,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./es-es-scenarios.zip
+        asset_path: ./es-ES-scenarios.zip
         asset_name: es-es-scenarios.zip
         asset_content_type: application/zip
     - name: Upload Release Asset
@@ -78,7 +78,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./fr-fr-scenarios.zip
+        asset_path: ./fr-FR-scenarios.zip
         asset_name: fr-fr-scenarios.zip
         asset_content_type: application/zip
     - name: Upload Release Asset
@@ -87,7 +87,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./hu-hu-scenarios.zip
+        asset_path: ./hu-HU-scenarios.zip
         asset_name: hu-hu-scenarios.zip
         asset_content_type: application/zip
     - name: Upload Release Asset
@@ -96,7 +96,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./id-id-scenarios.zip
+        asset_path: ./id-ID-scenarios.zip
         asset_name: id-id-scenarios.zip
         asset_content_type: application/zip
     - name: Upload Release Asset
@@ -105,7 +105,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./it-it-scenarios.zip
+        asset_path: ./it-IT-scenarios.zip
         asset_name: it-it-scenarios.zip
         asset_content_type: application/zip
     - name: Upload Release Asset
@@ -114,7 +114,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./ja-jp-scenarios.zip
+        asset_path: ./ja-JP-scenarios.zip
         asset_name: ja-jp-scenarios.zip
         asset_content_type: application/zip
     - name: Upload Release Asset
@@ -123,7 +123,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./ko-kr-scenarios.zip
+        asset_path: ./ko-KR-scenarios.zip
         asset_name: ko-kr-scenarios.zip
         asset_content_type: application/zip
     - name: Upload Release Asset
@@ -132,7 +132,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./nl-nl-scenarios.zip
+        asset_path: ./nl-NL-scenarios.zip
         asset_name: nl-nl-scenarios.zip
         asset_content_type: application/zip
     - name: Upload Release Asset
@@ -141,7 +141,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./pl-pl-scenarios.zip
+        asset_path: ./pl-PL-scenarios.zip
         asset_name: pl-pl-scenarios.zip
         asset_content_type: application/zip
     - name: Upload Release Asset
@@ -150,7 +150,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./pt-br-scenarios.zip
+        asset_path: ./pt-BR-scenarios.zip
         asset_name: pt-br-scenarios.zip
         asset_content_type: application/zip
     - name: Upload Release Asset
@@ -159,7 +159,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./pt-pt-scenarios.zip
+        asset_path: ./pt-PT-scenarios.zip
         asset_name: pt-pt-scenarios.zip
         asset_content_type: application/zip
     - name: Upload Release Asset
@@ -168,7 +168,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./ru-ru-scenarios.zip
+        asset_path: ./ru-RU-scenarios.zip
         asset_name: ru-ru-scenarios.zip
         asset_content_type: application/zip
     - name: Upload Release Asset
@@ -177,7 +177,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./sv-se-scenarios.zip
+        asset_path: ./sv-SE-scenarios.zip
         asset_name: sv-se-scenarios.zip
         asset_content_type: application/zip
     - name: Upload Release Asset
@@ -186,7 +186,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./tr-tr-scenarios.zip
+        asset_path: ./tr-TR-scenarios.zip
         asset_name: tr-tr-scenarios.zip
         asset_content_type: application/zip
     - name: Upload Release Asset
@@ -195,7 +195,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./zh-cn-scenarios.zip
+        asset_path: ./zh-CN-scenarios.zip
         asset_name: zh-cn-scenarios.zip
         asset_content_type: application/zip
     - name: Upload Release Asset
@@ -204,6 +204,6 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./zh-tw-scenarios.zip
+        asset_path: ./zh-TW-scenarios.zip
         asset_name: zh-tw-scenarios.zip
         asset_content_type: application/zip
