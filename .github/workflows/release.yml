@@ -16,7 +16,7 @@ jobs:
         sudo apt install zip
         zip -r scenarios.zip scenarios
 
-        languages=("cs-cz" "de-de" "es-es" "fr-fr" "hu-hu" "id-id" "it-it" "ja-jp" "ko-kr" "nl-nl" "pl-pl" "pt-br" "pt-pt" "ru-ru" "sv-se" "tr-tr" "zh-cn" "zh-tw")
+        languages=("cs-CZ" "de-DE" "es-ES" "fr-FR" "hu-HU" "id-ID" "it-IT" "ja-JP" "ko-KR" "nl-NL" "pl-PL" "pt-BR" "pt-PT" "ru-RU" "sv-SE" "tr-TR" "zh-CN" "zh-TW")
         for lang in "${languages[@]}"; do
           # Set the source directory
           src_dir="localized/$lang"
