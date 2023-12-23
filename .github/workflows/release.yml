@@ -15,24 +15,17 @@ jobs:
       run: |
         sudo apt install zip
         zip -r scenarios.zip scenarios
-        zip -jr cs-cz-scenarios.zip localized/cs-CZ/scenarios
-        zip -jr de-de-scenarios.zip localized/de-DE/scenarios
-        zip -jr es-es-scenarios.zip localized/es-ES/scenarios
-        zip -jr fr-fr-scenarios.zip localized/fr-FR/scenarios
-        zip -jr hu-hu-scenarios.zip localized/hu-HU/scenarios
-        zip -jr id-id-scenarios.zip localized/id-ID/scenarios
-        zip -jr it-it-scenarios.zip localized/it-IT/scenarios
-        zip -jr ja-jp-scenarios.zip localized/ja-JP/scenarios
-        zip -jr ko-kr-scenarios.zip localized/ko-KR/scenarios
-        zip -jr nl-nl-scenarios.zip localized/nl-NL/scenarios
-        zip -jr pl-pl-scenarios.zip localized/pl-PL/scenarios
-        zip -jr pt-br-scenarios.zip localized/pt-BR/scenarios
-        zip -jr pt-pt-scenarios.zip localized/pt-PT/scenarios
-        zip -jr ru-ru-scenarios.zip localized/ru-RU/scenarios
-        zip -jr sv-se-scenarios.zip localized/sv-SE/scenarios
-        zip -jr tr-tr-scenarios.zip localized/tr-TR/scenarios
-        zip -jr zh-cn-scenarios.zip localized/zh-CN/scenarios
-        zip -jr zh-tw-scenarios.zip localized/zh-TW/scenarios
+
+        languages=("cs-cz" "de-de" "es-es" "fr-fr" "hu-hu" "id-id" "it-it" "ja-jp" "ko-kr" "nl-nl" "pl-pl" "pt-br" "pt-pt" "ru-ru" "sv-se" "tr-tr" "zh-cn" "zh-tw")
+        for lang in "${languages[@]}"; do
+          # Set the source directory
+          src_dir="localized/$lang"
+          # Set the destination zip file
+          zip_file="${lang}-scenarios.zip"
+          # Change to the source directory and create the zip file
+          (cd "$src_dir" && zip -r "../../$zip_file" scenarios)
+        done
+        
     - name: Setup release
       id: create_release
       uses: actions/create-release@v1
