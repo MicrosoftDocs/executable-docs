@@ -33,3 +33,5 @@ landingContent:
             url: DeployIGonAKS/README.md
           - text: Deploy a WordPress site on Azure Kubernetes Service
             url: CreateWordPressDeployment/README.md
+          - text: Create a Virtual Machine Scale Set with Application Gateway with Linux image
+            url: CreateLinuxVMSSwithAppGW/README.md
