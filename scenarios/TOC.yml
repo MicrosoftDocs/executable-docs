@@ -15,3 +15,5 @@
     href: DeployIGonAKS/README.md
   - name: Deploy a WordPress site on Azure Kubernetes Service
     href: CreateWordPressDeployment/README.md
+  - name: Create a Virtual Machine Scale Set with Application Gateway with Linux image
+    href: CreateLinuxVMSSwithAppGW/README.md
