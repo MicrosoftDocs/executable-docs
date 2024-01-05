@@ -17,9 +17,9 @@ jobs:
       run: |
         # Copy YAML files from scenarios/ to language folders
         for folder in scenarios/*/; do
-          for file in "${folder}"/*.yml; do
+          for file in "${folder}"*.yml; do
             for lang_folder in localized/*/; do
-              cp "$file" "${lang_folder}"/"${file_path}"
+              cp "$file" "${lang_folder}""${file_path}"
             done
           done
         done
