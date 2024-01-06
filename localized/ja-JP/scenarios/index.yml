@@ -1,0 +1,37 @@
+### YamlMime:Landing
+
+title: Quickstart Linux Workloads on Azure
+summary: Learn how to build and manage powerful Linux applications using Microsoft Azure.
+
+metadata:
+  title: Quickstart Linux Workloads on Azure
+  description: Quickstart Linux Workloads on Azure
+  author: mbifeld
+  ms.author: mbifeld
+  ms.topic: article
+  ms.date: 11/28/2023
+  ms.custom: innovation-engine
+# linkListType: architecture | concept | deploy | download | get-started | how-to-guide | learn | overview | quickstart | reference | sample | tutorial | video | whats-new
+
+landingContent:
+# Cards and links should be based on top customer tasks or top subjects
+# Start card title with a verb
+  # Card (optional)
+  - title: Quickstart Linux Workloads on Azure
+    linkLists:
+      - linkListType: quickstart
+        links:
+          - text: Deploy an AKS Cluster
+            url: CreateAKSDeployment/README.md
+          - text: Deploy and SSH into a VM
+            url: CreateLinuxVMAndSSH/README.md
+          - text: Create a Secure Web Server
+            url: CreateLinuxVMSecureWebServer/README.md
+          - text: Install a LEMP stack on Azure
+            url: CreateLinuxVMLAMP/README.md
+          - text: Deploy Inspektor Gadget in an Azure Kubernetes Service cluster
+            url: DeployIGonAKS/README.md
+          - text: Deploy a WordPress site on Azure Kubernetes Service
+            url: CreateWordPressDeployment/README.md
+          - text: Create a Virtual Machine Scale Set with Application Gateway with Linux image
+            url: CreateLinuxVMSSwithAppGW/README.md
