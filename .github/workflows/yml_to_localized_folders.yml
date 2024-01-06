@@ -17,3 +17,10 @@ jobs:
       run: |
         # Copy YAML files from scenarios/ to language folders
         find scenarios/ -name '*.yml' -exec sh -c 'for lang_folder in localized/*/; do cp "$1" "${lang_folder}scenarios/${1#scenarios/}"; done' _ {} \;
+    - name: Commit and push changes
+      run: |
+        git config --global user.email "mbifeld@microsoft.com"
+        git config --global user.name "mbifeld"
+        git add .
+        git commit -m "Copy YAML files to language folders"
+        git push
