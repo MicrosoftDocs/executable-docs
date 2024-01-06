@@ -16,11 +16,4 @@ jobs:
     - name: Copy yml files
       run: |
         # Copy YAML files from scenarios/ to language folders
-        for folder in scenarios/*/; do
-          for file in "${folder}"*.yml; do
-            for lang_folder in localized/*/; do
-              cp "$file" "${lang_folder}""${file_path}"
-            done
-          done
-        done
-    
+       find scenarios/ -name '*.yml' -exec sh -c 'for lang_folder in localized/*/; do cp "$1" "${lang_folder}""$1"; done' _ {} \;
