@@ -1,0 +1,28 @@
+# This workflow ensures that all yml files in the main scenarios folder are also in the relevant folders for each language.
+name: yml_to_localized_folders
+
+on:
+  push:
+    branches:
+      - live
+  workflow_dispatch:
+
+jobs:
+  copy-yaml:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    
+    - name: Copy yml files
+      run: |
+        # Copy YAML files from scenarios/ to language folders
+        for folder in scenarios/; do
+          find $folder -name '*.yml' -exec sh -c 'for lang_folder in localized/*/; do cp "$1" "${lang_folder}scenarios/${1#scenarios/}"; done' _ {} \;
+        done
+    - name: Commit and push changes
+      run: |
+        git config --global user.email "mbifeld@microsoft.com"
+        git config --global user.name "mbifeld"
+        git add .
+        git commit -m "Copy YAML files to language folders"
+        git push
