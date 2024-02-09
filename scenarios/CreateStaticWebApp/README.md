@@ -1,3 +1,14 @@
+---
+title: Create a Static Site Using the Azure CLI
+description: This tutorial shows how to create a Static Site on Azure.
+author: namanparikh
+ms.author: namanparikh
+ms.topic: article
+ms.date: 02/06/2024
+ms.custom: innovation-engine
+ms.service: Azure
+---
+
 # Azure Static Web Apps Quickstart: Building Your First Static Site Using the Azure CLI
 
 Azure Static Web Apps publishes websites to production by building apps from a code repository. In this quickstart, you deploy a web application to Azure Static Web Apps using the Azure CLI.
