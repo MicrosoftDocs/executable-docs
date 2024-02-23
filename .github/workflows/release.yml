@@ -9,6 +9,13 @@ on:
 jobs:
   build-test-release:
     runs-on: ubuntu-latest
+    permissions:
+      actions: write
+      contents: read
+      deployments: write
+      packages: none
+      pull-requests: write
+      security-events: write
     steps:
     - uses: actions/checkout@v2
     - name: Prepare scenarios to be released.
