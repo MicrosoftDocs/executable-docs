@@ -10,6 +10,13 @@ on:
 jobs:
   copy-yaml:
     runs-on: ubuntu-latest
+    permissions:
+      actions: write
+      contents: write
+      deployments: write
+      packages: none
+      pull-requests: write
+      security-events: write
     steps:
     - uses: actions/checkout@v2
     
