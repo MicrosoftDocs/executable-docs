@@ -21,7 +21,7 @@ export SSL_EMAIL_ADDRESS="$(az account show --query user.name --output tsv)"
 export NETWORK_PREFIX="$(($RANDOM % 253 + 1))"
 export RANDOM_ID="$(openssl rand -hex 3)"
 export MY_RESOURCE_GROUP_NAME="myWordPressAKSResourceGroup$RANDOM_ID"
-export REGION="eastus"
+export REGION="westeurope"
 export MY_AKS_CLUSTER_NAME="myAKSCluster$RANDOM_ID"
 export MY_PUBLIC_IP_NAME="myPublicIP$RANDOM_ID"
 export MY_DNS_LABEL="mydnslabel$RANDOM_ID"
@@ -288,7 +288,7 @@ FQDN は次の形式に従う必要があります: $MY_DNS_LABEL。AZURE_REGION
 export MY_STATIC_IP=$(az network public-ip create --resource-group MC_${MY_RESOURCE_GROUP_NAME}_${MY_AKS_CLUSTER_NAME}_${REGION} --location ${REGION} --name ${MY_PUBLIC_IP_NAME} --dns-name ${MY_DNS_LABEL} --sku Standard --allocation-method static --version IPv4 --zone 1 2 3 --query publicIp.ipAddress -o tsv)
 ```
 
---set controller.service.annotations."service\.beta\.kubernetes\.io/azure-dns-label-name"="<DNS_LABEL>" パラメータを追加します。 DNS ラベルは、イングレス コントローラーを最初にデプロイするときに設定することも、後で構成することもできます。 --set controller.service.loadBalancerIP="STATIC_IP" パラメータを追加します。 前の手順で作成された独自のパブリック IP アドレスを指定します。
+--set controller.service.annotations."service\.beta\.kubernetes\.io/azure-dns-label-name"="<DNS_LABEL>" パラメータを追加します。 DNS ラベルは、イングレス コントローラーを最初にデプロイするときに設定することも、後で構成することもできます。 --set controller.service.loadBalancerIP="STATIC_IP" パラメーターを追加します。 前の手順で作成された独自のパブリック IP アドレスを指定します。
 
 1. ingress-nginx Helm リポジトリを追加する
 
