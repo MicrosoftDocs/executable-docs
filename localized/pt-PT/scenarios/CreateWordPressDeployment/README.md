@@ -21,7 +21,7 @@ export SSL_EMAIL_ADDRESS="$(az account show --query user.name --output tsv)"
 export NETWORK_PREFIX="$(($RANDOM % 253 + 1))"
 export RANDOM_ID="$(openssl rand -hex 3)"
 export MY_RESOURCE_GROUP_NAME="myWordPressAKSResourceGroup$RANDOM_ID"
-export REGION="eastus"
+export REGION="westeurope"
 export MY_AKS_CLUSTER_NAME="myAKSCluster$RANDOM_ID"
 export MY_PUBLIC_IP_NAME="myPublicIP$RANDOM_ID"
 export MY_DNS_LABEL="mydnslabel$RANDOM_ID"
@@ -188,7 +188,7 @@ Você pode gerenciar o Banco de Dados do Azure para MySQL - Configuração de Se
 
 Mostrar detalhes do parâmetro do servidor Para mostrar detalhes sobre um parâmetro específico para um servidor, execute o [comando az mysql flexible-server parameter show](https://learn.microsoft.com/cli/azure/mysql/flexible-server/parameter) .
 
-### Desabilitar o Banco de Dados do Azure para MySQL - Parâmetro de conexão SSL de servidor flexível para integração com WordPress
+### Desabilitar o Banco de Dados do Azure para MySQL - Parâmetro de conexão SSL do Servidor Flexível para integração com WordPress
 
 Você também pode modificar o valor de certos parâmetros do servidor, que atualiza os valores de configuração subjacentes para o mecanismo de servidor MySQL. Para atualizar o parâmetro server, use o [comando az mysql flexible-server parameter set](https://learn.microsoft.com/cli/azure/mysql/flexible-server/parameter#az-mysql-flexible-server-parameter-set) .
 
@@ -316,7 +316,7 @@ Adicione o --set controller.service.annotations." serviço\.beta\.kubernetes\.io
 
 ## Adicionar terminação HTTPS ao domínio personalizado
 
-Neste ponto do tutorial, você tem um aplicativo web AKS com NGINX como controlador de entrada e um domínio personalizado que você pode usar para acessar seu aplicativo. O próximo passo é adicionar um certificado SSL ao domínio para que os usuários possam acessar seu aplicativo com segurança via https.
+Neste ponto do tutorial, você tem um aplicativo web AKS com NGINX como controlador de ingresso e um domínio personalizado que você pode usar para acessar seu aplicativo. A próxima etapa é adicionar um certificado SSL ao domínio para que os usuários possam acessar seu aplicativo com segurança via https.
 
 ## Configurar o Cert Manager
 
@@ -469,7 +469,7 @@ To access your WordPress site from outside the cluster follow the steps below:
 Execute o seguinte comando para obter o ponto de extremidade HTTPS para seu aplicativo:
 
 > [!NOTE]
-> Muitas vezes leva 2-3 minutos para o certificado SSL para propor e cerca de 5 minutos para ter todas as réplicas POD WordPress pronto e o site para ser totalmente acessível via https.
+> Muitas vezes leva 2-3 minutos para o certificado SSL propor e cerca de 5 minutos para ter todas as réplicas POD WordPress pronto e o site para ser totalmente acessível via https.
 
 ```bash
 runtime="5 minute"

@@ -13,7 +13,7 @@ ms.custom: innovation-engine
 [![部署至 Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/?Microsoft_Azure_CloudNative_clientoptimizations=false&feature.canmodifyextensions=true#view/Microsoft_Azure_CloudNative/SubscriptionSelectionPage.ReactView/tutorialKey/CreateLinuxVMLAMP)
 
 
-本文將逐步引導您如何在 Azure 中的 Ubuntu Linux VM 上部署 NGINX Web 服務器、Azure MySQL 彈性伺服器和 PHP （LEMP 堆疊）。 若要查看 LEMP 伺服器運作情形，您可以選擇性地安裝及設定 WordPress 網站。 在本教學課程中，您將了解如何：
+本文將逐步引導您如何在 Azure 中的 Ubuntu Linux VM 上部署 NGINX Web 伺服器、Azure MySQL 彈性伺服器和 PHP （LEMP 堆棧）。 若要查看 LEMP 伺服器運作情形，您可以選擇性地安裝及設定 WordPress 網站。 在本教學課程中，您將了解如何：
 
 > [!div class="checklist"]
 
@@ -31,7 +31,7 @@ ms.custom: innovation-engine
 export NETWORK_PREFIX="$(($RANDOM % 254 + 1))"
 export RANDOM_ID="$(openssl rand -hex 3)"
 export MY_RESOURCE_GROUP_NAME="myLEMPResourceGroup$RANDOM_ID"
-export REGION="eastus"
+export REGION="westeurope"
 export MY_VM_NAME="myVM$RANDOM_ID"
 export MY_VM_USERNAME="azureadmin"
 export MY_VM_SIZE='Standard_DS2_v2'
@@ -91,8 +91,8 @@ az group create \
 
 ## 建立 Azure 虛擬網路
 
-虛擬網路是 Azure 中私人網路的基本建置組塊。 Azure 虛擬網路可讓 Azure 資源 (例如 VM) 彼此安全地通訊，以及與網際網路安全地通訊。
-使用 [ az network vnet create 建立 ](https://learn.microsoft.com/cli/azure/network/vnet#az-network-vnet-create) 名為 `$MY_VNET_NAME` 的虛擬網路，並在資源群組中建立名為 `$MY_SN_NAME` 的 `$MY_RESOURCE_GROUP_NAME` 子網。
+虛擬網路是 Azure 中專用網的基本建置組塊。 Azure 虛擬網路可讓 Azure 資源 (例如 VM) 彼此安全地通訊，以及與網際網路安全地通訊。
+使用 [az network vnet create 建立](https://learn.microsoft.com/cli/azure/network/vnet#az-network-vnet-create) 名為 `$MY_VNET_NAME` 的虛擬網路，並在資源群組中建立名為 `$MY_SN_NAME` 的 `$MY_RESOURCE_GROUP_NAME` 子網。
 
 ```bash
 az network vnet create \
@@ -142,10 +142,10 @@ az network vnet create \
 
 ## 建立 Azure 公用 IP
 
-使用 [ az network public-ip create ](https://learn.microsoft.com/cli/azure/network/public-ip#az-network-public-ip-create) 建立名為 `MY_PUBLIC_IP_NAME` `$MY_RESOURCE_GROUP_NAME` 的標準區域備援公用 IPv4 位址。
+使用 [az network public-ip create](https://learn.microsoft.com/cli/azure/network/public-ip#az-network-public-ip-create) 建立名為 `MY_PUBLIC_IP_NAME` `$MY_RESOURCE_GROUP_NAME`的標準區域備援公用 IPv4 位址。
 
 >[!NOTE]
->下欄區域選項只有在具有 [ 可用性區域 ](https://learn.microsoft.com/azure/reliability/availability-zones-service-support) 的區域中才有有效的選取專案。
+>下列區域選項只有在具有 [可用性區域](https://learn.microsoft.com/azure/reliability/availability-zones-service-support) 的區域中才有有效的選取專案。
 
 ```bash
 az network public-ip create \
@@ -195,9 +195,9 @@ az network public-ip create \
 }
 ```
 
-## 建立 Azure 網路安全性群組
+## 建立 Azure 網路安全組
 
-網路安全性群組中的安全性規則能讓您篩選可在虛擬網路子網路及網路介面中流入和流出的網路流量類型。 若要深入瞭解網路安全性群組，請參閱 [ 網路安全性群組概觀 ](https://learn.microsoft.com/azure/virtual-network/network-security-groups-overview) 。
+網路安全性群組中的安全性規則能讓您篩選可在虛擬網路子網路及網路介面中流入和流出的網路流量類型。 若要深入了解網路安全組，請參閱 [網路安全組概觀](https://learn.microsoft.com/azure/virtual-network/network-security-groups-overview)。
 
 ```bash
 az network nsg create \
@@ -244,9 +244,9 @@ az network nsg create \
 }
 ```
 
-## 建立 Azure 網路安全性群組規則
+## 建立 Azure 網路安全組規則
 
-您將建立規則，以允許 SSH 埠 22 上的虛擬機器連線，以及 HTTP 和 HTTPS 的埠 80、443。 系統會建立額外的規則，以允許輸出連線的所有埠。 使用 [ az network nsg rule create ](https://learn.microsoft.com/cli/azure/network/nsg/rule#az-network-nsg-rule-create) 建立網路安全性群組規則。
+您將建立規則，以允許 SSH 連接埠 22 上的虛擬機連線，以及 HTTP 和 HTTPS 的埠 80、443。 系統會建立額外的規則，以允許輸出連線的所有埠。 使用 [az network nsg rule create](https://learn.microsoft.com/cli/azure/network/nsg/rule#az-network-nsg-rule-create) 建立網路安全組規則。
 
 ```bash
 az network nsg rule create \
@@ -293,7 +293,7 @@ az network nsg rule create \
 
 ## 建立 Azure 網路介面
 
-您將使用 [ az network nic create ](https://learn.microsoft.com/cli/azure/network/nic#az-network-nic-create) 來建立虛擬機器的網路介面。 先前建立的公用 IP 位址和 NSG 與 NIC 相關聯。 網路介面會連結至您先前建立的虛擬網路。
+您將使用 [az network nic create](https://learn.microsoft.com/cli/azure/network/nic#az-network-nic-create) 來建立虛擬機的網路介面。 先前建立的公用 IP 位址和 NSG 會與 NIC 相關聯。 網路介面會附加至您先前建立的虛擬網路。
 
 ```bash
 az network nic create \
@@ -357,13 +357,13 @@ az network nic create \
 }
 ```
 
-## Cloud-init 概觀
+## Cloud-Init 概觀
 
-Cloud-init 是一種廣泛使用的方法，可讓您在第一次開機時自訂 Linux VM。 您可以使用 cloud-init 來安裝封裝和寫入檔案，或者設定使用者和安全性。 當 cloud-init 在初次開機程序期間執行時，不需要使用任何額外的步驟或必要的代理程式來套用您的組態。
+Cloud-init (英文) 是在 Linux VM 初次開機時，廣泛用來自訂它們的方法。 您可以使用 cloud-init 來安裝封裝和寫入檔案，或者設定使用者和安全性。 當 cloud-init 在初次開機程序期間執行時，不需要使用任何額外的步驟或必要的代理程式來套用您的組態。
 
-Cloud-init 也可跨散發套件運作。 例如，您不使用 apt-get 安裝或 yum 安裝來安裝套件。 您可以改為定義要安裝的套件清單。 Cloud-init 會自動為您選取的散發版本使用原生套件管理工具。
+Cloud-init 也適用於散發套件。 例如，您不使用 apt-get install 或 yum install 來安裝套件。 您可以改為定義要安裝的套件清單。 Cloud-init 會針對您選取的散發套件自動使用原生的套件管理工具。
 
-我們正與我們的合作夥伴合作，以包含 cloud-init 並處理他們提供給 Azure 的映射。 如需每個散發套件的 cloud-init 支援詳細資訊，請參閱 [ Azure ](https://learn.microsoft.com/azure/virtual-machines/linux/using-cloud-init) 中 VM 的 Cloud-init 支援。
+我們正在與合作夥伴合作，以期在他們提供給 Azure 的映像中包含和使用 cloud-init。 如需每個發佈的 cloud-init 支援詳細資訊，請參閱 [Azure中 VM 的 cloud-init 支援](https://learn.microsoft.com/azure/virtual-machines/linux/using-cloud-init)。
 
 ### 建立 Cloud-init 組態檔
 
@@ -489,9 +489,9 @@ runcmd:
 EOF
 ```
 
-## 建立適用于 Azure MySQL 彈性伺服器的 Azure 私用 DNS 區域
+## 建立適用於 Azure MySQL 彈性伺服器的 Azure 私用 DNS 區域
 
-Azure 私用 DNS區域整合可讓您解析目前 VNET 內的私人 DNS，或連結私人 DNS 區域的任何區域內對等互連 VNET。 您將使用 [ az network private-dns zone create ](https://learn.microsoft.com/cli/azure/network/private-dns/zone#az-network-private-dns-zone-create) 來建立私人 DNS 區域。
+Azure 私用 DNS 區域整合可讓您解析目前 VNET 內的私人 DNS，或連結私人 DNS 區域的任何區域內對等互連 VNET。 您將使用 [az network private-dns zone create](https://learn.microsoft.com/cli/azure/network/private-dns/zone#az-network-private-dns-zone-create) 來建立私人 DNS 區域。
 
 ```bash
 az network private-dns zone create \
@@ -520,9 +520,9 @@ az network private-dns zone create \
 }
 ```
 
-## 建立適用於 MySQL 的 Azure 資料庫 - 彈性伺服器
+## 建立 適用於 MySQL 的 Azure 資料庫 - 彈性伺服器
 
-適用於 MySQL 的 Azure 資料庫 - 彈性伺服器是受控服務，可用來在雲端中執行、管理及調整高可用性 MySQL 伺服器。 使用 [ az mysql flexible-server create ](https://learn.microsoft.com/cli/azure/mysql/flexible-server#az-mysql-flexible-server-create) 命令建立彈性伺服器。 伺服器可以包含多個資料庫。 下列命令會使用 Azure CLI 本機環境的服務預設值和變數值來建立伺服器：
+適用於 MySQL 的 Azure 資料庫 - 彈性伺服器是受控服務，可用來在雲端中執行、管理及調整高可用性 MySQL 伺服器。 使用 [az mysql flexible-server create](https://learn.microsoft.com/cli/azure/mysql/flexible-server#az-mysql-flexible-server-create) 命令建立彈性伺服器。 伺服器可以包含多個資料庫。 下列命令會使用 Azure CLI 本機環境的服務預設值和變數值來建立伺服器：
 
 ```bash
 az mysql flexible-server create \
@@ -569,18 +569,18 @@ echo "Your MySQL user $MY_MYSQL_ADMIN_USERNAME password is: $MY_WP_ADMIN_PW"
 
 建立的伺服器具有下列屬性：
 
-* 伺服器名稱、管理員使用者名稱、系統管理員密碼、資源組名、位置已在 Cloud Shell 的本機內容環境中指定，而且會建立在與您是資源群組和其他 Azure 元件相同的位置。
+* 伺服器名稱、管理員使用者名稱、系統管理員密碼、資源組名、位置已在CloudShell的本機內容環境中指定，而且會建立在與您是資源群組和其他 Azure 元件相同的位置。
 * 其餘伺服器組態的服務預設值：計算層（高載）、計算大小/SKU（Standard_B2s）、備份保留期間（7 天），以及 MySQL 版本（8.0.21）
-* 預設連線方法是私人存取（VNet 整合）與連結的虛擬網路和自動產生的子網。
+* 默認連線方法是私人存取（VNet 整合）與連結的虛擬網路和自動產生的子網。
 
 > [!NOTE]
-> 建立伺服器之後，無法變更連線方法。 例如，如果您在建立期間選取 `Private access (VNet Integration)` ，則無法在建立之後變更為 `Public access (allowed IP addresses)` 。 強烈建議建立具有私人存取權的伺服器，以使用 VNet 整合安全地存取您的伺服器。 在概念文章 [ 中 ](https://learn.microsoft.com/azure/mysql/flexible-server/concepts-networking-vnet) 深入瞭解私人存取。
+> 建立伺服器之後，無法變更連線方法。 例如，如果您在建立期間選取 `Private access (VNet Integration)` ，則無法在建立之後變更為 `Public access (allowed IP addresses)` 。 強烈建議建立具有私人存取權的伺服器，以使用 VNet 整合安全地存取您的伺服器。 在概念文章[中](https://learn.microsoft.com/azure/mysql/flexible-server/concepts-networking-vnet)深入瞭解私人存取。
 
-如果您想要變更任何預設值，請參閱 Azure CLI [ 參考檔 ](https://learn.microsoft.com/cli/azure//mysql/flexible-server) ，以取得可設定 CLI 參數的完整清單。
+如果您想要變更任何預設值，請參閱 Azure CLI [參考檔](https://learn.microsoft.com/cli/azure//mysql/flexible-server) ，以取得可設定 CLI 參數的完整清單。
 
-## 檢查適用於 MySQL 的 Azure 資料庫 - 彈性伺服器狀態
+## 檢查 適用於 MySQL 的 Azure 資料庫 - 彈性伺服器狀態
 
-建立適用於 MySQL 的 Azure 資料庫 - 彈性伺服器和支援資源需要幾分鐘的時間。
+建立 適用於 MySQL 的 Azure 資料庫 - 彈性伺服器和支持資源需要幾分鐘的時間。
 
 ```bash
 runtime="10 minute";
@@ -598,13 +598,13 @@ done
 
 ## 在 適用於 MySQL 的 Azure 資料庫 中設定伺服器參數 - 彈性伺服器
 
-您可以使用伺服器參數來管理適用於 MySQL 的 Azure 資料庫 - 彈性伺服器設定。 當您建立伺服器時，伺服器參數會設定為預設值和建議的值。
+您可以使用伺服器參數來管理 適用於 MySQL 的 Azure 資料庫 - 彈性伺服器組態。 當您建立伺服器時，伺服器參數會設定為預設值和建議的值。
 
-顯示伺服器參數詳細資料 若要顯示伺服器特定參數的詳細資料，請執行 [ az mysql flexible-server 參數 show ](https://learn.microsoft.com/cli/azure/mysql/flexible-server/parameter) 命令。
+顯示伺服器參數詳細數據 若要顯示伺服器特定參數的詳細數據，請執行 [az mysql flexible-server 參數 show](https://learn.microsoft.com/cli/azure/mysql/flexible-server/parameter) 命令。
 
 ### 停用 適用於 MySQL 的 Azure 資料庫 - Wordpress 整合的彈性伺服器 SSL 連線參數
 
-修改伺服器參數值 您也可以修改特定伺服器參數的值，以更新 MySQL 伺服器引擎的基礎組態值。 若要補救伺服器參數，請使用 [ az mysql flexible-server parameter set ](https://learn.microsoft.com/cli/azure/mysql/flexible-server/parameter#az-mysql-flexible-server-parameter-set) 命令。
+修改伺服器參數值 您也可以修改特定伺服器參數的值，以更新 MySQL 伺服器引擎的基礎組態值。 若要更新伺服器參數，請使用 [az mysql flexible-server parameter set](https://learn.microsoft.com/cli/azure/mysql/flexible-server/parameter#az-mysql-flexible-server-parameter-set) 命令。
 
 ```bash
 az mysql flexible-server parameter set \
@@ -635,12 +635,12 @@ az mysql flexible-server parameter set \
 }
 ```
 
-## 建立 Azure Linux 虛擬機器
+## 建立 Azure Linux 虛擬機
 
-下列範例會建立名為 `$MY_VM_NAME` 的 VM，如果 VM 不存在於預設金鑰位置，則會建立 SSH 金鑰。 此命令也會設定 `$MY_VM_USERNAME` 為系統管理員使用者名稱。
-若要改善 Azure 中 Linux 虛擬機器的安全性，您可以與 Azure Active Directory 驗證整合。 您現在可以使用 Azure AD 作為核心驗證平臺和憑證授權單位單位，使用 Azure AD 和 OpenSSH 憑證型驗證，透過 SSH 連線到 Linux VM。 此功能可讓組織使用 Azure 角色型存取控制和條件式存取原則來管理 VM 的存取權。
+下列範例會建立名為 `$MY_VM_NAME` 的 VM，如果 VM 不存在於預設密鑰位置，則會建立 SSH 金鑰。 此命令也會設定 `$MY_VM_USERNAME` 為系統管理員用戶名稱。
+若要改善 Azure 中 Linux 虛擬機的安全性，您可以與 Azure Active Directory 驗證整合。 您現在可以使用 Azure AD 作為核心驗證平臺和證書頒發機構單位，使用 Azure AD 和 OpenSSH 憑證型驗證，透過 SSH 連線到 Linux VM。 此功能可讓組織使用 Azure 角色型存取控制和條件式存取原則來管理 VM 的存取權。
 
-使用 [ az vm create ](https://learn.microsoft.com/cli/azure/vm#az-vm-create) 命令建立 VM。
+使用 [az vm create](https://learn.microsoft.com/cli/azure/vm#az-vm-create) 命令建立 VM。
 
 ```bash
 az vm create \
@@ -684,9 +684,9 @@ az vm create \
 }
 ```
 
-## 檢查 Azure Linux 虛擬機器狀態
+## 檢查 Azure Linux 虛擬機狀態
 
-建立虛擬機器和支援資源需要幾分鐘的時間。 在 VM 上成功安裝擴充功能時，[成功] 的 provisioningState 值隨即出現。 VM 必須有執行 [ 中的 VM 代理程式 ](https://learn.microsoft.com/azure/virtual-machines/extensions/agent-linux) 才能安裝擴充功能。
+建立虛擬機器和支援資源需要幾分鐘的時間。 在 VM 上成功安裝擴充功能時，[成功] 的 provisioningState 值隨即出現。 VM 必須有執行 [中的 VM 代理程式](https://learn.microsoft.com/azure/virtual-machines/extensions/agent-linux) 才能安裝擴充功能。
 
 ```bash
 runtime="5 minute";
@@ -751,9 +751,9 @@ az ssh config --file ~/.ssh/azure-config --name $MY_VM_NAME --resource-group $MY
 ```
 -->
 
-## 在 Azure 中啟用 Linux 虛擬機器的 Azure AD 登入
+## 在 Azure 中啟用 Linux 虛擬機的 Azure AD 登入
 
-下列會安裝擴充功能，以啟用 Linux VM 的 Azure AD 登入。 VM 擴充功能是小型應用程式，可在 Azure 虛擬機器上提供部署後設定和自動化工作。
+下列會安裝擴充功能，以啟用Linux VM的 Azure AD 登入。 VM 擴充功能是小型應用程式，可在 Azure 虛擬機上提供部署後設定和自動化工作。
 
 ```bash
 az vm extension set \
@@ -791,9 +791,9 @@ az vm extension set \
 
 ## 檢查並流覽您的 WordPress 網站
 
-[WordPress ](https://www.wordpress.org) 是一種開放原始碼內容管理系統（CMS），由超過 40% 的網站、部落格和其他應用程式使用。 WordPress 可以在幾個不同的 Azure 服務上執行： [ AKS ](https://learn.microsoft.com/azure/mysql/flexible-server/tutorial-deploy-wordpress-on-aks) 、虛擬機器和 App Service。 如需 Azure 上 WordPress 選項的完整清單，請參閱 [ Azure Marketplace ](https://azuremarketplace.microsoft.com/marketplace/apps?page=1&search=wordpress) 上的 WordPress。
+[WordPress](https://www.wordpress.org) 是一種 開放原始碼 內容管理系統（CMS），由超過 40% 的網站、部落格和其他應用程式使用。 WordPress 可以在幾個不同的 Azure 服務上執行：[AKS](https://learn.microsoft.com/azure/mysql/flexible-server/tutorial-deploy-wordpress-on-aks)、虛擬機器 和 App Service。 如需 Azure 上 WordPress 選項的完整清單，請參閱 [Azure Marketplace](https://azuremarketplace.microsoft.com/marketplace/apps?page=1&search=wordpress) 上的 WordPress。
 
-此 WordPress 設定僅適用于概念證明。 若要使用建議的安全性設定在生產環境中安裝最新的 WordPress，請參閱 [ WordPress 檔 ](https://codex.wordpress.org/Main_Page) 。
+此 WordPress 設定僅適用於概念證明。 若要使用建議的安全性設定在生產環境中安裝最新的 WordPress，請參閱 [WordPress 檔](https://codex.wordpress.org/Main_Page)。
 
 藉由捲曲應用程式 URL 來驗證應用程式是否正在執行：
 

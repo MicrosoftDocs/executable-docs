@@ -21,7 +21,7 @@ export SSL_EMAIL_ADDRESS="$(az account show --query user.name --output tsv)"
 export NETWORK_PREFIX="$(($RANDOM % 253 + 1))"
 export RANDOM_ID="$(openssl rand -hex 3)"
 export MY_RESOURCE_GROUP_NAME="myWordPressAKSResourceGroup$RANDOM_ID"
-export REGION="eastus"
+export REGION="westeurope"
 export MY_AKS_CLUSTER_NAME="myAKSCluster$RANDOM_ID"
 export MY_PUBLIC_IP_NAME="myPublicIP$RANDOM_ID"
 export MY_DNS_LABEL="mydnslabel$RANDOM_ID"
@@ -68,7 +68,7 @@ Results:
 
 ## 가상 네트워크 및 서브넷 만들기
 
-가상 네트워크는 Azure의 프라이빗 네트워크에 대한 기본 구성 요소입니다. Azure Virtual Network를 통해 VM과 같은 Azure 리소스가 상호 간 및 인터넷과 안전하게 통신할 수 있습니다.
+가상 네트워크는 Azure에서 개인 네트워크의 기본 구성 요소입니다. Azure Virtual Network를 통해 VM과 같은 Azure 리소스가 상호 간 및 인터넷과 안전하게 통신할 수 있습니다.
 
 ```bash
 az network vnet create \
@@ -163,14 +163,14 @@ Results:
 }
 ```
 
-만든 서버에는 다음과 같은 특성이 있습니다.
+생성된 서버에는 다음과 같은 특성이 있습니다.
 
 - 서버 이름, 관리자 사용자 이름, 관리자 암호, 리소스 그룹 이름, 위치는 클라우드 셸의 로컬 컨텍스트 환경에 이미 지정되어 있으며 리소스 그룹 및 다른 Azure 구성 요소와 동일한 위치에 만들어집니다.
 - 서버 구성을 다시 기본 서비스 기본값: 컴퓨팅 계층(버스트 가능), 컴퓨팅 크기/SKU(Standard_B2s), 백업 보존 기간(7일) 및 MySQL 버전(8.0.21)
 - 기본 연결 방법은 연결된 가상 네트워크와 자동 생성된 서브넷을 사용하는 프라이빗 액세스(VNet 통합)입니다.
 
 > [!NOTE]
-> 서버를 만든 후에는 연결 방법을 변경할 수 없습니다. 예를 들어 만드는 동안 선택한 `Private access (VNet Integration)` 경우 만든 후로 `Public access (allowed IP addresses)` 변경할 수 없습니다. VNet 통합을 사용하여 서버에 안전하게 액세스하려면 프라이빗 액세스 권한이 있는 서버를 만드는 것이 좋습니다. 개념 문서에서[ 프라이빗 액세스에 ](https://learn.microsoft.com/azure/mysql/flexible-server/concepts-networking-vnet)대해 자세히 알아봅니다.
+> 서버를 만든 후에는 연결 방법을 변경할 수 없습니다. 예를 들어 만드는 동안 선택한 `Private access (VNet Integration)` 경우 만든 후로 `Public access (allowed IP addresses)` 변경할 수 없습니다. VNet 통합을 사용하여 서버에 안전하게 액세스하려면 프라이빗 액세스 권한이 있는 서버를 만드는 것이 좋습니다. [개념 문서](https://learn.microsoft.com/azure/mysql/flexible-server/concepts-networking-vnet)에서 프라이빗 액세스에 대해 자세히 알아보세요.
 
 기본값을 변경하려는 경우 구성 가능한 CLI 매개 변수의 전체 목록에 대한 Azure CLI [참조 설명서](https://learn.microsoft.com/cli/azure//mysql/flexible-server)를 참조하세요.
 
@@ -184,7 +184,7 @@ runtime="10 minute"; endtime=$(date -ud "$runtime" +%s); while [[ $(date -u +%s)
 
 ## Azure Database for MySQL - 유연한 서버에서 서버 매개 변수 구성
 
-서버 매개 변수를 사용하여 Azure Database for MySQL - 유연한 서버 구성을 관리할 수 있습니다. 서버 매개 변수는 서버를 만들 때 기본값 및 권장 값으로 구성됩니다.
+서버 매개 변수를 사용하여 Azure Database for MySQL - 유연한 서버 구성을 관리할 수 있습니다. 서버 매개 변수는 서버를 만들 때 기본/권장 값으로 구성됩니다.
 
 서버 매개 변수 세부 정보 표시 서버의 특정 매개 변수에 대한 세부 정보를 표시하려면 az mysql flexible-server parameter show[ 명령을 실행](https://learn.microsoft.com/cli/azure/mysql/flexible-server/parameter)합니다.
 
@@ -260,7 +260,7 @@ Kubernetes 클러스터를 관리하려면 Kubernetes 명령줄 클라이언트�
     if ! [ -x "$(command -v kubectl)" ]; then az aks install-cli; fi
     ```
 
-2. az aks get-credentials 명령을 사용하여 Kubernetes 클러스터에 연결하도록 kubectl을 구성합니다. 다음 명령은 다음과 같습니다.
+2. az aks get-credentials 명령을 사용하여 Kubernetes 클러스터에 연결하도록 kubectl을 구성합니다. 다음 명령은 아래와 같은 작업을 수행합니다.
 
     - 자격 증명을 다운로드하고 이를 사용하도록 Kubernetes CLI를 구성합니다.
     - Kubernetes 구성 파일의 기본 위치인 ~/.kube/config를 사용합니다. --file 인수를 사용하여 Kubernetes 구성 파일의 다른 위치를 지정합니다.
@@ -382,7 +382,7 @@ Cert-manager는 Kubernetes에 설치하는 일류 방법으로 Helm 차트를 �
 
 ## 사용자 지정 스토리지 클래스 만들기
 
-기본 스토리지 클래스는 가장 일반적인 시나리오에 적합하지만 전부는 아닙니다. 경우에 따라 고유한 매개 변수를 사용하여 사용자 고유의 스토리지 클래스를 사용자 지정하려고 할 수 있습니다. 예를 들어 다음 매니페스트를 사용하여 파일 공유의 mountOptions를 구성합니다.
+기본 스토리지 클래스는 가장 일반적인 시나리오에 적합하지만, 일부는 아닙니다. 경우에 따라 고유한 매개 변수를 사용하여 고유 스토리지 클래스를 사용자 지정해야 할 수 있습니다. 예를 들어 다음 매니페스트를 사용하여 파일 공유의 mountOptions를 구성합니다.
 fileMode 및 dirMode의 기본값은 Kubernetes 탑재 파일 공유의 경우 0755입니다. 스토리지 클래스 개체에 다른 탑재 옵션을 지정할 수 있습니다.
 
 ```bash

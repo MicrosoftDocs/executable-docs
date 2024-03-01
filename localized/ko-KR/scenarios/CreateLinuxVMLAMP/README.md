@@ -31,7 +31,7 @@ ms.custom: innovation-engine
 export NETWORK_PREFIX="$(($RANDOM % 254 + 1))"
 export RANDOM_ID="$(openssl rand -hex 3)"
 export MY_RESOURCE_GROUP_NAME="myLEMPResourceGroup$RANDOM_ID"
-export REGION="eastus"
+export REGION="westeurope"
 export MY_VM_NAME="myVM$RANDOM_ID"
 export MY_VM_USERNAME="azureadmin"
 export MY_VM_SIZE='Standard_DS2_v2'
@@ -62,7 +62,7 @@ export MY_AZURE_USER_ID=$(az ad user list --filter "mail eq '$MY_AZURE_USER'" --
 ## RG 만들기
 
 [az group create](https://learn.microsoft.com/cli/azure/group#az-group-create) 명령을 사용하여 리소스 그룹을 만듭니다. Azure 리소스 그룹은 Azure 리소스가 배포 및 관리되는 논리적 컨테이너입니다.
-다음 예제에서는 위치에 명명된 `$MY_RESOURCE_GROUP_NAME` `eastus` 리소스 그룹을 만듭니다.
+다음 예제에서는 `eastus` 위치에 `$MY_RESOURCE_GROUP_NAME`이라는 리소스 그룹을 만듭니다.
 
 ```bash
 az group create \
@@ -91,7 +91,7 @@ Results:
 
 ## Azure Virtual Network 만들기
 
-가상 네트워크는 Azure의 프라이빗 네트워크에 대한 기본 구성 요소입니다. Azure Virtual Network를 통해 VM과 같은 Azure 리소스가 상호 간 및 인터넷과 안전하게 통신할 수 있습니다.
+가상 네트워크는 Azure에서 개인 네트워크의 기본 구성 요소입니다. Azure Virtual Network를 통해 VM과 같은 Azure 리소스가 상호 간 및 인터넷과 안전하게 통신할 수 있습니다.
 az network vnet create를 사용하여 [리소스 그룹에 이름이 지정된 서브넷으로 명명 `$MY_VNET_NAME` `$MY_SN_NAME` `$MY_RESOURCE_GROUP_NAME` 된 가상 네트워크를 만듭니](https://learn.microsoft.com/cli/azure/network/vnet#az-network-vnet-create)다.
 
 ```bash
@@ -359,9 +359,9 @@ Results:
 
 ## Cloud-init 개요
 
-Cloud-init는 Linux VM을 처음으로 부팅할 때 사용자 지정하는 널리 사용되는 방법입니다. Cloud-init를 사용하여 패키지를 설치하고 파일을 쓰거나, 사용자 및 보안을 구성할 수 있습니다. 초기 부팅 프로세스 중에 cloud-init가 실행되면 구성을 적용하기 위한 추가 단계나 필요한 에이전트가 없습니다.
+Cloud-init는 처음 부팅 시 Linux VM을 사용자 지정하는 데 널리 사용되는 방법입니다. Cloud-init를 사용하여 패키지를 설치하고 파일을 쓰거나, 사용자 및 보안을 구성할 수 있습니다. 초기 부팅 프로세스 중에 cloud-init가 실행되면 구성을 적용하기 위한 추가 단계나 필요한 에이전트가 없습니다.
 
-Cloud-init는 배포에서도 작동합니다. 예를 들어 apt-get 설치 또는 yum 설치를 사용하여 패키지를 설치하지 않습니다. 대신 설치할 패키지 목록을 정의할 수 있습니다. cloud-init에서 선택한 배포판의 기본 패키지 관리 도구를 자동으로 사용합니다.
+Cloud-init는 배포에서도 작동합니다. 예를 들어, 패키지를 설치하는 데 apt-get install 또는 yum install은 사용하지 않습니다. 대신 설치할 패키지 목록을 정의할 수 있습니다. cloud-init에서 선택한 배포판의 기본 패키지 관리 도구를 자동으로 사용합니다.
 
 당사는 파트너와 협력하여 파트너가 Azure에 제공하는 이미지에 cloud-init를 포함하고 이러한 이미지에서 cloud-init가 작동하도록 설정하고 있습니다. 각 배포의 cloud-init 지원에 대한 자세한 내용은 [Azure의 VM에 대한 cloud-init 지원](https://learn.microsoft.com/azure/virtual-machines/linux/using-cloud-init)을 참조하세요.
 
@@ -567,14 +567,14 @@ Results:
 echo "Your MySQL user $MY_MYSQL_ADMIN_USERNAME password is: $MY_WP_ADMIN_PW"
 ```
 
-만든 서버에는 다음과 같은 특성이 있습니다.
+생성된 서버에는 다음과 같은 특성이 있습니다.
 
 * 서버 이름, 관리자 사용자 이름, 관리자 암호, 리소스 그룹 이름, 위치는 클라우드 셸의 로컬 컨텍스트 환경에 이미 지정되어 있으며 리소스 그룹 및 다른 Azure 구성 요소와 동일한 위치에 만들어집니다.
 * 서버 구성을 다시 기본 서비스 기본값: 컴퓨팅 계층(버스트 가능), 컴퓨팅 크기/SKU(Standard_B2s), 백업 보존 기간(7일) 및 MySQL 버전(8.0.21)
 * 기본 연결 방법은 연결된 가상 네트워크와 자동 생성된 서브넷을 사용하는 프라이빗 액세스(VNet 통합)입니다.
 
 > [!NOTE]
-> 서버를 만든 후에는 연결 방법을 변경할 수 없습니다. 예를 들어 만드는 동안 선택한 `Private access (VNet Integration)` 경우 만든 후로 `Public access (allowed IP addresses)` 변경할 수 없습니다. VNet 통합을 사용하여 서버에 안전하게 액세스하려면 프라이빗 액세스 권한이 있는 서버를 만드는 것이 좋습니다. 개념 문서에서[ 프라이빗 액세스에 ](https://learn.microsoft.com/azure/mysql/flexible-server/concepts-networking-vnet)대해 자세히 알아봅니다.
+> 서버를 만든 후에는 연결 방법을 변경할 수 없습니다. 예를 들어 만드는 동안 선택한 `Private access (VNet Integration)` 경우 만든 후로 `Public access (allowed IP addresses)` 변경할 수 없습니다. VNet 통합을 사용하여 서버에 안전하게 액세스하려면 프라이빗 액세스 권한이 있는 서버를 만드는 것이 좋습니다. [개념 문서](https://learn.microsoft.com/azure/mysql/flexible-server/concepts-networking-vnet)에서 프라이빗 액세스에 대해 자세히 알아보세요.
 
 기본값을 변경하려는 경우 구성 가능한 CLI 매개 변수의 전체 목록에 대한 Azure CLI [참조 설명서](https://learn.microsoft.com/cli/azure//mysql/flexible-server)를 참조하세요.
 
@@ -598,7 +598,7 @@ done
 
 ## Azure Database for MySQL - 유연한 서버에서 서버 매개 변수 구성
 
-서버 매개 변수를 사용하여 Azure Database for MySQL - 유연한 서버 구성을 관리할 수 있습니다. 서버 매개 변수는 서버를 만들 때 기본값 및 권장 값으로 구성됩니다.
+서버 매개 변수를 사용하여 Azure Database for MySQL - 유연한 서버 구성을 관리할 수 있습니다. 서버 매개 변수는 서버를 만들 때 기본/권장 값으로 구성됩니다.
 
 서버 매개 변수 세부 정보 표시 서버의 특정 매개 변수에 대한 세부 정보를 표시하려면 az mysql flexible-server parameter show[ 명령을 실행](https://learn.microsoft.com/cli/azure/mysql/flexible-server/parameter)합니다.
 
@@ -640,7 +640,7 @@ Results:
 다음 예제에서는 명명 `$MY_VM_NAME` 된 VM을 만들고 기본 키 위치에 아직 없는 경우 SSH 키를 만듭니다. 이 명령은 관리자 사용자 이름으로도 설정합니다 `$MY_VM_USERNAME` .
 Azure에서 Linux 가상 머신의 보안을 개선하기 위해 Azure Active Directory 인증과 통합할 수 있습니다. 이제 Azure AD를 핵심 인증 플랫폼이자 인증 기관으로 사용하여 Azure AD 및 OpenSSH 인증서 기반 인증을 통해 SSH로 Linux VM에 연결할 수 있습니다. 이 기능을 사용하면 조직에서 Azure 역할 기반 액세스 제어 및 조건부 액세스 정책을 사용하여 VM에 대한 액세스를 관리할 수 있습니다.
 
-az vm create 명령을 사용하여 [VM을 만듭니](https://learn.microsoft.com/cli/azure/vm#az-vm-create) 다.
+[az vm create](https://learn.microsoft.com/cli/azure/vm#az-vm-create) 명령을 사용하여 VM을 만듭니다.
 
 ```bash
 az vm create \
@@ -793,7 +793,7 @@ Results:
 
 [WordPress](https://www.wordpress.org)는 웹 사이트, 블로그 및 기타 애플리케이션을 만드는 데 웹의 40% 넘게 사용하는 오픈 소스 CMS(콘텐츠 관리 시스템)입니다. WordPress는 AKS[, Virtual Machines 및 App Service와 ](https://learn.microsoft.com/azure/mysql/flexible-server/tutorial-deploy-wordpress-on-aks)같은 몇 가지 다른 Azure 서비스에서 실행할 수 있습니다. Azure의 WordPress 옵션 전체 목록은 [Azure Marketplace의 WordPress](https://azuremarketplace.microsoft.com/marketplace/apps?page=1&search=wordpress)를 참조하세요.
 
-이 WordPress 설정은 오직 개념 증명을 위한 것입니다. 권장 보안 설정을 사용하여 프로덕션 환경에 최신 WordPress를 설치하려면 WordPress 설명서를 참조 [하세요](https://codex.wordpress.org/Main_Page).
+이 WordPress 설정은 오직 개념 증명을 위한 것입니다. 권장되는 보안 설정으로 최신 WordPress를 프로덕션에 설치하려면 [WordPress 설명서](https://codex.wordpress.org/Main_Page)를 참조하세요.
 
 애플리케이션 URL을 컬링하여 애플리케이션이 실행되고 있는지 확인합니다.
 

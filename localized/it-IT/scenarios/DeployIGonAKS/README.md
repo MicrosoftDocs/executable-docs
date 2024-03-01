@@ -176,3 +176,8 @@ When no longer needed, you can use `az group delete` to remove the resource grou
 az group delete --name $MY_RESOURCE_GROUP_NAME --no-wait --yes
 ```
 -->
+
+## Passaggi successivi
+- [Scenari reali in cui Inspektor Gadget può aiutarti](https://go.microsoft.com/fwlink/p/?linkid=2260402#use-cases)
+- [Esplora i gadget disponibili](https://go.microsoft.com/fwlink/p/?linkid=2260070)
+- [Eseguire il proprio programma eBPF](https://go.microsoft.com/fwlink/p/?linkid=2259865)
