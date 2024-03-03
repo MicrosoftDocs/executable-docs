@@ -133,7 +133,7 @@ Ga naar https://github.com/login/device en voer de gebruikerscode 329B-3945 in o
 1. Wanneer u de URL van de opslagplaats krijgt tijdens het uitvoeren van het script, kopieert u de URL van de opslagplaats en plakt u deze in uw browser.
 2. Selecteer het tabblad `Actions`.
 
-   Op dit moment maakt Azure de resources ter ondersteuning van uw statische web-app. Wacht totdat het pictogram naast de actieve werkstroom verandert in een vinkje met groene achtergrond (). Deze bewerking kan enkele minuten duren.
+   Op dit moment maakt Azure de resources ter ondersteuning van uw statische web-app. Wacht totdat het pictogram naast de actieve werkstroom verandert in een vinkje met groene achtergrond (). Het uitvoeren van deze bewerking kan enkele minuten duren.
 
 3. Zodra het pictogram geslaagd wordt weergegeven, is de werkstroom voltooid en kunt u teruggaan naar het consolevenster.
 4. Voer de volgende opdracht uit om een query uit te voeren op de URL van uw website.
