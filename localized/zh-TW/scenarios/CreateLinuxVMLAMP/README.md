@@ -10,7 +10,7 @@ ms.custom: innovation-engine
 
 # 在 Azure 上安裝 LEMP 堆疊
 
-[![部署至 Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/?Microsoft_Azure_CloudNative_clientoptimizations=false&feature.canmodifyextensions=true#view/Microsoft_Azure_CloudNative/SubscriptionSelectionPage.ReactView/tutorialKey/CreateLinuxVMLAMP)
+[![部署至 Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#view/Microsoft_Azure_CloudNative/SubscriptionSelectionPage.ReactView/tutorialKey/CreateLinuxVMLAMP)
 
 
 本文將逐步引導您如何在 Azure 中的 Ubuntu Linux VM 上部署 NGINX Web 伺服器、Azure MySQL 彈性伺服器和 PHP （LEMP 堆棧）。 若要查看 LEMP 伺服器運作情形，您可以選擇性地安裝及設定 WordPress 網站。 在本教學課程中，您將了解如何：
@@ -598,7 +598,7 @@ done
 
 ## 在 適用於 MySQL 的 Azure 資料庫 中設定伺服器參數 - 彈性伺服器
 
-您可以使用伺服器參數來管理 適用於 MySQL 的 Azure 資料庫 - 彈性伺服器組態。 當您建立伺服器時，伺服器參數會設定為預設值和建議的值。
+您可以使用伺服器參數來管理 適用於 MySQL 的 Azure 資料庫 - 彈性伺服器設定。 當您建立伺服器時，伺服器參數會設定為預設值和建議的值。
 
 顯示伺服器參數詳細數據 若要顯示伺服器特定參數的詳細數據，請執行 [az mysql flexible-server 參數 show](https://learn.microsoft.com/cli/azure/mysql/flexible-server/parameter) 命令。
 
