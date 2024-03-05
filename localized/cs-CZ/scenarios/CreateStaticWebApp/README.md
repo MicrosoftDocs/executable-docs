@@ -133,7 +133,7 @@ Přejděte na https://github.com/login/device a zadejte uživatelský kód 329B-
 1. Jakmile při spuštění skriptu získáte adresu URL úložiště, zkopírujte adresu URL úložiště a vložte ji do prohlížeče.
 2. Vyberte kartu `Actions`.
 
-   V tuto chvíli Azure vytváří prostředky pro podporu vaší statické webové aplikace. Počkejte, až se ikona vedle spuštěného pracovního postupu změní na značku zaškrtnutí se zeleným pozadím (). Dokončení této operace může trvat několik minut.
+   V tuto chvíli Azure vytváří prostředky pro podporu vaší statické webové aplikace. Počkejte, až se ikona vedle spuštěného pracovního postupu změní na značku zaškrtnutí se zeleným pozadím (). Provedení této operace může trvat několik minut.
 
 3. Jakmile se zobrazí ikona úspěchu, pracovní postup se dokončí a můžete se vrátit zpět do okna konzoly.
 4. Spuštěním následujícího příkazu zadejte dotaz na adresu URL vašeho webu.
