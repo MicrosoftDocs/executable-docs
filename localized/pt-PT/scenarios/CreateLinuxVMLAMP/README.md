@@ -10,10 +10,10 @@ ms.custom: innovation-engine
 
 # Instalar uma pilha LEMP no Azure
 
-[![Implementar no Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/?Microsoft_Azure_CloudNative_clientoptimizations=false&feature.canmodifyextensions=true#view/Microsoft_Azure_CloudNative/SubscriptionSelectionPage.ReactView/tutorialKey/CreateLinuxVMLAMP)
+[![Implementar no Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#view/Microsoft_Azure_CloudNative/SubscriptionSelectionPage.ReactView/tutorialKey/CreateLinuxVMLAMP)
 
 
-Este artigo orienta você sobre como implantar um servidor Web NGINX, Servidor Flexível MySQL do Azure e PHP (a pilha LEMP) em uma VM Ubuntu Linux no Azure. Para ver o servidor LEMP em ação, opcionalmente, pode instalar e configurar um site do WordPress. Neste tutorial, ficará a saber como:
+Este artigo orienta você sobre como implantar um servidor Web NGINX, o Servidor Flexível MySQL do Azure e o PHP (a pilha LEMP) em uma VM Ubuntu Linux no Azure. Para ver o servidor LEMP em ação, opcionalmente, pode instalar e configurar um site do WordPress. Neste tutorial, ficará a saber como:
 
 > [!div class="checklist"]
 
@@ -31,7 +31,7 @@ Primeiro, definiremos algumas variáveis que ajudarão na configuração da carg
 export NETWORK_PREFIX="$(($RANDOM % 254 + 1))"
 export RANDOM_ID="$(openssl rand -hex 3)"
 export MY_RESOURCE_GROUP_NAME="myLEMPResourceGroup$RANDOM_ID"
-export REGION="eastus"
+export REGION="westeurope"
 export MY_VM_NAME="myVM$RANDOM_ID"
 export MY_VM_USERNAME="azureadmin"
 export MY_VM_SIZE='Standard_DS2_v2'
@@ -92,7 +92,7 @@ Resultados:
 ## Criar uma Rede Virtual do Azure
 
 Uma rede virtual é o bloco de construção fundamental para redes privadas no Azure. A Rede Virtual do Azure permite que recursos do Azure, como VMs, se comuniquem com segurança entre si e com a Internet.
-Use [az network vnet create](https://learn.microsoft.com/cli/azure/network/vnet#az-network-vnet-create) para criar uma rede virtual nomeada com uma sub-rede nomeada `$MY_SN_NAME` `$MY_VNET_NAME` no `$MY_RESOURCE_GROUP_NAME` grupo de recursos.
+Use [az network vnet create](https://learn.microsoft.com/cli/azure/network/vnet#az-network-vnet-create) para criar uma rede virtual nomeada `$MY_VNET_NAME` com uma sub-rede nomeada `$MY_SN_NAME` no `$MY_RESOURCE_GROUP_NAME` grupo de recursos.
 
 ```bash
 az network vnet create \
@@ -363,11 +363,11 @@ Cloud-init é uma abordagem amplamente utilizada para personalizar uma VM com Li
 
 O cloud-init também funciona em distribuições. Por exemplo, não utiliza apt-get install nem yum install para instalar um pacote. Em vez disso, pode definir uma lista dos pacotes a instalar. O cloud-init utiliza automaticamente a ferramenta de gestão de pacotes nativa para a distribuição que selecionar.
 
-Estamos a trabalhar com os nossos parceiros para que o cloud-init seja incluído e fique operacional nas imagens que fornecem ao Azure. Para obter informações detalhadas sobre o suporte cloud-init para cada distribuição, consulte [Cloud-init support for VMs in Azure](https://learn.microsoft.com/azure/virtual-machines/linux/using-cloud-init).
+Estamos a trabalhar com os nossos parceiros para que o cloud-init seja incluído e fique operacional nas imagens que fornecem ao Azure. Para obter informações detalhadas sobre o suporte de inicialização na nuvem para cada distribuição, consulte [Suporte de inicialização na nuvem para VMs no Azure](https://learn.microsoft.com/azure/virtual-machines/linux/using-cloud-init).
 
 ### Criar ficheiro de configuração do cloud-init
 
-Para ver o cloud-init em ação, crie uma VM que instale uma pilha LEMP e execute um aplicativo Wordpress simples protegido com um certificado SSL. A seguinte configuração cloud-init instala os pacotes necessários, cria o site Wordpress e, em seguida, inicializa e inicia o site.
+Para ver o cloud-init em ação, crie uma VM que instale uma pilha LEMP e execute um aplicativo Wordpress simples protegido com um certificado SSL. A seguinte configuração cloud-init instala os pacotes necessários, cria o site Wordpress, em seguida, inicializa e inicia o site.
 
 ```bash
 cat << EOF > cloud-init.txt
@@ -491,7 +491,7 @@ EOF
 
 ## Criar uma zona DNS privada do Azure para o Servidor Flexível MySQL do Azure
 
-A integração da Zona DNS Privada do Azure permite resolver o DNS privado dentro da VNET atual ou de qualquer VNET emparelhada na região onde a Zona DNS privada está vinculada. Você usará [az network private-dns zone create](https://learn.microsoft.com/cli/azure/network/private-dns/zone#az-network-private-dns-zone-create) para criar a zona DNS privada.
+A integração da Zona DNS Privada do Azure permite resolver o DNS privado dentro da VNET atual ou qualquer VNET emparelhada na região onde a Zona DNS privada está vinculada. Você usará [az network private-dns zone create](https://learn.microsoft.com/cli/azure/network/private-dns/zone#az-network-private-dns-zone-create) para criar a zona DNS privada.
 
 ```bash
 az network private-dns zone create \

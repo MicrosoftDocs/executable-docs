@@ -10,7 +10,7 @@ ms.custom: innovation-engine
 
 # Criar uma VM Linux e SSH no Azure
 
-[![Implementar no Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/?Microsoft_Azure_CloudNative_clientoptimizations=false&feature.canmodifyextensions=true#view/Microsoft_Azure_CloudNative/SubscriptionSelectionPage.ReactView/tutorialKey/CreateLinuxVMAndSSH)
+[![Implementar no Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#view/Microsoft_Azure_CloudNative/SubscriptionSelectionPage.ReactView/tutorialKey/CreateLinuxVMAndSSH)
 
 
 ## Definir variáveis de ambiente
@@ -57,7 +57,7 @@ Resultados:
 
 ## Criar a máquina virtual
 
-Para criar uma VM neste grupo de recursos precisamos executar um comando simples, aqui nós fornecemos o `--generate-ssh-keys` sinalizador, isso fará com que a CLI procure uma chave ssh avialable em , se uma for encontrada ela será usada, caso contrário, uma será gerada e armazenada em `~/.ssh``~/.ssh`. Também fornecemos a bandeira para garantir que a `--public-ip-sku Standard` máquina seja acessível através de um IP público. Finalmente, estamos implantando a imagem mais recente `Ubuntu 22.04` . 
+Para criar uma VM neste grupo de recursos precisamos executar um comando simples, aqui nós fornecemos o `--generate-ssh-keys` sinalizador, isso fará com que a CLI procure uma chave ssh avialable em `~/.ssh`, se uma for encontrada ela será usada, caso contrário, uma será gerada e armazenada em `~/.ssh`. Também fornecemos a `--public-ip-sku Standard` bandeira para garantir que a máquina seja acessível através de um IP público. Finalmente, estamos implantando a imagem mais recente `Ubuntu 22.04` . 
 
 Todos os outros valores são configurados usando variáveis de ambiente.
 
