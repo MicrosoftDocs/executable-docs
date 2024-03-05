@@ -10,7 +10,7 @@ ms.custom: innovation-engine
 
 # Een LEMP-stack installeren in Azure
 
-[![Implementeren naar Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/?Microsoft_Azure_CloudNative_clientoptimizations=false&feature.canmodifyextensions=true#view/Microsoft_Azure_CloudNative/SubscriptionSelectionPage.ReactView/tutorialKey/CreateLinuxVMLAMP)
+[![Implementeren naar Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#view/Microsoft_Azure_CloudNative/SubscriptionSelectionPage.ReactView/tutorialKey/CreateLinuxVMLAMP)
 
 
 In dit artikel wordt uitgelegd hoe u een NGINX-webserver, Azure MySQL Flexible Server en PHP (de LEMP-stack) implementeert op een Ubuntu Linux-VM in Azure. Als u de LEMP-server in actie wilt zien, kunt u eventueel een WordPress-site installeren en configureren. In deze zelfstudie leert u het volgende:
