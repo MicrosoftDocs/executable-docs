@@ -10,7 +10,7 @@ ms.custom: innovation-engine
 
 # Schnellstart: Bereitstellung eines skalierbaren & sicheren Azure Kubernetes Service-Clusters mit der Azure CLI
 
-[![Bereitstellung in Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/?Microsoft_Azure_CloudNative_clientoptimizations=false&feature.canmodifyextensions=true#view/Microsoft_Azure_CloudNative/SubscriptionSelectionPage.ReactView/tutorialKey/CreateAKSDeployment)
+[![Bereitstellung in Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#view/Microsoft_Azure_CloudNative/SubscriptionSelectionPage.ReactView/tutorialKey/CreateAKSDeployment)
 
 Willkommen bei diesem Tutorial, in dem wir Sie Schritt für Schritt durch das Erstellen einer Azure Kubernetes-Webanwendung führen, die über HTTPS geschützt ist. In diesem Tutorial wird davon ausgegangen, dass Sie bereits bei der Azure CLI angemeldet sind und ein Abonnement ausgewählt haben, das mit der CLI verwendet werden soll. Es wird auch davon ausgegangen, dass Sie Helm installiert haben (entsprechende Anweisungen finden Sie [hier](https://helm.sh/docs/intro/install/)).
 
