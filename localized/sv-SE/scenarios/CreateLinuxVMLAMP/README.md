@@ -10,7 +10,7 @@ ms.custom: innovation-engine
 
 # Installera en LEMP-stack i Azure
 
-[![Distribuera till Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/?Microsoft_Azure_CloudNative_clientoptimizations=false&feature.canmodifyextensions=true#view/Microsoft_Azure_CloudNative/SubscriptionSelectionPage.ReactView/tutorialKey/CreateLinuxVMLAMP)
+[![Distribuera till Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#view/Microsoft_Azure_CloudNative/SubscriptionSelectionPage.ReactView/tutorialKey/CreateLinuxVMLAMP)
 
 
 Den här artikeln beskriver hur du distribuerar en NGINX-webbserver, Azure MySQL – flexibel server och PHP (LEMP-stacken) på en virtuell Ubuntu Linux-dator i Azure. Om du vill se LEMP-servern i praktiken kan du installera och konfigurera en WordPress-webbplats. I den här självstudiekursen får du lära du dig att:
