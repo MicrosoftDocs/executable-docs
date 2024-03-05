@@ -133,7 +133,7 @@ https://github.com/login/device Buka dan masukkan kode pengguna 329B-3945 untuk 
 1. Saat Anda mendapatkan URL repositori saat menjalankan skrip, salin URL repositori dan tempelkan ke browser Anda.
 2. Pilih tab `Actions`.
 
-   Pada titik ini, Azure membuat sumber daya untuk mendukung aplikasi web statis Anda. Tunggu hingga ikon di samping alur kerja yang sedang berjalan berubah menjadi tanda centang dengan latar belakang hijau ( ). Operasi ini mungkin perlu waktu beberapa menit untuk diselesaikan.
+   Pada titik ini, Azure membuat sumber daya untuk mendukung aplikasi web statis Anda. Tunggu hingga ikon di samping alur kerja yang sedang berjalan berubah menjadi tanda centang dengan latar belakang hijau ( ). Operasi ini mungkin perlu waktu beberapa menit untuk dijalankan.
 
 3. Setelah ikon berhasil muncul, alur kerja selesai dan Anda dapat kembali ke jendela konsol Anda.
 4. Jalankan perintah berikut untuk mengkueri URL situs web Anda.
