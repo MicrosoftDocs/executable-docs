@@ -10,7 +10,7 @@ ms.custom: innovation-engine
 
 # Inicio rápido: Implementación de un clúster de Azure Kubernetes Service escalable y seguro mediante la CLI de Azure
 
-[![Implementación en Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/?Microsoft_Azure_CloudNative_clientoptimizations=false&feature.canmodifyextensions=true#view/Microsoft_Azure_CloudNative/SubscriptionSelectionPage.ReactView/tutorialKey/CreateAKSDeployment)
+[![Implementación en Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#view/Microsoft_Azure_CloudNative/SubscriptionSelectionPage.ReactView/tutorialKey/CreateAKSDeployment)
 
 Te damos la bienvenida a este tutorial en el que le guiaremos paso a paso en la creación de una aplicación web de Azure Kubernetes protegida mediante https. En este tutorial se supone que ya ha iniciado sesión en la CLI de Azure y ha seleccionado una suscripción para usarla con la CLI. También supone que tiene Helm instalado ([Las instrucciones se pueden encontrar aquí](https://helm.sh/docs/intro/install/)).
 
