@@ -10,7 +10,7 @@ ms.custom: innovation-engine
 
 # Installare uno stack LEMP in Azure
 
-[![Distribuzione in Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/?Microsoft_Azure_CloudNative_clientoptimizations=false&feature.canmodifyextensions=true#view/Microsoft_Azure_CloudNative/SubscriptionSelectionPage.ReactView/tutorialKey/CreateLinuxVMLAMP)
+[![Distribuzione in Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#view/Microsoft_Azure_CloudNative/SubscriptionSelectionPage.ReactView/tutorialKey/CreateLinuxVMLAMP)
 
 
 Questo articolo illustra come distribuire un server Web NGINX, un server flessibile Di Azure MySQL e PHP (lo stack LEMP) in una macchina virtuale Ubuntu Linux in Azure. Per verificare il funzionamento del server LEMP, è facoltativamente possibile installare e configurare un sito WordPress. In questa esercitazione si apprenderà come:
@@ -31,7 +31,7 @@ Prima di tutto verranno definite alcune variabili utili per la configurazione de
 export NETWORK_PREFIX="$(($RANDOM % 254 + 1))"
 export RANDOM_ID="$(openssl rand -hex 3)"
 export MY_RESOURCE_GROUP_NAME="myLEMPResourceGroup$RANDOM_ID"
-export REGION="eastus"
+export REGION="westeurope"
 export MY_VM_NAME="myVM$RANDOM_ID"
 export MY_VM_USERNAME="azureadmin"
 export MY_VM_SIZE='Standard_DS2_v2'
