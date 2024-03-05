@@ -10,7 +10,7 @@ ms.custom: innovation-engine
 
 # 在 Azure 上安装 LEMP 堆栈
 
-[![部署到 Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/?Microsoft_Azure_CloudNative_clientoptimizations=false&feature.canmodifyextensions=true#view/Microsoft_Azure_CloudNative/SubscriptionSelectionPage.ReactView/tutorialKey/CreateLinuxVMLAMP)
+[![部署到 Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#view/Microsoft_Azure_CloudNative/SubscriptionSelectionPage.ReactView/tutorialKey/CreateLinuxVMLAMP)
 
 
 本文逐步讲解如何在 Azure 中的 Ubuntu Linux VM 上部署 NGINX Web 服务器、Azure MySQL 灵活服务器和 PHP（LEMP 堆栈）。 若要了解 LEMP 服务器的运作情况，可以选择性地安装并配置 WordPress 站点。 本教程介绍如何执行下列操作：
