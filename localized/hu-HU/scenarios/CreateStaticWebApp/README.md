@@ -131,7 +131,7 @@ Nyissa meg https://github.com/login/device és írja be a 329B-3945 felhasznál�
 ### A webhely megtekintése a Giten keresztül
 
 1. Amikor a szkript futtatása közben megkapja az adattár URL-címét, másolja ki az adattár URL-címét, és illessze be a böngészőbe.
-2. Válassza ki az `Actions` lapot.
+2. Válassza ki a(z) `Actions` lapot.
 
    Ezen a ponton az Azure létrehozza az erőforrásokat a statikus webalkalmazás támogatásához. Várja meg, amíg a futó munkafolyamat melletti ikon zöld háttérrel () pipává változik. A művelet végrehajtása eltarthat néhány percig.
 
