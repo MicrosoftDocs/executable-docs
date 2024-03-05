@@ -72,7 +72,7 @@ Kubernetes 클러스터를 관리하려면 Kubernetes 명령줄 클라이언트�
     if ! [ -x "$(command -v kubectl)" ]; then az aks install-cli; fi
     ```
 
-2. az aks get-credentials 명령을 사용하여 Kubernetes 클러스터에 연결하도록 kubectl을 구성합니다. 다음 명령은 다음과 같습니다.
+2. az aks get-credentials 명령을 사용하여 Kubernetes 클러스터에 연결하도록 kubectl을 구성합니다. 다음 명령은 아래와 같은 작업을 수행합니다.
     - 자격 증명을 다운로드하고 이를 사용하도록 Kubernetes CLI를 구성합니다.
     - Kubernetes 구성 파일의 기본 위치인 ~/.kube/config를 사용합니다. --file 인수를 사용하여 Kubernetes 구성 파일의 다른 위치를 지정합니다.
 
@@ -176,3 +176,8 @@ When no longer needed, you can use `az group delete` to remove the resource grou
 az group delete --name $MY_RESOURCE_GROUP_NAME --no-wait --yes
 ```
 -->
+
+## 다음 단계
+- [Inspektor 가젯이 도움이 될 수 있는 실제 시나리오](https://go.microsoft.com/fwlink/p/?linkid=2260402#use-cases)
+- [사용 가능한 가젯 살펴보기](https://go.microsoft.com/fwlink/p/?linkid=2260070)
+- [고유한 eBPF 프로그램 실행](https://go.microsoft.com/fwlink/p/?linkid=2259865)

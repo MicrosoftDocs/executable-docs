@@ -10,7 +10,7 @@ ms.custom: innovation-engine
 
 # 빠른 시작: Azure CLI를 사용하여 확장 가능하고 안전한 Azure Kubernetes Service 클러스터 배포
 
-[![Azure에 배포](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/?Microsoft_Azure_CloudNative_clientoptimizations=false&feature.canmodifyextensions=true#view/Microsoft_Azure_CloudNative/SubscriptionSelectionPage.ReactView/tutorialKey/CreateAKSDeployment)
+[![Azure에 배포](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#view/Microsoft_Azure_CloudNative/SubscriptionSelectionPage.ReactView/tutorialKey/CreateAKSDeployment)
 
 https를 통해 보호되는 Azure Kubernetes 웹 애플리케이션을 만드는 단계를 단계별로 수행하는 이 자습서를 시작합니다. 이 자습서에서는 사용자가 이미 Azure CLI에 로그인하고 CLI와 함께 사용할 구독을 선택했다고 가정합니다. 또한 Helm이 설치되어 있다고 가정합니다([지침은 여기에서](https://helm.sh/docs/intro/install/) 찾을 수 있음).
 
@@ -62,7 +62,7 @@ Results:
 
 ## 가상 네트워크 및 서브넷 만들기
 
-가상 네트워크는 Azure의 프라이빗 네트워크에 대한 기본 구성 요소입니다. Azure Virtual Network를 통해 VM과 같은 Azure 리소스가 상호 간 및 인터넷과 안전하게 통신할 수 있습니다.
+가상 네트워크는 Azure에서 개인 네트워크의 기본 구성 요소입니다. Azure Virtual Network를 통해 VM과 같은 Azure 리소스가 상호 간 및 인터넷과 안전하게 통신할 수 있습니다.
 
 ```bash
 az network vnet create \
@@ -157,7 +157,7 @@ Kubernetes 클러스터를 관리하려면 Kubernetes 명령줄 클라이언트�
    if ! [ -x "$(command -v kubectl)" ]; then az aks install-cli; fi
    ```
 
-2. az aks get-credentials 명령을 사용하여 Kubernetes 클러스터에 연결하도록 kubectl을 구성합니다. 다음 명령은 다음과 같습니다.
+2. az aks get-credentials 명령을 사용하여 Kubernetes 클러스터에 연결하도록 kubectl을 구성합니다. 다음 명령은 아래와 같은 작업을 수행합니다.
 
    - 자격 증명을 다운로드하고 이를 사용하도록 Kubernetes CLI를 구성합니다.
    - Kubernetes 구성 파일의 기본 위치인 ~/.kube/config를 사용합니다. --file 인수를 사용하여 Kubernetes 구성 파일의 다른 위치를 지정합니다.
@@ -192,7 +192,7 @@ helm upgrade --install ingress-nginx ingress-nginx/ingress-nginx \
 
 ## 애플리케이션 배포
 
-Kubernetes 매니페스트 파일은 실행할 컨테이너 이미지와 같은 클러스터의 원하는 상태를 정의합니다.
+Kubernetes 매니페스트 파일은 실행할 컨테이너 이미지와 같은 클러스터에 대해 원하는 상태를 정의합니다.
 
 이 빠른 시작에서는 매니페스트를 사용하여 Azure Vote 애플리케이션을 실행하는 데 필요한 모든 개체를 만듭니다. 이 매니페스트에는 다음과 같은 두 개의 Kubernetes 배포가 포함됩니다.
 
@@ -201,8 +201,8 @@ Kubernetes 매니페스트 파일은 실행할 컨테이너 이미지와 같은 
 
 다음과 같은 두 개의 Kubernetes 서비스도 생성됩니다.
 
-- Redis 인스턴스에 대한 내부 서비스입니다.
-- 인터넷에서 Azure Vote 애플리케이션에 액세스하는 외부 서비스입니다.
+- Redis 인스턴스에 대한 내부 서비스.
+- 인터넷에서 Azure Vote 애플리케이션에 액세스하기 위한 외부 서비스.
 
 마지막으로 Azure Vote 애플리케이션에 트래픽을 라우팅하기 위한 수신 리소스가 만들어집니다.
 
