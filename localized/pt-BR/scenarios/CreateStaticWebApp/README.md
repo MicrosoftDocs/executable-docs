@@ -133,7 +133,7 @@ Navegue até https://github.com/login/device e insira o código de usuário 329B
 1. Ao obter o URL do repositório ao executar o script, copie o URL do repositório e cole-o em seu navegador.
 2. Selecione a guia `Actions`.
 
-   Neste ponto, o Azure está criando os recursos para dar suporte ao seu aplicativo Web estático. Aguarde até que o ícone ao lado do fluxo de trabalho em execução se transforme em uma marca de seleção com fundo verde ( ). Esta operação pode demorar alguns minutos para ser concluída.
+   Neste ponto, o Azure está criando os recursos para dar suporte ao seu aplicativo Web estático. Aguarde até que o ícone ao lado do fluxo de trabalho em execução se transforme em uma marca de seleção com fundo verde ( ). Essa operação pode demorar alguns minutos para ser executada.
 
 3. Quando o ícone de sucesso aparecer, o fluxo de trabalho estará concluído e você poderá retornar à janela do console.
 4. Execute o seguinte comando para consultar o URL do seu site.
