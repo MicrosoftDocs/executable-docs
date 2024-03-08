@@ -10,6 +10,8 @@ ms.custom: innovation-engine
 
 # Create a Virtual Machine Scale Set with Application Gateway with Linux image
 
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262759)
+
 ## Define Environment Variables
 
 The First step in this tutorial is to define environment variables.
