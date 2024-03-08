@@ -11,7 +11,7 @@ ms.service: Azure
 
 # Azure Static Web Apps 빠른 시작: Azure CLI를 사용하여 첫 번째 정적 사이트 빌드
 
-Azure Static Web Apps는 코드 리포지토리에서 앱을 빌드하여 웹 사이트를 프로덕션에 게시합니다. 이 빠른 시작에서는 Azure CLI를 사용하여 Azure Static Web Apps에 웹 애플리케이션을 배포합니다.
+Azure Static Web Apps는 코드 리포지토리에서 앱을 빌드하여 프로덕션 환경에 웹 사이트를 게시합니다. 이 빠른 시작에서는 Azure CLI를 사용하여 Azure Static Web Apps에 웹 애플리케이션을 배포합니다.
 
 ## 환경 변수 정의
 
@@ -121,7 +121,7 @@ echo "You can now visit your web server at https://$MY_STATIC_WEB_APP_URL"
 
 GitHub 템플릿 리포지토리를 사용하려는 경우 아래의 추가 단계를 수행합니다.
 
-https://github.com/login/device 사용자 코드 329B-3945로 이동하여 GitHub 개인 액세스 토큰을 활성화하고 검색합니다.
+https://github.com/login/device로 이동해 사용자 코드 329B-3945를 입력하여 GitHub 개인용 액세스 토큰을 활성화하고 검색합니다.
 
 1. https://github.com/login/device(으)로 이동합니다.
 2. 콘솔의 메시지에 표시된 대로 사용자 코드를 입력합니다.
@@ -133,7 +133,7 @@ https://github.com/login/device 사용자 코드 329B-3945로 이동하여 GitHu
 1. 스크립트를 실행하는 동안 리포지토리 URL을 가져올 때 리포지토리 URL을 복사하여 브라우저에 붙여넣습니다.
 2. `Actions` 탭을 선택합니다.
 
-   이 시점에서 Azure는 정적 웹앱을 지원하기 위한 리소스를 만듭니다. 실행 중인 워크플로 옆의 아이콘이 녹색 배경()이 있는 검사 표시로 바뀔 때까지 기다립니다. 이 작업이 완료될 때까지 몇 분 정도 걸릴 수 있습니다.
+   이 시점에서 Azure는 정적 웹앱을 지원하기 위한 리소스를 만듭니다. 실행 중인 워크플로 옆의 아이콘이 녹색 배경()의 확인 표시로 바뀔 때까지 기다립니다. 이 작업을 실행하는 데 몇 분 정도 걸릴 수 있습니다.
 
 3. 성공 아이콘이 표시되면 워크플로가 완료되고 콘솔 창으로 돌아갈 수 있습니다.
 4. 다음 명령을 실행하여 웹 사이트의 URL을 쿼리합니다.

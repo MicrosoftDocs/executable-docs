@@ -10,7 +10,7 @@ ms.custom: innovation-engine
 
 # Menginstal tumpukan LEMP di Azure
 
-[![Sebarkan ke Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/?Microsoft_Azure_CloudNative_clientoptimizations=false&feature.canmodifyextensions=true#view/Microsoft_Azure_CloudNative/SubscriptionSelectionPage.ReactView/tutorialKey/CreateLinuxVMLAMP)
+[![Sebarkan ke Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#view/Microsoft_Azure_CloudNative/SubscriptionSelectionPage.ReactView/tutorialKey/CreateLinuxVMLAMP)
 
 
 Artikel ini memandu Anda melalui cara menyebarkan server web NGINX, Server Fleksibel Azure MySQL, dan PHP (tumpukan LEMP) pada VM Linux Ubuntu di Azure. Untuk melihat server LEMP beraksi, Anda dapat secara opsional menginstal dan mengonfigurasi situs WordPress. Dalam tutorial ini, Anda akan mempelajari cara:

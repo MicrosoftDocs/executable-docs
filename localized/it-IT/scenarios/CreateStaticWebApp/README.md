@@ -133,7 +133,7 @@ Passare a https://github.com/login/device e immettere il codice utente 329B-3945
 1. Quando si ottiene l'URL del repository durante l'esecuzione dello script, copiare l'URL del repository e incollarlo nel browser.
 2. Selezionare la scheda `Actions`.
 
-   A questo punto, Azure sta creando le risorse per supportare l'app Web statica. Attendere che l'icona accanto al flusso di lavoro in esecuzione si trasformi in un segno di spunta con sfondo verde ( ). Il completamento di questa operazione potrebbe richiedere alcuni minuti.
+   A questo punto, Azure sta creando le risorse per supportare l'app Web statica. Attendere che l'icona accanto al flusso di lavoro in esecuzione si trasformi in un segno di spunta con sfondo verde ( ). L'esecuzione di questa operazione può richiedere alcuni minuti.
 
 3. Quando viene visualizzata l'icona di operazione riuscita, il flusso di lavoro è completo ed è possibile tornare alla finestra della console.
 4. Eseguire il comando seguente per eseguire una query sull'URL del sito Web.

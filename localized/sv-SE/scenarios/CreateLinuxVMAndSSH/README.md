@@ -10,7 +10,7 @@ ms.custom: innovation-engine
 
 # Skapa en virtuell Linux-dator och SSH på Azure
 
-[![Distribuera till Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/?Microsoft_Azure_CloudNative_clientoptimizations=false&feature.canmodifyextensions=true#view/Microsoft_Azure_CloudNative/SubscriptionSelectionPage.ReactView/tutorialKey/CreateLinuxVMAndSSH)
+[![Distribuera till Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#view/Microsoft_Azure_CloudNative/SubscriptionSelectionPage.ReactView/tutorialKey/CreateLinuxVMAndSSH)
 
 
 ## Definiera miljövariabler

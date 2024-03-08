@@ -10,7 +10,7 @@ ms.custom: innovation-engine
 
 # Azure에 LEMP 스택 설치
 
-[![Azure에 배포](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/?Microsoft_Azure_CloudNative_clientoptimizations=false&feature.canmodifyextensions=true#view/Microsoft_Azure_CloudNative/SubscriptionSelectionPage.ReactView/tutorialKey/CreateLinuxVMLAMP)
+[![Azure에 배포](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#view/Microsoft_Azure_CloudNative/SubscriptionSelectionPage.ReactView/tutorialKey/CreateLinuxVMLAMP)
 
 
 이 문서에서는 Azure의 Ubuntu Linux VM에 NGINX 웹 서버, Azure MySQL 유연한 서버 및 PHP(LEMP 스택)를 배포하는 방법을 안내합니다. LEMP 서버의 작동을 확인하려면 필요에 따라 WordPress 사이트를 설치하고 구성할 수 있습니다. 이 자습서에서는 다음을 하는 방법을 알아볼 수 있습니다.

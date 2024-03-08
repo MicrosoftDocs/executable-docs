@@ -10,7 +10,7 @@ ms.custom: innovation-engine
 
 # Criar uma VM do Linux e um SSH no Azure
 
-[![Implantar no Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/?Microsoft_Azure_CloudNative_clientoptimizations=false&feature.canmodifyextensions=true#view/Microsoft_Azure_CloudNative/SubscriptionSelectionPage.ReactView/tutorialKey/CreateLinuxVMAndSSH)
+[![Implantar no Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#view/Microsoft_Azure_CloudNative/SubscriptionSelectionPage.ReactView/tutorialKey/CreateLinuxVMAndSSH)
 
 
 ## Definir Variáveis de Ambiente

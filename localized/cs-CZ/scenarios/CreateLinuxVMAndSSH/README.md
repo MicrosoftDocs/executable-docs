@@ -10,7 +10,7 @@ ms.custom: innovation-engine
 
 # Vytvoření virtuálního počítače s Linuxem a SSH v Azure
 
-[![Nasazení do Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/?Microsoft_Azure_CloudNative_clientoptimizations=false&feature.canmodifyextensions=true#view/Microsoft_Azure_CloudNative/SubscriptionSelectionPage.ReactView/tutorialKey/CreateLinuxVMAndSSH)
+[![Nasazení do Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#view/Microsoft_Azure_CloudNative/SubscriptionSelectionPage.ReactView/tutorialKey/CreateLinuxVMAndSSH)
 
 
 ## Definování proměnných prostředí

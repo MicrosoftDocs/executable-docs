@@ -133,7 +133,7 @@ Vaya a https://github.com/login/device y escriba el código de usuario 329B-3945
 1. Cuando obtenga la dirección URL del repositorio mientras ejecuta el script, copie la dirección URL del repositorio y péguela en el explorador.
 2. Seleccione la pestaña `Actions`.
 
-   En este momento, Azure crea los recursos para admitir la aplicación web estática. Espere hasta que el icono situado junto al flujo de trabajo en ejecución se convierta en una marca de verificación con fondo verde (). Esta operación puede tardar varios minutos en completarse.
+   En este momento, Azure crea los recursos para admitir la aplicación web estática. Espere hasta que el icono situado junto al flujo de trabajo en ejecución se convierta en una marca de verificación con fondo verde (). Esta operación puede tardar varios minutos en ejecutarse.
 
 3. Una vez que aparezca el icono de acción correcta, el flujo de trabajo se completa y puede volver a la ventana de la consola.
 4. Ejecute el siguiente comando para consultar la dirección URL del sitio web.

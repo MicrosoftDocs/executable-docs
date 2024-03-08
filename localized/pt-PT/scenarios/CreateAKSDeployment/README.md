@@ -8,9 +8,9 @@ ms.date: 11/28/2023
 ms.custom: innovation-engine
 ---
 
-# Guia de início rápido: implantar um cluster de serviço Kubernetes do Azure escalável ou seguro usando a CLI do Azure
+# Guia de início rápido: implantar um cluster do Serviço Kubernetes do Azure Escalável ou Seguro usando a CLI do Azure
 
-[![Implementar no Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/?Microsoft_Azure_CloudNative_clientoptimizations=false&feature.canmodifyextensions=true#view/Microsoft_Azure_CloudNative/SubscriptionSelectionPage.ReactView/tutorialKey/CreateAKSDeployment)
+[![Implementar no Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#view/Microsoft_Azure_CloudNative/SubscriptionSelectionPage.ReactView/tutorialKey/CreateAKSDeployment)
 
 Bem-vindo a este tutorial, onde iremos levá-lo passo a passo na criação de um Aplicativo Web Kubernetes do Azure que é protegido via https. Este tutorial pressupõe que você já esteja conectado à CLI do Azure e tenha selecionado uma assinatura para usar com a CLI. Também pressupõe que você tenha o Helm instalado ([as instruções podem ser encontradas aqui](https://helm.sh/docs/intro/install/)).
 
@@ -274,7 +274,7 @@ Resultados:
 
 ## Adicionar terminação HTTPS ao domínio personalizado
 
-Neste ponto do tutorial, você tem um aplicativo web AKS com NGINX como controlador de entrada e um domínio personalizado que você pode usar para acessar seu aplicativo. A próxima etapa é adicionar um certificado SSL ao domínio para que os usuários possam acessar seu aplicativo com segurança via HTTPS.
+Neste ponto do tutorial, você tem um aplicativo web AKS com NGINX como controlador de ingresso e um domínio personalizado que você pode usar para acessar seu aplicativo. A próxima etapa é adicionar um certificado SSL ao domínio para que os usuários possam acessar seu aplicativo com segurança via HTTPS.
 
 ## Configurar o Cert Manager
 

@@ -133,7 +133,7 @@ Go to https://github.com/login/device and enter the user code 329B-3945 to activ
 1. As you get the repository URL while running the script, copy the repository URL and paste it into your browser.
 2. Select the `Actions` tab.
 
-   At this point, Azure is creating the resources to support your static web app. Wait until the icon next to the running workflow turns into a check mark with green background ( ). This operation may take a few minutes to complete.
+   At this point, Azure is creating the resources to support your static web app. Wait until the icon next to the running workflow turns into a check mark with green background ( ). This operation may take a few minutes to execute.
 
 3. Once the success icon appears, the workflow is complete and you can return back to your console window.
 4. Run the following command to query for your website's URL.

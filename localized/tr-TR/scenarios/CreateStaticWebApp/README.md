@@ -133,7 +133,7 @@ https://github.com/login/device GitHub kişisel erişim belirtecinizi etkinleşt
 1. Betiği çalıştırırken depo URL'sini aldığınızda, depo URL'sini kopyalayın ve tarayıcınıza yapıştırın.
 2. `Actions` sekmesini seçin.
 
-   Bu noktada Azure, statik web uygulamanızı desteklemek için kaynaklar oluşturmuştur. Çalışan iş akışının yanındaki simge yeşil arka plan ( ) ile onay işaretine dönüşene kadar bekleyin. Bu işlemin tamamlanması birkaç dakika sürebilir.
+   Bu noktada Azure, statik web uygulamanızı desteklemek için kaynaklar oluşturmuştur. Çalışan iş akışının yanındaki simge yeşil arka plan ( ) ile onay işaretine dönüşene kadar bekleyin. Bu işlemin yürütülmesi birkaç dakika sürebilir.
 
 3. Başarı simgesi görüntülendiğinde iş akışı tamamlanır ve konsol pencerenize geri dönebilirsiniz.
 4. Web sitenizin URL'sini sorgulamak için aşağıdaki komutu çalıştırın.

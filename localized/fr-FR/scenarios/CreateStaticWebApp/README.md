@@ -133,7 +133,7 @@ Accédez à https://github.com/login/device et entrez le code utilisateur 329B-3
 1. Lorsque vous obtenez l’URL du référentiel lors de l’exécution du script, copiez l’URL du référentiel et collez-la dans votre navigateur.
 2. Sélectionnez l'onglet `Actions`.
 
-   À ce stade, Azure crée les ressources pour prendre en charge votre application Web statique. Attendez que l’icône en regard du flux de travail en cours d’exécution devienne une coche avec un arrière-plan vert (). Cette opération peut prendre quelques minutes.
+   À ce stade, Azure crée les ressources pour prendre en charge votre application Web statique. Attendez que l’icône en regard du flux de travail en cours d’exécution devienne une coche avec un arrière-plan vert (). L’opération peut prendre quelques minutes.
 
 3. Une fois l’icône de réussite affichée, le flux de travail est terminé et vous pouvez revenir à la fenêtre de console.
 4. Exécutez la commande suivante pour interroger l’URL de votre site Web.

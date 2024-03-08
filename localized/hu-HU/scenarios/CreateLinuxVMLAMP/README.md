@@ -10,7 +10,7 @@ ms.custom: innovation-engine
 
 # LEMP-verem telepítése az Azure-ban
 
-[![Üzembe helyezés az Azure-ban](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/?Microsoft_Azure_CloudNative_clientoptimizations=false&feature.canmodifyextensions=true#view/Microsoft_Azure_CloudNative/SubscriptionSelectionPage.ReactView/tutorialKey/CreateLinuxVMLAMP)
+[![Üzembe helyezés az Azure-ban](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#view/Microsoft_Azure_CloudNative/SubscriptionSelectionPage.ReactView/tutorialKey/CreateLinuxVMLAMP)
 
 
 Ez a cikk bemutatja, hogyan helyezhet üzembe NGINX-webkiszolgálót, rugalmas Azure MySQL-kiszolgálót és PHP-t (a LEMP-vermet) egy Ubuntu Linux rendszerű virtuális gépen az Azure-ban. Ha szeretné működés közben megtekinteni a LEMP-kiszolgálót, telepíthet és konfigurálhat egy WordPress-webhelyet. Ezen oktatóanyag segítségével megtanulhatja a következőket:

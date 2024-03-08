@@ -10,7 +10,7 @@ ms.custom: innovation-engine
 
 # Azure'da LEMP yığını yükleme
 
-[![Azure’a dağıtın](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/?Microsoft_Azure_CloudNative_clientoptimizations=false&feature.canmodifyextensions=true#view/Microsoft_Azure_CloudNative/SubscriptionSelectionPage.ReactView/tutorialKey/CreateLinuxVMLAMP)
+[![Azure’a dağıtın](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#view/Microsoft_Azure_CloudNative/SubscriptionSelectionPage.ReactView/tutorialKey/CreateLinuxVMLAMP)
 
 
 Bu makalede, Azure'da Ubuntu Linux VM'sinde NGINX web sunucusu, Azure MySQL Esnek Sunucusu ve PHP (LEMP yığını) dağıtma adımları anlatılmaktadır. LEMP sunucusunu çalışır halde görmek için, isteğe bağlı olarak bir WordPress sitesi yükleyip yapılandırabilirsiniz. Bu öğreticide şunların nasıl yapıldığını öğrenirsiniz:

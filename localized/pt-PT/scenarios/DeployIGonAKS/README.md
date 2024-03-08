@@ -97,7 +97,7 @@ A instalação do Inspektor Gadget é composta por duas etapas:
 2. Instalando o Inspektor Gadget no cluster.
 
     > [!NOTE]
-    > Existem mecanismos adicionais para implantar e utilizar o Inspektor Gadget, cada um adaptado a casos de uso e requisitos específicos. Usar o `kubectl gadget` plugin cobre muitos deles, mas não todos. Por exemplo, a implantação do Inspektor Gadget com o `kubectl gadget` plug-in depende da disponibilidade do servidor de API do Kubernetes. Portanto, se você não pode depender de tal componente porque sua disponibilidade às vezes pode ser comprometida, então é recomendável não usar o `kubectl gadget`mecanismo de implantação. Por favor, verifique [a documentação](https://github.com/inspektor-gadget/inspektor-gadget/blob/main/docs/ig.md) ig para saber o que fazer nisso, e outros casos de uso.
+    > Existem mecanismos adicionais para implantar e utilizar o Inspektor Gadget, cada um adaptado a casos de uso e requisitos específicos. Usar o `kubectl gadget` plugin abrange muitos deles, mas não todos. Por exemplo, a implantação do Inspektor Gadget com o `kubectl gadget` plug-in depende da disponibilidade do servidor de API do Kubernetes. Portanto, se você não pode depender de tal componente porque sua disponibilidade às vezes pode ser comprometida, então é recomendável não usar o `kubectl gadget`mecanismo de implantação. Por favor, verifique [a documentação](https://github.com/inspektor-gadget/inspektor-gadget/blob/main/docs/ig.md) ig para saber o que fazer nisso, e outros casos de uso.
 
 ### Instalando o plugin kubectl: `gadget`
 
@@ -176,3 +176,8 @@ When no longer needed, you can use `az group delete` to remove the resource grou
 az group delete --name $MY_RESOURCE_GROUP_NAME --no-wait --yes
 ```
 -->
+
+## Passos Seguintes
+- [Cenários do mundo real onde o Inspektor Gadget pode ajudá-lo](https://go.microsoft.com/fwlink/p/?linkid=2260402#use-cases)
+- [Explore os gadgets disponíveis](https://go.microsoft.com/fwlink/p/?linkid=2260070)
+- [Execute o seu próprio programa eBPF](https://go.microsoft.com/fwlink/p/?linkid=2259865)

@@ -10,7 +10,7 @@ ms.custom: innovation-engine
 
 # クイック　スタート: Azure CLI を使用して、拡張性があり安全な Azure Kubernetes Service クラスターをデプロイする
 
-[![Azure に配置する](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/?Microsoft_Azure_CloudNative_clientoptimizations=false&feature.canmodifyextensions=true#view/Microsoft_Azure_CloudNative/SubscriptionSelectionPage.ReactView/tutorialKey/CreateAKSDeployment)
+[![Azure に配置する](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#view/Microsoft_Azure_CloudNative/SubscriptionSelectionPage.ReactView/tutorialKey/CreateAKSDeployment)
 
 https を介してセキュリティで保護された Azure Kubernetes Web アプリケーションを作成する手順を説明するこのチュートリアルをご覧ください。 このチュートリアルは、既に Azure CLI にログインしており、CLI で使用するサブスクリプションが選択されていることを前提としています。 また、Helm がインストールされていることを前提としています ([手順はこちら](https://helm.sh/docs/intro/install/))。
 

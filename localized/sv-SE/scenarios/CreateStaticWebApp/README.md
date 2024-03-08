@@ -133,7 +133,7 @@ Gå till https://github.com/login/device och ange användarkoden 329B-3945 för 
 1. När du hämtar lagringsplatsens URL när du kör skriptet kopierar du lagringsplatsens URL och klistrar in den i webbläsaren.
 2. Välj `Actions`-fliken.
 
-   Nu skapar Azure resurserna för att stödja din statiska webbapp. Vänta tills ikonen bredvid arbetsflödet som körs förvandlas till en bockmarkering med grön bakgrund ( ). Den här åtgärden kan ta några minuter att slutföra.
+   Nu skapar Azure resurserna för att stödja din statiska webbapp. Vänta tills ikonen bredvid arbetsflödet som körs förvandlas till en bockmarkering med grön bakgrund ( ). Den här åtgärden kan ta några minuter att köra.
 
 3. När framgångsikonen visas är arbetsflödet klart och du kan återgå till konsolfönstret.
 4. Kör följande kommando för att fråga efter webbplatsens URL.

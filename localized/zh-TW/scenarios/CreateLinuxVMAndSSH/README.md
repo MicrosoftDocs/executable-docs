@@ -10,7 +10,7 @@ ms.custom: innovation-engine
 
 # 在 Azure 上建立 Linux VM 和 SSH
 
-[![部署至 Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/?Microsoft_Azure_CloudNative_clientoptimizations=false&feature.canmodifyextensions=true#view/Microsoft_Azure_CloudNative/SubscriptionSelectionPage.ReactView/tutorialKey/CreateLinuxVMAndSSH)
+[![部署至 Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#view/Microsoft_Azure_CloudNative/SubscriptionSelectionPage.ReactView/tutorialKey/CreateLinuxVMAndSSH)
 
 
 ## 定義環境變數
@@ -55,9 +55,9 @@ az group create --name $MY_RESOURCE_GROUP_NAME --location $REGION
 }
 ```
 
-## 建立虛擬機器
+## 建立虛擬機
 
-若要在此資源群組中建立 VM，我們需要執行簡單的命令，我們在這裡提供了 `--generate-ssh-keys` 旗標，這會導致 CLI 在 中尋找可取得的 SSH 金鑰，如果找到該金鑰，則會使用其中一個，否則會產生一個並 `~/.ssh` 儲存在 中 `~/.ssh` 。 我們也提供 `--public-ip-sku Standard` 旗標，以確保電腦可透過公用 IP 存取。 最後，我們會部署最新的 `Ubuntu 22.04` 映射。 
+若要在此資源群組中建立 VM，我們需要執行簡單的命令，我們在這裡提供了 `--generate-ssh-keys` 旗標，這會導致 CLI 在 中尋找可取得的 SSH 金鑰，如果找到該密鑰，則會使用其中一個，否則會產生一個並 `~/.ssh`儲存在 中 `~/.ssh`。 我們也提供 `--public-ip-sku Standard` 旗標，以確保計算機可透過公用IP存取。 最後，我們會部署最新的 `Ubuntu 22.04` 映像。 
 
 所有其他值都是使用環境變數來設定。
 
@@ -89,9 +89,9 @@ az vm create \
 }
 ```
 
-### 在 Azure 中啟用 Linux 虛擬機器的 Azure AD 登入
+### 在 Azure 中啟用 Linux 虛擬機的 Azure AD 登入
 
-下列範例會部署 Linux VM，然後安裝擴充功能以啟用 Linux VM 的 Azure AD 登入。 VM 擴充功能是小型應用程式，可在 Azure 虛擬機器上提供部署後設定和自動化工作。
+下列範例會部署Linux VM，然後安裝擴充功能以啟用Linux VM的 Azure AD 登入。 VM 擴充功能是小型應用程式，可在 Azure 虛擬機上提供部署後設定和自動化工作。
 
 ```bash
 az vm extension set \
@@ -129,5 +129,5 @@ ssh -o StrictHostKeyChecking=no $MY_USERNAME@$IP_ADDRESS
 
 * [VM 檔](https://learn.microsoft.com/azure/virtual-machines/)
 * [使用 Cloud-Init 在第一次開機時初始化 Linux VM](https://learn.microsoft.com/azure/virtual-machines/linux/tutorial-automate-vm-deployment)
-* [建立自訂 VM 映射](https://learn.microsoft.com/azure/virtual-machines/linux/tutorial-custom-images)
+* [建立自訂的 VM 映像](https://learn.microsoft.com/azure/virtual-machines/linux/tutorial-custom-images)
 * [負載平衡 VM](https://learn.microsoft.com/azure/load-balancer/quickstart-load-balancer-standard-public-cli)
