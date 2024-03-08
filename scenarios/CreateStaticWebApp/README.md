@@ -11,6 +11,8 @@ ms.service: Azure
 
 # Azure Static Web Apps Quickstart: Building Your First Static Site Using the Azure CLI
 
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262845)
+
 Azure Static Web Apps publishes websites to production by building apps from a code repository. In this quickstart, you deploy a web application to Azure Static Web Apps using the Azure CLI.
 
 ## Define Environment Variables
