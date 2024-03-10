@@ -10,6 +10,8 @@ ms.custom: innovation-engine
 
 # Rövid útmutató: Méretezhető és biztonságos WordPress-példány üzembe helyezése az AKS-ben
 
+[![Üzembe helyezés az Azure-ban](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262843)
+
 Üdvözöljük ebben az oktatóanyagban, amelyben lépésről lépésre haladva létrehozunk egy Https-en keresztül biztonságos Azure Kubernetes-webalkalmazást. Ez az oktatóanyag feltételezi, hogy már bejelentkezett az Azure CLI-be, és kiválasztotta a parancssori felülettel használni kívánt előfizetést. Azt is feltételezi, hogy a Helm telepítve van ([az utasítások itt](https://helm.sh/docs/intro/install/) találhatók).
 
 ## Környezeti változók definiálása
