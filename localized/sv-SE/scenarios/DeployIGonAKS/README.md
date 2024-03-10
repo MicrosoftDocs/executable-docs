@@ -10,6 +10,8 @@ ms.custom: innovation-engine
 
 # Snabbstart: Distribuera Inspektor Gadget i ett Azure Kubernetes Service-kluster
 
+[![Distribuera till Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262844)
+
 Välkommen till den här självstudien där vi tar dig steg för steg när du distribuerar [Inspektor Gadget](https://www.inspektor-gadget.io/) i ett AkS-kluster (Azure Kubernetes Service) med kubectl-plugin-programmet: `gadget`. Den här självstudien förutsätter att du redan är inloggad i Azure CLI och har valt en prenumeration som ska användas med CLI.
 
 ## Definiera miljövariabler
