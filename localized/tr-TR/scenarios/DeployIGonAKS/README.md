@@ -10,6 +10,8 @@ ms.custom: innovation-engine
 
 # Hızlı Başlangıç: Azure Kubernetes Service kümesinde Inspektor Aracı dağıtma
 
+[![Azure’a dağıtın](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262844)
+
 Kubectl eklentisiyle bir Azure Kubernetes Service (AKS) kümesinde Inspektor Aracı'nı[ dağıtma ](https://www.inspektor-gadget.io/)konusunda adım adım ilerleyeceğiniz bu öğreticiye hoş geldiniz: `gadget`. Bu öğreticide, Azure CLI'de zaten oturum açtığınız ve CLI ile kullanmak üzere bir abonelik seçtiğiniz varsayılır.
 
 ## Ortam Değişkenlerini Tanımlama

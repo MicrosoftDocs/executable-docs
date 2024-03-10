@@ -10,6 +10,8 @@ ms.custom: innovation-engine
 
 # Hızlı Başlangıç: AKS'de Ölçeklenebilir ve Güvenli WordPress örneği dağıtma
 
+[![Azure’a dağıtın](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262843)
+
 Https aracılığıyla güvenliği sağlanan bir Azure Kubernetes Web Uygulaması oluşturma adım adım size adım adım izleyebileceğiniz bu öğreticiye hoş geldiniz. Bu öğreticide, Azure CLI'de zaten oturum açtığınız ve CLI ile kullanmak üzere bir abonelik seçtiğiniz varsayılır. Ayrıca Helm'in yüklü olduğu varsayılır ([Yönergeler burada](https://helm.sh/docs/intro/install/) bulunabilir).
 
 ## Ortam Değişkenlerini Tanımlama
