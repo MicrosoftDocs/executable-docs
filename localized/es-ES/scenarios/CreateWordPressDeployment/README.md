@@ -10,6 +10,8 @@ ms.custom: innovation-engine
 
 # Inicio rápido: Implementación de una instancia escalable y segura de WordPress en AKS
 
+[![Implementación en Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262843)
+
 Te damos la bienvenida a este tutorial en el que le guiaremos paso a paso en la creación de una aplicación web de Azure Kubernetes protegida mediante https. En este tutorial se supone que ya ha iniciado sesión en la CLI de Azure y ha seleccionado una suscripción para usarla con la CLI. También supone que tiene Helm instalado ([Las instrucciones se pueden encontrar aquí](https://helm.sh/docs/intro/install/)).
 
 ## Definición de las variables de entorno

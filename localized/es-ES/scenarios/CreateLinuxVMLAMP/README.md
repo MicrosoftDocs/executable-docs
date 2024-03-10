@@ -10,7 +10,7 @@ ms.custom: innovation-engine
 
 # Instalación de una pila LEMP en Azure
 
-[![Implementación en Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#view/Microsoft_Azure_CloudNative/SubscriptionSelectionPage.ReactView/tutorialKey/CreateLinuxVMLAMP)
+[![Implementación en Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2263118)
 
 
 En este artículo se ofrecen instrucciones paso a paso para implementar un servidor web NGINX, servidor flexible de Azure MySQL y PHP (la pila LEMP) en una máquina virtual de Ubuntu Linux en Azure. Para ver el servidor LEMP en acción, si lo desea, puede instalar y configurar un sitio de WordPress. En este tutorial, aprenderá a:
