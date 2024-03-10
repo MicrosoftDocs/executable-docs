@@ -10,6 +10,8 @@ ms.custom: innovation-engine
 
 # Quickstart: Een schaalbaar en beveiligd WordPress-exemplaar implementeren op AKS
 
+[![Implementeren naar Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262843)
+
 Welkom bij deze zelfstudie waarin we u stapsgewijs zullen volgen bij het maken van een Azure Kubernetes-webtoepassing die is beveiligd via https. In deze zelfstudie wordt ervan uitgegaan dat u al bent aangemeld bij Azure CLI en een abonnement hebt geselecteerd voor gebruik met de CLI. Er wordt ook van uitgegaan dat Helm is geïnstalleerd ([hier vindt](https://helm.sh/docs/intro/install/) u instructies).
 
 ## Omgevingsvariabelen definiëren

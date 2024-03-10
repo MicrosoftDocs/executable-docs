@@ -10,6 +10,8 @@ ms.custom: innovation-engine
 
 # Een virtuele-machineschaalset maken met Application Gateway met linux-installatiekopieën
 
+[![Implementeren naar Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262759)
+
 ## Omgevingsvariabelen definiëren
 
 De eerste stap in deze zelfstudie is het definiëren van omgevingsvariabelen.
