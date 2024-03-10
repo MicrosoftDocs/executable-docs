@@ -10,7 +10,7 @@ ms.custom: innovation-engine
 
 # Azure에서 Linux VM 및 SSH 만들기
 
-[![Azure에 배포](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#view/Microsoft_Azure_CloudNative/SubscriptionSelectionPage.ReactView/tutorialKey/CreateLinuxVMAndSSH)
+[![Azure에 배포](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262692)
 
 
 ## 환경 변수 정의
@@ -38,7 +38,7 @@ CLI를 사용하여 Azure에 대해 명령을 실행하려면 로그인해야 �
 az group create --name $MY_RESOURCE_GROUP_NAME --location $REGION
 ```
 
-Results:
+결과:
 
 <!-- expected_similarity=0.3 -->
 ```json   
@@ -72,7 +72,7 @@ az vm create \
     --public-ip-sku Standard
 ```
 
-Results:
+결과:
 
 <!-- expected_similarity=0.3 -->
 ```json

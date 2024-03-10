@@ -10,6 +10,8 @@ ms.custom: innovation-engine
 
 # Linux 이미지를 사용하여 Application Gateway를 사용하여 Virtual Machine Scale Set 만들기
 
+[![Azure에 배포](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262759)
+
 ## 환경 변수 정의
 
 이 자습서의 첫 번째 단계는 환경 변수를 정의하는 것입니다.
@@ -45,7 +47,7 @@ CLI를 사용하여 Azure에 대해 명령을 실행하려면 로그인해야 �
 az group create --name $MY_RESOURCE_GROUP_NAME --location $REGION -o JSON
 ```
 
-Results:
+결과:
 
 <!-- expected_similarity=0.3 -->
 ```json   
@@ -73,7 +75,7 @@ VMSS 단계를 진행하기 전에 네트워크 리소스를 만들어야 합니
 az network vnet create  --name $MY_VNET_NAME  --resource-group $MY_RESOURCE_GROUP_NAME --location $REGION  --address-prefix $MY_VNET_PREFIX  --subnet-name $MY_VM_SN_NAME --subnet-prefix $MY_VM_SN_PREFIX -o JSON
 ```
 
-Results:
+결과:
 
 <!-- expected_similarity=0.3 -->
 ```json   
@@ -121,7 +123,7 @@ Azure 애플리케이션 게이트웨이에는 가상 네트워크 내의 전용
 az network vnet subnet create  --name $MY_APPGW_SN_NAME  --resource-group $MY_RESOURCE_GROUP_NAME --vnet-name  $MY_VNET_NAME --address-prefix  $MY_APPGW_SN_PREFIX -o JSON
 ```
 
-Results:
+결과:
 
 <!-- expected_similarity=0.3 -->
 ```json  
@@ -144,7 +146,7 @@ Results:
 az network public-ip create  --resource-group $MY_RESOURCE_GROUP_NAME --name $MY_APPGW_PUBLIC_IP_NAME --sku Standard   --location $REGION  --allocation-method static --version IPv4 --zone 1 2 3 -o JSON
  ```
 
-Results:
+결과:
 
 <!-- expected_similarity=0.3 -->
 ```json  
@@ -384,7 +386,7 @@ az network application-gateway create   --name $MY_APPGW_NAME --location $REGION
 az vmss create --name $MY_VMSS_NAME --resource-group $MY_RESOURCE_GROUP_NAME --image $MY_VM_IMAGE --admin-username $MY_USERNAME --generate-ssh-keys --public-ip-per-vm --orchestration-mode Uniform --instance-count 2 --zones 1 2 3 --vnet-name $MY_VNET_NAME --subnet $MY_VM_SN_NAME --vm-sku Standard_DS2_v2 --upgrade-policy-mode Automatic --app-gateway $MY_APPGW_NAME --backend-pool-name appGatewayBackendPool -o JSON
  ```
 
-Results:
+결과:
 
 <!-- expected_similarity=0.3 -->
 ```json  
@@ -506,7 +508,7 @@ Results:
 az vmss extension set --publisher Microsoft.Azure.Extensions --version 2.0  --name CustomScript --resource-group $MY_RESOURCE_GROUP_NAME --vmss-name $MY_VMSS_NAME --settings '{ "fileUris": ["https://raw.githubusercontent.com/Azure-Samples/compute-automation-configurations/master/automate_nginx.sh"], "commandToExecute": "./automate_nginx.sh" }' -o JSON
 ```
 
-Results:
+결과:
 
 <!-- expected_similarity=0.3 -->
 ```json  
@@ -704,15 +706,15 @@ Results:
 
 # 자동 크기 조정 프로필 정의  
 
-확장 집합에서 자동 크기 조정을 사용하도록 설정하려면 먼저 자동 크기 조정 프로필을 정의합니다. 이 프로필은 기본, 최소 및 최대 확장 집합 용량을 정의합니다. 이러한 제한을 통해 VM 인스턴스를 지속적으로 만들지 않음으로써 비용을 제어하고, 스케일 인 이벤트에서 다시 기본 최소 수의 인스턴스와 허용 가능한 성능의 균형을 맞출 수 있습니다.
-다음 예제에서는 VM 인스턴스 2개 및 최대 10개의 기본 및 최소 용량을 설정합니다.
+확장 집합에서 자동 크기 조정을 활성화하려면 먼저 자동 크기 조정 프로필을 정의합니다. 이 프로필은 기본, 최소, 최대 확장 집합 용량을 정의합니다. 이러한 제한을 통해 연속적으로 VM 인스턴스를 만들지 않고 비용을 제어하고, 축소 이벤트에 유지되는 최소 인스턴스 수로 허용 가능한 성능의 균형을 유지할 수 있습니다.
+다음 예제에서는 기본 및 최소 용량으로 VM 인스턴스 2개를 설정하고 최대 용량으로 10개를 설정합니다.
 
 ```bash
 az monitor autoscale create --resource-group $MY_RESOURCE_GROUP_NAME --resource  $MY_VMSS_NAME --resource-type Microsoft.Compute/virtualMachineScaleSets --name autoscale --min-count 2 --max-count 10 --count 2
 ```
 
 
-Results:
+결과:
 
 <!-- expected_similarity=0.3 -->
 ```json  
@@ -758,15 +760,15 @@ Results:
 }
 ```
 
-# 자동 크기 조정을 위한 규칙 만들기
+# 자동 크기 확장 규칙 만들기
 
-다음 명령은 평균 CPU 로드가 5분 동안 70% 이상일 때 확장 집합의 VM 인스턴스 수를 늘리는 규칙을 만듭니다. 규칙이 트리거되면 VM 인스턴스 수가 3씩 증가합니다.
+다음 명령은 평균 CPU 로드가 5분 동안 70% 이상일 때 확장 집합의 VM 인스턴스 수를 늘리는 규칙을 만듭니다. 규칙이 트리거되면 VM 인스턴스 수가 3만큼 늘어납니다.
 
 ```bash
 az monitor autoscale rule create --resource-group $MY_RESOURCE_GROUP_NAME --autoscale-name autoscale --condition "Percentage CPU > 70 avg 5m" --scale out 3
 ```
 
-Results:
+결과:
 
 <!-- expected_similarity=0.3 -->
 ```json 
@@ -794,15 +796,15 @@ Results:
 } 
 ```
 
-# 자동 크기 조정에 대한 규칙 만들기
+# 자동 크기 축소 규칙 만들기
 
-평균 CPU 로드가 5분 동안 30% 미만으로 떨어질 때 확장 집합의 VM 인스턴스 수를 줄이는 az monitor 자동 크기 조정 규칙을 사용하여 다른 규칙을 만듭니다. 다음 예제에서는 VM 인스턴스 수를 하나씩 스케일링하는 규칙을 정의합니다.
+평균 CPU 로드가 5분 동안 30% 미만일 경우 az monitor autoscale rule create를 사용하여 확장 집합의 VM 인스턴스 수를 줄이는 다른 규칙을 만듭니다. 다음 예제에서는 VM 인스턴스 수를 축소하는 규칙을 정의합니다.
 
 ```bash
 az monitor autoscale rule create --resource-group  $MY_RESOURCE_GROUP_NAME --autoscale-name autoscale --condition "Percentage CPU < 30 avg 5m" --scale in 1
 ```
 
-Results:
+결과:
 
 <!-- expected_similarity=0.3 -->
 ```json 
