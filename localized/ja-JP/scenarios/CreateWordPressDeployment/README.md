@@ -10,6 +10,8 @@ ms.custom: innovation-engine
 
 # クイック スタート: AKS にスケーラブルで安全な WordPress インスタンスをデプロイする
 
+[![Azure に配置する](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262843)
+
 https を介してセキュリティで保護された Azure Kubernetes Web アプリケーションを作成する手順を説明するこのチュートリアルをご覧ください。 このチュートリアルは、既に Azure CLI にログインしており、CLI で使用するサブスクリプションが選択されていることを前提としています。 また、Helm がインストールされていることを前提としています ([手順はこちら](https://helm.sh/docs/intro/install/))。
 
 ## 環境変数を定義する

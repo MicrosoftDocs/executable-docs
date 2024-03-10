@@ -11,6 +11,8 @@ ms.service: Azure
 
 # Azure Static Web Apps クイック スタート: Azure CLI を使用して静的サイトを初めて構築する
 
+[![Azure に配置する](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262845)
+
 Azure Static Web Apps は、コード リポジトリからアプリをビルドすることによって、Web サイトを運用環境に発行します。 このクイックスタートでは、Azure CLI を使用して、Web アプリケーションを Azure Static Web Apps にデプロイします。
 
 ## 環境変数を定義する

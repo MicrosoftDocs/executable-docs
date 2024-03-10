@@ -10,7 +10,7 @@ ms.custom: innovation-engine
 
 # Azure に LEMP スタックをインストールする
 
-[![Azure に配置する](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#view/Microsoft_Azure_CloudNative/SubscriptionSelectionPage.ReactView/tutorialKey/CreateLinuxVMLAMP)
+[![Azure に配置する](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2263118)
 
 
 この記事では、NGINX Web サーバー、Azure MySQL フレキシブル サーバー、PHP (LEMP スタック) を Azure 上の Ubuntu Linux VM にデプロイする方法について説明します。 LEMP サーバーの動作を確認するために、WordPress サイトをインストールし、構成することもできます。 このチュートリアルで学習する内容は次のとおりです。
