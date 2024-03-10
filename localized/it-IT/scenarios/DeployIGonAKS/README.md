@@ -10,6 +10,8 @@ ms.custom: innovation-engine
 
 # Guida introduttiva: Distribuire Inspektor Gadget in un cluster servizio Azure Kubernetes
 
+[![Distribuzione in Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262844)
+
 Questa esercitazione illustra come distribuire [Inspektor Gadget](https://www.inspektor-gadget.io/) in un cluster servizio Azure Kubernetes del servizio Azure Kubernetes con il plug-in kubectl: `gadget`. Questa esercitazione presuppone che l'utente sia già connesso all'interfaccia della riga di comando di Azure e abbia selezionato una sottoscrizione da usare con l'interfaccia della riga di comando.
 
 ## Definire le variabili di ambiente
