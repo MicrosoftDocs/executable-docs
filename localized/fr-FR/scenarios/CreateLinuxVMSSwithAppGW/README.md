@@ -10,6 +10,8 @@ ms.custom: innovation-engine
 
 # Créer un groupe de machines virtuelles identiques avec Application Gateway avec une image Linux
 
+[![Déployer dans Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262759)
+
 ## Définissez des variables d’environnement
 
 La première étape de ce tutoriel définit des variables d’environnement.
