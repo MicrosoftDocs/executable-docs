@@ -11,6 +11,8 @@ ms.service: Azure
 
 # Mulai Cepat Azure Static Web Apps: Membangun Situs Statis Pertama Anda Menggunakan Azure CLI
 
+[![Sebarkan ke Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262845)
+
 Azure Static Web Apps menerbitkan situs web ke produksi dengan membangun aplikasi dari repositori kode. Dalam mulai cepat ini, Anda menyebarkan aplikasi web ke Azure Static Web Apps menggunakan Azure CLI.
 
 ## Tentukan Variabel Lingkungan

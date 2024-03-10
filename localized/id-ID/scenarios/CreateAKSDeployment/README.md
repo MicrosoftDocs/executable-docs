@@ -10,7 +10,7 @@ ms.custom: innovation-engine
 
 # Mulai Cepat: Menyebarkan kluster Azure Kubernetes Service yang Dapat Diskalakan & Aman menggunakan Azure CLI
 
-[![Sebarkan ke Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#view/Microsoft_Azure_CloudNative/SubscriptionSelectionPage.ReactView/tutorialKey/CreateAKSDeployment)
+[![Sebarkan ke Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262758)
 
 Selamat datang di tutorial ini di mana kami akan membawa Anda langkah demi langkah dalam membuat Aplikasi Web Azure Kubernetes yang diamankan melalui https. Tutorial ini mengasumsikan Anda sudah masuk ke Azure CLI dan telah memilih langganan untuk digunakan dengan CLI. Ini juga mengasumsikan bahwa Anda telah menginstal Helm ([Instruksi dapat ditemukan di sini](https://helm.sh/docs/intro/install/)).
 
