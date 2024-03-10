@@ -10,6 +10,8 @@ ms.custom: innovation-engine
 
 # Tworzenie zestawu skalowania maszyn wirtualnych za pomocą usługi Application Gateway z obrazem systemu Linux
 
+[![Wdróż na platformie Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262759)
+
 ## Definiowanie zmiennych środowiskowych
 
 Pierwszym krokiem w tym samouczku jest zdefiniowanie zmiennych środowiskowych.

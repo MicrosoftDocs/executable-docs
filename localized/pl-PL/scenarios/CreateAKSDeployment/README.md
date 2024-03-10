@@ -10,7 +10,7 @@ ms.custom: innovation-engine
 
 # Szybki start: wdrażanie skalowalnego i bezpiecznego klastra usługi Azure Kubernetes Service przy użyciu interfejsu wiersza polecenia platformy Azure
 
-[![Wdróż na platformie Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#view/Microsoft_Azure_CloudNative/SubscriptionSelectionPage.ReactView/tutorialKey/CreateAKSDeployment)
+[![Wdróż na platformie Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262758)
 
 Witamy w tym samouczku, w którym wykonamy krok po kroku tworzenie aplikacji internetowej platformy Azure Kubernetes zabezpieczonej za pośrednictwem protokołu HTTPS. W tym samouczku założono, że zalogowano się już do interfejsu wiersza polecenia platformy Azure i wybrano subskrypcję do użycia z interfejsem wiersza polecenia. Przyjęto również założenie, że masz zainstalowane narzędzie Helm ([instrukcje można znaleźć tutaj](https://helm.sh/docs/intro/install/)).
 
