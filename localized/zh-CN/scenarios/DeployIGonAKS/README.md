@@ -10,6 +10,8 @@ ms.custom: innovation-engine
 
 # 快速入门：在 Azure Kubernetes 服务群集中部署 Inspektor Gadget
 
+[![部署到 Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262844)
+
 欢迎查看本教程，其中我们将逐步介绍如何使用 kubectl 插件 `gadget` 在 Azure Kubernetes 服务 (AKS) 群集中部署 [Inspektor Gadget](https://www.inspektor-gadget.io/)。 本教程假定你已登录到 Azure CLI，并已选择要与 CLI 一起使用的订阅。
 
 ## 定义环境变量
