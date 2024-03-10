@@ -10,6 +10,8 @@ ms.custom: innovation-engine
 
 # Rychlý start: Nasazení miniaplikace Inspektor v clusteru Azure Kubernetes Service
 
+[![Nasazení do Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262844)
+
 Vítejte v tomto kurzu, kde vás provedeme krok za krokem při nasazování [Miniaplikace](https://www.inspektor-gadget.io/) Inspektor v clusteru Azure Kubernetes Service (AKS) s modulem plug-in kubectl: `gadget`. V tomto kurzu se předpokládá, že jste už přihlášení k Azure CLI a vybrali jste předplatné, které se má použít s rozhraním příkazového řádku.
 
 ## Definování proměnných prostředí
