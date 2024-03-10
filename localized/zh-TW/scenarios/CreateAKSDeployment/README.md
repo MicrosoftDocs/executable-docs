@@ -10,7 +10,7 @@ ms.custom: innovation-engine
 
 # 快速入門：使用 Azure CLI 部署可調整且安全的 Azure Kubernetes Service 叢集
 
-[![部署至 Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#view/Microsoft_Azure_CloudNative/SubscriptionSelectionPage.ReactView/tutorialKey/CreateAKSDeployment)
+[![部署至 Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262758)
 
 歡迎使用本教學課程，我們將逐步逐步建立透過 HTTPs 保護的 Azure Kubernetes Web 應用程式。 本教學課程假設您已登入 Azure CLI，並已選取要搭配 CLI 使用的訂用帳戶。 它也假設您已安裝 Helm （[指示可以在這裡](https://helm.sh/docs/intro/install/)找到）。
 
@@ -62,7 +62,7 @@ az group create --name $MY_RESOURCE_GROUP_NAME --location $REGION
 
 ## 建立虛擬網路和子網路
 
-虛擬網路是 Azure 中專用網的基本建置組塊。 Azure 虛擬網路可讓 Azure 資源 (例如 VM) 彼此安全地通訊，以及與網際網路安全地通訊。
+虛擬網路是 Azure 中私人網路的基礎建置區塊。 Azure 虛擬網路可讓 Azure 資源 (例如 VM) 彼此安全地通訊，以及與網際網路安全地通訊。
 
 ```bash
 az network vnet create \

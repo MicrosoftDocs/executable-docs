@@ -10,7 +10,7 @@ ms.custom: innovation-engine
 
 # 在 Azure 上安裝 LEMP 堆疊
 
-[![部署至 Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#view/Microsoft_Azure_CloudNative/SubscriptionSelectionPage.ReactView/tutorialKey/CreateLinuxVMLAMP)
+[![部署至 Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2263118)
 
 
 本文將逐步引導您如何在 Azure 中的 Ubuntu Linux VM 上部署 NGINX Web 伺服器、Azure MySQL 彈性伺服器和 PHP （LEMP 堆棧）。 若要查看 LEMP 伺服器運作情形，您可以選擇性地安裝及設定 WordPress 網站。 在本教學課程中，您將了解如何：
@@ -91,7 +91,7 @@ az group create \
 
 ## 建立 Azure 虛擬網路
 
-虛擬網路是 Azure 中專用網的基本建置組塊。 Azure 虛擬網路可讓 Azure 資源 (例如 VM) 彼此安全地通訊，以及與網際網路安全地通訊。
+虛擬網路是 Azure 中私人網路的基礎建置區塊。 Azure 虛擬網路可讓 Azure 資源 (例如 VM) 彼此安全地通訊，以及與網際網路安全地通訊。
 使用 [az network vnet create 建立](https://learn.microsoft.com/cli/azure/network/vnet#az-network-vnet-create) 名為 `$MY_VNET_NAME` 的虛擬網路，並在資源群組中建立名為 `$MY_SN_NAME` 的 `$MY_RESOURCE_GROUP_NAME` 子網。
 
 ```bash
@@ -197,7 +197,7 @@ az network public-ip create \
 
 ## 建立 Azure 網路安全組
 
-網路安全性群組中的安全性規則能讓您篩選可在虛擬網路子網路及網路介面中流入和流出的網路流量類型。 若要深入了解網路安全組，請參閱 [網路安全組概觀](https://learn.microsoft.com/azure/virtual-network/network-security-groups-overview)。
+網路安全性群組中的安全性規則能讓您篩選可在虛擬網路子網路及網路介面中流入和流出的網路流量類型。 若要深入了解網路安全性群組，請參閱[網路安全性群組概觀](https://learn.microsoft.com/azure/virtual-network/network-security-groups-overview)。
 
 ```bash
 az network nsg create \
@@ -246,7 +246,7 @@ az network nsg create \
 
 ## 建立 Azure 網路安全組規則
 
-您將建立規則，以允許 SSH 連接埠 22 上的虛擬機連線，以及 HTTP 和 HTTPS 的埠 80、443。 系統會建立額外的規則，以允許輸出連線的所有埠。 使用 [az network nsg rule create](https://learn.microsoft.com/cli/azure/network/nsg/rule#az-network-nsg-rule-create) 建立網路安全組規則。
+您將建立規則，以允許 SSH 連接埠 22 上的虛擬機連線，以及 HTTP 和 HTTPS 的埠 80、443。 系統會建立額外的規則，以允許輸出連線的所有埠。 使用 [az network nsg rule create](https://learn.microsoft.com/cli/azure/network/nsg/rule#az-network-nsg-rule-create) 來建立網路安全性群組規則。
 
 ```bash
 az network nsg rule create \
@@ -640,7 +640,7 @@ az mysql flexible-server parameter set \
 下列範例會建立名為 `$MY_VM_NAME` 的 VM，如果 VM 不存在於預設密鑰位置，則會建立 SSH 金鑰。 此命令也會設定 `$MY_VM_USERNAME` 為系統管理員用戶名稱。
 若要改善 Azure 中 Linux 虛擬機的安全性，您可以與 Azure Active Directory 驗證整合。 您現在可以使用 Azure AD 作為核心驗證平臺和證書頒發機構單位，使用 Azure AD 和 OpenSSH 憑證型驗證，透過 SSH 連線到 Linux VM。 此功能可讓組織使用 Azure 角色型存取控制和條件式存取原則來管理 VM 的存取權。
 
-使用 [az vm create](https://learn.microsoft.com/cli/azure/vm#az-vm-create) 命令建立 VM。
+使用 [az vm create](https://learn.microsoft.com/cli/azure/vm#az-vm-create) 命令來建立 VM。
 
 ```bash
 az vm create \

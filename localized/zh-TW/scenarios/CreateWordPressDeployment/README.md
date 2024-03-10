@@ -10,6 +10,8 @@ ms.custom: innovation-engine
 
 # 快速入門：在 AKS 上部署可調整且安全的 WordPress 實例
 
+[![部署至 Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262843)
+
 歡迎使用本教學課程，我們將逐步逐步建立透過 HTTPs 保護的 Azure Kubernetes Web 應用程式。 本教學課程假設您已登入 Azure CLI，並已選取要搭配 CLI 使用的訂用帳戶。 它也假設您已安裝 Helm （[指示可以在這裡](https://helm.sh/docs/intro/install/)找到）。
 
 ## 定義環境變數
@@ -68,7 +70,7 @@ az group create \
 
 ## 建立虛擬網路和子網路
 
-虛擬網路是 Azure 中專用網的基本建置組塊。 Azure 虛擬網路可讓 Azure 資源 (例如 VM) 彼此安全地通訊，以及與網際網路安全地通訊。
+虛擬網路是 Azure 中私人網路的基礎建置區塊。 Azure 虛擬網路可讓 Azure 資源 (例如 VM) 彼此安全地通訊，以及與網際網路安全地通訊。
 
 ```bash
 az network vnet create \
@@ -184,7 +186,7 @@ runtime="10 minute"; endtime=$(date -ud "$runtime" +%s); while [[ $(date -u +%s)
 
 ## 在 適用於 MySQL 的 Azure 資料庫 中設定伺服器參數 - 彈性伺服器
 
-您可以使用伺服器參數來管理 適用於 MySQL 的 Azure 資料庫 - 彈性伺服器設定。 當您建立伺服器時，伺服器參數會設定為預設值和建議的值。
+您可以使用伺服器參數來管理 適用於 MySQL 的 Azure 資料庫 - 彈性伺服器組態。 當您建立伺服器時，伺服器參數會設定為預設值和建議的值。
 
 顯示伺服器參數詳細數據 若要顯示伺服器特定參數的詳細數據，請執行 [az mysql flexible-server 參數 show](https://learn.microsoft.com/cli/azure/mysql/flexible-server/parameter) 命令。
 

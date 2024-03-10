@@ -11,6 +11,8 @@ ms.service: Azure
 
 # Azure Static Web Apps 快速入門：使用 Azure CLI 建置您的第一個靜態網站
 
+[![部署至 Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262845)
+
 Azure Static Web Apps 會透過從程式代碼存放庫建置應用程式，將網站發佈至生產環境。 在本快速入門中，您會使用 Azure CLI 將 Web 應用程式部署至 Azure Static Web Apps。
 
 ## 定義環境變數
