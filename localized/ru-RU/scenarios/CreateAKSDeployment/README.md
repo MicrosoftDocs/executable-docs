@@ -10,7 +10,7 @@ ms.custom: innovation-engine
 
 # Краткое руководство. Развертывание масштабируемого и безопасного кластера Служба Azure Kubernetes с помощью Azure CLI
 
-[![Развертывание в Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#view/Microsoft_Azure_CloudNative/SubscriptionSelectionPage.ReactView/tutorialKey/CreateAKSDeployment)
+[![Развертывание в Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262758)
 
 Добро пожаловать в это руководство, где мы пошаговые инструкции по созданию веб-приложения Azure Kubernetes, защищенного через https. В этом руководстве предполагается, что вы уже вошли в Azure CLI и выбрали подписку для использования с интерфейсом командной строки. Кроме того, предполагается, что установлен Helm ([инструкции можно найти здесь](https://helm.sh/docs/intro/install/)).
 
