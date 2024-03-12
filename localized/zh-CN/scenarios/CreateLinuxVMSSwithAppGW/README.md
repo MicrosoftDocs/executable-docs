@@ -10,6 +10,8 @@ ms.custom: innovation-engine
 
 # 使用 Linux 映像通过 Azure 应用程序网关创建虚拟机规模集
 
+[![部署到 Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262759)
+
 ## 定义环境变量
 
 本教程的第一步是定义环境变量。
