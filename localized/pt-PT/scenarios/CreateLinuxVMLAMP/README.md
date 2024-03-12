@@ -10,7 +10,7 @@ ms.custom: innovation-engine
 
 # Instalar uma pilha LEMP no Azure
 
-[![Implementar no Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#view/Microsoft_Azure_CloudNative/SubscriptionSelectionPage.ReactView/tutorialKey/CreateLinuxVMLAMP)
+[![Implementar no Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2263118)
 
 
 Este artigo orienta você sobre como implantar um servidor Web NGINX, o Servidor Flexível MySQL do Azure e o PHP (a pilha LEMP) em uma VM Ubuntu Linux no Azure. Para ver o servidor LEMP em ação, opcionalmente, pode instalar e configurar um site do WordPress. Neste tutorial, ficará a saber como:
