@@ -10,6 +10,8 @@ ms.custom: innovation-engine
 
 # 빠른 시작: AKS에서 확장 가능 및 보안 WordPress 인스턴스 배포
 
+[![Azure에 배포](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262843)
+
 https를 통해 보호되는 Azure Kubernetes 웹 애플리케이션을 만드는 단계를 단계별로 수행하는 이 자습서를 시작합니다. 이 자습서에서는 사용자가 이미 Azure CLI에 로그인하고 CLI와 함께 사용할 구독을 선택했다고 가정합니다. 또한 Helm이 설치되어 있다고 가정합니다([지침은 여기에서](https://helm.sh/docs/intro/install/) 찾을 수 있음).
 
 ## 환경 변수 정의
@@ -49,7 +51,7 @@ az group create \
     --location $REGION
 ```
 
-Results:
+결과:
 
 <!-- expected_similarity=0.3 -->
 ```json
@@ -80,7 +82,7 @@ az network vnet create \
     --subnet-prefixes $MY_SN_PREFIX
 ```
 
-Results:
+결과:
 
 <!-- expected_similarity=0.3 -->
 ```json
@@ -146,7 +148,7 @@ az mysql flexible-server create \
     --yes -o JSON
 ```
 
-Results:
+결과:
 
 <!-- expected_similarity=0.3 -->
 ```json
@@ -199,7 +201,7 @@ az mysql flexible-server parameter set \
     -n require_secure_transport -v "OFF" -o JSON
 ```
 
-Results:
+결과:
 
 <!-- expected_similarity=0.3 -->
 ```json
@@ -423,7 +425,7 @@ kubectl apply -f wp-azurefiles-sc.yaml
         wordpress bitnami/wordpress
     ```
 
-Results:
+결과:
 
 <!-- expected_similarity=0.3 -->
 ```text
@@ -495,7 +497,7 @@ else
 fi;
 ```
 
-Results:
+결과:
 
 <!-- expected_similarity=0.3 -->
 ```HTML
