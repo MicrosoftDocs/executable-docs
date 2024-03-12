@@ -10,7 +10,7 @@ ms.custom: innovation-engine
 
 # Instalowanie stosu LEMP na platformie Azure
 
-[![Wdróż na platformie Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#view/Microsoft_Azure_CloudNative/SubscriptionSelectionPage.ReactView/tutorialKey/CreateLinuxVMLAMP)
+[![Wdróż na platformie Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2263118)
 
 
 W tym artykule przedstawiono sposób wdrażania serwera internetowego NGINX, serwera elastycznego Azure MySQL i języka PHP (stosu LEMP) na maszynie wirtualnej z systemem Ubuntu Linux na platformie Azure. Aby zobaczyć, jak działa serwer LEMP, możesz opcjonalnie zainstalować i skonfigurować witrynę WordPress. Ten samouczek zawiera informacje na temat wykonywania następujących czynności:
