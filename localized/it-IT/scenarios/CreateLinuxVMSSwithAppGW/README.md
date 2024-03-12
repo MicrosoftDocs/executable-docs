@@ -10,6 +10,8 @@ ms.custom: innovation-engine
 
 # Creare un set di scalabilità di macchine virtuali con gateway applicazione con l'immagine Linux
 
+[![Distribuzione in Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262759)
+
 ## Definire le variabili di ambiente
 
 Il primo passaggio di questa esercitazione consiste nel definire le variabili di ambiente.
