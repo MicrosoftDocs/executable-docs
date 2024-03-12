@@ -10,6 +10,8 @@ ms.custom: innovation-engine
 
 # Snabbstart: Distribuera en skalbar och säker WordPress-instans på AKS
 
+[![Distribuera till Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262843)
+
 Välkommen till den här självstudien där vi tar dig steg för steg när du skapar ett Azure Kubernetes-webbprogram som skyddas via https. Den här självstudien förutsätter att du redan är inloggad i Azure CLI och har valt en prenumeration som ska användas med CLI. Det förutsätter också att du har Helm installerat ([instruktioner finns här](https://helm.sh/docs/intro/install/)).
 
 ## Definiera miljövariabler
