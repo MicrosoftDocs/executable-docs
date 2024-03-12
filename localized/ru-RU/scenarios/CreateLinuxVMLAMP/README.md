@@ -10,7 +10,7 @@ ms.custom: innovation-engine
 
 # Установка стека LEMP в Azure
 
-[![Развертывание в Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#view/Microsoft_Azure_CloudNative/SubscriptionSelectionPage.ReactView/tutorialKey/CreateLinuxVMLAMP)
+[![Развертывание в Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2263118)
 
 
 В этой статье описывается, как развернуть веб-сервер NGINX, гибкий сервер Azure MySQL и PHP (стек LEMP) на виртуальной машине Ubuntu Linux в Azure. Чтобы оценить работу сервера LEMP в действии, вы можете установить и настроить сайт WordPress. Из этого руководства вы узнаете, как выполнить следующие задачи:
