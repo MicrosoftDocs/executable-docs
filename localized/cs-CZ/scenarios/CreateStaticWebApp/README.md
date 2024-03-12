@@ -11,6 +11,8 @@ ms.service: Azure
 
 # Rychlý start azure Static Web Apps: Vytvoření prvního statického webu pomocí Azure CLI
 
+[![Nasazení do Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262845)
+
 Azure Static Web Apps publikuje weby do produkčního prostředí vytvořením aplikací z úložiště kódu. V tomto rychlém startu nasadíte webovou aplikaci do Azure Static Web Apps pomocí Azure CLI.
 
 ## Definování proměnných prostředí
