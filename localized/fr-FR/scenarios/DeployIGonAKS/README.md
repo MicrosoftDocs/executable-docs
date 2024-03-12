@@ -10,6 +10,8 @@ ms.custom: innovation-engine
 
 # Démarrage rapide : déployer Inspektor Gadget dans un cluster Azure Kubernetes Service
 
+[![Déployer dans Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262844)
+
 Bienvenue dans ce tutoriel au cours duquel nous allons vous accompagner pas à pas dans le déploiement d’[Inspektor Gadget](https://www.inspektor-gadget.io/) dans un cluster Azure Kubernetes Service (AKS) à l’aide du plug-in kubectl : `gadget`. Ce tutoriel suppose que vous êtes déjà connecté à Azure CLI et que vous avez sélectionné un abonnement à utiliser avec l’interface CLI.
 
 ## Définissez des variables d’environnement
