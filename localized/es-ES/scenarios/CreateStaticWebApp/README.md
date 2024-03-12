@@ -11,6 +11,8 @@ ms.service: Azure
 
 # Guía de inicio rápido de Azure Static Web Apps: creación del primer sitio estático mediante la CLI de Azure
 
+[![Implementación en Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262845)
+
 Azure Static Web Apps publica sitios web en un entorno de producción mediante la creación de aplicaciones desde un repositorio de código. En este inicio rápido, se implementa una aplicación web en Azure Static Web Apps mediante la CLI de Azure.
 
 ## Definición de las variables de entorno
