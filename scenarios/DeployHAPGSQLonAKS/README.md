@@ -15,8 +15,8 @@ ms.custom: innovation-engine, linux-related content
 The First step in this tutorial is to define environment variables.
 
 ```bash
-export RED=$(tput setaf 1)
-export GREEN=$(tput setaf 2)
+export ERROR=$(tput setaf 1)
+export OUTPUT=$(tput setaf 2)
 export NC=$(tput sgr0) 
 export LOCAL_NAME="cnpg"
 export RGTAGS="owner=cnpg"
@@ -38,19 +38,20 @@ In order to run commands against Azure using the CLI you need to login. This is 
 
 ## Check for Prerequisites
 
-Next, check for prerequisites. This process involves verifying the installation of several tools and features necessary for your project. This section checks for the following prerequisites: aks-preview extension, helm, and kubectl. It also checks if the NodeAutoProvisioningPreview feature is already enabled. If not, it registers the feature flag, waits for the feature registration to complete, and refreshes the registration of the Microsoft.ContainerService resource provider until the feature is registered.
+Next, check for prerequisites. This section checks for the following prerequisites: aks-preview extension, helm, and kubectl. It also checks if the NodeAutoProvisioningPreview feature is already enabled. If not, it registers the feature flag, waits for the feature registration to complete, and refreshes the registration of the Microsoft.ContainerService resource provider until the feature is registered.
+
+### AKS-Preview Extension
 
 ```bash
-# This block checks if aks-preview extension is installed
-echo ${GREEN} "Checking if aks-preview extension is installed..." ${NC}
+echo ${OUTPUT} "Checking if aks-preview extension is installed..." ${NC}
 if ! az extension show --name aks-preview &> /dev/null; then
-    echo "aks-preview extension is not installed. Please install it using the following command="
-    az extension add --name aks-preview 
+  az extension add --name aks-preview 
 fi
 ```
 
+### NodeAutoProvisioningPreview Feature
+
 ```bash
-# This block checks if NodeAutoProvisioningPreview feature is already enabled. If not, then do the following: Register the NodeAutoProvisioningPreview feature flag, wait for the feature registration to complete, and refresh the registration of the Microsoft.ContainerService resource provider until the feature is registered.
 if ! az feature show --namespace "Microsoft.ContainerService" --name "NodeAutoProvisioningPreview" --subscription "$SUBSCRIPTION_ID" --query "properties.state" --output tsv | grep -wq "Registered"; then
     az feature register --namespace "Microsoft.ContainerService" --name "NodeAutoProvisioningPreview"
     status=""
@@ -70,29 +71,25 @@ if ! az feature show --namespace "Microsoft.ContainerService" --name "NodeAutoPr
         fi
     done
     az feature register --namespace "Microsoft.ContainerService" --name "NodeAutoProvisioningPreview"
-else
-    echo ${GREEN} "NodeAutoProvisioningPreview feature is already registered."
 fi
 ```
 
+### Helm
+
 ```bash
-# This block checks if helm is installed
-echo ${GREEN} "Checking prerequisites... " ${NC}
 if ! command -v helm &> /dev/null; then
-    echo ${RED} "Helm is not installed. Please install it using the following command:"
     curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3
     chmod 700 get_helm.sh
     ./get_helm.sh
 fi
 ```
 
+### Kubectl
+
 ```bash
-# This block checks if kubectl is installed
 if ! command -v kubectl &> /dev/null; then
-    echo ${RED} "kubectl is not installed. Please install it using the following command:"
-    az aks install-cli --install-location ./kubectl
+    az aks install-cli
 fi
-echo ${GREEN} "Prerequisites are met." ${NC}
 ```
 
 ## Create a Resource Group
@@ -100,12 +97,9 @@ echo ${GREEN} "Prerequisites are met." ${NC}
 A resource group is a container for related resources. All resources must be placed in a resource group. We will create one for this tutorial. The following command creates a resource group with the previously defined $RG_NAME and $LOCATION parameters.
 
 ```bash
-# This block checks to see if resource group already exists. If not, it creates the resource group
 export RG_NAME="rg-${LOCAL_NAME}-${SUFFIX}"
 if ! az group show -n $RG_NAME &> /dev/null; then
     az group create -n $RG_NAME -l $LOCATION --tags $RGTAGS
-else
-    echo ${RED} "Resource group $RG_NAME already exists."
 fi
 ```
 
@@ -137,11 +131,8 @@ If the storage account is created successfully, you'll see a message indicating 
 This storage account will be used for backing up your Postgres database in this deployment.
 
 ```bash
-# This block sets up the storage account used for the backing up Postgres in this deployment. Specifically, it checks for the existence of the storage account. If not, it creates an Azure Storage Account and container for the Postgres backups
 if ! az storage account show --name "${STORAGE_ACCOUNT_NAME}" --resource-group "${RG_NAME}" &> /dev/null; then
     az storage account create --name "${STORAGE_ACCOUNT_NAME}" --resource-group "${RG_NAME}" --location "${LOCATION}" --sku Standard_LRS
-else
-    echo ${RED} "Storage account already exists." ${NC}
 fi
 ```
 
@@ -247,11 +238,8 @@ Results:
 Next, you'll be creating a container in your Azure Storage Account specifically for Postgres backups. This is done using the az storage container create command. You'll need to provide the name of the container and the name of the storage account it belongs to.
 
 ```bash
-# This block creates a container for the Postgres backups
 if ! az storage container show --name "${BARMAN_CONTAINER_NAME}" --account-name "${STORAGE_ACCOUNT_NAME}" &> /dev/null; then
     az storage container create --name "${BARMAN_CONTAINER_NAME}" --account-name "${STORAGE_ACCOUNT_NAME}"
-else
-    echo ${RED} "Container already exists." ${NC}
 fi
 ```
 
@@ -269,14 +257,11 @@ Results:
 The next step is to create an Azure Kubernetes Service (AKS) cluster. This is done using the az aks create command. In the first phase, you'll need to check if the user assigned managed identity for the AKS cluster exists. If not, you'll create the managed identity. Next, you'll create the AKS cluster. This is done using the az aks create command. You'll need to provide the name of the AKS cluster, the resource group it belongs to, the number of nodes in the cluster, and the name of the user assigned managed identity for the AKS cluster.
 
 ```bash
-# This block stands up the AKS cluster. As the first step in that, it checks if the user assigned managed identity for the AKS cluster exists. If not, it creates the managed identity. 
 managedIdentity=$(az identity create --name "${AKS_MANAGED_IDENTITY_NAME}" --resource-group "${RG_NAME}")
 managedIdentityObjectId=$(echo "${managedIdentity}" | jq -r '.principalId')
 managedIdentityResourceId=$(echo "${managedIdentity}" | jq -r '.id')
 if ! az aks show --name "${AKS_CLUSTER_NAME}" --resource-group "${RG_NAME}" &> /dev/null; then
     az aks create --tags "$RGTAGS" --name "${AKS_CLUSTER_NAME}" --resource-group "${RG_NAME}" --enable-keda --enable-managed-identity --assign-identity $managedIdentityResourceId --node-provisioning-mode Auto --network-plugin azure --network-plugin-mode overlay --network-dataplane cilium --nodepool-taints CriticalAddonsOnly=true:NoSchedule --node-count "$AKS_NODE_COUNT" --enable-oidc-issuer --generate-ssh-keys
-else
-    echo ${RED} "Cluster already exists."
 fi
 ```
 
@@ -373,11 +358,7 @@ Results:
 By this point the cluster should be up and running. This step ensures that by getting access credentials for the cluster.
 
 ```bash
-# By this point the cluster should be up and running. This block gets access credentials for the k8s cluster
-echo ${GREEN} "Getting access credentials for the k8s cluster..." ${NC}
-if ! az aks get-credentials --name ${AKS_CLUSTER_NAME} --resource-group ${RG_NAME}; then
-    echo ${RED} "Failed to retrieve credentials for cluster ${AKS_CLUSTER_NAME}" ${NC}
-fi
+az aks get-credentials --name ${AKS_CLUSTER_NAME} --resource-group ${RG_NAME}
 ```
 
 ## Install the Postgres Cluster
@@ -389,8 +370,6 @@ The next step is to install the Postgres Cluster. This is done using the CloudNa
 First, install the CloudNativePG operator on the AKS cluster.
 
 ```bash
-# This block installs the CloudNativePG operator on the AKS cluster
-sudo /usr/local/bin/kubectl
 kubectl apply -f https://raw.githubusercontent.com/cloudnative-pg/cloudnative-pg/main/releases/cnpg-1.22.0.yaml
 ```
 
@@ -399,12 +378,10 @@ kubectl apply -f https://raw.githubusercontent.com/cloudnative-pg/cloudnative-pg
 Next, update the configuration of the CloudNativePG operator to enable expanding volumes for AKS.
 
 ```bash
-# This block updates the configuration of the CloudNativePG operator to enable expanding volumes for AKS
 kubectl apply -f az-expanding-vols.yaml
 ```
 
 ```bash
-# This block restarts the CloudNativePG controller to apply the new configuration
 kubectl rollout restart deployment -n cnpg-system cnpg-controller-manager
 ```
 
@@ -413,11 +390,7 @@ kubectl rollout restart deployment -n cnpg-system cnpg-controller-manager
 Next, create the storage class for the Postgres deployment.
 
 ```bash
-# This block creates the storage class for the Postgres deployment
-echo "Create the storage class for the Postgres deployment"
-if kubectl apply -f std-storageclass.yaml; then
-    echo ${RED} "Failed to create the storage class for the Postgres deployment" ${NC}
-fi
+kubectl apply -f std-storageclass.yaml
 ```
 
 ### Create the Namespace and Secrets for the Postgres Deployment
@@ -425,20 +398,13 @@ fi
 Next, create the namespace and secrets for the Postgres deployment.
 
 ```bash
-# This block creates the namespace for the Postgres deployment
-echo ${GREEN} "Create namespace for Postgres deployment..." ${NC}
-if kubectl create -f auth-prod.yaml; then
-    echo ${RED} "Failed to create the namespace for Postgres deployment" ${NC}
-fi
+kubectl create -f auth-prod.yaml
 ```
 
 Finally, create the Postgres cluster.
 
 ```bash
-# This block gets the storage account key, deploys the Postgres Cluster and inserts the storage account key into the cluster specification
-echo ${GREEN} "Getting the storage account key..." ${NC}
 STORAGE_ACCOUNT_KEY=$(az storage account keys list --account-name ${STORAGE_ACCOUNT_NAME} --resource-group ${RG_NAME} --query "[0].value" --output tsv)
-echo ${GREEN} "Deploying the Postgres cluster..." ${NC}
 cat  <<EOF | kubectl apply -f -
 ---
 apiVersion: postgresql.cnpg.io/v1
