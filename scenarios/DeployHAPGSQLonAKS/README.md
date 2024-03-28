@@ -1,8 +1,8 @@
 ---
 title: Create a Highly Available PostgreSQL Cluster on Azure Kubernetes Service
 description: This tutorial shows how to create a Highly Available PostgreSQL cluster on Azure Kubernetes Service (AKS) using the CloudNativePG operator
-author: russd2357, kenkilty
-ms.author: rdepina, kkilty
+author: russd2357
+ms.author: rdepina
 ms.topic: article
 ms.date: 03/19/2024
 ms.custom: innovation-engine, linux-related content
