@@ -11,6 +11,8 @@ ms.service: Azure
 
 # Az Azure Static Web Apps rövid útmutatója: Az első statikus webhely létrehozása az Azure CLI használatával
 
+[![Üzembe helyezés az Azure-ban](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262845)
+
 Az Azure Static Web Apps egy kódtárból származó alkalmazások létrehozásával teszi közzé a webhelyeket az éles környezetben. Ebben a rövid útmutatóban üzembe helyez egy webalkalmazást az Azure Static Web Appsben az Azure CLI használatával.
 
 ## Környezeti változók definiálása

@@ -11,6 +11,8 @@ ms.service: Azure
 
 # Azure Static Web Apps – Schnellstart: Erstellen Ihrer ersten statischen Website mithilfe der Azure CLI
 
+[![Bereitstellung in Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262845)
+
 Azure Static Web Apps veröffentlicht Websites in der Produktion, indem Apps aus einem Coderepository erstellt werden. In dieser Schnellstartanleitung stellen Sie über die Azure CLI eine Web-Anwendung in Azure Static Web Apps bereit.
 
 ## Umgebungsvariablen definieren

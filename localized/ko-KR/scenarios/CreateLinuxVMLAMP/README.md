@@ -10,7 +10,7 @@ ms.custom: innovation-engine
 
 # Azure에 LEMP 스택 설치
 
-[![Azure에 배포](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#view/Microsoft_Azure_CloudNative/SubscriptionSelectionPage.ReactView/tutorialKey/CreateLinuxVMLAMP)
+[![Azure에 배포](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2263118)
 
 
 이 문서에서는 Azure의 Ubuntu Linux VM에 NGINX 웹 서버, Azure MySQL 유연한 서버 및 PHP(LEMP 스택)를 배포하는 방법을 안내합니다. LEMP 서버의 작동을 확인하려면 필요에 따라 WordPress 사이트를 설치하고 구성할 수 있습니다. 이 자습서에서는 다음을 하는 방법을 알아볼 수 있습니다.
@@ -70,7 +70,7 @@ az group create \
     --location $REGION -o JSON
 ```
 
-Results:
+결과:
 
 <!-- expected_similarity=0.3 -->
 ```JSON
@@ -104,7 +104,7 @@ az network vnet create \
     --subnet-prefixes $MY_SN_PREFIX -o JSON
 ```
 
-Results:
+결과:
 
 <!-- expected_similarity=0.3 -->
 ```JSON
@@ -159,7 +159,7 @@ az network public-ip create \
     --zone 1 2 3 -o JSON
 ```
 
-Results:
+결과:
 
 <!-- expected_similarity=0.3 -->
 ```JSON
@@ -206,7 +206,7 @@ az network nsg create \
     --location $REGION -o JSON
 ```
 
-Results:
+결과:
 
 <!-- expected_similarity=0.3 -->
 ```JSON
@@ -263,7 +263,7 @@ az network nsg rule create \
     --destination-port-range 22 80 443 -o JSON
 ```
 
-Results:
+결과:
 
 <!-- expected_similarity=0.3 -->
 ```JSON
@@ -307,7 +307,7 @@ az network nic create \
     --public-ip-address $MY_PUBLIC_IP_NAME -o JSON
 ```
 
-Results:
+결과:
 
 <!-- expected_similarity=0.3 -->
 ```JSON
@@ -499,7 +499,7 @@ az network private-dns zone create \
     --name $MY_DNS_LABEL.private.mysql.database.azure.com -o JSON
 ```
 
-Results:
+결과:
 
 <!-- expected_similarity=0.3 -->
 ```JSON
@@ -546,7 +546,7 @@ az mysql flexible-server create \
     --yes -o JSON
 ```
 
-Results:
+결과:
 
 <!-- expected_similarity=0.3 -->
 ```JSON
@@ -613,7 +613,7 @@ az mysql flexible-server parameter set \
     -n require_secure_transport -v "OFF" -o JSON
 ```
 
-Results:
+결과:
 
 <!-- expected_similarity=0.3 -->
 ```JSON
@@ -662,7 +662,7 @@ az vm create \
     --custom-data cloud-init.txt -o JSON
 ```
 
-Results:
+결과:
 
 <!-- expected_similarity=0.3 -->
 ```JSON
@@ -763,7 +763,7 @@ az vm extension set \
     --vm-name $MY_VM_NAME -o JSON
 ```
 
-Results:
+결과:
 
 <!-- expected_similarity=0.3 -->
 ```JSON
@@ -810,7 +810,7 @@ while [[ $(date -u +%s) -le $endtime ]]; do
 done
 ```
 
-Results:
+결과:
 
 <!-- expected_similarity=0.3 -->
 ```HTML

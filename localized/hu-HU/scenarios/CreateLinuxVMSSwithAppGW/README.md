@@ -10,6 +10,8 @@ ms.custom: innovation-engine
 
 # Virtuálisgép-méretezési csoport létrehozása Az Application Gateway használatával Linux rendszerképpel
 
+[![Üzembe helyezés az Azure-ban](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262759)
+
 ## Környezeti változók definiálása
 
 Az oktatóanyag első lépése a környezeti változók definiálása.
@@ -841,7 +843,7 @@ az network public-ip show --resource-group $MY_RESOURCE_GROUP_NAME --name $MY_AP
 
 
 
-# References
+# Hivatkozások
 
 * [A VMSS dokumentációja](https://learn.microsoft.com/en-us/azure/virtual-machine-scale-sets/overview)
 * [VMSS automatikus skálázás](https://learn.microsoft.com/en-us/azure/virtual-machine-scale-sets/tutorial-autoscale-cli?tabs=Ubuntu)

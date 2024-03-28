@@ -11,6 +11,8 @@ ms.service: Azure
 
 # Guia de início rápido dos aplicativos Web estáticos do Azure: criando seu primeiro site estático usando a CLI do Azure
 
+[![Implementar no Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262845)
+
 Os Aplicativos Web Estáticos do Azure publicam sites para produção criando aplicativos a partir de um repositório de código. Neste início rápido, você implanta um aplicativo Web nos Aplicativos Web Estáticos do Azure usando a CLI do Azure.
 
 ## Definir variáveis de ambiente

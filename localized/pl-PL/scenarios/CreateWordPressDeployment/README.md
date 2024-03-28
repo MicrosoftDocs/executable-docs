@@ -10,6 +10,8 @@ ms.custom: innovation-engine
 
 # Szybki start: wdrażanie skalowalnego i bezpiecznego wystąpienia platformy WordPress w usłudze AKS
 
+[![Wdróż na platformie Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262843)
+
 Witamy w tym samouczku, w którym wykonamy krok po kroku tworzenie aplikacji internetowej platformy Azure Kubernetes zabezpieczonej za pośrednictwem protokołu HTTPS. W tym samouczku założono, że zalogowano się już do interfejsu wiersza polecenia platformy Azure i wybrano subskrypcję do użycia z interfejsem wiersza polecenia. Przyjęto również założenie, że masz zainstalowane narzędzie Helm ([instrukcje można znaleźć tutaj](https://helm.sh/docs/intro/install/)).
 
 ## Definiowanie zmiennych środowiskowych

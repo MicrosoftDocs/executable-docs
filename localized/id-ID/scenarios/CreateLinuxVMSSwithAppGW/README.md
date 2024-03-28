@@ -10,6 +10,8 @@ ms.custom: innovation-engine
 
 # Membuat Set Skala Komputer Virtual dengan Application Gateway dengan gambar Linux
 
+[![Sebarkan ke Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262759)
+
 ## Tentukan Variabel Lingkungan
 
 Langkah pertama dalam tutorial ini adalah menentukan variabel lingkungan.

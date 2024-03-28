@@ -10,6 +10,8 @@ ms.custom: innovation-engine
 
 # 快速入門：在 Azure Kubernetes Service 叢集中部署 Inspektor 小工具
 
+[![部署至 Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262844)
+
 歡迎使用本教學課程 [，在 Azure Kubernetes Service （AKS） 叢集中部署 Inspektor 小工具](https://www.inspektor-gadget.io/) 與 kubectl 外掛程式： `gadget`。 本教學課程假設您已登入 Azure CLI，並已選取要搭配 CLI 使用的訂用帳戶。
 
 ## 定義環境變數

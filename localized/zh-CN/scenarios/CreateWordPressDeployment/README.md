@@ -10,6 +10,8 @@ ms.custom: innovation-engine
 
 # 快速入门：在 AKS 上部署可缩放且安全的 WordPress 实例
 
+[![部署到 Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262843)
+
 欢迎学习本教程，我们会逐步介绍如何创建通过 https 保护的 Azure Kubernetes Web 应用程序。 本教程假定你已登录到 Azure CLI，并已选择要与 CLI 一起使用的订阅。 它还假定你已安装 Helm（[说明可在此处找到](https://helm.sh/docs/intro/install/)）。
 
 ## 定义环境变量

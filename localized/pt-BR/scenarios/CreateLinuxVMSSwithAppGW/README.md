@@ -10,6 +10,8 @@ ms.custom: innovation-engine
 
 # Criar um Conjunto de Dimensionamento de Máquinas Virtuais com o Gateway de Aplicativo do Azure com a imagem do Linux
 
+[![Implantar no Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262759)
+
 ## Definir Variáveis de Ambiente
 
 A primeira etapa desse tutorial é definir as variáveis de ambiente.

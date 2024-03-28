@@ -10,7 +10,7 @@ ms.custom: innovation-engine
 
 # Создание виртуальной машины Linux и SSH в Azure
 
-[![Развертывание в Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#view/Microsoft_Azure_CloudNative/SubscriptionSelectionPage.ReactView/tutorialKey/CreateLinuxVMAndSSH)
+[![Развертывание в Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262692)
 
 
 ## Определение переменных среды

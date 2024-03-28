@@ -11,6 +11,8 @@ ms.service: Azure
 
 # Snabbstart för Azure Static Web Apps: Skapa din första statiska webbplats med hjälp av Azure CLI
 
+[![Distribuera till Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262845)
+
 Azure Static Web Apps publicerar webbplatser till produktion genom att skapa appar från en kodlagringsplats. I den här snabbstarten distribuerar du ett webbprogram till Azure Static Web Apps med hjälp av Azure CLI.
 
 ## Definiera miljövariabler

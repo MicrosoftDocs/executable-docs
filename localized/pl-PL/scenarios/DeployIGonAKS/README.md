@@ -10,6 +10,8 @@ ms.custom: innovation-engine
 
 # Szybki start: wdrażanie gadżetu Inspektor w klastrze usługi Azure Kubernetes Service
 
+[![Wdróż na platformie Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262844)
+
 Witamy w tym samouczku, w którym wykonamy krok po kroku wdrażanie [gadżetu](https://www.inspektor-gadget.io/) Inspektora w klastrze usługi Azure Kubernetes Service (AKS) za pomocą wtyczki kubectl: `gadget`. W tym samouczku założono, że zalogowano się już do interfejsu wiersza polecenia platformy Azure i wybrano subskrypcję do użycia z interfejsem wiersza polecenia.
 
 ## Definiowanie zmiennych środowiskowych

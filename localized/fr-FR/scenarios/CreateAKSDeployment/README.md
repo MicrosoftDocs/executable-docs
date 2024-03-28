@@ -10,7 +10,7 @@ ms.custom: innovation-engine
 
 # Démarrage rapide : Déployer un cluster Azure Kubernetes Service scalable et sécurisé avec Azure CLI
 
-[![Déployer dans Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#view/Microsoft_Azure_CloudNative/SubscriptionSelectionPage.ReactView/tutorialKey/CreateAKSDeployment)
+[![Déployer dans Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262758)
 
 Bienvenue dans ce tutoriel qui vous guide pas à pas dans la création d’une application web Azure Kubernetes sécurisée sur https. Ce tutoriel suppose que vous êtes déjà connecté à Azure CLI et que vous avez sélectionné un abonnement à utiliser avec l’interface CLI. Il suppose également que vous avez installé Helm ([Instructions disponibles ici](https://helm.sh/docs/intro/install/)).
 

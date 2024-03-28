@@ -11,6 +11,8 @@ ms.service: Azure
 
 # App Web statiche di Azure Avvio rapido: Creazione del primo sito statico con l'interfaccia della riga di comando di Azure
 
+[![Distribuzione in Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262845)
+
 App Web statiche di Azure pubblica siti Web in produzione creando app da un repository di codice. In questa guida introduttiva si distribuisce un'applicazione Web in App Web statiche di Azure usando l'interfaccia della riga di comando di Azure.
 
 ## Definire le variabili di ambiente

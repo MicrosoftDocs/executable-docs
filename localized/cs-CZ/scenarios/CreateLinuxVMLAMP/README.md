@@ -10,7 +10,7 @@ ms.custom: innovation-engine
 
 # Instalace zásobníku LEMP v Azure
 
-[![Nasazení do Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#view/Microsoft_Azure_CloudNative/SubscriptionSelectionPage.ReactView/tutorialKey/CreateLinuxVMLAMP)
+[![Nasazení do Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2263118)
 
 
 Tento článek vás provede nasazením webového serveru NGINX, flexibilního serveru Azure MySQL a PHP (zásobník LEMP) na virtuálním počítači s Ubuntu Linuxem v Azure. Pokud chcete zobrazit server LEMP v akci, můžete volitelně nainstalovat a nakonfigurovat web WordPress. V tomto kurzu se naučíte:

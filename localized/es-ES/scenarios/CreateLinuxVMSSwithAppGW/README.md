@@ -10,6 +10,8 @@ ms.custom: innovation-engine
 
 # Crear un conjunto de escalado de máquinas virtuales con la imagen de Application Gateway con Linux
 
+[![Implementación en Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262759)
+
 ## Definición de las variables de entorno
 
 El primer paso de este tutorial es definir las variables de entorno.

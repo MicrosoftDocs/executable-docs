@@ -10,6 +10,8 @@ ms.custom: innovation-engine
 
 # Quickstart: Inspektor Gadget implementeren in een Azure Kubernetes Service-cluster
 
+[![Implementeren naar Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262844)
+
 Welkom bij deze zelfstudie waarin we u stap voor stap volgen bij het implementeren van [Inspektor Gadget](https://www.inspektor-gadget.io/) in een AKS-cluster (Azure Kubernetes Service) met de kubectl-invoegtoepassing: `gadget`. In deze zelfstudie wordt ervan uitgegaan dat u al bent aangemeld bij Azure CLI en een abonnement hebt geselecteerd voor gebruik met de CLI.
 
 ## Omgevingsvariabelen definiëren

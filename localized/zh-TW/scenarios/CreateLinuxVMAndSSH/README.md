@@ -10,7 +10,7 @@ ms.custom: innovation-engine
 
 # 在 Azure 上建立 Linux VM 和 SSH
 
-[![部署至 Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#view/Microsoft_Azure_CloudNative/SubscriptionSelectionPage.ReactView/tutorialKey/CreateLinuxVMAndSSH)
+[![部署至 Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262692)
 
 
 ## 定義環境變數

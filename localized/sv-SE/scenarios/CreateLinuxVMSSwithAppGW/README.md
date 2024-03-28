@@ -10,6 +10,8 @@ ms.custom: innovation-engine
 
 # Skapa en VM-skalningsuppsättning med Application Gateway med Linux-avbildning
 
+[![Distribuera till Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262759)
+
 ## Definiera miljövariabler
 
 Det första steget i den här självstudien är att definiera miljövariabler.

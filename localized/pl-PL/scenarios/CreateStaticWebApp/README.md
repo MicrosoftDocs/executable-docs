@@ -11,6 +11,8 @@ ms.service: Azure
 
 # Przewodnik Szybki start dotyczący usługi Azure Static Web Apps: tworzenie pierwszej statycznej witryny przy użyciu interfejsu wiersza polecenia platformy Azure
 
+[![Wdróż na platformie Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262845)
+
 Usługa Azure Static Web Apps publikuje witryny internetowe w środowisku produkcyjnym, tworząc aplikacje z repozytorium kodu. W tym przewodniku Szybki start wdrożysz aplikację internetową w usłudze Azure Static Web Apps przy użyciu interfejsu wiersza polecenia platformy Azure.
 
 ## Definiowanie zmiennych środowiskowych

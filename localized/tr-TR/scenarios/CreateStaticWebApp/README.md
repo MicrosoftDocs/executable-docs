@@ -11,6 +11,8 @@ ms.service: Azure
 
 # Azure Static Web Apps Hızlı Başlangıcı: Azure CLI Kullanarak İlk Statik Sitenizi Oluşturma
 
+[![Azure’a dağıtın](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262845)
+
 Azure Static Web Apps, bir kod deposundan uygulama oluşturarak web sitelerini üretim ortamında yayımlar. Bu hızlı başlangıçta, Azure CLI kullanarak Azure Static Web Apps'e bir web uygulaması dağıtacaksınız.
 
 ## Ortam Değişkenlerini Tanımlama

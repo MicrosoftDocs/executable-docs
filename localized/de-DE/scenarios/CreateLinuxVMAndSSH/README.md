@@ -10,7 +10,7 @@ ms.custom: innovation-engine
 
 # Erstellen einer virtuellen Linux-VM und SSH in Azure
 
-[![Bereitstellung in Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#view/Microsoft_Azure_CloudNative/SubscriptionSelectionPage.ReactView/tutorialKey/CreateLinuxVMAndSSH)
+[![Bereitstellung in Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262692)
 
 
 ## Umgebungsvariablen definieren

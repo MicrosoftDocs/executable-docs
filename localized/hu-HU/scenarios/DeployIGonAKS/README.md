@@ -10,6 +10,8 @@ ms.custom: innovation-engine
 
 # Rövid útmutató: Inspektor-minialkalmazás üzembe helyezése egy Azure Kubernetes Service-fürtben
 
+[![Üzembe helyezés az Azure-ban](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262844)
+
 Üdvözöljük ebben az oktatóanyagban, amelyben lépésről lépésre elvégezzük az Inspektor Gadget[ üzembe helyezését ](https://www.inspektor-gadget.io/)egy Azure Kubernetes Service-fürtben (AKS) a kubectl beépülő modullal: `gadget`. Ez az oktatóanyag feltételezi, hogy már bejelentkezett az Azure CLI-be, és kiválasztotta a parancssori felülettel használni kívánt előfizetést.
 
 ## Környezeti változók definiálása

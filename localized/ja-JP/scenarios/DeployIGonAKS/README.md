@@ -10,6 +10,8 @@ ms.custom: innovation-engine
 
 # クイック スタート: Inspektor Gadget を Azure Kubernetes Service クラスターにデプロイする
 
+[![Azure に配置する](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262844)
+
 このチュートリアルでは、kubectl プラグイン `gadget` を使って Azure Kubernetes Service (AKS) クラスターに [Inspektor Gadget](https://www.inspektor-gadget.io/) をデプロイする手順を説明します。 このチュートリアルは、既に Azure CLI にログインしており、CLI で使用するサブスクリプションが選択されていることを前提としています。
 
 ## 環境変数を定義する
@@ -176,3 +178,8 @@ When no longer needed, you can use `az group delete` to remove the resource grou
 az group delete --name $MY_RESOURCE_GROUP_NAME --no-wait --yes
 ```
 -->
+
+## 次のステップ
+- [Inspektor Gadget が役立つ実際のシナリオ](https://go.microsoft.com/fwlink/p/?linkid=2260402#use-cases)
+- [提供されているガジェットを調べる](https://go.microsoft.com/fwlink/p/?linkid=2260070)
+- [独自の eBPF プログラムを実行する](https://go.microsoft.com/fwlink/p/?linkid=2259865)

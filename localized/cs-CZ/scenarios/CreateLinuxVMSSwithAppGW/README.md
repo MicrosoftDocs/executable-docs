@@ -10,6 +10,8 @@ ms.custom: innovation-engine
 
 # Vytvoření škálovací sady virtuálních počítačů se službou Application Gateway s imagí Linuxu
 
+[![Nasazení do Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262759)
+
 ## Definování proměnných prostředí
 
 Prvním krokem v tomto kurzu je definování proměnných prostředí.
@@ -841,7 +843,7 @@ az network public-ip show --resource-group $MY_RESOURCE_GROUP_NAME --name $MY_AP
 
 
 
-# Odkazy
+# Reference
 
 * [Dokumentace k VMSS](https://learn.microsoft.com/en-us/azure/virtual-machine-scale-sets/overview)
 * [Automatické škálování VMSS](https://learn.microsoft.com/en-us/azure/virtual-machine-scale-sets/tutorial-autoscale-cli?tabs=Ubuntu)

@@ -10,6 +10,8 @@ ms.custom: innovation-engine
 
 # 使用 Linux 映像建立具有 應用程式閘道 的虛擬機擴展集
 
+[![部署至 Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262759)
+
 ## 定義環境變數
 
 本教學課程的第一個步驟是定義環境變數。
@@ -179,7 +181,7 @@ az network public-ip create  --resource-group $MY_RESOURCE_GROUP_NAME --name $MY
 }
 ```
 
-在此步驟中，您會建立要與虛擬機擴展集整合的 應用程式閘道。 在此範例中，我們會使用Standard_v2 SKU 建立區域備援 應用程式閘道，併為 應用程式閘道 啟用 Http 通訊。 我們在上一個步驟中建立的公用IP$MY_APPGW_PUBLIC_IP_NAME附加至 應用程式閘道。 
+在此步驟中，您會建立要與虛擬機擴展集整合的 應用程式閘道。 在此範例中，我們會使用 Standard_v2 SKU 建立區域備援 應用程式閘道，併為 應用程式閘道 啟用 Http 通訊。 我們在上一個步驟中建立的公用IP$MY_APPGW_PUBLIC_IP_NAME附加至 應用程式閘道。 
 
 ```bash
 az network application-gateway create   --name $MY_APPGW_NAME --location $REGION --resource-group $MY_RESOURCE_GROUP_NAME --vnet-name $MY_VNET_NAME --subnet $MY_APPGW_SN_NAME --capacity 2  --zones 1 2 3 --sku Standard_v2   --http-settings-cookie-based-affinity Disabled   --frontend-port 80 --http-settings-port 80   --http-settings-protocol Http --public-ip-address $MY_APPGW_PUBLIC_IP_NAME --priority 1001 -o JSON
@@ -376,7 +378,7 @@ az network application-gateway create   --name $MY_APPGW_NAME --location $REGION
  ```
 
 
-# 建立虛擬機擴展集 
+# 建立虛擬機器擴展集 
 
 下列命令會在資源群組內建立區域備援虛擬機擴展集 （VMSS），$MY_RESOURCE_GROUP_NAME。 我們會整合我們建立上一個步驟的 應用程式閘道。 此命令會在子網 $MY_VM_SN_NAME 中建立具有公用IP的2 Standard_DS2_v2 SKU 虛擬機器。 如果您需要透過 ssh 登入 VM，您可以在下列步驟期間建立 SSH 金鑰。
 
@@ -702,7 +704,7 @@ az vmss extension set --publisher Microsoft.Azure.Extensions --version 2.0  --na
 ```
 
 
-# 定義自動調整配置檔  
+# 定義自動調整設定檔  
 
 若要在擴展集上啟用自動調整，您必須先定義自動調整配置檔。 此配置檔會定義預設、最小和最大擴展集容量。 這些限制可讓您控制成本，方法是不持續建立 VM 實例，並將可接受的效能與維持在相應縮小事件中的實例數目下限進行平衡。
 下列範例會設定 2 個 VM 實例的預設值和最小值，以及最多 10 個：
@@ -758,9 +760,9 @@ az monitor autoscale create --resource-group $MY_RESOURCE_GROUP_NAME --resource 
 }
 ```
 
-# 建立規則以自動向外調整
+# 建立自動擴增的規則
 
-下列命令會建立一個規則，以在平均CPU負載在5分鐘期間內大於70%時，增加擴展集中的VM實例數目。 當規則觸發時，VM 實例的數目會增加三個。
+下列命令會建立一個規則，以在平均CPU負載在5分鐘期間內大於70%時，增加擴展集中的VM實例數目。 當此規則觸發時，VM 執行個體數目會增加三個。
 
 ```bash
 az monitor autoscale rule create --resource-group $MY_RESOURCE_GROUP_NAME --autoscale-name autoscale --condition "Percentage CPU > 70 avg 5m" --scale out 3
@@ -794,7 +796,7 @@ az monitor autoscale rule create --resource-group $MY_RESOURCE_GROUP_NAME --auto
 } 
 ```
 
-# 建立規則以自動調整
+# 建立自動縮減的規則
 
 使用 az monitor autoscale rule create 建立另一個規則，以在平均 CPU 負載在 5 分鐘的期間內低於 30% 時，減少擴展集中的 VM 實例數目。 下列範例會定義要依一個 VM 實例數目進行調整的規則。
 

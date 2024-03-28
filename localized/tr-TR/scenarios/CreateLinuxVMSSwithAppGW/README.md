@@ -10,6 +10,8 @@ ms.custom: innovation-engine
 
 # Linux görüntüsüyle Application Gateway ile Sanal Makine Ölçek Kümesi oluşturma
 
+[![Azure’a dağıtın](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262759)
+
 ## Ortam Değişkenlerini Tanımlama
 
 Bu öğreticinin ilk adımı ortam değişkenlerini tanımlamaktır.

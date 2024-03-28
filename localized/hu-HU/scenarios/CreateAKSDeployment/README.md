@@ -10,7 +10,7 @@ ms.custom: innovation-engine
 
 # Rövid útmutató: Skálázható és biztonságos Azure Kubernetes Service-fürt üzembe helyezése az Azure CLI használatával
 
-[![Üzembe helyezés az Azure-ban](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#view/Microsoft_Azure_CloudNative/SubscriptionSelectionPage.ReactView/tutorialKey/CreateAKSDeployment)
+[![Üzembe helyezés az Azure-ban](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262758)
 
 Üdvözöljük ebben az oktatóanyagban, amelyben lépésről lépésre haladva létrehozunk egy Https-en keresztül biztonságos Azure Kubernetes-webalkalmazást. Ez az oktatóanyag feltételezi, hogy már bejelentkezett az Azure CLI-be, és kiválasztotta a parancssori felülettel használni kívánt előfizetést. Azt is feltételezi, hogy a Helm telepítve van ([az utasítások itt](https://helm.sh/docs/intro/install/) találhatók).
 

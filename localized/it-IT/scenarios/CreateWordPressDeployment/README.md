@@ -10,6 +10,8 @@ ms.custom: innovation-engine
 
 # Guida introduttiva: Distribuire un'istanza di WordPress scalabile e sicura nel servizio Azure Kubernetes
 
+[![Distribuzione in Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262843)
+
 Questa esercitazione illustra in modo dettagliato la creazione di un'applicazione Web Azure Kubernetes protetta tramite https. Questa esercitazione presuppone che l'utente sia già connesso all'interfaccia della riga di comando di Azure e abbia selezionato una sottoscrizione da usare con l'interfaccia della riga di comando. Si presuppone anche che Helm sia installato ([le istruzioni sono disponibili qui](https://helm.sh/docs/intro/install/)).
 
 ## Definire le variabili di ambiente

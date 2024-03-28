@@ -10,7 +10,7 @@ ms.custom: innovation-engine
 
 # Azure で Linux VM と SSH を作成する
 
-[![Azure に配置する](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#view/Microsoft_Azure_CloudNative/SubscriptionSelectionPage.ReactView/tutorialKey/CreateLinuxVMAndSSH)
+[![Azure に配置する](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262692)
 
 
 ## 環境変数を定義する

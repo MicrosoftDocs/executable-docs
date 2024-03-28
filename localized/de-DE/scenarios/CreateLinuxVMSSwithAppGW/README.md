@@ -10,6 +10,8 @@ ms.custom: innovation-engine
 
 # Erstellen einer VM-Skalierungsgruppe mit Application Gateway mit einem Linux-Image
 
+[![Bereitstellung in Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262759)
+
 ## Umgebungsvariablen definieren
 
 Der erste Schritt in diesem Tutorial besteht darin, Umgebungsvariablen zu definieren.

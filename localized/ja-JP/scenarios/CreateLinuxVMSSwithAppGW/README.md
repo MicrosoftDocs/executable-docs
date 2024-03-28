@@ -10,6 +10,8 @@ ms.custom: innovation-engine
 
 # Linux イメージを使って Application Gateway を含む仮想マシン スケール セットを作成する
 
+[![Azure に配置する](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262759)
+
 ## 環境変数を定義する
 
 このチュートリアルの最初の手順は、環境変数を定義することです。

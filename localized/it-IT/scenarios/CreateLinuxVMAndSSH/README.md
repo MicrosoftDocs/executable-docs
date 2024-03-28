@@ -10,7 +10,7 @@ ms.custom: innovation-engine
 
 # Creare una macchina virtuale Linux e SSH in Azure
 
-[![Distribuzione in Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#view/Microsoft_Azure_CloudNative/SubscriptionSelectionPage.ReactView/tutorialKey/CreateLinuxVMAndSSH)
+[![Distribuzione in Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262692)
 
 
 ## Definire le variabili di ambiente

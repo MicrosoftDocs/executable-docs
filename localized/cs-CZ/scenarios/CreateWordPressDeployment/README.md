@@ -10,6 +10,8 @@ ms.custom: innovation-engine
 
 # Rychlý start: Nasazení škálovatelné a zabezpečené instance WordPressu v AKS
 
+[![Nasazení do Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262843)
+
 Vítejte v tomto kurzu, kde vás provedeme krok za krokem při vytváření webové aplikace Azure Kubernetes, která je zabezpečená přes https. V tomto kurzu se předpokládá, že jste už přihlášení k Azure CLI a vybrali jste předplatné, které se má použít s rozhraním příkazového řádku. Předpokládá se také, že máte nainstalovaný Helm ([pokyny najdete tady](https://helm.sh/docs/intro/install/)).
 
 ## Definování proměnných prostředí

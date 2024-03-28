@@ -10,6 +10,8 @@ ms.custom: innovation-engine
 
 # Mulai Cepat: Menyebarkan Inspektor Gadget di kluster Azure Kubernetes Service
 
+[![Sebarkan ke Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262844)
+
 Selamat datang di tutorial ini di mana kami akan membawa Anda selangkah demi selangkah dalam menyebarkan [Inspektor Gadget](https://www.inspektor-gadget.io/) di kluster Azure Kubernetes Service (AKS) dengan plugin kubectl: `gadget`. Tutorial ini mengasumsikan Anda sudah masuk ke Azure CLI dan telah memilih langganan untuk digunakan dengan CLI.
 
 ## Tentukan Variabel Lingkungan

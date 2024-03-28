@@ -10,6 +10,8 @@ ms.custom: innovation-engine
 
 # Schnellstart: Bereitstellen von Inspektor Gadget in einem Azure Kubernetes Service-Cluster
 
+[![Bereitstellung in Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262844)
+
 Willkommen zu diesem Tutorial, in dem wir Sie Schritt für Schritt durch die Bereitstellung von [Inspektor Gadget](https://www.inspektor-gadget.io/) in einem Azure Kubernetes Service (AKS) Cluster mit dem kubectl Plugin führen: `gadget`. In diesem Tutorial wird davon ausgegangen, dass Sie bereits bei der Azure CLI angemeldet sind und ein Abonnement ausgewählt haben, das mit der CLI verwendet werden soll.
 
 ## Umgebungsvariablen definieren

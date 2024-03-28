@@ -10,7 +10,7 @@ ms.custom: innovation-engine
 
 # Tworzenie maszyny wirtualnej z systemem Linux i protokołu SSH na platformie Azure
 
-[![Wdróż na platformie Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#view/Microsoft_Azure_CloudNative/SubscriptionSelectionPage.ReactView/tutorialKey/CreateLinuxVMAndSSH)
+[![Wdróż na platformie Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262692)
 
 
 ## Definiowanie zmiennych środowiskowych

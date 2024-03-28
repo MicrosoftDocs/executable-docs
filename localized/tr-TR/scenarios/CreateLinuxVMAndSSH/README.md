@@ -10,7 +10,7 @@ ms.custom: innovation-engine
 
 # Azure'da Linux VM ve SSH oluşturma
 
-[![Azure’a dağıtın](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#view/Microsoft_Azure_CloudNative/SubscriptionSelectionPage.ReactView/tutorialKey/CreateLinuxVMAndSSH)
+[![Azure’a dağıtın](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262692)
 
 
 ## Ortam Değişkenlerini Tanımlama
