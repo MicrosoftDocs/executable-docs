@@ -23,7 +23,7 @@ export RANDOM_ID="$(openssl rand -hex 3)"
 export NETWORK_PREFIX="$(($RANDOM % 254 + 1))"
 export SSL_EMAIL_ADDRESS="$(az account show --query user.name --output tsv)"
 export MY_RESOURCE_GROUP_NAME="myAKSResourceGroup$RANDOM_ID"
-export REGION="eastus"
+export REGION="westeurope"
 export MY_AKS_CLUSTER_NAME="myAKSCluster$RANDOM_ID"
 export MY_PUBLIC_IP_NAME="myPublicIP$RANDOM_ID"
 export MY_DNS_LABEL="mydnslabel$RANDOM_ID"
@@ -149,7 +149,7 @@ az aks create \
 
 ## 連線至叢集
 
-若要管理 Kubernetes 叢集，請使用 Kubernetes 命令行用戶端 kubectl。 如果您使用 Azure Cloud Shell，則已安裝 kubectl。
+若要管理 Kubernetes 叢集，請使用 Kubernetes 命令列用戶端 kubectl。 如果您使用 Azure Cloud Shell，則已安裝 kubectl。
 
 1. 使用 az aks install-cli 命令在本機安裝 az aks CLI
 
@@ -159,8 +159,8 @@ az aks create \
 
 2. 將 kubectl 設定為使用 az aks get-credentials 命令連線到 Kubernetes 叢集。 下列命令：
 
-   - 下載認證並設定 Kubernetes CLI 以使用認證。
-   - 使用 ~/.kube/config，這是 Kubernetes 組態檔的預設位置。 使用 --file 自變數指定 Kubernetes 組態檔的不同位置。
+   - 下載憑證並設定 Kubernetes CLI 以供使用。
+   - 使用 ~/.kube/config，這是 Kubernetes 組態檔的預設位置。 使用 --file 引數，為您的 Kubernetes 組態檔指定不同的位置。
 
    > [!WARNING]
    > 這會以相同的專案覆寫任何現有的認證
@@ -169,7 +169,7 @@ az aks create \
    az aks get-credentials --resource-group $MY_RESOURCE_GROUP_NAME --name $MY_AKS_CLUSTER_NAME --overwrite-existing
    ```
 
-3. 使用 kubectl get 命令確認叢集的連線。 此命令會傳回叢集節點的清單。
+3. 使用 kubectl get nodes 命令來確認與叢集的連線。 此命令會傳回叢集節點的清單。
 
    ```bash
    kubectl get nodes
@@ -192,7 +192,7 @@ helm upgrade --install ingress-nginx ingress-nginx/ingress-nginx \
 
 ## 部署應用程式
 
-Kubernetes 指令清單檔案會定義叢集所需的狀態，例如要執行的容器映像。
+Kubernetes 資訊清單檔會定義叢集所需的狀態，例如要執行哪些容器映像。
 
 在本快速入門中，您將使用指令清單來建立執行 Azure 投票應用程式所需的所有物件。 此指令清單包含兩個 Kubernetes 部署：
 
@@ -278,7 +278,7 @@ curl "http://$FQDN"
 
 ## 設定 Cert Manager
 
-為了新增 HTTPS，我們將使用 Cert Manager。 Cert Manager 是 開放原始碼 工具，可用來取得和管理 Kubernetes 部署的 SSL 憑證。 憑證管理員會從各種簽發者取得憑證，包括熱門的公用簽發者以及私人簽發者，並確保憑證有效且最新，而且會在到期前嘗試在設定的某個時間更新憑證。
+為了新增 HTTPS，我們將使用 Cert Manager。 Cert Manager 是一種 開放原始碼 工具，可用來取得和管理 Kubernetes 部署的 SSL 憑證。 憑證管理員會從各種簽發者取得憑證，包括熱門的公用簽發者以及私人簽發者，並確保憑證有效且最新，而且會在到期前嘗試在設定的某個時間更新憑證。
 
 1. 若要安裝 cert-manager，我們必須先建立命名空間來執行它。 本教學課程會將 cert-manager 安裝到 cert-manager 命名空間。 您可以在不同的命名空間中執行 cert-manager，不過您必須對部署指令清單進行修改。
 
