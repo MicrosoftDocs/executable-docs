@@ -3,7 +3,7 @@ name: release
 on:
   push:
     branches:
-      - live
+      - main
   workflow_dispatch:
 
 jobs:
