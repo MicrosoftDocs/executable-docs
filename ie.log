@@ -1,0 +1,242 @@
+time=2024-04-02T16:52:51-07:00 level=info msg=INI file 'scenarios/CreateAKSDeployment/README.ini' does not exist, skipping...
+time=2024-04-02T16:52:51-07:00 level=debug msg=Found HTML block with the content: <!-- expected_similarity=0.3 -->
+
+
+time=2024-04-02T16:52:51-07:00 level=debug msg=Found HTML block with the content: <!-- expected_similarity=0.3 -->
+
+
+time=2024-04-02T16:52:51-07:00 level=debug msg=Found HTML block with the content: <!--## Validate application is working
+
+Wait for the SSL certificate to issue. The following command will query the 
+status of the SSL certificate for 3 minutes. In rare occasions it may take up to 
+15 minutes for Lets Encrypt to issue a successful challenge and 
+the ready state to be 'True'
+
+```bash
+runtime="10 minute"; endtime=$(date -ud "$runtime" +%s); while [[ $(date -u +%s) -le $endtime ]]; do STATUS=$(kubectl get certificate --output jsonpath={..status.conditions[0].status}); echo $STATUS; if [ "$STATUS" = 'True' ]; then break; else sleep 10; fi; done
+```
+
+Validate SSL certificate is True by running the follow command:
+
+```bash
+kubectl get certificate --output jsonpath={..status.conditions[0].status}
+```
+
+Results:
+
+
+
+time=2024-04-02T16:52:51-07:00 level=debug msg=Found HTML block with the content: <!--
+```ASCII
+True
+```
+
+
+time=2024-04-02T16:52:51-07:00 level=debug msg=Simalrity score of 0.300000 found
+time=2024-04-02T16:52:51-07:00 level=debug msg=Simalrity score of 0.300000 found
+time=2024-04-02T16:52:51-07:00 level=debug msg=Found 19 code blocks CodeBlocks=[{bash export RANDOM_ID="$(openssl rand -hex 3)"
+export SSL_EMAIL_ADDRESS="$(az account show --query user.name --output tsv)"
+export MY_RESOURCE_GROUP_NAME="myAKSResourceGroup$RANDOM_ID"
+export REGION="westeurope"
+export MY_AKS_CLUSTER_NAME="myAKSCluster$RANDOM_ID"
+export MY_DNS_LABEL="mydnslabel$RANDOM_ID"
+export FQDN="${MY_DNS_LABEL}.${REGION}.cloudapp.azure.com"
+ Define Environment Variables {  0 <nil>}} {bash az group create --name $MY_RESOURCE_GROUP_NAME --location $REGION
+ Create a resource group {JSON {
+  "id": "/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/myAKSResourceGroupxxxxxx",
+  "location": "eastus",
+  "managedBy": null,
+  "name": "testResourceGroup",
+  "properties": {
+    "provisioningState": "Succeeded"
+  },
+  "tags": null,
+  "type": "Microsoft.Resources/resourceGroups"
+}
+ 0.3 <nil>}} {bash az aks create 
+   --resource-group $MY_RESOURCE_GROUP_NAME
+   --name $MY_AKS_CLUSTER_NAME 
+   --enable-managed-identity 
+   --node-count 1 
+   --generate-ssh-keys
+ Create AKS Cluster {  0 <nil>}} {bash if ! [ -x "$(command -v kubectl)" ]; then az aks install-cli; fi
+ Connect to the cluster {  0 <nil>}} {bash az aks get-credentials --resource-group $MY_RESOURCE_GROUP_NAME --name $MY_AKS_CLUSTER_NAME --overwrite-existing
+ Connect to the cluster {  0 <nil>}} {bash kubectl get nodes
+ Connect to the cluster {  0 <nil>}} {bash kubectl apply -f aks-store-quickstart.yml
+ Deploy the Application {  0 <nil>}} {bash runtime="5 minute";
+endtime=$(date -ud "$runtime" +%s);
+while [[ $(date -u +%s) -le $endtime ]]; do
+   STATUS=$(kubectl get pods -l app=azure-vote-front -o 'jsonpath={..status.conditions[?(@.type=="Ready")].status}'); echo $STATUS;
+   if [ "$STATUS" == 'True' ]; then
+      break;
+   else
+      sleep 10;
+   fi;
+done
+ Test The Application {  0 <nil>}} {bash curl "http://$FQDN"
+ Test The Application {HTML <!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <link rel="stylesheet" type="text/css" href="/static/default.css">
+    <title>Azure Voting App</title>
+
+    <script language="JavaScript">
+        function send(form){
+        }
+    </script>
+
+</head>
+<body>
+    <div id="container">
+        <form id="form" name="form" action="/"" method="post"><center>
+        <div id="logo">Azure Voting App</div>
+        <div id="space"></div>
+        <div id="form">
+        <button name="vote" value="Cats" onclick="send()" class="button button1">Cats</button>
+        <button name="vote" value="Dogs" onclick="send()" class="button button2">Dogs</button>
+        <button name="vote" value="reset" onclick="send()" class="button button3">Reset</button>
+        <div id="space"></div>
+        <div id="space"></div>
+        <div id="results"> Cats - 0 | Dogs - 0 </div>
+        </form>
+        </div>
+    </div>
+</body>
+</html>
+ 0.3 <nil>}} {bash kubectl create namespace cert-manager
+ Set Up Cert Manager {  0 <nil>}} {bash kubectl apply -f https://github.com/jetstack/cert-manager/releases/download/v1.7.0/cert-manager.crds.yaml
+ Set Up Cert Manager {  0 <nil>}} {bash kubectl label namespace cert-manager certmanager.k8s.io/disable-validation=true
+ Set Up Cert Manager {  0 <nil>}} {bash helm repo add jetstack https://charts.jetstack.io
+ Obtain certificate via Helm Charts {  0 <nil>}} {bash helm repo update
+ Obtain certificate via Helm Charts {  0 <nil>}} {bash helm install cert-manager jetstack/cert-manager --namespace cert-manager --version v1.7.0
+ Obtain certificate via Helm Charts {  0 <nil>}} {bash cluster_issuer_variables=$(<cluster-issuer-prod.yml)
+echo "${cluster_issuer_variables//\$SSL_EMAIL_ADDRESS/$SSL_EMAIL_ADDRESS}" | kubectl apply -f -
+ Obtain certificate via Helm Charts {  0 <nil>}} {bash azure_vote_nginx_ssl_variables=$(<azure-vote-nginx-ssl.yml)
+echo "${azure_vote_nginx_ssl_variables//\$FQDN/$FQDN}" | kubectl apply -f -
+ Obtain certificate via Helm Charts {  0 <nil>}} {bash runtime="5 minute";
+endtime=$(date -ud "$runtime" +%s);
+while [[ $(date -u +%s) -le $endtime ]]; do
+   STATUS=$(kubectl get svc --namespace=ingress-nginx ingress-nginx-controller -o jsonpath='{.status.loadBalancer.ingress[0].ip}');
+   echo $STATUS;
+   if [ "$STATUS" == "$MY_STATIC_IP" ]; then
+      break;
+   else
+      sleep 10;
+   fi;
+done
+ Browse your AKS Deployment Secured via HTTPS {  0 <nil>}} {bash echo "You can now visit your web server at https://$FQDN"
+ Browse your AKS Deployment Secured via HTTPS {  0 <nil>}}]
+time=2024-04-02T16:52:51-07:00 level=info msg=Successfully built out the scenario: Quickstart: Deploy a Scalable & Secure Azure Kubernetes Service cluster using the Azure CLI
+time=2024-04-02T16:52:51-07:00 level=info msg=Changed directory to .
+time=2024-04-02T16:52:51-07:00 level=info msg=Executing command: export RANDOM_ID="$(openssl rand -hex 3)"
+export SSL_EMAIL_ADDRESS="$(az account show --query user.name --output tsv)"
+export MY_RESOURCE_GROUP_NAME="myAKSResourceGroup$RANDOM_ID"
+export REGION="westeurope"
+export MY_AKS_CLUSTER_NAME="myAKSCluster$RANDOM_ID"
+export MY_DNS_LABEL="mydnslabel$RANDOM_ID"
+export FQDN="${MY_DNS_LABEL}.${REGION}.cloudapp.azure.com"
+ isInteractive=false
+time=2024-04-02T16:52:51-07:00 level=info msg=Command output to stdout:
+ 
+time=2024-04-02T16:52:51-07:00 level=info msg=Command output to stderr:
+ 
+time=2024-04-02T16:52:51-07:00 level=info msg=Attempting to extract resource group name from command output
+time=2024-04-02T16:52:51-07:00 level=info msg=Executing command: az group create --name $MY_RESOURCE_GROUP_NAME --location $REGION
+ isInteractive=false
+time=2024-04-02T16:52:54-07:00 level=info msg=Command output to stdout:
+ {
+  "id": "/subscriptions/d1aa957b-94f5-49ef-b29a-0178c58a7132/resourceGroups/myAKSResourceGroup3485a6",
+  "location": "westeurope",
+  "managedBy": null,
+  "name": "myAKSResourceGroup3485a6",
+  "properties": {
+    "provisioningState": "Succeeded"
+  },
+  "tags": null,
+  "type": "Microsoft.Resources/resourceGroups"
+}
+
+time=2024-04-02T16:52:54-07:00 level=info msg=Command output to stderr:
+ 
+time=2024-04-02T16:52:54-07:00 level=debug msg=Comparing JSON strings:
+Expected: {
+  "id": "/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/myAKSResourceGroupxxxxxx",
+  "location": "eastus",
+  "managedBy": null,
+  "name": "testResourceGroup",
+  "properties": {
+    "provisioningState": "Succeeded"
+  },
+  "tags": null,
+  "type": "Microsoft.Resources/resourceGroups"
+}
+
+Actual{
+  "id": "/subscriptions/d1aa957b-94f5-49ef-b29a-0178c58a7132/resourceGroups/myAKSResourceGroup3485a6",
+  "location": "westeurope",
+  "managedBy": null,
+  "name": "myAKSResourceGroup3485a6",
+  "properties": {
+    "provisioningState": "Succeeded"
+  },
+  "tags": null,
+  "type": "Microsoft.Resources/resourceGroups"
+}
+
+time=2024-04-02T16:52:54-07:00 level=debug msg=Expected Similarity: 0.300000, Actual Similarity: 0.746239
+time=2024-04-02T16:52:54-07:00 level=info msg=Attempting to extract resource group name from command output
+time=2024-04-02T16:52:54-07:00 level=info msg=Found resource group resourceGroup=myAKSResourceGroup3485a6
+time=2024-04-02T16:52:54-07:00 level=info msg=Executing command: az aks create 
+   --resource-group $MY_RESOURCE_GROUP_NAME
+   --name $MY_AKS_CLUSTER_NAME 
+   --enable-managed-identity 
+   --node-count 1 
+   --generate-ssh-keys
+ isInteractive=false
+time=2024-04-02T16:52:56-07:00 level=info msg=Command output to stdout:
+ 
+time=2024-04-02T16:52:56-07:00 level=info msg=Command output to stderr:
+ 
+time=2024-04-02T16:52:56-07:00 level=error msg=Error executing command: command exited with 'exit status 127' and the message 'ERROR: the following arguments are required: --resource-group/-g, --name/-n
+
+Examples from AI knowledge base:
+az aks create --resource-group MyResourceGroup --name MyManagedCluster
+Create a kubernetes cluster with default kubernetes version, default SKU load balancer (Standard) and default vm set type (VirtualMachineScaleSets).
+
+az aks create --resource-group MyResourceGroup --name MyManagedCluster --enable-managed-identity
+Create a kubernetes cluster which enables managed identity.
+
+az group create --location westus --resource-group MyResourceGroup
+Create a new resource group in the West US region.
+
+https://docs.microsoft.com/en-US/cli/azure/aks#az_aks_create
+Read more about the command in reference docs
+bash: line 2: --resource-group: command not found
+bash: line 3: --name: command not found
+bash: line 4: --enable-managed-identity: command not found
+bash: line 5: --node-count: command not found
+bash: line 6: --generate-ssh-keys: command not found
+'
+time=2024-04-02T16:52:56-07:00 level=info msg=Not fetching resource URIs because we're not in the OCD environment.
+time=2024-04-02T16:52:57-07:00 level=warning msg=No deployed resources found.
+time=2024-04-02T16:52:57-07:00 level=info msg=Changed directory to /home/naman10parikh/NamanCode/executable-docs
+time=2024-04-02T16:52:57-07:00 level=error msg=Error executing scenario: command exited with 'exit status 127' and the message 'ERROR: the following arguments are required: --resource-group/-g, --name/-n
+
+Examples from AI knowledge base:
+az aks create --resource-group MyResourceGroup --name MyManagedCluster
+Create a kubernetes cluster with default kubernetes version, default SKU load balancer (Standard) and default vm set type (VirtualMachineScaleSets).
+
+az aks create --resource-group MyResourceGroup --name MyManagedCluster --enable-managed-identity
+Create a kubernetes cluster which enables managed identity.
+
+az group create --location westus --resource-group MyResourceGroup
+Create a new resource group in the West US region.
+
+https://docs.microsoft.com/en-US/cli/azure/aks#az_aks_create
+Read more about the command in reference docs
+bash: line 2: --resource-group: command not found
+bash: line 3: --name: command not found
+bash: line 4: --enable-managed-identity: command not found
+bash: line 5: --node-count: command not found
+bash: line 6: --generate-ssh-keys: command not found
+'

@@ -20,17 +20,11 @@ The first step in this tutorial is to define environment variables.
 
 ```bash
 export RANDOM_ID="$(openssl rand -hex 3)"
-export NETWORK_PREFIX="$(($RANDOM % 254 + 1))"
 export SSL_EMAIL_ADDRESS="$(az account show --query user.name --output tsv)"
 export MY_RESOURCE_GROUP_NAME="myAKSResourceGroup$RANDOM_ID"
 export REGION="westeurope"
 export MY_AKS_CLUSTER_NAME="myAKSCluster$RANDOM_ID"
-export MY_PUBLIC_IP_NAME="myPublicIP$RANDOM_ID"
 export MY_DNS_LABEL="mydnslabel$RANDOM_ID"
-export MY_VNET_NAME="myVNet$RANDOM_ID"
-export MY_VNET_PREFIX="10.$NETWORK_PREFIX.0.0/16"
-export MY_SN_NAME="mySN$RANDOM_ID"
-export MY_SN_PREFIX="10.$NETWORK_PREFIX.0.0/22"
 export FQDN="${MY_DNS_LABEL}.${REGION}.cloudapp.azure.com"
 ```
 
@@ -60,96 +54,17 @@ Results:
 }
 ```
 
-## Create a virtual network and subnet
-
-A virtual network is the fundamental building block for private networks in Azure. Azure Virtual Network enables Azure resources like VMs to securely communicate with each other and the internet.
-
-```bash
-az network vnet create \
-    --resource-group $MY_RESOURCE_GROUP_NAME \
-    --location $REGION \
-    --name $MY_VNET_NAME \
-    --address-prefix $MY_VNET_PREFIX \
-    --subnet-name $MY_SN_NAME \
-    --subnet-prefixes $MY_SN_PREFIX
-```
-
-Results:
-
-<!-- expected_similarity=0.3 -->
-
-```JSON
-{
-  "newVNet": {
-    "addressSpace": {
-      "addressPrefixes": [
-        "10.xxx.0.0/16"
-      ]
-    },
-    "enableDdosProtection": false,
-    "id": "/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/myAKSResourceGroupxxxxxx/providers/Microsoft.Network/virtualNetworks/myVNetxxx",
-    "location": "eastus",
-    "name": "myVNetxxx",
-    "provisioningState": "Succeeded",
-    "resourceGroup": "myAKSResourceGroupxxxxxx",
-    "subnets": [
-      {
-        "addressPrefix": "10.xxx.0.0/22",
-        "delegations": [],
-        "id": "/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/myAKSResourceGroupxxxxxx/providers/Microsoft.Network/virtualNetworks/myVNetxxx/subnets/mySNxxx",
-        "name": "mySNxxx",
-        "privateEndpointNetworkPolicies": "Disabled",
-        "privateLinkServiceNetworkPolicies": "Enabled",
-        "provisioningState": "Succeeded",
-        "resourceGroup": "myAKSResourceGroupxxxxxx",
-        "type": "Microsoft.Network/virtualNetworks/subnets"
-      }
-    ],
-    "type": "Microsoft.Network/virtualNetworks",
-    "virtualNetworkPeerings": []
-  }
-}
-```
-
-## Register to AKS Azure Resource Providers
-
-Verify Microsoft.OperationsManagement and Microsoft.OperationalInsights providers are registered on your subscription. These are Azure resource providers required to support [Container insights](https://docs.microsoft.com/azure/azure-monitor/containers/container-insights-overview). To check the registration status, run the following commands
-
-```bash
-az provider register --namespace Microsoft.Insights
-az provider register --namespace Microsoft.OperationsManagement
-az provider register --namespace Microsoft.OperationalInsights
-```
-
 ## Create AKS Cluster
 
-Create an AKS cluster using the az aks create command with the --enable-addons monitoring parameter to enable Container insights. The following example creates an autoscaling, availability zone enabled cluster.
-
-This will take a few minutes.
+Create an AKS cluster use the az aks create command. The following example creates a cluster named myAKSCluster with one node and enables a system-assigned managed identity. This will take a few minutes.
 
 ```bash
-export MY_SN_ID=$(az network vnet subnet list --resource-group $MY_RESOURCE_GROUP_NAME --vnet-name $MY_VNET_NAME --query "[0].id" --output tsv)
-az aks create \
-  --resource-group $MY_RESOURCE_GROUP_NAME \
-  --name $MY_AKS_CLUSTER_NAME \
-  --auto-upgrade-channel stable \
-  --enable-cluster-autoscaler \
-  --enable-addons monitoring \
-  --location $REGION \
-  --node-count 1 \
-  --min-count 1 \
-  --max-count 3 \
-  --network-plugin azure \
-  --network-policy azure \
-  --vnet-subnet-id $MY_SN_ID \
-  --no-ssh-key \
-  --node-vm-size Standard_DS2_v2 \
-  --zones 1 2 3
+az aks create --resource-group $MY_RESOURCE_GROUP_NAME --name $MY_AKS_CLUSTER_NAME  --enable-managed-identity --node-count 1 --generate-ssh-keys
 ```
 
 ## Connect to the cluster
 
-To manage a Kubernetes cluster, use the Kubernetes command-line client, kubectl. kubectl is already installed if you use Azure Cloud Shell.
+To manage a Kubernetes cluster, use the Kubernetes command-line client, kubectl. kubectl is already installed if you use Azure Cloud Shell. To install kubectl locally, call the az aks install-cli command.
 
 1. Install az aks CLI locally using the az aks install-cli command
 
@@ -175,21 +90,6 @@ To manage a Kubernetes cluster, use the Kubernetes command-line client, kubectl.
    kubectl get nodes
    ```
 
-## Install NGINX Ingress Controller
-
-```bash
-export MY_STATIC_IP=$(az network public-ip create --resource-group MC_${MY_RESOURCE_GROUP_NAME}_${MY_AKS_CLUSTER_NAME}_${REGION} --location ${REGION} --name ${MY_PUBLIC_IP_NAME} --dns-name ${MY_DNS_LABEL} --sku Standard --allocation-method static --version IPv4 --zone 1 2 3 --query publicIp.ipAddress -o tsv)
-helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
-helm repo update
-helm upgrade --install ingress-nginx ingress-nginx/ingress-nginx \
-  --namespace ingress-nginx \
-  --create-namespace \
-  --set controller.service.annotations."service\.beta\.kubernetes\.io/azure-dns-label-name"=$MY_DNS_LABEL \
-  --set controller.service.loadBalancerIP=$MY_STATIC_IP \
-  --set controller.service.annotations."service\.beta\.kubernetes\.io/azure-load-balancer-health-probe-request-path"=/healthz \
-  --wait
-```
-
 ## Deploy the Application
 
 A Kubernetes manifest file defines a cluster's desired state, such as which container images to run.
@@ -209,7 +109,7 @@ Finally, an Ingress resource is created to route traffic to the Azure Vote appli
 A test voting app YML file is already prepared. To deploy this app run the following command
 
 ```bash
-kubectl apply -f azure-vote-start.yml
+kubectl apply -f aks-store-quickstart.yml
 ```
 
 ## Test The Application
