@@ -123,7 +123,7 @@ Validate that the application is running by either visiting the public ip or the
 runtime="5 minute";
 endtime=$(date -ud "$runtime" +%s);
 while [[ $(date -u +%s) -le $endtime ]]; do
-   STATUS=$(kubectl get pods -l app=azure-vote-front -o 'jsonpath={..status.conditions[?(@.type=="Ready")].status}'); echo $STATUS;
+   STATUS=$(kubectl get pods -l app=store-front -o 'jsonpath={..status.conditions[?(@.type=="Ready")].status}'); echo $STATUS;
    if [ "$STATUS" == 'True' ]; then
       break;
    else
