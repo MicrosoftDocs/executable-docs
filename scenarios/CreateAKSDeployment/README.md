@@ -21,9 +21,9 @@ The first step in this tutorial is to define environment variables.
 ```bash
 export RANDOM_ID="$(openssl rand -hex 3)"
 export SSL_EMAIL_ADDRESS="$(az account show --query user.name --output tsv)"
-export MY_RESOURCE_GROUP_NAME="myAKSResourceGroup$RANDOM_ID"
+export MY_RESOURCE_GROUP_NAME="myResourceGroup"
 export REGION="westeurope"
-export MY_AKS_CLUSTER_NAME="myAKSCluster$RANDOM_ID"
+export MY_AKS_CLUSTER_NAME="myAKSCluster"
 export MY_DNS_LABEL="mydnslabel$RANDOM_ID"
 export FQDN="${MY_DNS_LABEL}.${REGION}.cloudapp.azure.com"
 ```
@@ -120,20 +120,25 @@ Validate that the application is running by either visiting the public ip or the
 > It often takes 2-3 minutes for the PODs to be created and the site to be reachable via HTTP
 
 ```bash
-runtime="5 minute";
-endtime=$(date -ud "$runtime" +%s);
-while [[ $(date -u +%s) -le $endtime ]]; do
-   STATUS=$(kubectl get pods -l app=azure-vote-front -o 'jsonpath={..status.conditions[?(@.type=="Ready")].status}'); echo $STATUS;
-   if [ "$STATUS" == 'True' ]; then
-      break;
+runtime="5 minute"
+endtime=$(date -ud "$runtime" +%s)
+while [[ $(date -u +%s) -le $endtime ]]
+do
+   STATUS=$(kubectl get pods -l app=store-front -o 'jsonpath={..status.conditions[?(@.type=="Ready")].status}')
+   echo $STATUS
+   if [ "$STATUS" == 'True' ]
+   then
+      export IP_ADDRESS=$(kubectl get service store-front --output 'jsonpath={..status.loadBalancer.ingress[0].ip}')
+      echo "Service IP Address: $IP_ADDRESS"
+      break
    else
-      sleep 10;
-   fi;
+      sleep 10
+   fi
 done
 ```
 
 ```bash
-curl "http://$FQDN"
+curl $IP_ADDRESS
 ```
 
 Results:
@@ -141,157 +146,22 @@ Results:
 <!-- expected_similarity=0.3 -->
 
 ```HTML
-<!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-    <link rel="stylesheet" type="text/css" href="/static/default.css">
-    <title>Azure Voting App</title>
-
-    <script language="JavaScript">
-        function send(form){
-        }
-    </script>
-
-</head>
-<body>
-    <div id="container">
-        <form id="form" name="form" action="/"" method="post"><center>
-        <div id="logo">Azure Voting App</div>
-        <div id="space"></div>
-        <div id="form">
-        <button name="vote" value="Cats" onclick="send()" class="button button1">Cats</button>
-        <button name="vote" value="Dogs" onclick="send()" class="button button2">Dogs</button>
-        <button name="vote" value="reset" onclick="send()" class="button button3">Reset</button>
-        <div id="space"></div>
-        <div id="space"></div>
-        <div id="results"> Cats - 0 | Dogs - 0 </div>
-        </form>
-        </div>
-    </div>
-</body>
+<!doctype html>
+<html lang="">
+   <head>
+      <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      <link rel="icon" href="/favicon.ico">
+      <title>store-front</title>
+      <script defer="defer" src="/js/chunk-vendors.df69ae47.js"></script>
+      <script defer="defer" src="/js/app.7e8cfbb2.js"></script>
+      <link href="/css/app.a5dc49f6.css" rel="stylesheet">
+   </head>
+   <body>
+      <div id="app"></div>
+   </body>
 </html>
-```
-
-## Add HTTPS termination to custom domain
-
-At this point in the tutorial you have an AKS web app with NGINX as the Ingress controller and a custom domain you can use to access your application. The next step is to add an SSL certificate to the domain so that users can reach your application securely via HTTPS.
-
-## Set Up Cert Manager
-
-In order to add HTTPS we are going to use Cert Manager. Cert Manager is an open source tool used to obtain and manage SSL certificate for Kubernetes deployments. Cert Manager will obtain certificates from a variety of Issuers, both popular public Issuers as well as private Issuers, and ensure the certificates are valid and up-to-date, and will attempt to renew certificates at a configured time before expiry.
-
-1. In order to install cert-manager, we must first create a namespace to run it in. This tutorial will install cert-manager into the cert-manager namespace. It is possible to run cert-manager in a different namespace, although you will need to make modifications to the deployment manifests.
-
-   ```bash
-   kubectl create namespace cert-manager
-   ```
-
-2. We can now install cert-manager. All resources are included in a single YAML manifest file. This can be installed by running the following:
-
-   ```bash
-   kubectl apply -f https://github.com/jetstack/cert-manager/releases/download/v1.7.0/cert-manager.crds.yaml
-   ```
-
-3. Add the certmanager.k8s.io/disable-validation: "true" label to the cert-manager namespace by running the following. This will allow the system resources that cert-manager requires to bootstrap TLS to be created in its own namespace.
-
-   ```bash
-   kubectl label namespace cert-manager certmanager.k8s.io/disable-validation=true
-   ```
-
-## Obtain certificate via Helm Charts
-
-Helm is a Kubernetes deployment tool for automating creation, packaging, configuration, and deployment of applications and services to Kubernetes clusters.
-
-Cert-manager provides Helm charts as a first-class method of installation on Kubernetes.
-
-1. Add the Jetstack Helm repository
-
-   This repository is the only supported source of cert-manager charts. There are some other mirrors and copies across the internet, but those are entirely unofficial and could present a security risk.
-
-   ```bash
-   helm repo add jetstack https://charts.jetstack.io
-   ```
-
-2. Update local Helm Chart repository cache
-
-   ```bash
-   helm repo update
-   ```
-
-3. Install Cert-Manager addon via helm by running the following:
-
-   ```bash
-   helm install cert-manager jetstack/cert-manager --namespace cert-manager --version v1.7.0
-   ```
-
-4. Apply Certificate Issuer YAML File
-
-   ClusterIssuers are Kubernetes resources that represent certificate authorities (CAs) that are able to generate signed certificates by honoring certificate signing requests. All cert-manager certificates require a referenced issuer that is in a ready condition to attempt to honor the request.
-   The issuer we are using can be found in the `cluster-issuer-prod.yml file`
-
-   ```bash
-   cluster_issuer_variables=$(<cluster-issuer-prod.yml)
-   echo "${cluster_issuer_variables//\$SSL_EMAIL_ADDRESS/$SSL_EMAIL_ADDRESS}" | kubectl apply -f -
-   ```
-
-5. Upate Voting App Application to use Cert-Manager to obtain an SSL Certificate.
-
-   The full YAML file can be found in `azure-vote-nginx-ssl.yml`
-
-   ```bash
-   azure_vote_nginx_ssl_variables=$(<azure-vote-nginx-ssl.yml)
-   echo "${azure_vote_nginx_ssl_variables//\$FQDN/$FQDN}" | kubectl apply -f -
-   ```
-
-<!--## Validate application is working
-
-Wait for the SSL certificate to issue. The following command will query the 
-status of the SSL certificate for 3 minutes. In rare occasions it may take up to 
-15 minutes for Lets Encrypt to issue a successful challenge and 
-the ready state to be 'True'
-
-```bash
-runtime="10 minute"; endtime=$(date -ud "$runtime" +%s); while [[ $(date -u +%s) -le $endtime ]]; do STATUS=$(kubectl get certificate --output jsonpath={..status.conditions[0].status}); echo $STATUS; if [ "$STATUS" = 'True' ]; then break; else sleep 10; fi; done
-```
-
-Validate SSL certificate is True by running the follow command:
-
-```bash
-kubectl get certificate --output jsonpath={..status.conditions[0].status}
-```
-
-Results:
-
-<!-- expected_similarity=0.3 -->
-<!--
-```ASCII
-True
-```
--->
-
-## Browse your AKS Deployment Secured via HTTPS
-
-Run the following command to get the HTTPS endpoint for your application:
-
-> [!Note]
-> It often takes 2-3 minutes for the SSL certificate to propogate and the site to be reachable via HTTPS.
-
-```bash
-runtime="5 minute";
-endtime=$(date -ud "$runtime" +%s);
-while [[ $(date -u +%s) -le $endtime ]]; do
-   STATUS=$(kubectl get svc --namespace=ingress-nginx ingress-nginx-controller -o jsonpath='{.status.loadBalancer.ingress[0].ip}');
-   echo $STATUS;
-   if [ "$STATUS" == "$MY_STATIC_IP" ]; then
-      break;
-   else
-      sleep 10;
-   fi;
-done
-```
-
-```bash
-echo "You can now visit your web server at https://$FQDN"
 ```
 
 ## Next Steps

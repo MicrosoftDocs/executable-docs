@@ -240,3 +240,471 @@ bash: line 4: --enable-managed-identity: command not found
 bash: line 5: --node-count: command not found
 bash: line 6: --generate-ssh-keys: command not found
 '
+time=2024-04-02T16:57:30-07:00 level=info msg=INI file 'scenarios/CreateAKSDeployment/README.ini' does not exist, skipping...
+time=2024-04-02T16:57:30-07:00 level=debug msg=Found HTML block with the content: <!-- expected_similarity=0.3 -->
+
+
+time=2024-04-02T16:57:30-07:00 level=debug msg=Found HTML block with the content: <!--## Validate application is working
+
+Wait for the SSL certificate to issue. The following command will query the 
+status of the SSL certificate for 3 minutes. In rare occasions it may take up to 
+15 minutes for Lets Encrypt to issue a successful challenge and 
+the ready state to be 'True'
+
+```bash
+runtime="10 minute"; endtime=$(date -ud "$runtime" +%s); while [[ $(date -u +%s) -le $endtime ]]; do STATUS=$(kubectl get certificate --output jsonpath={..status.conditions[0].status}); echo $STATUS; if [ "$STATUS" = 'True' ]; then break; else sleep 10; fi; done
+```
+
+Validate SSL certificate is True by running the follow command:
+
+```bash
+kubectl get certificate --output jsonpath={..status.conditions[0].status}
+```
+
+Results:
+
+
+
+time=2024-04-02T16:57:30-07:00 level=debug msg=Found HTML block with the content: <!--
+```ASCII
+True
+```
+
+
+time=2024-04-02T16:57:30-07:00 level=debug msg=Simalrity score of 0.300000 found
+time=2024-04-02T16:57:30-07:00 level=debug msg=Found 17 code blocks CodeBlocks=[{bash export RANDOM_ID="$(openssl rand -hex 3)"
+export SSL_EMAIL_ADDRESS="$(az account show --query user.name --output tsv)"
+export MY_RESOURCE_GROUP_NAME="myResourceGroup"
+export REGION="westeurope"
+export MY_AKS_CLUSTER_NAME="myAKSCluster"
+export MY_DNS_LABEL="mydnslabel$RANDOM_ID"
+export FQDN="${MY_DNS_LABEL}.${REGION}.cloudapp.azure.com"
+ Define Environment Variables {  0 <nil>}} {bash if ! [ -x "$(command -v kubectl)" ]; then az aks install-cli; fi
+ Connect to the cluster {  0 <nil>}} {bash az aks get-credentials --resource-group $MY_RESOURCE_GROUP_NAME --name $MY_AKS_CLUSTER_NAME --overwrite-existing
+ Connect to the cluster {  0 <nil>}} {bash kubectl get nodes
+ Connect to the cluster {  0 <nil>}} {bash kubectl apply -f aks-store-quickstart.yml
+ Deploy the Application {  0 <nil>}} {bash runtime="5 minute";
+endtime=$(date -ud "$runtime" +%s);
+while [[ $(date -u +%s) -le $endtime ]]; do
+   STATUS=$(kubectl get pods -l app=azure-vote-front -o 'jsonpath={..status.conditions[?(@.type=="Ready")].status}'); echo $STATUS;
+   if [ "$STATUS" == 'True' ]; then
+      break;
+   else
+      sleep 10;
+   fi;
+done
+ Test The Application {  0 <nil>}} {bash curl "http://$FQDN"
+ Test The Application {HTML <!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <link rel="stylesheet" type="text/css" href="/static/default.css">
+    <title>Azure Voting App</title>
+
+    <script language="JavaScript">
+        function send(form){
+        }
+    </script>
+
+</head>
+<body>
+    <div id="container">
+        <form id="form" name="form" action="/"" method="post"><center>
+        <div id="logo">Azure Voting App</div>
+        <div id="space"></div>
+        <div id="form">
+        <button name="vote" value="Cats" onclick="send()" class="button button1">Cats</button>
+        <button name="vote" value="Dogs" onclick="send()" class="button button2">Dogs</button>
+        <button name="vote" value="reset" onclick="send()" class="button button3">Reset</button>
+        <div id="space"></div>
+        <div id="space"></div>
+        <div id="results"> Cats - 0 | Dogs - 0 </div>
+        </form>
+        </div>
+    </div>
+</body>
+</html>
+ 0.3 <nil>}} {bash kubectl create namespace cert-manager
+ Set Up Cert Manager {  0 <nil>}} {bash kubectl apply -f https://github.com/jetstack/cert-manager/releases/download/v1.7.0/cert-manager.crds.yaml
+ Set Up Cert Manager {  0 <nil>}} {bash kubectl label namespace cert-manager certmanager.k8s.io/disable-validation=true
+ Set Up Cert Manager {  0 <nil>}} {bash helm repo add jetstack https://charts.jetstack.io
+ Obtain certificate via Helm Charts {  0 <nil>}} {bash helm repo update
+ Obtain certificate via Helm Charts {  0 <nil>}} {bash helm install cert-manager jetstack/cert-manager --namespace cert-manager --version v1.7.0
+ Obtain certificate via Helm Charts {  0 <nil>}} {bash cluster_issuer_variables=$(<cluster-issuer-prod.yml)
+echo "${cluster_issuer_variables//\$SSL_EMAIL_ADDRESS/$SSL_EMAIL_ADDRESS}" | kubectl apply -f -
+ Obtain certificate via Helm Charts {  0 <nil>}} {bash azure_vote_nginx_ssl_variables=$(<azure-vote-nginx-ssl.yml)
+echo "${azure_vote_nginx_ssl_variables//\$FQDN/$FQDN}" | kubectl apply -f -
+ Obtain certificate via Helm Charts {  0 <nil>}} {bash runtime="5 minute";
+endtime=$(date -ud "$runtime" +%s);
+while [[ $(date -u +%s) -le $endtime ]]; do
+   STATUS=$(kubectl get svc --namespace=ingress-nginx ingress-nginx-controller -o jsonpath='{.status.loadBalancer.ingress[0].ip}');
+   echo $STATUS;
+   if [ "$STATUS" == "$MY_STATIC_IP" ]; then
+      break;
+   else
+      sleep 10;
+   fi;
+done
+ Browse your AKS Deployment Secured via HTTPS {  0 <nil>}} {bash echo "You can now visit your web server at https://$FQDN"
+ Browse your AKS Deployment Secured via HTTPS {  0 <nil>}}]
+time=2024-04-02T16:57:30-07:00 level=info msg=Successfully built out the scenario: Quickstart: Deploy a Scalable & Secure Azure Kubernetes Service cluster using the Azure CLI
+time=2024-04-02T16:57:30-07:00 level=info msg=Changed directory to .
+time=2024-04-02T16:57:30-07:00 level=info msg=Executing command: export RANDOM_ID="$(openssl rand -hex 3)"
+export SSL_EMAIL_ADDRESS="$(az account show --query user.name --output tsv)"
+export MY_RESOURCE_GROUP_NAME="myResourceGroup"
+export REGION="westeurope"
+export MY_AKS_CLUSTER_NAME="myAKSCluster"
+export MY_DNS_LABEL="mydnslabel$RANDOM_ID"
+export FQDN="${MY_DNS_LABEL}.${REGION}.cloudapp.azure.com"
+
+time=2024-04-02T16:57:30-07:00 level=info msg=Command stdout: 
+time=2024-04-02T16:57:30-07:00 level=info msg=Command stderr: 
+time=2024-04-02T16:57:30-07:00 level=info msg=Executing command: if ! [ -x "$(command -v kubectl)" ]; then az aks install-cli; fi
+
+time=2024-04-02T16:57:32-07:00 level=info msg=Command stdout: 
+time=2024-04-02T16:57:32-07:00 level=info msg=Command stderr: 
+time=2024-04-02T16:57:32-07:00 level=error msg=Error executing command: command exited with 'exit status 1' and the message 'WARNING: The detected architecture of current device is "x86_64", and the binary for "amd64" will be downloaded. If the detectiton is wrong, please download and install the binary corresponding to the appropriate architecture.
+WARNING: No version specified, will get the latest version of kubectl from "https://storage.googleapis.com/kubernetes-release/release/stable.txt"
+WARNING: Downloading client to "/usr/local/bin/kubectl" from "https://storage.googleapis.com/kubernetes-release/release/v1.29.3/bin/linux/amd64/kubectl"
+ERROR: Connection error while attempting to download client ([Errno 13] Permission denied: '/usr/local/bin/kubectl')
+'
+time=2024-04-02T16:57:32-07:00 level=info msg=Changed directory to /home/naman10parikh/NamanCode/executable-docs
+time=2024-04-02T16:57:32-07:00 level=error msg=Error testing scenario: command exited with 'exit status 1' and the message 'WARNING: The detected architecture of current device is "x86_64", and the binary for "amd64" will be downloaded. If the detectiton is wrong, please download and install the binary corresponding to the appropriate architecture.
+WARNING: No version specified, will get the latest version of kubectl from "https://storage.googleapis.com/kubernetes-release/release/stable.txt"
+WARNING: Downloading client to "/usr/local/bin/kubectl" from "https://storage.googleapis.com/kubernetes-release/release/v1.29.3/bin/linux/amd64/kubectl"
+ERROR: Connection error while attempting to download client ([Errno 13] Permission denied: '/usr/local/bin/kubectl')
+'
+time=2024-04-02T17:08:08-07:00 level=info msg=INI file 'scenarios/CreateAKSDeployment/README.ini' does not exist, skipping...
+time=2024-04-02T17:08:08-07:00 level=debug msg=Found HTML block with the content: <!-- expected_similarity=0.3 -->
+
+
+time=2024-04-02T17:08:08-07:00 level=debug msg=Found HTML block with the content: <!-- expected_similarity=0.3 -->
+
+
+time=2024-04-02T17:08:08-07:00 level=debug msg=Found HTML block with the content: <!--## Validate application is working
+
+Wait for the SSL certificate to issue. The following command will query the 
+status of the SSL certificate for 3 minutes. In rare occasions it may take up to 
+15 minutes for Lets Encrypt to issue a successful challenge and 
+the ready state to be 'True'
+
+```bash
+runtime="10 minute"; endtime=$(date -ud "$runtime" +%s); while [[ $(date -u +%s) -le $endtime ]]; do STATUS=$(kubectl get certificate --output jsonpath={..status.conditions[0].status}); echo $STATUS; if [ "$STATUS" = 'True' ]; then break; else sleep 10; fi; done
+```
+
+Validate SSL certificate is True by running the follow command:
+
+```bash
+kubectl get certificate --output jsonpath={..status.conditions[0].status}
+```
+
+Results:
+
+
+
+time=2024-04-02T17:08:08-07:00 level=debug msg=Found HTML block with the content: <!--
+```ASCII
+True
+```
+
+
+time=2024-04-02T17:08:08-07:00 level=debug msg=Simalrity score of 0.300000 found
+time=2024-04-02T17:08:08-07:00 level=debug msg=Simalrity score of 0.300000 found
+time=2024-04-02T17:08:08-07:00 level=debug msg=Found 19 code blocks CodeBlocks=[{bash export RANDOM_ID="$(openssl rand -hex 3)"
+export SSL_EMAIL_ADDRESS="$(az account show --query user.name --output tsv)"
+export MY_RESOURCE_GROUP_NAME="myResourceGroup"
+export REGION="westeurope"
+export MY_AKS_CLUSTER_NAME="myAKSCluster"
+export MY_DNS_LABEL="mydnslabel$RANDOM_ID"
+export FQDN="${MY_DNS_LABEL}.${REGION}.cloudapp.azure.com"
+ Define Environment Variables {  0 <nil>}} {bash az group create --name $MY_RESOURCE_GROUP_NAME --location $REGION
+ Create a resource group {JSON {
+  "id": "/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/myAKSResourceGroupxxxxxx",
+  "location": "eastus",
+  "managedBy": null,
+  "name": "testResourceGroup",
+  "properties": {
+    "provisioningState": "Succeeded"
+  },
+  "tags": null,
+  "type": "Microsoft.Resources/resourceGroups"
+}
+ 0.3 <nil>}} {bash az aks create --resource-group $MY_RESOURCE_GROUP_NAME --name $MY_AKS_CLUSTER_NAME  --enable-managed-identity --node-count 1 --generate-ssh-keys
+ Create AKS Cluster {  0 <nil>}} {bash curl -LO "https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl"
+chmod +x ~/kubectl
+echo 'export PATH=$PATH:$HOME' >> ~/.bashrc
+source ~/.bashrc
+ Connect to the cluster {  0 <nil>}} {bash az aks get-credentials --resource-group $MY_RESOURCE_GROUP_NAME --name $MY_AKS_CLUSTER_NAME --overwrite-existing
+ Connect to the cluster {  0 <nil>}} {bash kubectl get nodes
+ Connect to the cluster {  0 <nil>}} {bash kubectl apply -f aks-store-quickstart.yml
+ Deploy the Application {  0 <nil>}} {bash runtime="5 minute";
+endtime=$(date -ud "$runtime" +%s);
+while [[ $(date -u +%s) -le $endtime ]]; do
+   STATUS=$(kubectl get pods -l app=store-front -o 'jsonpath={..status.conditions[?(@.type=="Ready")].status}'); echo $STATUS;
+   if [ "$STATUS" == 'True' ]; then
+      break;
+   else
+      sleep 10;
+   fi;
+done
+ Test The Application {  0 <nil>}} {bash curl "http://$FQDN"
+ Test The Application {HTML <!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <link rel="stylesheet" type="text/css" href="/static/default.css">
+    <title>Azure Voting App</title>
+
+    <script language="JavaScript">
+        function send(form){
+        }
+    </script>
+
+</head>
+<body>
+    <div id="container">
+        <form id="form" name="form" action="/"" method="post"><center>
+        <div id="logo">Azure Voting App</div>
+        <div id="space"></div>
+        <div id="form">
+        <button name="vote" value="Cats" onclick="send()" class="button button1">Cats</button>
+        <button name="vote" value="Dogs" onclick="send()" class="button button2">Dogs</button>
+        <button name="vote" value="reset" onclick="send()" class="button button3">Reset</button>
+        <div id="space"></div>
+        <div id="space"></div>
+        <div id="results"> Cats - 0 | Dogs - 0 </div>
+        </form>
+        </div>
+    </div>
+</body>
+</html>
+ 0.3 <nil>}} {bash kubectl create namespace cert-manager
+ Set Up Cert Manager {  0 <nil>}} {bash kubectl apply -f https://github.com/jetstack/cert-manager/releases/download/v1.7.0/cert-manager.crds.yaml
+ Set Up Cert Manager {  0 <nil>}} {bash kubectl label namespace cert-manager certmanager.k8s.io/disable-validation=true
+ Set Up Cert Manager {  0 <nil>}} {bash helm repo add jetstack https://charts.jetstack.io
+ Obtain certificate via Helm Charts {  0 <nil>}} {bash helm repo update
+ Obtain certificate via Helm Charts {  0 <nil>}} {bash helm install cert-manager jetstack/cert-manager --namespace cert-manager --version v1.7.0
+ Obtain certificate via Helm Charts {  0 <nil>}} {bash cluster_issuer_variables=$(<cluster-issuer-prod.yml)
+echo "${cluster_issuer_variables//\$SSL_EMAIL_ADDRESS/$SSL_EMAIL_ADDRESS}" | kubectl apply -f -
+ Obtain certificate via Helm Charts {  0 <nil>}} {bash azure_vote_nginx_ssl_variables=$(<azure-vote-nginx-ssl.yml)
+echo "${azure_vote_nginx_ssl_variables//\$FQDN/$FQDN}" | kubectl apply -f -
+ Obtain certificate via Helm Charts {  0 <nil>}} {bash runtime="5 minute";
+endtime=$(date -ud "$runtime" +%s);
+while [[ $(date -u +%s) -le $endtime ]]; do
+   STATUS=$(kubectl get svc --namespace=ingress-nginx ingress-nginx-controller -o jsonpath='{.status.loadBalancer.ingress[0].ip}');
+   echo $STATUS;
+   if [ "$STATUS" == "$MY_STATIC_IP" ]; then
+      break;
+   else
+      sleep 10;
+   fi;
+done
+ Browse your AKS Deployment Secured via HTTPS {  0 <nil>}} {bash echo "You can now visit your web server at https://$FQDN"
+ Browse your AKS Deployment Secured via HTTPS {  0 <nil>}}]
+time=2024-04-02T17:08:08-07:00 level=info msg=Successfully built out the scenario: Quickstart: Deploy a Scalable & Secure Azure Kubernetes Service cluster using the Azure CLI
+time=2024-04-02T17:08:08-07:00 level=info msg=Changed directory to .
+time=2024-04-02T17:08:08-07:00 level=info msg=Executing command: export RANDOM_ID="$(openssl rand -hex 3)"
+export SSL_EMAIL_ADDRESS="$(az account show --query user.name --output tsv)"
+export MY_RESOURCE_GROUP_NAME="myResourceGroup"
+export REGION="westeurope"
+export MY_AKS_CLUSTER_NAME="myAKSCluster"
+export MY_DNS_LABEL="mydnslabel$RANDOM_ID"
+export FQDN="${MY_DNS_LABEL}.${REGION}.cloudapp.azure.com"
+
+time=2024-04-02T17:08:08-07:00 level=info msg=Command stdout: 
+time=2024-04-02T17:08:08-07:00 level=info msg=Command stderr: 
+time=2024-04-02T17:08:08-07:00 level=info msg=Executing command: az group create --name $MY_RESOURCE_GROUP_NAME --location $REGION
+
+time=2024-04-02T17:08:11-07:00 level=info msg=Command stdout: {
+  "id": "/subscriptions/d1aa957b-94f5-49ef-b29a-0178c58a7132/resourceGroups/myResourceGroup",
+  "location": "westeurope",
+  "managedBy": null,
+  "name": "myResourceGroup",
+  "properties": {
+    "provisioningState": "Succeeded"
+  },
+  "tags": null,
+  "type": "Microsoft.Resources/resourceGroups"
+}
+
+time=2024-04-02T17:08:11-07:00 level=info msg=Command stderr: 
+time=2024-04-02T17:08:11-07:00 level=debug msg=Comparing JSON strings:
+Expected: {
+  "id": "/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/myAKSResourceGroupxxxxxx",
+  "location": "eastus",
+  "managedBy": null,
+  "name": "testResourceGroup",
+  "properties": {
+    "provisioningState": "Succeeded"
+  },
+  "tags": null,
+  "type": "Microsoft.Resources/resourceGroups"
+}
+
+Actual{
+  "id": "/subscriptions/d1aa957b-94f5-49ef-b29a-0178c58a7132/resourceGroups/myResourceGroup",
+  "location": "westeurope",
+  "managedBy": null,
+  "name": "myResourceGroup",
+  "properties": {
+    "provisioningState": "Succeeded"
+  },
+  "tags": null,
+  "type": "Microsoft.Resources/resourceGroups"
+}
+
+time=2024-04-02T17:08:11-07:00 level=debug msg=Expected Similarity: 0.300000, Actual Similarity: 0.756964
+time=2024-04-02T17:08:11-07:00 level=info msg=Found resource group: myResourceGroup
+time=2024-04-02T17:08:11-07:00 level=info msg=Executing command: az aks create --resource-group $MY_RESOURCE_GROUP_NAME --name $MY_AKS_CLUSTER_NAME  --enable-managed-identity --node-count 1 --generate-ssh-keys
+
+time=2024-04-02T17:08:49-07:00 level=info msg=INI file 'scenarios/CreateAKSDeployment/README.ini' does not exist, skipping...
+time=2024-04-02T17:08:49-07:00 level=debug msg=Found HTML block with the content: <!-- expected_similarity=0.3 -->
+
+
+time=2024-04-02T17:08:49-07:00 level=debug msg=Found HTML block with the content: <!--## Validate application is working
+
+Wait for the SSL certificate to issue. The following command will query the 
+status of the SSL certificate for 3 minutes. In rare occasions it may take up to 
+15 minutes for Lets Encrypt to issue a successful challenge and 
+the ready state to be 'True'
+
+```bash
+runtime="10 minute"; endtime=$(date -ud "$runtime" +%s); while [[ $(date -u +%s) -le $endtime ]]; do STATUS=$(kubectl get certificate --output jsonpath={..status.conditions[0].status}); echo $STATUS; if [ "$STATUS" = 'True' ]; then break; else sleep 10; fi; done
+```
+
+Validate SSL certificate is True by running the follow command:
+
+```bash
+kubectl get certificate --output jsonpath={..status.conditions[0].status}
+```
+
+Results:
+
+
+
+time=2024-04-02T17:08:49-07:00 level=debug msg=Found HTML block with the content: <!--
+```ASCII
+True
+```
+
+
+time=2024-04-02T17:08:49-07:00 level=debug msg=Simalrity score of 0.300000 found
+time=2024-04-02T17:08:49-07:00 level=debug msg=Found 17 code blocks CodeBlocks=[{bash export RANDOM_ID="$(openssl rand -hex 3)"
+export SSL_EMAIL_ADDRESS="$(az account show --query user.name --output tsv)"
+export MY_RESOURCE_GROUP_NAME="myResourceGroup"
+export REGION="eastus"
+export MY_AKS_CLUSTER_NAME="myAKSCluster"
+export MY_DNS_LABEL="mydnslabel"
+export FQDN="${MY_DNS_LABEL}.${REGION}.cloudapp.azure.com"
+ Define Environment Variables {  0 <nil>}} {bash curl -LO "https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl"
+chmod +x ~/kubectl
+echo 'export PATH=$PATH:$HOME' >> ~/.bashrc
+source ~/.bashrc
+ Connect to the cluster {  0 <nil>}} {bash az aks get-credentials --resource-group $MY_RESOURCE_GROUP_NAME --name $MY_AKS_CLUSTER_NAME --overwrite-existing
+ Connect to the cluster {  0 <nil>}} {bash kubectl get nodes
+ Connect to the cluster {  0 <nil>}} {bash kubectl apply -f aks-store-quickstart.yml
+ Deploy the Application {  0 <nil>}} {bash runtime="5 minute";
+endtime=$(date -ud "$runtime" +%s);
+while [[ $(date -u +%s) -le $endtime ]]; do
+   STATUS=$(kubectl get pods -l app=store-front -o 'jsonpath={..status.conditions[?(@.type=="Ready")].status}'); echo $STATUS;
+   if [ "$STATUS" == 'True' ]; then
+      break;
+   else
+      sleep 10;
+   fi;
+done
+ Test The Application {  0 <nil>}} {bash curl "http://$FQDN"
+ Test The Application {HTML <!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <link rel="stylesheet" type="text/css" href="/static/default.css">
+    <title>Azure Voting App</title>
+
+    <script language="JavaScript">
+        function send(form){
+        }
+    </script>
+
+</head>
+<body>
+    <div id="container">
+        <form id="form" name="form" action="/"" method="post"><center>
+        <div id="logo">Azure Voting App</div>
+        <div id="space"></div>
+        <div id="form">
+        <button name="vote" value="Cats" onclick="send()" class="button button1">Cats</button>
+        <button name="vote" value="Dogs" onclick="send()" class="button button2">Dogs</button>
+        <button name="vote" value="reset" onclick="send()" class="button button3">Reset</button>
+        <div id="space"></div>
+        <div id="space"></div>
+        <div id="results"> Cats - 0 | Dogs - 0 </div>
+        </form>
+        </div>
+    </div>
+</body>
+</html>
+ 0.3 <nil>}} {bash kubectl create namespace cert-manager
+ Set Up Cert Manager {  0 <nil>}} {bash kubectl apply -f https://github.com/jetstack/cert-manager/releases/download/v1.7.0/cert-manager.crds.yaml
+ Set Up Cert Manager {  0 <nil>}} {bash kubectl label namespace cert-manager certmanager.k8s.io/disable-validation=true
+ Set Up Cert Manager {  0 <nil>}} {bash helm repo add jetstack https://charts.jetstack.io
+ Obtain certificate via Helm Charts {  0 <nil>}} {bash helm repo update
+ Obtain certificate via Helm Charts {  0 <nil>}} {bash helm install cert-manager jetstack/cert-manager --namespace cert-manager --version v1.7.0
+ Obtain certificate via Helm Charts {  0 <nil>}} {bash cluster_issuer_variables=$(<cluster-issuer-prod.yml)
+echo "${cluster_issuer_variables//\$SSL_EMAIL_ADDRESS/$SSL_EMAIL_ADDRESS}" | kubectl apply -f -
+ Obtain certificate via Helm Charts {  0 <nil>}} {bash azure_vote_nginx_ssl_variables=$(<azure-vote-nginx-ssl.yml)
+echo "${azure_vote_nginx_ssl_variables//\$FQDN/$FQDN}" | kubectl apply -f -
+ Obtain certificate via Helm Charts {  0 <nil>}} {bash runtime="5 minute";
+endtime=$(date -ud "$runtime" +%s);
+while [[ $(date -u +%s) -le $endtime ]]; do
+   STATUS=$(kubectl get svc --namespace=ingress-nginx ingress-nginx-controller -o jsonpath='{.status.loadBalancer.ingress[0].ip}');
+   echo $STATUS;
+   if [ "$STATUS" == "$MY_STATIC_IP" ]; then
+      break;
+   else
+      sleep 10;
+   fi;
+done
+ Browse your AKS Deployment Secured via HTTPS {  0 <nil>}} {bash echo "You can now visit your web server at https://$FQDN"
+ Browse your AKS Deployment Secured via HTTPS {  0 <nil>}}]
+time=2024-04-02T17:08:49-07:00 level=info msg=Successfully built out the scenario: Quickstart: Deploy a Scalable & Secure Azure Kubernetes Service cluster using the Azure CLI
+time=2024-04-02T17:08:49-07:00 level=info msg=Changed directory to .
+time=2024-04-02T17:08:49-07:00 level=info msg=Executing command: export RANDOM_ID="$(openssl rand -hex 3)"
+export SSL_EMAIL_ADDRESS="$(az account show --query user.name --output tsv)"
+export MY_RESOURCE_GROUP_NAME="myResourceGroup"
+export REGION="eastus"
+export MY_AKS_CLUSTER_NAME="myAKSCluster"
+export MY_DNS_LABEL="mydnslabel"
+export FQDN="${MY_DNS_LABEL}.${REGION}.cloudapp.azure.com"
+
+time=2024-04-02T17:08:50-07:00 level=info msg=Command stdout: 
+time=2024-04-02T17:08:50-07:00 level=info msg=Command stderr: 
+time=2024-04-02T17:08:50-07:00 level=info msg=Executing command: curl -LO "https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl"
+chmod +x ~/kubectl
+echo 'export PATH=$PATH:$HOME' >> ~/.bashrc
+source ~/.bashrc
+
+time=2024-04-02T17:08:52-07:00 level=info msg=Command stdout: 
+time=2024-04-02T17:08:52-07:00 level=info msg=Command stderr:   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0 33 47.4M   33 16.0M    0     0  22.0M      0  0:00:02 --:--:--  0:00:02 22.0M 94 47.4M   94 45.0M    0     0  26.0M      0  0:00:01  0:00:01 --:--:-- 26.0M100 47.4M  100 47.4M    0     0  26.2M      0  0:00:01  0:00:01 --:--:-- 26.2M
+chmod: cannot access '/home/naman10parikh/kubectl': No such file or directory
+
+time=2024-04-02T17:08:52-07:00 level=info msg=Executing command: az aks get-credentials --resource-group $MY_RESOURCE_GROUP_NAME --name $MY_AKS_CLUSTER_NAME --overwrite-existing
+
+time=2024-04-02T17:08:54-07:00 level=info msg=Command stdout: 
+time=2024-04-02T17:08:54-07:00 level=info msg=Command stderr: 
+time=2024-04-02T17:08:54-07:00 level=error msg=Error executing command: command exited with 'exit status 3' and the message 'WARNING: The behavior of this command has been altered by the following extension: aks-preview
+ERROR: (ControlPlaneNotFound) Could not find control plane with ID 660c9df7c487de0001edc111.
+Code: ControlPlaneNotFound
+Message: Could not find control plane with ID 660c9df7c487de0001edc111.
+Exception Details:	(Unspecified) rpc error: code = NotFound desc = Control Plane not found
+	Code: Unspecified
+	Message: rpc error: code = NotFound desc = Control Plane not found
+'
+time=2024-04-02T17:08:54-07:00 level=info msg=Changed directory to /home/naman10parikh/NamanCode/executable-docs
+time=2024-04-02T17:08:54-07:00 level=error msg=Error testing scenario: command exited with 'exit status 3' and the message 'WARNING: The behavior of this command has been altered by the following extension: aks-preview
+ERROR: (ControlPlaneNotFound) Could not find control plane with ID 660c9df7c487de0001edc111.
+Code: ControlPlaneNotFound
+Message: Could not find control plane with ID 660c9df7c487de0001edc111.
+Exception Details:	(Unspecified) rpc error: code = NotFound desc = Control Plane not found
+	Code: Unspecified
+	Message: rpc error: code = NotFound desc = Control Plane not found
+'
