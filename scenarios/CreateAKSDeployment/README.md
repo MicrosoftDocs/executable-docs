@@ -4,8 +4,8 @@ description: This tutorial where we will take you step by step in creating an Az
 author: mbifeld
 ms.author: mbifeld
 ms.topic: article
-ms.date: 11/28/2023
-ms.custom: innovation-engine
+ms.date: 04/02/2024
+ms.custom: innovation-engine, linux-related content
 ---
 
 # Quickstart: Deploy a Scalable & Secure Azure Kubernetes Service cluster using the Azure CLI
