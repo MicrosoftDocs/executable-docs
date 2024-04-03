@@ -120,19 +120,14 @@ endtime=$(date -ud "$runtime" +%s)
 while [[ $(date -u +%s) -le $endtime ]]
 do
    STATUS=$(kubectl get pods -l app=store-front -o 'jsonpath={..status.conditions[?(@.type=="Ready")].status}')
-   echo $STATUS
    if [ "$STATUS" == 'True' ]
    then
-      export IP_ADDRESS=$(kubectl get service store-front --output 'jsonpath={..status.loadBalancer.ingress[0].ip}')
-      echo "Service IP Address: $IP_ADDRESS"
+      IP_ADDRESS=$(kubectl get service store-front --output 'jsonpath={..status.loadBalancer.ingress[0].ip}')
       break
    else
       sleep 10
    fi
 done
-```
-
-```bash
 curl $IP_ADDRESS
 ```
 
@@ -157,6 +152,10 @@ Results:
       <div id="app"></div>
    </body>
 </html>
+```
+
+```bash
+echo "You can now visit your web server at http://$IP_ADDRESS"
 ```
 
 ## Next Steps
