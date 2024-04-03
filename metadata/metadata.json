@@ -16,7 +16,8 @@
         "configurableDocInformation": {
             "region": "westeurope",
             "permissionsList": [
-                "Microsoft.Resources/resourceGroups/write","Microsoft.Compute/virtualMachines/write",
+                "Microsoft.Resources/resourceGroups/write",
+                "Microsoft.Compute/virtualMachines/write",
                 "Microsoft.Network/publicIPAddresses/write",
                 "Microsoft.Network/networkInterfaces/write",
                 "Microsoft.Storage/storageAccounts/listKeys/action",
