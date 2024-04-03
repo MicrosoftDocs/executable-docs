@@ -178,31 +178,81 @@ Results:
 <!-- expected_similarity=0.3 -->
 ```json
 {
+  "apiserverProfile": {
+    "ip": "xx.xxx.xx.xxx",
+    "url": "https://api.xxxxx.xxxxxx.aroapp.io:xxxx/",
+    "visibility": "Public"
+  },
   "clusterProfile": {
-    "domain": "example",
-    "resourceGroupId": "/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/myResourceGroup",
-    "version": "4.3.28"
+    "domain": "xxxxxx",
+    "fipsValidatedModules": "Disabled",
+    "pullSecret": null,
+    "resourceGroupId": "/subscriptions/xxxxxx-xxxxxx-xxxxxx-xxxxxx-xxxxxx/resourcegroups/xxxxxx-xxxxxx",
+    "version": "4.12.25"
   },
   "consoleProfile": {
-    "url": "https://console-openshift-console.apps.example.aroapp.io/"
+    "url": "https://console-openshift-console.apps.xxxxxx.xxxxxx.aroapp.io/"
   },
-  "id": "/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/myResourceGroup/providers/Microsoft.RedHatOpenShift/openShiftClusters/myAROCluster",
+  "id": "/subscriptions/xxxxxx-xxxxxx-xxxxxx-xxxxxx-xxxxxx/resourceGroups/rg-arodemo-xxxxxx/providers/Microsoft.RedHatOpenShift/openShiftClusters/aro-arodemo-xxxxxx",
+  "ingressProfiles": [
+    {
+      "ip": "xx.xxx.xx.xxx",
+      "name": "default",
+      "visibility": "Public"
+    }
+  ],
   "location": "westus",
   "masterProfile": {
-    "subnetId": "/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/myResourceGroup/providers/Microsoft.Network/virtualNetworks/myVNet/subnets/mySubnet1"
+    "diskEncryptionSetId": null,
+    "encryptionAtHost": "Disabled",
+    "subnetId": "/subscriptions/xxxxxx-xxxxxx-xxxxxx-xxxxxx-xxxxxx/resourceGroups/rg-arodemo-xxxxxx/providers/Microsoft.Network/virtualNetworks/vnet-arodemo-xxxxxx/subnets/sn-main-jffspl",
+    "vmSize": "Standard_D8s_v3"
   },
-  "name": "myAROCluster",
+  "name": "aro-arodemo-xxxxxx",
   "networkProfile": {
-    "podCidr": "10.128.0.0/14",
-    "serviceCidr": "172.30.0.0/16"
+    "outboundType": "Loadbalancer",
+    "podCidr": "xx.xxx.xx.xxx/xx",
+    "preconfiguredNsg": "Disabled",
+    "serviceCidr": "xx.xxx.xx.xxx/xx"
   },
   "provisioningState": "Succeeded",
-  "tags": {},
+  "resourceGroup": "rg-arodemo-xxxxxx",
+  "servicePrincipalProfile": {
+    "clientId": "xxxxxx-xxxxxx-xxxxxx-xxxxxx-xxxxxx",
+    "clientSecret": null
+  },
+  "systemData": {
+    "createdAt": "xxxxxx-xx-xxxxxx:xx:xx.xxxxxx+xx:xx",
+    "createdBy": "xxxxxx@xxxxxx.xxx",
+    "createdByType": "User",
+    "lastModifiedAt": "xxxxxx-xx-xxxxxx:xx:xx.xxxxxx+xx:xx",
+    "lastModifiedBy": "xxxxxx@xxxxxx.xxx",
+    "lastModifiedByType": "User"
+  },
+  "tags": {
+    "Demo": "",
+    "owner": "ARO"
+  },
   "type": "Microsoft.RedHatOpenShift/openShiftClusters",
   "workerProfiles": [
     {
       "count": 3,
-      "subnetId": "/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/myResourceGroup/providers/Microsoft.Network/virtualNetworks/myVNet/subnets/mySubnet2",
+      "diskEncryptionSetId": null,
+      "diskSizeGb": 128,
+      "encryptionAtHost": "Disabled",
+      "name": "worker",
+      "subnetId": "/subscriptions/xxxxxx-xxxxxx-xxxxxx-xxxxxx-xxxxxx/resourceGroups/rg-arodemo-xxxxxx/providers/Microsoft.Network/virtualNetworks/vnet-arodemo-xxxxxx/subnets/sn-worker-xxxxxx",
+      "vmSize": "Standard_D4s_v3"
+    }
+  ],
+  "workerProfilesStatus": [
+    {
+      "count": 3,
+      "diskEncryptionSetId": null,
+      "diskSizeGb": 128,
+      "encryptionAtHost": "Disabled",
+      "name": "aro-arodemo-xxxxxx-xxxxxx-worker-westus",
+      "subnetId": "/subscriptions/xxxxxx-xxxxxx-xxxxxx-xxxxxx-xxxxxx/resourceGroups/rg-arodemo-xxxxxx/providers/Microsoft.Network/virtualNetworks/vnet-arodemo-xxxxxx/subnets/sn-worker-xxxxxx",
       "vmSize": "Standard_D4s_v3"
     }
   ]
