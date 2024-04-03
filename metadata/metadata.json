@@ -14,7 +14,6 @@
         "sourceFileUrl": "https://github.com/MicrosoftDocs/executable-docs/tree/main/scenarios/CreateLinuxVMAndSSH",
         "documentationUrl": "https://learn.microsoft.com/en-us/azure/virtual-machines/linux/quick-create-cli",
         "configurableDocInformation": {
-            "region": "westeurope",
             "permissionsList": [
                 "Microsoft.Resources/resourceGroups/write",
                 "Microsoft.Compute/virtualMachines/write",
@@ -48,7 +47,6 @@
         "sourceFileUrl": "https://github.com/MicrosoftDocs/executable-docs/tree/main/scenarios/CreateLinuxVMLAMP",
         "documentationUrl": "https://learn.microsoft.com/en-us/azure/virtual-machines/linux/tutorial-lemp-stack",
         "configurableDocInformation": {
-            "region": "westeurope",
             "permissionsList": [
                 "Microsoft.Resources/resourceGroups/write",
                 "Microsoft.Network/virtualNetworks/write",
@@ -99,7 +97,6 @@
         "sourceFileUrl": "https://github.com/MicrosoftDocs/executable-docs/tree/main/scenarios/CreateAKSDeployment",
         "documentationUrl": "https://learn.microsoft.com/en-us/azure/aks/learn/quick-kubernetes-deploy-cli",
         "configurableDocInformation": {
-            "region": "westeurope",
             "permissionsList": [
                 "Microsoft.Resources/resourceGroups/write",
                 "Microsoft.Resources/resourceGroups/read",
@@ -145,7 +142,6 @@
         "sourceFileUrl": "https://github.com/MicrosoftDocs/executable-docs/tree/main/scenarios/CreateLinuxVMSSwithAppGW",
         "documentationUrl": "https://learn.microsoft.com/en-us/azure/virtual-machine-scale-sets/flexible-virtual-machine-scale-sets-cli",
         "configurableDocInformation": {
-            "region": "westeurope",
             "permissionsList": [
             ]
         }
@@ -162,7 +158,6 @@
         "sourceFileUrl": "https://github.com/MicrosoftDocs/executable-docs/tree/main/scenarios/CreateWordPressDeployment",
         "documentationUrl": "https://learn.microsoft.com/en-us/azure/mysql/flexible-server/tutorial-deploy-wordpress-on-aks",
         "configurableDocInformation": {
-            "region": "westeurope",
             "permissionsList": [
             ]
         }
@@ -179,7 +174,6 @@
         "sourceFileUrl": "https://github.com/MicrosoftDocs/executable-docs/tree/main/scenarios/DeployIGonAKS",
         "documentationUrl": "https://learn.microsoft.com/en-us/troubleshoot/azure/azure-kubernetes/capture-system-insights-from-aks",
         "configurableDocInformation": {
-            "region": "westeurope",
             "permissionsList": [
             ]
         }
@@ -196,7 +190,6 @@
         "sourceFileUrl": "https://github.com/MicrosoftDocs/executable-docs/tree/main/scenarios/CreateStaticWebApp",
         "documentationUrl": "https://learn.microsoft.com/en-us/azure/static-web-apps/get-started-cli",
         "configurableDocInformation": {
-            "region": "westeurope",
             "permissionsList": [
             ]
         }
