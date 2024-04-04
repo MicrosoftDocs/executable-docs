@@ -5,7 +5,7 @@ author: mbifeld
 ms.author: mbifeld
 ms.topic: article
 ms.date: 11/28/2023
-ms.custom: innovation-engine
+ms.custom: innovation-engine, linux-related content
 ---
 
 # Quickstart: Deploy a Scalable & Secure Azure Kubernetes Service cluster using the Azure CLI
@@ -21,11 +21,10 @@ The first step in this tutorial is to define environment variables.
 ```bash
 export RANDOM_ID="$(openssl rand -hex 3)"
 export SSL_EMAIL_ADDRESS="$(az account show --query user.name --output tsv)"
-export MY_RESOURCE_GROUP_NAME="myResourceGroup"
+export MY_RESOURCE_GROUP_NAME="myResourceGroup$RANDOM_ID"
 export REGION="westeurope"
-export MY_AKS_CLUSTER_NAME="myAKSCluster"
+export MY_AKS_CLUSTER_NAME="myAKSCluster$RANDOM_ID"
 export MY_DNS_LABEL="mydnslabel$RANDOM_ID"
-export FQDN="${MY_DNS_LABEL}.${REGION}.cloudapp.azure.com"
 ```
 
 ## Create a resource group
