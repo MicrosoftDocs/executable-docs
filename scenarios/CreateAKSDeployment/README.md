@@ -163,7 +163,9 @@ Results:
 </html>
 ```
 
+```
 echo "You can now visit your web server at $IP_ADDRESS"
+```
 
 ## Next Steps
 
