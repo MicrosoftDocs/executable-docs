@@ -4,7 +4,7 @@ description: This tutorial where we will take you step by step in creating an Az
 author: mbifeld
 ms.author: mbifeld
 ms.topic: article
-ms.date: 11/28/2023
+ms.date: 04/04/2024
 ms.custom: innovation-engine, linux-related content
 ---
 
@@ -93,19 +93,14 @@ To manage a Kubernetes cluster, use the Kubernetes command-line client, kubectl.
 
 A Kubernetes manifest file defines a cluster's desired state, such as which container images to run.
 
-In this quickstart, you will use a manifest to create all objects needed to run the Azure Vote application. This manifest includes two Kubernetes deployments:
+In this quickstart, you will use a manifest to create all objects needed to run the AKS Store application. The manifest includes the following Kubernetes deployments and services:
 
-- The sample Azure Vote Python applications.
-- A Redis instance.
+- **Store front**: Web application for customers to view products and place orders.
+- **Product service**: Shows product information.
+- **Order service**: Places orders.
+- **Rabbit MQ**: Message queue for an order queue.
 
-Two Kubernetes Services are also created:
-
-- An internal service for the Redis instance.
-- An external service to access the Azure Vote application from the internet.
-
-Finally, an Ingress resource is created to route traffic to the Azure Vote application.
-
-A test voting app YML file is already prepared. To deploy this app run the following command
+A test store front application YML file is already prepared. To deploy this app run the following command
 
 ```bash
 kubectl apply -f aks-store-quickstart.yml
