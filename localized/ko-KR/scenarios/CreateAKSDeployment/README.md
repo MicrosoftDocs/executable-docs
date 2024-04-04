@@ -23,7 +23,7 @@ export RANDOM_ID="$(openssl rand -hex 3)"
 export NETWORK_PREFIX="$(($RANDOM % 254 + 1))"
 export SSL_EMAIL_ADDRESS="$(az account show --query user.name --output tsv)"
 export MY_RESOURCE_GROUP_NAME="myAKSResourceGroup$RANDOM_ID"
-export REGION="eastus"
+export REGION="westeurope"
 export MY_AKS_CLUSTER_NAME="myAKSCluster$RANDOM_ID"
 export MY_PUBLIC_IP_NAME="myPublicIP$RANDOM_ID"
 export MY_DNS_LABEL="mydnslabel$RANDOM_ID"
@@ -42,7 +42,7 @@ export FQDN="${MY_DNS_LABEL}.${REGION}.cloudapp.azure.com"
 az group create --name $MY_RESOURCE_GROUP_NAME --location $REGION
 ```
 
-결과:
+Results:
 
 <!-- expected_similarity=0.3 -->
 
@@ -74,7 +74,7 @@ az network vnet create \
     --subnet-prefixes $MY_SN_PREFIX
 ```
 
-결과:
+Results:
 
 <!-- expected_similarity=0.3 -->
 
@@ -236,7 +236,7 @@ done
 curl "http://$FQDN"
 ```
 
-결과:
+Results:
 
 <!-- expected_similarity=0.3 -->
 
