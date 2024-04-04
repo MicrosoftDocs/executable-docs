@@ -21,7 +21,7 @@ The first step in this tutorial is to define environment variables.
 ```bash
 export RANDOM_ID="$(openssl rand -hex 3)"
 export SSL_EMAIL_ADDRESS="$(az account show --query user.name --output tsv)"
-export MY_RESOURCE_GROUP_NAME="myResourceGroup$RANDOM_ID"
+export MY_RESOURCE_GROUP_NAME="myAKSResourceGroup$RANDOM_ID"
 export REGION="westeurope"
 export MY_AKS_CLUSTER_NAME="myAKSCluster$RANDOM_ID"
 export MY_DNS_LABEL="mydnslabel$RANDOM_ID"
