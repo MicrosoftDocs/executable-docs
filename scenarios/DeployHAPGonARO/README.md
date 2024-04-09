@@ -16,10 +16,10 @@ In order to run commands against Azure using the CLI you need to login. This is 
 
 ## Check for Prerequisites
 
-Next, check for prerequisites. This section checks for the following prerequisites: RedHat OpenShift and kubectl. 
+Next, check for prerequisites. This section checks for the following prerequisites: RedHat OpenShift and kubectl.
 
-### RedHat OpenShift 
-    
+### RedHat OpenShift
+
 ```bash
 az provider register -n Microsoft.RedHatOpenShift --wait
 ```
@@ -28,6 +28,16 @@ az provider register -n Microsoft.RedHatOpenShift --wait
 
 ```bash
 az aks install-cli
+```
+
+### Openshift Client
+
+Install the Openshift client locally.
+
+```bash
+mkdir ocp && cd ocp
+wget -qO- https://mirror.openshift.com/pub/openshift-v4/clients/ocp/latest/openshift-client-linux.tar.gz | tar -xvz
+export PATH=$PATH:$PWD
 ```
 
 ## Create a resource group
@@ -44,8 +54,8 @@ az group create -n $RG_NAME -l $LOCATION --tags $RGTAGS
 ```
 
 Results:
-    
-<!-- expected_similarity=0.3 -->    
+
+<!-- expected_similarity=0.3 -->
 ```json
 {
 "id": "/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/xx-xxxxx-xxxxx",
@@ -65,7 +75,7 @@ Results:
 ## Create VNet
 
 In this section, you'll be creating a Virtual Network (VNet) in Azure. Start by defining several environment variables. These variables will hold the names of your VNet and subnets, as well as the CIDR block for your VNet. Next, create the VNet  with the specified name and CIDR block in your resource group using the az network vnet create command. This process may take a few minutes.
-    
+
 ```bash
 export VNET_NAME="vnet-${LOCAL_NAME}-${SUFFIX}"
 export SUBNET1_NAME="sn-main-${SUFFIX}"
@@ -99,8 +109,9 @@ Results:
   }
 }
 ```
+
 ## Create Main Nodes Subnet
-    
+
 In this section, you'll be creating the main nodes subnet with the specified name and CIDR block within your previously created Virtual Network (VNet). Start by running the az network vnet subnet create command. This process may take a few minutes. After the subnet is successfully created, you'll be ready to deploy resources into this subnet.
 
 ```bash
@@ -166,11 +177,11 @@ SP_SECRET=$(echo $servicePrincipalInfo | jq -r '.password')
 ## Deploy the ARO cluster
 
 In this section, you'll be deploying an Azure Red Hat OpenShift (ARO) cluster. The ARO_CLUSTER_NAME variable will hold the name of your ARO cluster. The az aro create command will deploy the ARO cluster with the specified name, resource group, virtual network, subnets, and service principal. This process may take about 30 minutes to complete.
-    
+
 ```bash
 export ARO_CLUSTER_NAME="aro-${LOCAL_NAME}-${SUFFIX}"
-echo ${YELLOW} "This will take about 30 minutes to complete..." 
-az aro create -g $RG_NAME -n $ARO_CLUSTER_NAME --vnet $VNET_NAME --master-subnet $SUBNET1_NAME --worker-subnet $SUBNET2_NAME --tags $RGTAGS --client-id ${SP_ID} --client-secret ${SP_SECRET}
+echo "This will take about 30 minutes to complete..." 
+az aro create -g $RG_NAME -n $ARO_CLUSTER_NAME --vnet $VNET_NAME --master-subnet $SUBNET1_NAME --worker-subnet $SUBNET2_NAME --tags $RGTAGS --client-id ${SP_ID} --client-secret ${SP_SECRET} --pull-secret @pull-secrets.json
 ```
 
 Results:
