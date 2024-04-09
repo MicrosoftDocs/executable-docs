@@ -12,7 +12,7 @@
             "Port 22 will be opened"
         ],
         "sourceFileUrl": "https://raw.githubusercontent.com/MicrosoftDocs/azure-docs/main/articles/virtual-machines/linux/quick-create-cli.md",
-        "documentationUrl": "https://learn.microsoft.com/en-us/azure/virtual-machines/linux/quick-create-cli",
+        "documentationUrl": "https://learn.microsoft.com/azure/virtual-machines/linux/quick-create-cli",
         "configurableDocInformation": {
             "permissionsList": [
                 "Microsoft.Resources/resourceGroups/write",
@@ -45,7 +45,7 @@
             "Use port 22 for SSH and ports 80, 443 for web traffic"
         ],
         "sourceFileUrl": "https://raw.githubusercontent.com/MicrosoftDocs/azure-docs/main/articles/virtual-machines/linux/tutorial-lemp-stack.md",
-        "documentationUrl": "https://learn.microsoft.com/en-us/azure/virtual-machines/linux/tutorial-lemp-stack",
+        "documentationUrl": "https://learn.microsoft.com/azure/virtual-machines/linux/tutorial-lemp-stack",
         "configurableDocInformation": {
             "permissionsList": [
                 "Microsoft.Resources/resourceGroups/write",
@@ -95,7 +95,7 @@
         "extraDetailsBulletPoints": [
             ],
         "sourceFileUrl": "https://raw.githubusercontent.com/MicrosoftDocs/azure-docs/main/articles/aks/learn/quick-kubernetes-deploy-cli.md",
-        "documentationUrl": "https://learn.microsoft.com/en-us/azure/aks/learn/quick-kubernetes-deploy-cli",
+        "documentationUrl": "https://learn.microsoft.com/azure/aks/learn/quick-kubernetes-deploy-cli",
         "configurableDocInformation": {
             "permissionsList": [
                 "Microsoft.Resources/resourceGroups/write",
@@ -140,7 +140,7 @@
             
         ],
         "sourceFileUrl": "https://raw.githubusercontent.com/MicrosoftDocs/azure-docs/main/articles/virtual-machine-scale-sets/flexible-virtual-machine-scale-sets-cli.md",
-        "documentationUrl": "https://learn.microsoft.com/en-us/azure/virtual-machine-scale-sets/flexible-virtual-machine-scale-sets-cli",
+        "documentationUrl": "https://learn.microsoft.com/azure/virtual-machine-scale-sets/flexible-virtual-machine-scale-sets-cli",
         "configurableDocInformation": {
             "permissionsList": [
             ]
@@ -156,7 +156,7 @@
             
         ],
         "sourceFileUrl": "https://raw.githubusercontent.com/MicrosoftDocs/azure-docs/main/articles/mysql/flexible-server/tutorial-deploy-wordpress-on-aks.md",
-        "documentationUrl": "https://learn.microsoft.com/en-us/azure/mysql/flexible-server/tutorial-deploy-wordpress-on-aks",
+        "documentationUrl": "https://learn.microsoft.com/azure/mysql/flexible-server/tutorial-deploy-wordpress-on-aks",
         "configurableDocInformation": {
             "permissionsList": [
             ]
@@ -172,7 +172,7 @@
             
         ],
         "sourceFileUrl": "https://raw.githubusercontent.com/MicrosoftDocs/SupportArticles-docs/main/support/azure/azure-kubernetes/capture-system-insights-from-aks.md",
-        "documentationUrl": "https://learn.microsoft.com/en-us/troubleshoot/azure/azure-kubernetes/capture-system-insights-from-aks",
+        "documentationUrl": "https://learn.microsoft.com/troubleshoot/azure/azure-kubernetes/capture-system-insights-from-aks",
         "configurableDocInformation": {
             "permissionsList": [
             ]
@@ -188,7 +188,7 @@
             
         ],
         "sourceFileUrl": "https://raw.githubusercontent.com/MicrosoftDocs/azure-docs/main/articles/static-web-apps/get-started-cli.md",
-        "documentationUrl": "https://learn.microsoft.com/en-us/azure/static-web-apps/get-started-cli",
+        "documentationUrl": "https://learn.microsoft.com/azure/static-web-apps/get-started-cli",
         "configurableDocInformation": {
             "permissionsList": [
             ]
