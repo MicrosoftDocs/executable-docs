@@ -1,23 +1,35 @@
 ---
-title: Create a Virtual Machine Scale Set with Application Gateway with Linux image
-description: This tutorial shows how to create a Virtual Machine Scale Set with Application Gateway with Linux image
-author: belginceran
-ms.author: belginceran
-ms.topic: article
-ms.date: 01/05/2024
-ms.custom: innovation-engine
+title: Create virtual machines in a Flexible scale set using Azure CLI
+description: Learn how to create a Virtual Machine Scale Set in Flexible orchestration mode using Azure CLI.
+author: fitzgeraldsteele
+ms.author: fisteele
+ms.topic: how-to
+ms.service: virtual-machine-scale-sets
+ms.date: 3/19/2024
+ms.reviewer: jushiman
+ms.custom: mimckitt, devx-track-azurecli, vmss-flex, innovation-engine, linux-related-content
 ---
 
-# Create a Virtual Machine Scale Set with Application Gateway with Linux image
+# Create virtual machines in a scale set using Azure CLI
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262759)
 
-## Define Environment Variables
+This article steps through using the Azure CLI to create a Virtual Machine Scale Set.
 
-The First step in this tutorial is to define environment variables.
+Make sure that you've installed the latest [Azure CLI](/cli/azure/install-az-cli2) and are logged in to an Azure account with [az login](/cli/azure/reference-index).
+
+
+## Launch Azure Cloud Shell
+
+The Azure Cloud Shell is a free interactive shell that you can use to run the steps in this article. It has common Azure tools preinstalled and configured to use with your account.
+
+To open the Cloud Shell, select **Open Cloud Shell** from the upper right corner of a code block. You can also launch Cloud Shell in a separate browser tab by going to [https://shell.azure.com/cli](https://shell.azure.com/cli). Select **Copy** to copy the blocks of code, paste it into the Cloud Shell, and press enter to run it.
+
+## Define environment variables
+
+Define environment variables as follows.
 
 ```bash
-
 export RANDOM_ID="$(openssl rand -hex 3)"
 export MY_RESOURCE_GROUP_NAME="myVMSSResourceGroup$RANDOM_ID"
 export REGION=EastUS
@@ -33,22 +45,17 @@ export MY_APPGW_SN_NAME="myAPPGWSN$RANDOM_ID"
 export MY_APPGW_SN_PREFIX="10.$NETWORK_PREFIX.1.0/24"
 export MY_APPGW_NAME="myAPPGW$RANDOM_ID"
 export MY_APPGW_PUBLIC_IP_NAME="myAPPGWPublicIP$RANDOM_ID"
-
 ```
-# Login to Azure using the CLI
 
-In order to run commands against Azure using the CLI you need to login. This is done, very simply, though the `az login` command:
+## Create a resource group
 
-# Create a resource group
-
-A resource group is a container for related resources. All resources must be placed in a resource group. We will create one for this tutorial. The following command creates a resource group with the previously defined $MY_RESOURCE_GROUP_NAME and $REGION parameters.
+A resource group is a logical container into which Azure resources are deployed and managed. All resources must be placed in a resource group. The following command creates a resource group with the previously defined $MY_RESOURCE_GROUP_NAME and $REGION parameters.
 
 ```bash
 az group create --name $MY_RESOURCE_GROUP_NAME --location $REGION -o JSON
 ```
 
 Results:
-
 <!-- expected_similarity=0.3 -->
 ```json   
 {
@@ -64,19 +71,17 @@ Results:
 }
 ```
 
-# Create Network Resources 
+## Create network resources 
 
-You need to create network resources before you proceed the VMSS steps. In this step you're going to create a VNET, 2 subnets 1 for Application Gateway and 1 for VMs. You also need to have a public IP to attach your Application Gateway to be able to reach your web application from internet. 
+Now you'll create network resources. In this step you're going to create a virtual network, one subnet 1 for Application Gateway, and one subnet for VMs. You also need to have a public IP to attach your Application Gateway to reach your web application from the internet. 
 
-
-#### Create Virtual Network (VNET) and VM Subnet
+#### Create virtual network and subnet
 
 ```bash
 az network vnet create  --name $MY_VNET_NAME  --resource-group $MY_RESOURCE_GROUP_NAME --location $REGION  --address-prefix $MY_VNET_PREFIX  --subnet-name $MY_VM_SN_NAME --subnet-prefix $MY_VM_SN_PREFIX -o JSON
 ```
 
 Results:
-
 <!-- expected_similarity=0.3 -->
 ```json   
 {
@@ -114,17 +119,15 @@ Results:
 }
 ```
 
-### Create Application Gateway Resources
+### Create Application Gateway resources
 
-Azure Application Gateway requires a dedicated subnet within your virtual network. The below command creates a subnet named $MY_APPGW_SN_NAME with specified address prefix named $MY_APPGW_SN_PREFIX in your VNET $MY_VNET_NAME 
-
+Azure Application Gateway requires a dedicated subnet within your virtual network. The following command creates a subnet named $MY_APPGW_SN_NAME with a specified address prefix named $MY_APPGW_SN_PREFIX in your virtual network $MY_VNET_NAME.
 
 ```bash
 az network vnet subnet create  --name $MY_APPGW_SN_NAME  --resource-group $MY_RESOURCE_GROUP_NAME --vnet-name  $MY_VNET_NAME --address-prefix  $MY_APPGW_SN_PREFIX -o JSON
 ```
 
 Results:
-
 <!-- expected_similarity=0.3 -->
 ```json  
 {
@@ -140,14 +143,13 @@ Results:
   "type": "Microsoft.Network/virtualNetworks/subnets"
 }
 ```
-The below command creates a standard, zone redundant, static, public IPv4 in your resource group.  
+The following command creates a standard, zone redundant, static, public IPv4 in your resource group.  
 
 ```bash
 az network public-ip create  --resource-group $MY_RESOURCE_GROUP_NAME --name $MY_APPGW_PUBLIC_IP_NAME --sku Standard   --location $REGION  --allocation-method static --version IPv4 --zone 1 2 3 -o JSON
- ```
+```
 
 Results:
-
 <!-- expected_similarity=0.3 -->
 ```json  
 {
@@ -181,11 +183,11 @@ Results:
 }
 ```
 
-In this step you create an Application Gateway that you're going to integrate with your Virtual Machine Scale Set. In this example we create a zone redundant Application Gateway with Standard_v2 SKU and enable Http communication for the Application Gateway. The public IP $MY_APPGW_PUBLIC_IP_NAME that we created in previous step attached to the Application Gateway. 
+In this step, you create an Application Gateway that you're going to integrate with your Virtual Machine Scale Set. This example creates a zone redundant Application Gateway with Standard_v2 SKU and enables Http communication for the Application Gateway. The public IP $MY_APPGW_PUBLIC_IP_NAME created in previous step is attached to the Application Gateway. 
 
 ```bash
 az network application-gateway create   --name $MY_APPGW_NAME --location $REGION --resource-group $MY_RESOURCE_GROUP_NAME --vnet-name $MY_VNET_NAME --subnet $MY_APPGW_SN_NAME --capacity 2  --zones 1 2 3 --sku Standard_v2   --http-settings-cookie-based-affinity Disabled   --frontend-port 80 --http-settings-port 80   --http-settings-protocol Http --public-ip-address $MY_APPGW_PUBLIC_IP_NAME --priority 1001 -o JSON
- ```
+```
 
 <!-- expected_similarity=0.3 -->
 ```json 
@@ -375,19 +377,21 @@ az network application-gateway create   --name $MY_APPGW_NAME --location $REGION
     "urlPathMaps": []
   }
 }
- ```
+```
 
+## Create a Virtual Machine Scale Set
 
-# Create Virtual Machine Scale Set 
+> [!IMPORTANT]
+>Starting November 2023, VM scale sets created using PowerShell and Azure CLI will default to Flexible Orchestration Mode if no orchestration mode is specified. For more information about this change and what actions you should take, go to [Breaking Change for VMSS PowerShell/CLI Customers - Microsoft Community Hub](
+https://techcommunity.microsoft.com/t5/azure-compute-blog/breaking-change-for-vmss-powershell-cli-customers/ba-p/3818295)
 
-The below command creates a zone redundant Virtual Machine Scale Set (VMSS) within your resource group $MY_RESOURCE_GROUP_NAME. We integrate the Application Gateway that we created previous step. This command creates 2 Standard_DS2_v2 SKU Virtual Machines with public IP in subnet $MY_VM_SN_NAME. A ssh key will be created during the below step you may want to save the key if you need to login your VMs via ssh.
+Now create a Virtual Machine Scale Set with [az vmss create](/cli/azure/vmss). The following example creates a zone redundant scale set with an instance count of *2* with public IP in subnet $MY_VM_SN_NAME within your resource group $MY_RESOURCE_GROUP_NAME, integrates the Application Gateway, and generates SSH keys. Make sure to save the SSH keys if you need to log into your VMs via ssh.
 
 ```bash
 az vmss create --name $MY_VMSS_NAME --resource-group $MY_RESOURCE_GROUP_NAME --image $MY_VM_IMAGE --admin-username $MY_USERNAME --generate-ssh-keys --public-ip-per-vm --orchestration-mode Uniform --instance-count 2 --zones 1 2 3 --vnet-name $MY_VNET_NAME --subnet $MY_VM_SN_NAME --vm-sku Standard_DS2_v2 --upgrade-policy-mode Automatic --app-gateway $MY_APPGW_NAME --backend-pool-name appGatewayBackendPool -o JSON
  ```
 
 Results:
-
 <!-- expected_similarity=0.3 -->
 ```json  
 {
@@ -499,17 +503,15 @@ Results:
 }
 ```
 
-### Install ngnix with VMSS extensions 
+### Install ngnix with Virtual Machine Scale Sets extensions 
 
-The below command uses VMSS extension to run custom script. For testing purposes, here we install ngnix and publish a page that shows the hostname of the Virtual Machine that your HTTP requests hits. We use this custom script for this pusposes : https://raw.githubusercontent.com/Azure-Samples/compute-automation-configurations/master/automate_nginx.sh 
-
+The following command uses the Virtual Machine Scale Sets extension to run a [custom script](https://github.com/Azure-Samples/compute-automation-configurations/blob/master/automate_nginx.sh) that installs ngnix and publishes a page that shows the hostname of the Virtual Machine that your HTTP requests hits. 
 
 ```bash
 az vmss extension set --publisher Microsoft.Azure.Extensions --version 2.0  --name CustomScript --resource-group $MY_RESOURCE_GROUP_NAME --vmss-name $MY_VMSS_NAME --settings '{ "fileUris": ["https://raw.githubusercontent.com/Azure-Samples/compute-automation-configurations/master/automate_nginx.sh"], "commandToExecute": "./automate_nginx.sh" }' -o JSON
 ```
 
 Results:
-
 <!-- expected_similarity=0.3 -->
 ```json  
 {
@@ -703,19 +705,16 @@ Results:
 }
 ```
 
+## Define an autoscale profile  
 
-# Define an autoscale profile  
-
-To enable autoscale on a scale set, you first define an autoscale profile. This profile defines the default, minimum, and maximum scale set capacity. These limits let you control cost by not continually creating VM instances, and balance acceptable performance with a minimum number of instances that remain in a scale-in event.
-The following example sets the default, and minimum, capacity of 2 VM instances, and a maximum of 10:
+To enable autoscale on a scale set, first define an autoscale profile. This profile defines the default, minimum, and maximum scale set capacity. These limits let you control cost by not continually creating VM instances and balance acceptable performance with a minimum number of instances that remain in a scale-in event.
+The following example sets the default, minimum capacity of two VM instances, and a maximum capacity of 10:
 
 ```bash
 az monitor autoscale create --resource-group $MY_RESOURCE_GROUP_NAME --resource  $MY_VMSS_NAME --resource-type Microsoft.Compute/virtualMachineScaleSets --name autoscale --min-count 2 --max-count 10 --count 2
 ```
 
-
 Results:
-
 <!-- expected_similarity=0.3 -->
 ```json  
 {
@@ -760,16 +759,15 @@ Results:
 }
 ```
 
-# Create a rule to autoscale out
+## Create a rule to autoscale out
 
-The Following command creates a rule that increases the number of VM instances in a scale set when the average CPU load is greater than 70% over a 5-minute period. When the rule triggers, the number of VM instances is increased by three.
+The following command creates a rule that increases the number of VM instances in a scale set when the average CPU load is greater than 70% over a 5-minute period. When the rule triggers, the number of VM instances increases by three.
 
 ```bash
 az monitor autoscale rule create --resource-group $MY_RESOURCE_GROUP_NAME --autoscale-name autoscale --condition "Percentage CPU > 70 avg 5m" --scale out 3
 ```
 
 Results:
-
 <!-- expected_similarity=0.3 -->
 ```json 
 {
@@ -796,16 +794,15 @@ Results:
 } 
 ```
 
-# Create a rule to autoscale in
+## Create a rule to autoscale in
 
-Create another rule with az monitor autoscale rule create that decreases the number of VM instances in a scale set when the average CPU load then drops below 30% over a 5-minute period. The following example defines the rule to scale in the number of VM instances by one.
+Create another rule with `az monitor autoscale rule create` that decreases the number of VM instances in a scale set when the average CPU load then drops below 30% over a 5-minute period. The following example defines the rule to scale in the number of VM instances by one.
 
 ```bash
 az monitor autoscale rule create --resource-group  $MY_RESOURCE_GROUP_NAME --autoscale-name autoscale --condition "Percentage CPU < 30 avg 5m" --scale in 1
 ```
 
 Results:
-
 <!-- expected_similarity=0.3 -->
 ```json 
 {
@@ -832,19 +829,19 @@ Results:
 }
 ```
 
-
 ### Test the page
 
-The below command shows you the public IP of your Application Gateway. You can paste the IP adress to a browser page for testing.
+The following command shows you the public IP of your Application Gateway. Paste the IP address into a browser page for testing.
 
 ```bash
 az network public-ip show --resource-group $MY_RESOURCE_GROUP_NAME --name $MY_APPGW_PUBLIC_IP_NAME --query [ipAddress]  --output tsv
 ```
 
+## Clean up resources (optional)
 
+To avoid Azure charges, you should clean up unneeded resources. When you no longer need your scale set and other resources, delete the resource group and all its resources with [az group delete](/cli/azure/group). The `--no-wait` parameter returns control to the prompt without waiting for the operation to complete. The `--yes` parameter confirms that you wish to delete the resources without another prompt to do so. This tutorial cleans up resources for you.
 
-# References
-
-* [VMSS Documentation](https://learn.microsoft.com/en-us/azure/virtual-machine-scale-sets/overview)
-* [VMSS AutoScale](https://learn.microsoft.com/en-us/azure/virtual-machine-scale-sets/tutorial-autoscale-cli?tabs=Ubuntu)
-
+## Next steps
+- [Learn how to create a scale set in the Azure portal.](flexible-virtual-machine-scale-sets-portal.md)
+- [Learn about Virtual Machine Scale Sets.](overview.md)
+- [Automatically scale a Virtual Machine Scale Set with the Azure CLI](tutorial-autoscale-cli.md)
