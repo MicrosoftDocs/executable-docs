@@ -1,23 +1,35 @@
 ---
-title: Skapa en VM-skalningsuppsättning med Application Gateway med Linux-avbildning
-description: Den här självstudien visar hur du skapar en VM-skalningsuppsättning med Application Gateway med Linux-avbildning
-author: belginceran
-ms.author: belginceran
-ms.topic: article
-ms.date: 01/05/2024
-ms.custom: innovation-engine
+title: Skapa virtuella datorer i en flexibel skalningsuppsättning med Hjälp av Azure CLI
+description: Lär dig hur du skapar en VM-skalningsuppsättning i flexibelt orkestreringsläge med Hjälp av Azure CLI.
+author: fitzgeraldsteele
+ms.author: fisteele
+ms.topic: how-to
+ms.service: virtual-machine-scale-sets
+ms.date: 3/19/2024
+ms.reviewer: jushiman
+ms.custom: 'mimckitt, devx-track-azurecli, vmss-flex, innovation-engine, linux-related-content'
 ---
 
-# Skapa en VM-skalningsuppsättning med Application Gateway med Linux-avbildning
+# Skapa virtuella datorer i en skalningsuppsättning med Hjälp av Azure CLI
 
 [![Distribuera till Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262759)
 
+Den här artikeln beskriver hur du använder Azure CLI för att skapa en VM-skalningsuppsättning.
+
+Kontrollera att du har installerat den senaste [Azure CLI](/cli/azure/install-az-cli2) och är inloggad på ett Azure-konto med [az login](/cli/azure/reference-index).
+
+
+## Starta Azure Cloud Shell
+
+Azure Cloud Shell är ett interaktivt gränssnitt som du kan använda för att utföra stegen i den här artikeln. Den har vanliga Azure-verktyg förinstallerat och har konfigurerats för användning med ditt konto.
+
+Öppna Cloud Shell genom att välja **Öppna Cloud Shell** i det övre högra hörnet i ett kodblock. Du kan också starta Cloud Shell i en separat webbläsarflik genom att gå till [https://shell.azure.com/cli](https://shell.azure.com/cli). Kopiera kodblocket genom att välja **Kopiera**, klistra in det i Cloud Shell och kör det genom att trycka på RETUR.
+
 ## Definiera miljövariabler
 
-Det första steget i den här självstudien är att definiera miljövariabler.
+Definiera miljövariabler på följande sätt.
 
 ```bash
-
 export RANDOM_ID="$(openssl rand -hex 3)"
 export MY_RESOURCE_GROUP_NAME="myVMSSResourceGroup$RANDOM_ID"
 export REGION=EastUS
@@ -33,22 +45,17 @@ export MY_APPGW_SN_NAME="myAPPGWSN$RANDOM_ID"
 export MY_APPGW_SN_PREFIX="10.$NETWORK_PREFIX.1.0/24"
 export MY_APPGW_NAME="myAPPGW$RANDOM_ID"
 export MY_APPGW_PUBLIC_IP_NAME="myAPPGWPublicIP$RANDOM_ID"
-
 ```
-# Logga in på Azure med HJÄLP av CLI
 
-För att kunna köra kommandon mot Azure med hjälp av CLI måste du logga in. Detta görs, mycket enkelt, men `az login` kommandot:
+## Skapa en resursgrupp
 
-# Skapa en resursgrupp
-
-En resursgrupp är en container för relaterade resurser. Alla resurser måste placeras i en resursgrupp. Vi skapar en för den här självstudien. Följande kommando skapar en resursgrupp med de tidigare definierade parametrarna $MY_RESOURCE_GROUP_NAME och $REGION.
+En resursgrupp är en logisk container där Azure-resurser distribueras och hanteras. Alla resurser måste placeras i en resursgrupp. Följande kommando skapar en resursgrupp med de tidigare definierade parametrarna $MY_RESOURCE_GROUP_NAME och $REGION.
 
 ```bash
 az group create --name $MY_RESOURCE_GROUP_NAME --location $REGION -o JSON
 ```
 
 Resultat:
-
 <!-- expected_similarity=0.3 -->
 ```json   
 {
@@ -64,19 +71,17 @@ Resultat:
 }
 ```
 
-# Skapa nätverksresurser 
+## Skapa nätverksresurser 
 
-Du måste skapa nätverksresurser innan du fortsätter MED VMSS-stegen. I det här steget ska du skapa ett VNET, 2 undernät 1 för Application Gateway och 1 för virtuella datorer. Du måste också ha en offentlig IP-adress för att ansluta din Application Gateway för att kunna nå din webbapp från Internet. 
+Nu ska du skapa nätverksresurser. I det här steget ska du skapa ett virtuellt nätverk, ett undernät 1 för Application Gateway och ett undernät för virtuella datorer. Du måste också ha en offentlig IP-adress för att ansluta din Application Gateway för att nå din webbapp från Internet. 
 
-
-#### Skapa virtuellt nätverk (VNET) och vm-undernät
+#### Skapa virtuellt nätverk och undernät
 
 ```bash
 az network vnet create  --name $MY_VNET_NAME  --resource-group $MY_RESOURCE_GROUP_NAME --location $REGION  --address-prefix $MY_VNET_PREFIX  --subnet-name $MY_VM_SN_NAME --subnet-prefix $MY_VM_SN_PREFIX -o JSON
 ```
 
 Resultat:
-
 <!-- expected_similarity=0.3 -->
 ```json   
 {
@@ -116,15 +121,13 @@ Resultat:
 
 ### Skapa Application Gateway-resurser
 
-Azure Application Gateway kräver ett dedikerat undernät i ditt virtuella nätverk. Kommandot nedan skapar ett undernät med namnet $MY_APPGW_SN_NAME med angivet adressprefix med namnet $MY_APPGW_SN_PREFIX i ditt VNET $MY_VNET_NAME 
-
+Azure Application Gateway kräver ett dedikerat undernät i ditt virtuella nätverk. Följande kommando skapar ett undernät med namnet $MY_APPGW_SN_NAME med ett angivet adressprefix med namnet $MY_APPGW_SN_PREFIX i ditt virtuella nätverk $MY_VNET_NAME.
 
 ```bash
 az network vnet subnet create  --name $MY_APPGW_SN_NAME  --resource-group $MY_RESOURCE_GROUP_NAME --vnet-name  $MY_VNET_NAME --address-prefix  $MY_APPGW_SN_PREFIX -o JSON
 ```
 
 Resultat:
-
 <!-- expected_similarity=0.3 -->
 ```json  
 {
@@ -140,14 +143,13 @@ Resultat:
   "type": "Microsoft.Network/virtualNetworks/subnets"
 }
 ```
-Kommandot nedan skapar en standard, zonredundant, statisk, offentlig IPv4 i resursgruppen.  
+Följande kommando skapar en standard, zonredundant, statisk, offentlig IPv4 i resursgruppen.  
 
 ```bash
 az network public-ip create  --resource-group $MY_RESOURCE_GROUP_NAME --name $MY_APPGW_PUBLIC_IP_NAME --sku Standard   --location $REGION  --allocation-method static --version IPv4 --zone 1 2 3 -o JSON
- ```
+```
 
 Resultat:
-
 <!-- expected_similarity=0.3 -->
 ```json  
 {
@@ -181,11 +183,11 @@ Resultat:
 }
 ```
 
-I det här steget skapar du en Application Gateway som du ska integrera med vm-skalningsuppsättningen. I det här exemplet skapar vi en zonredundant Application Gateway med Standard_v2 SKU och aktiverar Http-kommunikation för Application Gateway. Den offentliga IP-$MY_APPGW_PUBLIC_IP_NAME som vi skapade i föregående steg som är kopplat till Application Gateway. 
+I det här steget skapar du en Application Gateway som du ska integrera med vm-skalningsuppsättningen. Det här exemplet skapar en zonredundant Application Gateway med Standard_v2 SKU och aktiverar Http-kommunikation för Application Gateway. Den offentliga IP-$MY_APPGW_PUBLIC_IP_NAME som skapades i föregående steg är kopplad till Application Gateway. 
 
 ```bash
 az network application-gateway create   --name $MY_APPGW_NAME --location $REGION --resource-group $MY_RESOURCE_GROUP_NAME --vnet-name $MY_VNET_NAME --subnet $MY_APPGW_SN_NAME --capacity 2  --zones 1 2 3 --sku Standard_v2   --http-settings-cookie-based-affinity Disabled   --frontend-port 80 --http-settings-port 80   --http-settings-protocol Http --public-ip-address $MY_APPGW_PUBLIC_IP_NAME --priority 1001 -o JSON
- ```
+```
 
 <!-- expected_similarity=0.3 -->
 ```json 
@@ -375,19 +377,21 @@ az network application-gateway create   --name $MY_APPGW_NAME --location $REGION
     "urlPathMaps": []
   }
 }
- ```
+```
 
+## Skapa en VM-skalningsuppsättning
 
-# Skapa vm-skalningsuppsättning 
+> [!IMPORTANT]
+>Från och med november 2023 kommer VM-skalningsuppsättningar som skapats med PowerShell och Azure CLI som standard att vara flexibla orkestreringsläge om inget orkestreringsläge har angetts. Mer information om den här ändringen och vilka åtgärder du bör vidta [finns i Icke-bakåtkompatibla ändringar för VMSS PowerShell/CLI-kunder – Microsoft Community Hub](
+https://techcommunity.microsoft.com/t5/azure-compute-blog/breaking-change-for-vmss-powershell-cli-customers/ba-p/3818295)
 
-Kommandot nedan skapar en zonredundant VMSS (VmSS) i resursgruppen $MY_RESOURCE_GROUP_NAME. Vi integrerar Den Application Gateway som vi skapade föregående steg. Det här kommandot skapar 2 Standard_DS2_v2 virtuella SKU-datorer med offentlig IP-adress i undernätet $MY_VM_SN_NAME. En ssh-nyckel skapas under steget nedan som du kanske vill spara nyckeln om du behöver logga in på dina virtuella datorer via ssh.
+Skapa nu en VM-skalningsuppsättning med [az vmss create](/cli/azure/vmss). I följande exempel skapas en zonredundant skalningsuppsättning med instansantalet *2* med offentlig IP i undernätet $MY_VM_SN_NAME i resursgruppen $MY_RESOURCE_GROUP_NAME, integrerar Application Gateway och genererar SSH-nycklar. Spara SSH-nycklarna om du behöver logga in på dina virtuella datorer via ssh.
 
 ```bash
 az vmss create --name $MY_VMSS_NAME --resource-group $MY_RESOURCE_GROUP_NAME --image $MY_VM_IMAGE --admin-username $MY_USERNAME --generate-ssh-keys --public-ip-per-vm --orchestration-mode Uniform --instance-count 2 --zones 1 2 3 --vnet-name $MY_VNET_NAME --subnet $MY_VM_SN_NAME --vm-sku Standard_DS2_v2 --upgrade-policy-mode Automatic --app-gateway $MY_APPGW_NAME --backend-pool-name appGatewayBackendPool -o JSON
  ```
 
 Resultat:
-
 <!-- expected_similarity=0.3 -->
 ```json  
 {
@@ -499,17 +503,15 @@ Resultat:
 }
 ```
 
-### Installera ngnix med VMSS-tillägg 
+### Installera ngnix med tillägg för vm-skalningsuppsättningar 
 
-Kommandot nedan använder VMSS-tillägget för att köra anpassat skript. I testsyfte installerar vi ngnix här och publicerar en sida som visar värdnamnet för den virtuella dator som http-begäranden träffar. Vi använder det här anpassade skriptet för detta pusposes: https://raw.githubusercontent.com/Azure-Samples/compute-automation-configurations/master/automate_nginx.sh 
-
+Följande kommando använder tillägget Vm-skalningsuppsättningar för att köra ett [anpassat skript](https://github.com/Azure-Samples/compute-automation-configurations/blob/master/automate_nginx.sh) som installerar ngnix och publicerar en sida som visar värdnamnet för den virtuella datorn som http-begäranden träffar. 
 
 ```bash
 az vmss extension set --publisher Microsoft.Azure.Extensions --version 2.0  --name CustomScript --resource-group $MY_RESOURCE_GROUP_NAME --vmss-name $MY_VMSS_NAME --settings '{ "fileUris": ["https://raw.githubusercontent.com/Azure-Samples/compute-automation-configurations/master/automate_nginx.sh"], "commandToExecute": "./automate_nginx.sh" }' -o JSON
 ```
 
 Resultat:
-
 <!-- expected_similarity=0.3 -->
 ```json  
 {
@@ -703,19 +705,16 @@ Resultat:
 }
 ```
 
+## Definiera en autoskalningsprofil  
 
-# Definiera en autoskalningsprofil  
-
-Om du vill aktivera autoskalning för en skalningsuppsättning börjar du med att definiera en autoskalningsprofil. Den här profilen definierar skalningsuppsättningens förvalda, lägsta och högsta kapacitet. Med hjälp av dessa restriktioner kan du begränsa kostnaderna genom att inte skapa VM-instanser kontinuerligt, samtidigt som du kan balansera godtagbara prestanda med minsta antal instanser som bevaras vid en nedskalning.
-Följande exempel anger standard- och minimumkapacitet på 2 virtuella datorinstanser och högst 10:
+Om du vill aktivera autoskalning på en skalningsuppsättning definierar du först en profil för autoskalning. Den här profilen definierar skalningsuppsättningens förvalda, lägsta och högsta kapacitet. Med de här gränserna kan du styra kostnaden genom att inte kontinuerligt skapa virtuella datorinstanser och balansera godtagbara prestanda med ett minsta antal instanser som finns kvar i en inskalningshändelse.
+I följande exempel anges standardvärdet, minsta kapacitet för två VM-instanser och en maximal kapacitet på 10:
 
 ```bash
 az monitor autoscale create --resource-group $MY_RESOURCE_GROUP_NAME --resource  $MY_VMSS_NAME --resource-type Microsoft.Compute/virtualMachineScaleSets --name autoscale --min-count 2 --max-count 10 --count 2
 ```
 
-
 Resultat:
-
 <!-- expected_similarity=0.3 -->
 ```json  
 {
@@ -760,16 +759,15 @@ Resultat:
 }
 ```
 
-# Skapa en regel för att automatiskt skala ut
+## Skapa en regel för att automatiskt skala ut
 
-Följande kommando skapar en regel som ökar antalet virtuella datorinstanser i en skalningsuppsättning när den genomsnittliga CPU-belastningen är större än 70 % under en 5-minuters period. När regeln utlöses, ökar antalet virtuella datorinstanser med tre.
+Följande kommando skapar en regel som ökar antalet virtuella datorinstanser i en skalningsuppsättning när den genomsnittliga CPU-belastningen är större än 70 % under en 5-minuters period. När regeln utlöses ökar antalet virtuella datorinstanser med tre.
 
 ```bash
 az monitor autoscale rule create --resource-group $MY_RESOURCE_GROUP_NAME --autoscale-name autoscale --condition "Percentage CPU > 70 avg 5m" --scale out 3
 ```
 
 Resultat:
-
 <!-- expected_similarity=0.3 -->
 ```json 
 {
@@ -796,16 +794,15 @@ Resultat:
 } 
 ```
 
-# Skapa en regel för att automatiskt skala in
+## Skapa en regel för att automatiskt skala in
 
-Skapa en till regel med az monitor autoscale rule create som minskar antalet VM-instanser i en skalningsuppsättning när den genomsnittliga CPU-belastningen faller under 30 % under en 5-minutersperiod. Följande exempel definierar regeln för att skala in antalet virtuella datorinstanser med en.
+Skapa en annan regel med `az monitor autoscale rule create` som minskar antalet vm-instanser i en skalningsuppsättning när den genomsnittliga CPU-belastningen sedan sjunker under 30 % under en 5-minuters period. Följande exempel definierar regeln för att skala in antalet virtuella datorinstanser med en.
 
 ```bash
 az monitor autoscale rule create --resource-group  $MY_RESOURCE_GROUP_NAME --autoscale-name autoscale --condition "Percentage CPU < 30 avg 5m" --scale in 1
 ```
 
 Resultat:
-
 <!-- expected_similarity=0.3 -->
 ```json 
 {
@@ -832,19 +829,19 @@ Resultat:
 }
 ```
 
-
 ### Testa sidan
 
-Kommandot nedan visar den offentliga IP-adressen för din Application Gateway. Du kan klistra in IP-adressen på en webbläsarsida för testning.
+Följande kommando visar den offentliga IP-adressen för din Application Gateway. Klistra in IP-adressen i en webbläsarsida för testning.
 
 ```bash
 az network public-ip show --resource-group $MY_RESOURCE_GROUP_NAME --name $MY_APPGW_PUBLIC_IP_NAME --query [ipAddress]  --output tsv
 ```
 
+## Rensa resurser (valfritt)
 
+För att undvika Azure-avgifter bör du rensa onödiga resurser. När du inte längre behöver din skalningsuppsättning och andra resurser tar du bort resursgruppen och alla dess resurser med [az group delete](/cli/azure/group). Parametern `--no-wait` återför kontrollen till kommandotolken utan att vänta på att uppgiften slutförs. Parametern `--yes` bekräftar att du vill ta bort resurserna utan någon annan uppmaning om att göra det. I den här självstudien rensas resurser åt dig.
 
-# Referenser
-
-* [Dokumentation om VMSS](https://learn.microsoft.com/en-us/azure/virtual-machine-scale-sets/overview)
-* [Autoskalning av VMSS](https://learn.microsoft.com/en-us/azure/virtual-machine-scale-sets/tutorial-autoscale-cli?tabs=Ubuntu)
-
+## Nästa steg
+- [Lär dig hur du skapar en skalningsuppsättning i Azure-portalen.](flexible-virtual-machine-scale-sets-portal.md)
+- [Läs mer om VM-skalningsuppsättningar.](overview.md)
+- [Skala automatiskt en VM-skalningsuppsättning med Azure CLI](tutorial-autoscale-cli.md)

@@ -1,51 +1,61 @@
 ---
-title: Distribuera ett skalbart och säkert Azure Kubernetes Service-kluster med hjälp av Azure CLI
-description: Den här självstudien tar dig steg för steg när du skapar ett Azure Kubernetes-webbprogram som skyddas via https.
-author: mbifeld
-ms.author: mbifeld
-ms.topic: article
-ms.date: 11/28/2023
-ms.custom: innovation-engine
+title: 'Snabbstart: Distribuera ett AKS-kluster (Azure Kubernetes Service) med Azure CLI'
+description: Lär dig hur du snabbt distribuerar ett Kubernetes-kluster och distribuerar ett program i Azure Kubernetes Service (AKS) med Azure CLI.
+ms.topic: quickstart
+ms.date: 04/09/2024
+author: tamram
+ms.author: tamram
+ms.custom: 'H1Hack27Feb2017, mvc, devcenter, devx-track-azurecli, mode-api, innovation-engine, linux-related-content'
 ---
 
-# Snabbstart: Distribuera ett skalbart och säkert Azure Kubernetes Service-kluster med hjälp av Azure CLI
+# Snabbstart: Distribuera ett AKS-kluster (Azure Kubernetes Service) med Azure CLI
 
 [![Distribuera till Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262758)
 
-Välkommen till den här självstudien där vi tar dig steg för steg när du skapar ett Azure Kubernetes-webbprogram som skyddas via https. Den här självstudien förutsätter att du redan är inloggad i Azure CLI och har valt en prenumeration som ska användas med CLI. Det förutsätter också att du har Helm installerat ([instruktioner finns här](https://helm.sh/docs/intro/install/)).
+Azure Kubernetes Service (AKS) är en hanterad Kubernetes-tjänst som gör att du snabbt kan distribuera och hantera kluster. I den här snabbstarten lär du dig att:
+
+- Distribuera ett AKS-kluster med hjälp av Azure CLI.
+- Kör ett exempelprogram med flera containrar med en grupp mikrotjänster och webbklientdelar som simulerar ett detaljhandelsscenario.
+
+> [!NOTE]
+> För att komma igång med att snabbt etablera ett AKS-kluster innehåller den här artikeln steg för att distribuera ett kluster med standardinställningar endast i utvärderingssyfte. Innan du distribuerar ett produktionsklart kluster rekommenderar vi att du bekantar dig med vår [referensarkitektur][baseline-reference-architecture] för baslinje för att överväga hur det överensstämmer med dina affärskrav.
+
+## Innan du börjar
+
+Den här snabbstarten förutsätter grundläggande kunskaper om Kubernetes-begrepp. Mer information finns i [Viktiga koncept för Azure Kubernetes Service (AKS)][kubernetes-concepts].
+
+- [!INCLUDE [quickstarts-free-trial-note](../../../includes/quickstarts-free-trial-note.md)]
+
+[!INCLUDE [azure-cli-prepare-your-environment-no-header.md](~/reusable-content/azure-cli/azure-cli-prepare-your-environment-no-header.md)]
+
+- Den här artikeln kräver version 2.0.64 eller senare av Azure CLI. Om du använder Azure Cloud Shell är den senaste versionen redan installerad där.
+- Kontrollera att den identitet som du använder för att skapa klustret har lämpliga minimibehörigheter. Mer information om åtkomst och identitet för AKS finns i [Åtkomst- och identitetsalternativ för Azure Kubernetes Service (AKS)](../concepts-identity.md).
+- Om du har flera Azure-prenumerationer väljer du lämpligt prenumerations-ID där resurserna ska faktureras med [kommandot az account set](/cli/azure/account#az-account-set) .
 
 ## Definiera miljövariabler
 
-Det första steget i den här självstudien är att definiera miljövariabler.
+Definiera följande miljövariabler för användning under den här snabbstarten:
 
-```bash
+```azurecli-interactive
 export RANDOM_ID="$(openssl rand -hex 3)"
-export NETWORK_PREFIX="$(($RANDOM % 254 + 1))"
-export SSL_EMAIL_ADDRESS="$(az account show --query user.name --output tsv)"
 export MY_RESOURCE_GROUP_NAME="myAKSResourceGroup$RANDOM_ID"
 export REGION="westeurope"
 export MY_AKS_CLUSTER_NAME="myAKSCluster$RANDOM_ID"
-export MY_PUBLIC_IP_NAME="myPublicIP$RANDOM_ID"
 export MY_DNS_LABEL="mydnslabel$RANDOM_ID"
-export MY_VNET_NAME="myVNet$RANDOM_ID"
-export MY_VNET_PREFIX="10.$NETWORK_PREFIX.0.0/16"
-export MY_SN_NAME="mySN$RANDOM_ID"
-export MY_SN_PREFIX="10.$NETWORK_PREFIX.0.0/22"
-export FQDN="${MY_DNS_LABEL}.${REGION}.cloudapp.azure.com"
 ```
 
 ## Skapa en resursgrupp
 
-En resursgrupp är en container för relaterade resurser. Alla resurser måste placeras i en resursgrupp. Vi skapar en för den här självstudien. Följande kommando skapar en resursgrupp med de tidigare definierade parametrarna $MY_RESOURCE_GROUP_NAME och $REGION.
+En [Azure-resursgrupp][azure-resource-group] är en logisk grupp där Azure-resurser distribueras och hanteras. När du skapar en resursgrupp uppmanas du att ange en plats. Den här platsen är lagringsplatsen för dina resursgruppsmetadata och där dina resurser körs i Azure om du inte anger en annan region när du skapar resurser.
 
-```bash
+Skapa en resursgrupp med kommandot [`az group create`][az-group-create] .
+
+```azurecli-interactive
 az group create --name $MY_RESOURCE_GROUP_NAME --location $REGION
 ```
 
 Resultat:
-
 <!-- expected_similarity=0.3 -->
-
 ```JSON
 {
   "id": "/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/myAKSResourceGroupxxxxxx",
@@ -60,343 +70,373 @@ Resultat:
 }
 ```
 
-## Skapa ett virtuellt nätverk och ett undernät
+## Skapa ett AKS-kluster
 
-Ett virtuellt nätverk är den grundläggande byggstenen för privata nätverk i Azure. Med Azure Virtual Network kan Azure-resurser som virtuella datorer kommunicera säkert med varandra och Internet.
+Skapa ett AKS-kluster med kommandot [`az aks create`][az-aks-create] . I följande exempel skapas ett kluster med en nod och en systemtilldelad hanterad identitet aktiveras.
 
-```bash
-az network vnet create \
-    --resource-group $MY_RESOURCE_GROUP_NAME \
-    --location $REGION \
-    --name $MY_VNET_NAME \
-    --address-prefix $MY_VNET_PREFIX \
-    --subnet-name $MY_SN_NAME \
-    --subnet-prefixes $MY_SN_PREFIX
+```azurecli-interactive
+az aks create --resource-group $MY_RESOURCE_GROUP_NAME --name $MY_AKS_CLUSTER_NAME --enable-managed-identity --node-count 1 --generate-ssh-keys
 ```
 
-Resultat:
-
-<!-- expected_similarity=0.3 -->
-
-```JSON
-{
-  "newVNet": {
-    "addressSpace": {
-      "addressPrefixes": [
-        "10.xxx.0.0/16"
-      ]
-    },
-    "enableDdosProtection": false,
-    "id": "/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/myAKSResourceGroupxxxxxx/providers/Microsoft.Network/virtualNetworks/myVNetxxx",
-    "location": "eastus",
-    "name": "myVNetxxx",
-    "provisioningState": "Succeeded",
-    "resourceGroup": "myAKSResourceGroupxxxxxx",
-    "subnets": [
-      {
-        "addressPrefix": "10.xxx.0.0/22",
-        "delegations": [],
-        "id": "/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/myAKSResourceGroupxxxxxx/providers/Microsoft.Network/virtualNetworks/myVNetxxx/subnets/mySNxxx",
-        "name": "mySNxxx",
-        "privateEndpointNetworkPolicies": "Disabled",
-        "privateLinkServiceNetworkPolicies": "Enabled",
-        "provisioningState": "Succeeded",
-        "resourceGroup": "myAKSResourceGroupxxxxxx",
-        "type": "Microsoft.Network/virtualNetworks/subnets"
-      }
-    ],
-    "type": "Microsoft.Network/virtualNetworks",
-    "virtualNetworkPeerings": []
-  }
-}
-```
-
-## Registrera dig för AKS Azure-resursprovidrar
-
-Kontrollera att Microsoft.OperationsManagement- och Microsoft.OperationalInsights-leverantörer är registrerade i din prenumeration. Det här är Azure-resursprovidrar som krävs för att stödja [Container Insights](https://docs.microsoft.com/azure/azure-monitor/containers/container-insights-overview). Kontrollera registreringsstatusen genom att köra följande kommandon
-
-```bash
-az provider register --namespace Microsoft.Insights
-az provider register --namespace Microsoft.OperationsManagement
-az provider register --namespace Microsoft.OperationalInsights
-```
-
-## Skapa AKS-kluster
-
-Skapa ett AKS-kluster med kommandot az aks create med övervakningsparametern --enable-addons för att aktivera containerinsikter. I följande exempel skapas ett kluster med automatisk skalning, tillgänglighetszonaktiverat.
-
-Det tar bara några minuter.
-
-```bash
-export MY_SN_ID=$(az network vnet subnet list --resource-group $MY_RESOURCE_GROUP_NAME --vnet-name $MY_VNET_NAME --query "[0].id" --output tsv)
-az aks create \
-  --resource-group $MY_RESOURCE_GROUP_NAME \
-  --name $MY_AKS_CLUSTER_NAME \
-  --auto-upgrade-channel stable \
-  --enable-cluster-autoscaler \
-  --enable-addons monitoring \
-  --location $REGION \
-  --node-count 1 \
-  --min-count 1 \
-  --max-count 3 \
-  --network-plugin azure \
-  --network-policy azure \
-  --vnet-subnet-id $MY_SN_ID \
-  --no-ssh-key \
-  --node-vm-size Standard_DS2_v2 \
-  --zones 1 2 3
-```
+> [!NOTE]
+> När du skapar ett nytt kluster skapar AKS automatiskt en andra resursgrupp för att lagra AKS-resurserna. Mer information finns i [Varför skapas två resursgrupper med AKS?](../faq.md#why-are-two-resource-groups-created-with-aks)
 
 ## Anslut till klustret
 
-Om du vill hantera ett Kubernetes-kluster använder du Kubernetes-kommandoradsklienten kubectl. kubectl är redan installerat om du använder Azure Cloud Shell.
+Om du vill hantera ett Kubernetes-kluster använder du Kubernetes-kommandoradsklienten [kubectl][kubectl]. `kubectl` är redan installerat om du använder Azure Cloud Shell. Om du vill installera `kubectl` lokalt använder du [`az aks install-cli`][az-aks-install-cli] kommandot .
 
-1. Installera az aks CLI lokalt med kommandot az aks install-cli
+1. Konfigurera `kubectl` för att ansluta till kubernetes-klustret med [kommandot az aks get-credentials][az-aks-get-credentials] . Det här kommandot laddar ned autentiseringsuppgifter och konfigurerar Kubernetes CLI för att använda dem.
 
-   ```bash
-   if ! [ -x "$(command -v kubectl)" ]; then az aks install-cli; fi
-   ```
+    ```azurecli-interactive
+    az aks get-credentials --resource-group $MY_RESOURCE_GROUP_NAME --name $MY_AKS_CLUSTER_NAME
+    ```
 
-2. Konfigurera kubectl för att ansluta till ditt Kubernetes-kluster med kommandot az aks get-credentials. Följande kommando:
+1. Kontrollera anslutningen till klustret med kommandot [kubectl get][kubectl-get] . Det här kommandot returnerar en lista över klusternoderna.
 
-   - Laddar ned autentiseringsuppgifter och konfigurerar Kubernetes CLI för att använda dem.
-   - Använder ~/.kube/config, standardplatsen för Kubernetes-konfigurationsfilen. Ange en annan plats för kubernetes-konfigurationsfilen med argumentet --file.
-
-   > [!WARNING]
-   > Detta skriver över alla befintliga autentiseringsuppgifter med samma post
-
-   ```bash
-   az aks get-credentials --resource-group $MY_RESOURCE_GROUP_NAME --name $MY_AKS_CLUSTER_NAME --overwrite-existing
-   ```
-
-3. Kontrollera anslutningen till klustret med kommandot kubectl get. Det här kommandot returnerar en lista över klusternoderna.
-
-   ```bash
-   kubectl get nodes
-   ```
-
-## Installera NGINX-ingresskontrollant
-
-```bash
-export MY_STATIC_IP=$(az network public-ip create --resource-group MC_${MY_RESOURCE_GROUP_NAME}_${MY_AKS_CLUSTER_NAME}_${REGION} --location ${REGION} --name ${MY_PUBLIC_IP_NAME} --dns-name ${MY_DNS_LABEL} --sku Standard --allocation-method static --version IPv4 --zone 1 2 3 --query publicIp.ipAddress -o tsv)
-helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
-helm repo update
-helm upgrade --install ingress-nginx ingress-nginx/ingress-nginx \
-  --namespace ingress-nginx \
-  --create-namespace \
-  --set controller.service.annotations."service\.beta\.kubernetes\.io/azure-dns-label-name"=$MY_DNS_LABEL \
-  --set controller.service.loadBalancerIP=$MY_STATIC_IP \
-  --set controller.service.annotations."service\.beta\.kubernetes\.io/azure-load-balancer-health-probe-request-path"=/healthz \
-  --wait
-```
+    ```azurecli-interactive
+    kubectl get nodes
+    ```
 
 ## Distribuera programmet
 
-En Kubernetes-manifestfil definierar ett klusters önskade tillstånd, till exempel vilka containeravbildningar som ska köras.
+För att distribuera programmet använder du en manifestfil för att skapa alla objekt som krävs för att köra [AKS Store-programmet](https://github.com/Azure-Samples/aks-store-demo). En [Kubernetes-manifestfil][kubernetes-deployment] definierar ett klusters önskade tillstånd, till exempel vilka containeravbildningar som ska köras. Manifestet innehåller följande Kubernetes-distributioner och -tjänster:
 
-I den här snabbstarten använder du ett manifest för att skapa alla objekt som behövs för att köra Azure Vote-programmet. Det här manifestet innehåller två Kubernetes-distributioner:
+:::image type="content" source="media/quick-kubernetes-deploy-portal/aks-store-architecture.png" alt-text="Skärmbild av Azure Store-exempelarkitektur." lightbox="media/quick-kubernetes-deploy-portal/aks-store-architecture.png":::
 
-- Azure Vote Python-exempelprogram.
-- En Redis-instans.
+- **Butiksfront**: Webbprogram där kunder kan visa produkter och göra beställningar.
+- **Produkttjänst**: Visar produktinformation.
+- **Ordertjänst**: Gör beställningar.
+- **Rabbit MQ**: Meddelandekö för en orderkö.
 
-Två Kubernetes-tjänster skapas också:
+> [!NOTE]
+> Vi rekommenderar inte att du kör tillståndskänsliga containrar, till exempel Rabbit MQ, utan beständig lagring för produktion. Dessa används här för enkelhetens skull, men vi rekommenderar att du använder hanterade tjänster, till exempel Azure CosmosDB eller Azure Service Bus.
 
-- En intern tjänst för Redis-instansen.
-- En extern tjänst för åtkomst till Azure Vote-programmet från Internet.
+1. Skapa en fil med namnet `aks-store-quickstart.yaml` och kopiera i följande manifest:
 
-Slutligen skapas en ingressresurs för att dirigera trafik till Azure Vote-programmet.
+    ```yaml
+    apiVersion: apps/v1
+    kind: Deployment
+    metadata:
+      name: rabbitmq
+    spec:
+      replicas: 1
+      selector:
+        matchLabels:
+          app: rabbitmq
+      template:
+        metadata:
+          labels:
+            app: rabbitmq
+        spec:
+          nodeSelector:
+            "kubernetes.io/os": linux
+          containers:
+          - name: rabbitmq
+            image: mcr.microsoft.com/mirror/docker/library/rabbitmq:3.10-management-alpine
+            ports:
+            - containerPort: 5672
+              name: rabbitmq-amqp
+            - containerPort: 15672
+              name: rabbitmq-http
+            env:
+            - name: RABBITMQ_DEFAULT_USER
+              value: "username"
+            - name: RABBITMQ_DEFAULT_PASS
+              value: "password"
+            resources:
+              requests:
+                cpu: 10m
+                memory: 128Mi
+              limits:
+                cpu: 250m
+                memory: 256Mi
+            volumeMounts:
+            - name: rabbitmq-enabled-plugins
+              mountPath: /etc/rabbitmq/enabled_plugins
+              subPath: enabled_plugins
+          volumes:
+          - name: rabbitmq-enabled-plugins
+            configMap:
+              name: rabbitmq-enabled-plugins
+              items:
+              - key: rabbitmq_enabled_plugins
+                path: enabled_plugins
+    ---
+    apiVersion: v1
+    data:
+      rabbitmq_enabled_plugins: |
+        [rabbitmq_management,rabbitmq_prometheus,rabbitmq_amqp1_0].
+    kind: ConfigMap
+    metadata:
+      name: rabbitmq-enabled-plugins
+    ---
+    apiVersion: v1
+    kind: Service
+    metadata:
+      name: rabbitmq
+    spec:
+      selector:
+        app: rabbitmq
+      ports:
+        - name: rabbitmq-amqp
+          port: 5672
+          targetPort: 5672
+        - name: rabbitmq-http
+          port: 15672
+          targetPort: 15672
+      type: ClusterIP
+    ---
+    apiVersion: apps/v1
+    kind: Deployment
+    metadata:
+      name: order-service
+    spec:
+      replicas: 1
+      selector:
+        matchLabels:
+          app: order-service
+      template:
+        metadata:
+          labels:
+            app: order-service
+        spec:
+          nodeSelector:
+            "kubernetes.io/os": linux
+          containers:
+          - name: order-service
+            image: ghcr.io/azure-samples/aks-store-demo/order-service:latest
+            ports:
+            - containerPort: 3000
+            env:
+            - name: ORDER_QUEUE_HOSTNAME
+              value: "rabbitmq"
+            - name: ORDER_QUEUE_PORT
+              value: "5672"
+            - name: ORDER_QUEUE_USERNAME
+              value: "username"
+            - name: ORDER_QUEUE_PASSWORD
+              value: "password"
+            - name: ORDER_QUEUE_NAME
+              value: "orders"
+            - name: FASTIFY_ADDRESS
+              value: "0.0.0.0"
+            resources:
+              requests:
+                cpu: 1m
+                memory: 50Mi
+              limits:
+                cpu: 75m
+                memory: 128Mi
+          initContainers:
+          - name: wait-for-rabbitmq
+            image: busybox
+            command: ['sh', '-c', 'until nc -zv rabbitmq 5672; do echo waiting for rabbitmq; sleep 2; done;']
+            resources:
+              requests:
+                cpu: 1m
+                memory: 50Mi
+              limits:
+                cpu: 75m
+                memory: 128Mi
+    ---
+    apiVersion: v1
+    kind: Service
+    metadata:
+      name: order-service
+    spec:
+      type: ClusterIP
+      ports:
+      - name: http
+        port: 3000
+        targetPort: 3000
+      selector:
+        app: order-service
+    ---
+    apiVersion: apps/v1
+    kind: Deployment
+    metadata:
+      name: product-service
+    spec:
+      replicas: 1
+      selector:
+        matchLabels:
+          app: product-service
+      template:
+        metadata:
+          labels:
+            app: product-service
+        spec:
+          nodeSelector:
+            "kubernetes.io/os": linux
+          containers:
+          - name: product-service
+            image: ghcr.io/azure-samples/aks-store-demo/product-service:latest
+            ports:
+            - containerPort: 3002
+            resources:
+              requests:
+                cpu: 1m
+                memory: 1Mi
+              limits:
+                cpu: 1m
+                memory: 7Mi
+    ---
+    apiVersion: v1
+    kind: Service
+    metadata:
+      name: product-service
+    spec:
+      type: ClusterIP
+      ports:
+      - name: http
+        port: 3002
+        targetPort: 3002
+      selector:
+        app: product-service
+    ---
+    apiVersion: apps/v1
+    kind: Deployment
+    metadata:
+      name: store-front
+    spec:
+      replicas: 1
+      selector:
+        matchLabels:
+          app: store-front
+      template:
+        metadata:
+          labels:
+            app: store-front
+        spec:
+          nodeSelector:
+            "kubernetes.io/os": linux
+          containers:
+          - name: store-front
+            image: ghcr.io/azure-samples/aks-store-demo/store-front:latest
+            ports:
+            - containerPort: 8080
+              name: store-front
+            env:
+            - name: VUE_APP_ORDER_SERVICE_URL
+              value: "http://order-service:3000/"
+            - name: VUE_APP_PRODUCT_SERVICE_URL
+              value: "http://product-service:3002/"
+            resources:
+              requests:
+                cpu: 1m
+                memory: 200Mi
+              limits:
+                cpu: 1000m
+                memory: 512Mi
+    ---
+    apiVersion: v1
+    kind: Service
+    metadata:
+      name: store-front
+    spec:
+      ports:
+      - port: 80
+        targetPort: 8080
+      selector:
+        app: store-front
+      type: LoadBalancer
+    ```
 
-En YML-fil för teströstningsappen har redan förberetts. Om du vill distribuera den här appen kör du följande kommando
+    En uppdelning av YAML-manifestfiler [finns i Distributioner och YAML-manifest](../concepts-clusters-workloads.md#deployments-and-yaml-manifests).
 
-```bash
-kubectl apply -f azure-vote-start.yml
-```
+    Om du skapar och sparar YAML-filen lokalt kan du ladda upp manifestfilen till standardkatalogen **i CloudShell genom att välja knappen Ladda upp/ladda ned filer** och välja filen från det lokala filsystemet.
+
+1. Distribuera programmet med kommandot [`kubectl apply`][kubectl-apply] och ange namnet på ditt YAML-manifest.
+
+    ```azurecli-interactive
+    kubectl apply -f aks-store-quickstart.yaml
+    ```
 
 ## Testa programmet
 
-Kontrollera att programmet körs genom att antingen besöka den offentliga ip-adressen eller program-URL:en. Du hittar program-URL:en genom att köra följande kommando:
+Du kan kontrollera att programmet körs genom att besöka den offentliga IP-adressen eller program-URL:en.
 
-> [!Note]
-> Det tar ofta 2-3 minuter för POD:erna att skapas och webbplatsen kan nås via HTTP
+Hämta program-URL:en med hjälp av följande kommandon:
 
-```bash
-runtime="5 minute";
-endtime=$(date -ud "$runtime" +%s);
-while [[ $(date -u +%s) -le $endtime ]]; do
-   STATUS=$(kubectl get pods -l app=azure-vote-front -o 'jsonpath={..status.conditions[?(@.type=="Ready")].status}'); echo $STATUS;
-   if [ "$STATUS" == 'True' ]; then
-      break;
+```azurecli-interactive
+runtime="5 minute"
+endtime=$(date -ud "$runtime" +%s)
+while [[ $(date -u +%s) -le $endtime ]]
+do
+   STATUS=$(kubectl get pods -l app=store-front -o 'jsonpath={..status.conditions[?(@.type=="Ready")].status}')
+   echo $STATUS
+   if [ "$STATUS" == 'True' ]
+   then
+      export IP_ADDRESS=$(kubectl get service store-front --output 'jsonpath={..status.loadBalancer.ingress[0].ip}')
+      echo "Service IP Address: $IP_ADDRESS"
+      break
    else
-      sleep 10;
-   fi;
+      sleep 10
+   fi
 done
 ```
 
-```bash
-curl "http://$FQDN"
+```azurecli-interactive
+curl $IP_ADDRESS
 ```
 
 Resultat:
-
 <!-- expected_similarity=0.3 -->
-
-```HTML
-<!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-    <link rel="stylesheet" type="text/css" href="/static/default.css">
-    <title>Azure Voting App</title>
-
-    <script language="JavaScript">
-        function send(form){
-        }
-    </script>
-
-</head>
-<body>
-    <div id="container">
-        <form id="form" name="form" action="/"" method="post"><center>
-        <div id="logo">Azure Voting App</div>
-        <div id="space"></div>
-        <div id="form">
-        <button name="vote" value="Cats" onclick="send()" class="button button1">Cats</button>
-        <button name="vote" value="Dogs" onclick="send()" class="button button2">Dogs</button>
-        <button name="vote" value="reset" onclick="send()" class="button button3">Reset</button>
-        <div id="space"></div>
-        <div id="space"></div>
-        <div id="results"> Cats - 0 | Dogs - 0 </div>
-        </form>
-        </div>
-    </div>
-</body>
+```JSON
+<!doctype html>
+<html lang="">
+   <head>
+      <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      <link rel="icon" href="/favicon.ico">
+      <title>store-front</title>
+      <script defer="defer" src="/js/chunk-vendors.df69ae47.js"></script>
+      <script defer="defer" src="/js/app.7e8cfbb2.js"></script>
+      <link href="/css/app.a5dc49f6.css" rel="stylesheet">
+   </head>
+   <body>
+      <div id="app"></div>
+   </body>
 </html>
 ```
 
-## Lägga till HTTPS-avslutning till anpassad domän
-
-Nu i självstudien har du en AKS-webbapp med NGINX som ingresskontrollant och en anpassad domän som du kan använda för att komma åt ditt program. Nästa steg är att lägga till ett SSL-certifikat i domänen så att användarna kan nå ditt program på ett säkert sätt via HTTPS.
-
-## Konfigurera Cert Manager
-
-För att lägga till HTTPS använder vi Cert Manager. Cert Manager är ett öppen källkod verktyg som används för att hämta och hantera SSL-certifikat för Kubernetes-distributioner. Cert Manager hämtar certifikat från en mängd olika utfärdare, både populära offentliga utfärdare och privata utfärdare, och ser till att certifikaten är giltiga och uppdaterade och försöker förnya certifikat vid en konfigurerad tidpunkt innan de upphör att gälla.
-
-1. För att kunna installera cert-manager måste vi först skapa ett namnområde för att köra det i. I den här självstudien installeras cert-manager i namnområdet cert-manager. Det går att köra cert-manager i ett annat namnområde, men du måste göra ändringar i distributionsmanifesten.
-
-   ```bash
-   kubectl create namespace cert-manager
-   ```
-
-2. Nu kan vi installera cert-manager. Alla resurser ingår i en enda YAML-manifestfil. Detta kan installeras genom att köra följande:
-
-   ```bash
-   kubectl apply -f https://github.com/jetstack/cert-manager/releases/download/v1.7.0/cert-manager.crds.yaml
-   ```
-
-3. Lägg till etiketten certmanager.k8s.io/disable-validation: "true" i certifikathanterarens namnområde genom att köra följande. På så sätt kan systemresurserna som cert-manager kräver för att bootstrap TLS skapas i ett eget namnområde.
-
-   ```bash
-   kubectl label namespace cert-manager certmanager.k8s.io/disable-validation=true
-   ```
-
-## Hämta certifikat via Helm-diagram
-
-Helm är ett Kubernetes-distributionsverktyg för att automatisera skapande, paketering, konfiguration och distribution av program och tjänster till Kubernetes-kluster.
-
-Cert-manager tillhandahåller Helm-diagram som en förstklassig installationsmetod på Kubernetes.
-
-1. Lägg till Jetstack Helm-lagringsplatsen
-
-   Den här lagringsplatsen är den enda källan till cert-manager-diagram som stöds. Det finns några andra speglar och kopior över internet, men de är helt inofficiella och kan utgöra en säkerhetsrisk.
-
-   ```bash
-   helm repo add jetstack https://charts.jetstack.io
-   ```
-
-2. Uppdatera den lokala Helm Chart-lagringsplatsens cache
-
-   ```bash
-   helm repo update
-   ```
-
-3. Installera Cert-Manager-tillägget via helm genom att köra följande:
-
-   ```bash
-   helm install cert-manager jetstack/cert-manager --namespace cert-manager --version v1.7.0
-   ```
-
-4. Tillämpa YAML-fil för certifikatutfärdare
-
-   ClusterIssuers är Kubernetes-resurser som representerar certifikatutfärdare som kan generera signerade certifikat genom att uppfylla begäranden om certifikatsignering. Alla cert-manager-certifikat kräver en refererad utfärdare som är i ett redo villkor för att försöka uppfylla begäran.
-   Den utfärdare som vi använder finns i `cluster-issuer-prod.yml file`
-
-   ```bash
-   cluster_issuer_variables=$(<cluster-issuer-prod.yml)
-   echo "${cluster_issuer_variables//\$SSL_EMAIL_ADDRESS/$SSL_EMAIL_ADDRESS}" | kubectl apply -f -
-   ```
-
-5. Upate Voting App Application för att använda Cert-Manager för att hämta ett SSL-certifikat.
-
-   Den fullständiga YAML-filen finns i `azure-vote-nginx-ssl.yml`
-
-   ```bash
-   azure_vote_nginx_ssl_variables=$(<azure-vote-nginx-ssl.yml)
-   echo "${azure_vote_nginx_ssl_variables//\$FQDN/$FQDN}" | kubectl apply -f -
-   ```
-
-<!--## Validate application is working
-
-Wait for the SSL certificate to issue. The following command will query the 
-status of the SSL certificate for 3 minutes. In rare occasions it may take up to 
-15 minutes for Lets Encrypt to issue a successful challenge and 
-the ready state to be 'True'
-
-```bash
-runtime="10 minute"; endtime=$(date -ud "$runtime" +%s); while [[ $(date -u +%s) -le $endtime ]]; do STATUS=$(kubectl get certificate --output jsonpath={..status.conditions[0].status}); echo $STATUS; if [ "$STATUS" = 'True' ]; then break; else sleep 10; fi; done
+```JSON
+echo "You can now visit your web server at $IP_ADDRESS"
 ```
 
-Validate SSL certificate is True by running the follow command:
+:::image type="content" source="media/quick-kubernetes-deploy-cli/aks-store-application.png" alt-text="Skärmbild av AKS Store-exempelprogrammet." lightbox="media/quick-kubernetes-deploy-cli/aks-store-application.png":::
 
-```bash
-kubectl get certificate --output jsonpath={..status.conditions[0].status}
-```
+## Ta bort klustret
 
-Results:
+Om du inte planerar att gå igenom AKS-självstudien [][aks-tutorial]rensar du onödiga resurser för att undvika Azure-avgifter. Du kan ta bort resursgruppen, containertjänsten och alla relaterade resurser med kommandot [`az group delete`][az-group-delete] .
 
-<!-- expected_similarity=0.3 -->
-<!--
-```ASCII
-True
-```
--->
-
-## Bläddra i din AKS-distribution som skyddas via HTTPS
-
-Kör följande kommando för att hämta HTTPS-slutpunkten för ditt program:
-
-> [!Note]
-> Det tar ofta 2–3 minuter för SSL-certifikatet att propogate och platsen kan nås via HTTPS.
-
-```bash
-runtime="5 minute";
-endtime=$(date -ud "$runtime" +%s);
-while [[ $(date -u +%s) -le $endtime ]]; do
-   STATUS=$(kubectl get svc --namespace=ingress-nginx ingress-nginx-controller -o jsonpath='{.status.loadBalancer.ingress[0].ip}');
-   echo $STATUS;
-   if [ "$STATUS" == "$MY_STATIC_IP" ]; then
-      break;
-   else
-      sleep 10;
-   fi;
-done
-```
-
-```bash
-echo "You can now visit your web server at https://$FQDN"
-```
+> [!NOTE]
+> AKS-klustret skapades med en systemtilldelad hanterad identitet, vilket är standardalternativet för identitet som används i den här snabbstarten. Plattformen hanterar den här identiteten så att du inte behöver ta bort den manuellt.
 
 ## Nästa steg
 
-- [Dokumentation om Azure Kubernetes Service](https://learn.microsoft.com/azure/aks/)
-- [Skapa ett Azure Container Registry](https://learn.microsoft.com/azure/aks/tutorial-kubernetes-prepare-acr?tabs=azure-cli)
-- [Skala din applciation i AKS](https://learn.microsoft.com/azure/aks/tutorial-kubernetes-scale?tabs=azure-cli)
-- [Uppdatera ditt program i AKS](https://learn.microsoft.com/azure/aks/tutorial-kubernetes-app-update?tabs=azure-cli)
+I den här snabbstarten distribuerade du ett Kubernetes-kluster och distribuerade sedan ett enkelt program med flera containrar till det. Det här exempelprogrammet är endast i demosyfte och representerar inte alla metodtips för Kubernetes-program. Vägledning om hur du skapar fullständiga lösningar med AKS för produktion finns i [AKS-lösningsvägledning][aks-solution-guidance].
+
+Om du vill veta mer om AKS och gå igenom ett komplett exempel på kod-till-distribution fortsätter du till självstudiekursen för Kubernetes-klustret.
+
+> [!div class="nextstepaction"]
+> [Självstudiekurs om AKS][aks-tutorial]
+
+<!-- LINKS - external -->
+[kubectl]: https://kubernetes.io/docs/reference/kubectl/
+[kubectl-apply]: https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands#apply
+[kubectl-get]: https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands#get
+
+<!-- LINKS - internal -->
+[kubernetes-concepts]: ../concepts-clusters-workloads.md
+[aks-tutorial]: ../tutorial-kubernetes-prepare-app.md
+[azure-resource-group]: ../../azure-resource-manager/management/overview.md
+[az-aks-create]: /cli/azure/aks#az-aks-create
+[az-aks-get-credentials]: /cli/azure/aks#az-aks-get-credentials
+[az-aks-install-cli]: /cli/azure/aks#az-aks-install-cli
+[az-group-create]: /cli/azure/group#az-group-create
+[az-group-delete]: /cli/azure/group#az-group-delete
+[kubernetes-deployment]: ../concepts-clusters-workloads.md#deployments-and-yaml-manifests
+[aks-solution-guidance]: /azure/architecture/reference-architectures/containers/aks-start-here?toc=/azure/aks/toc.json&bc=/azure/aks/breadcrumb/toc.json
+[baseline-reference-architecture]: /azure/architecture/reference-architectures/containers/aks/baseline-aks?toc=/azure/aks/toc.json&bc=/azure/aks/breadcrumb/toc.json

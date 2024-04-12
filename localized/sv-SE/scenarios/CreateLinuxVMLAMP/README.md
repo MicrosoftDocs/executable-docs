@@ -1,31 +1,40 @@
 ---
-title: Installera en LEMP-stack i Azure
-description: Den här självstudien visar hur du installerar en LEMP-stack i Azure.
-author: mbifeld
-ms.author: mbifeld
-ms.topic: article
-ms.date: 11/28/2023
-ms.custom: innovation-engine
+title: Självstudie – Distribuera en LEMP-stack med Hjälp av WordPress på en virtuell dator
+description: I den här självstudien får du lära dig hur du installerar LEMP-stacken och WordPress på en virtuell Linux-dator i Azure.
+author: chasecrum
+ms.collection: linux
+ms.service: virtual-machines
+ms.devlang: azurecli
+ms.custom: 'innovation-engine, linux-related-content, devx-track-azurecli'
+ms.topic: tutorial
+ms.date: 2/29/2024
+ms.author: chasecrum
+ms.reviewer: jushim
 ---
 
-# Installera en LEMP-stack i Azure
+# Självstudie: Installera en LEMP-stack på en virtuell Azure Linux-dator
 
-[![Distribuera till Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2263118)
+**Gäller för:** :heavy_check_mark: Virtuella Linux-datorer
 
+[![Distribuera till Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#view/Microsoft_Azure_CloudNative/SubscriptionSelectionPage.ReactView/tutorialKey/CreateLinuxVMLAMP)
 
 Den här artikeln beskriver hur du distribuerar en NGINX-webbserver, Azure MySQL – flexibel server och PHP (LEMP-stacken) på en virtuell Ubuntu Linux-dator i Azure. Om du vill se LEMP-servern i praktiken kan du installera och konfigurera en WordPress-webbplats. I den här självstudiekursen får du lära du dig att:
 
 > [!div class="checklist"]
-
-> * Skapa en virtuell Linux Ubuntu-dator
+>
+> * Skapa en virtuell Ubuntu-dator
 > * Öppna portarna 80 och 443 för webbtrafik
 > * Installera och skydda NGINX, Azure Flexible MySQL Server och PHP
 > * Verifiera installation och konfiguration
-> * Installera WordPress
+> * Installera WordPress Den här konfigurationen är avsedd för snabba tester eller konceptbevis. Mer information om LEMP-stacken, inklusive rekommendationer för en produktionsmiljö, finns i Ubuntu-dokumentationen[](https://help.ubuntu.com/community/ApacheMySQLPHP).
+
+I den här självstudien används CLI i [Azure Cloud Shell](../../cloud-shell/overview.md), som ständigt uppdateras till den senaste versionen. Öppna Cloud Shell genom att välja **Prova** längst upp i alla kodblock.
+
+Om du väljer att installera och använda CLI lokalt kräver den här självstudien att du kör Azure CLI version 2.0.30 eller senare. Hitta versionen genom att `az --version` köra kommandot . Om du behöver installera eller uppgradera kan du läsa [Installera Azure CLI]( /cli/azure/install-azure-cli).
 
 ## Variabeldeklaration
 
-Först definierar vi några variabler som hjälper till med konfigurationen av LEMP-arbetsbelastningen.
+Först måste vi definiera några variabler som hjälper till med konfigurationen av LEMP-arbetsbelastningen.
 
 ```bash
 export NETWORK_PREFIX="$(($RANDOM % 254 + 1))"
@@ -55,13 +64,15 @@ export MY_AZURE_USER=$(az account show --query user.name --output tsv)
 export FQDN="${MY_DNS_LABEL}.${REGION}.cloudapp.azure.com"
 ```
 
-<!--```bash
+<!--
+```bash
 export MY_AZURE_USER_ID=$(az ad user list --filter "mail eq '$MY_AZURE_USER'" --query "[0].id" -o tsv)
-```-->
+```
+-->
 
-## Skapa RG
+## Skapa en resursgrupp
 
-Skapa en resursgrupp med kommandot [az group create](https://learn.microsoft.com/cli/azure/group#az-group-create). En Azure-resursgrupp är en logisk container där Azure-resurser distribueras och hanteras.
+Skapa en resursgrupp med kommandot [az group create](/cli/azure/group#az-group-create). En Azure-resursgrupp är en logisk container där Azure-resurser distribueras och hanteras.
 I följande exempel skapas en resursgrupp med namnet `$MY_RESOURCE_GROUP_NAME` på platsen `eastus`.
 
 ```bash
@@ -92,7 +103,7 @@ Resultat:
 ## Skapa ett virtuellt Azure-nätverk
 
 Ett virtuellt nätverk är den grundläggande byggstenen för privata nätverk i Azure. Med Azure Virtual Network kan Azure-resurser som virtuella datorer kommunicera säkert med varandra och Internet.
-Använd [az network vnet create](https://learn.microsoft.com/cli/azure/network/vnet#az-network-vnet-create) för att skapa ett virtuellt nätverk med namnet `$MY_VNET_NAME` med ett undernät med namnet `$MY_SN_NAME` i `$MY_RESOURCE_GROUP_NAME` resursgruppen.
+Använd [az network vnet create](/cli/azure/network/vnet#az-network-vnet-create) för att skapa ett virtuellt nätverk med namnet `$MY_VNET_NAME` med ett undernät med namnet `$MY_SN_NAME` i `$MY_RESOURCE_GROUP_NAME` resursgruppen.
 
 ```bash
 az network vnet create \
@@ -142,11 +153,10 @@ Resultat:
 
 ## Skapa en offentlig IP-adress i Azure
 
-Använd [az network public-ip create](https://learn.microsoft.com/cli/azure/network/public-ip#az-network-public-ip-create) för att skapa en standardzonredundant offentlig IPv4-adress med namnet `MY_PUBLIC_IP_NAME` i `$MY_RESOURCE_GROUP_NAME`.
+Använd [az network public-ip create](/cli/azure/network/public-ip#az-network-public-ip-create) för att skapa en standardzonredundant offentlig IPv4-adress med namnet `MY_PUBLIC_IP_NAME` i `$MY_RESOURCE_GROUP_NAME`.
 
 >[!NOTE]
->Alternativen nedan för zoner är bara giltiga val i regioner med [Tillgänglighetszoner](https://learn.microsoft.com/azure/reliability/availability-zones-service-support).
-
+>Alternativen nedan för zoner är bara giltiga val i regioner med [Tillgänglighetszoner](../../reliability/availability-zones-service-support.md).
 ```bash
 az network public-ip create \
     --name $MY_PUBLIC_IP_NAME \
@@ -197,7 +207,7 @@ Resultat:
 
 ## Skapa en Azure-nätverkssäkerhetsgrupp
 
-Med säkerhetsregler i nätverkssäkerhetsgrupper kan du filtrera vilken typ av nätverkstrafik som kan flöda in i och ut ur virtuella nätverk, undernät och nätverksgränssnitt. Mer information om nätverkssäkerhetsgrupper finns i [Översikt över](https://learn.microsoft.com/azure/virtual-network/network-security-groups-overview) nätverkssäkerhetsgrupp.
+Med säkerhetsregler i nätverkssäkerhetsgrupper kan du filtrera vilken typ av nätverkstrafik som kan flöda in i och ut ur virtuella nätverk, undernät och nätverksgränssnitt. Mer information om nätverkssäkerhetsgrupper finns i [Översikt över](../../virtual-network/network-security-groups-overview.md) nätverkssäkerhetsgrupp.
 
 ```bash
 az network nsg create \
@@ -246,7 +256,7 @@ Resultat:
 
 ## Skapa regler för Azure Network Security Group
 
-Du skapar en regel för att tillåta anslutningar till den virtuella datorn på port 22 för SSH och portarna 80, 443 för HTTP och HTTPS. En extra regel skapas för att tillåta alla portar för utgående anslutningar. Använd [az network nsg rule create](https://learn.microsoft.com/cli/azure/network/nsg/rule#az-network-nsg-rule-create) för att skapa en regel för nätverkssäkerhetsgrupp.
+Skapa en regel för att tillåta anslutningar till den virtuella datorn på port 22 för SSH och portarna 80, 443 för HTTP och HTTPS. En extra regel skapas för att tillåta alla portar för utgående anslutningar. Använd [az network nsg rule create](/cli/azure/network/nsg/rule#az-network-nsg-rule-create) för att skapa en regel för nätverkssäkerhetsgrupp.
 
 ```bash
 az network nsg rule create \
@@ -293,7 +303,7 @@ Resultat:
 
 ## Skapa ett Azure-nätverksgränssnitt
 
-Du använder [az network nic create](https://learn.microsoft.com/cli/azure/network/nic#az-network-nic-create) för att skapa nätverksgränssnittet för den virtuella datorn. De offentliga IP-adresserna och den NSG som skapades tidigare är associerade med nätverkskortet. Nätverksgränssnittet är kopplat till det virtuella nätverk som du skapade tidigare.
+Använd [az network nic create](/cli/azure/network/nic#az-network-nic-create) för att skapa nätverksgränssnittet för den virtuella datorn. De offentliga IP-adresserna och den NSG som skapades tidigare är associerade med nätverkskortet. Nätverksgränssnittet är kopplat till det virtuella nätverk som du skapade tidigare.
 
 ```bash
 az network nic create \
@@ -356,14 +366,13 @@ Resultat:
   }
 }
 ```
-
 ## Översikt över Cloud-init
 
-Cloud-init är ett vanligt sätt att anpassa en virtuell Linux-dator när den startas för första gången. Du kan använda cloud-init till att installera paket och skriva filer eller för att konfigurera användare och säkerhet. Eftersom cloud-init körs under hela den ursprungliga startprocessen finns det inga fler steg eller obligatoriska agenter att tillämpa för konfigurationen.
+Cloud-init är ett vanligt sätt att anpassa en virtuell Linux-dator när den startas för första gången. Du kan använda cloud-init till att installera paket och skriva filer eller för att konfigurera användare och säkerhet. Eftersom cloud-init körs under den inledande startprocessen finns det inga andra steg eller nödvändiga agenter att tillämpa på din konfiguration.
 
 Cloud-init fungerar med olika distributioner. Du använder till exempel inte apt-get install eller yum install när du vill installera ett paket. I stället definierar du en lista med paket att installera. Cloud-init använder automatiskt rätt pakethanteringsverktyg för den distribution du valt.
 
-Vi arbetar med våra partners och försöker göra så att cloud-init inkluderas och fungerar i de avbildningar de tillhandahåller till Azure. Detaljerad information om stöd för cloud-init för varje distribution [finns i Cloud-init-stöd för virtuella datorer i Azure](https://learn.microsoft.com/azure/virtual-machines/linux/using-cloud-init).
+Vi arbetar med våra partner för att få cloud-init inkluderat och arbeta i de avbildningar som de tillhandahåller till Azure. Detaljerad information om stöd för cloud-init för varje distribution [finns i Cloud-init-stöd för virtuella datorer i Azure](./using-cloud-init.md).
 
 ### Skapa en cloud-init-konfigurationsfil
 
@@ -372,12 +381,10 @@ Om du vill se cloud-init i praktiken skapar du en virtuell dator som installerar
 ```bash
 cat << EOF > cloud-init.txt
 #cloud-config
-
 # Install, update, and upgrade packages
 package_upgrade: true
 package_update: true
 package_reboot_if_require: true
-
 # Install packages
 packages:
   - vim
@@ -400,7 +407,6 @@ packages:
   - php-xmlrpc
   - php-zip
   - php-fpm
-
 write_files:
   - owner: www-data:www-data
     path: /etc/nginx/sites-available/default.conf
@@ -411,7 +417,6 @@ write_files:
             root /var/www/html;
             server_name $FQDN;
         }
-
 write_files:
   - owner: www-data:www-data
     path: /etc/nginx/sites-available/$FQDN.conf
@@ -422,15 +427,11 @@ write_files:
         server {
             listen 443 ssl http2;
             listen [::]:443 ssl http2;
-
             server_name $FQDN;
-
             ssl_certificate /etc/letsencrypt/live/$FQDN/fullchain.pem;
             ssl_certificate_key /etc/letsencrypt/live/$FQDN/privkey.pem;
-
             root /var/www/$FQDN;
             index index.php;
-
             location / {
                 try_files \$uri \$uri/ /index.php?\$args;
             }
@@ -448,7 +449,6 @@ write_files:
                     log_not_found off;
                     access_log off;
             }
-
             location = /robots.txt {
                     allow all;
                     log_not_found off;
@@ -461,7 +461,6 @@ write_files:
             server_name $FQDN;
             return 301 https://$FQDN\$request_uri;
         }
-
 runcmd:
   - sed -i 's/;cgi.fix_pathinfo.*/cgi.fix_pathinfo = 1/' /etc/php/8.1/fpm/php.ini
   - sed -i 's/^max_execution_time \= .*/max_execution_time \= 300/g' /etc/php/8.1/fpm/php.ini
@@ -481,7 +480,7 @@ runcmd:
   - chown -R azureadmin:www-data /var/www/$FQDN
   - sudo -u azureadmin -i -- wp core download --path=/var/www/$FQDN
   - sudo -u azureadmin -i -- wp config create --dbhost=$MY_MYSQL_DB_NAME.mysql.database.azure.com --dbname=wp001 --dbuser=$MY_MYSQL_ADMIN_USERNAME --dbpass="$MY_MYSQL_ADMIN_PW" --path=/var/www/$FQDN
-  - sudo -u azureadmin -i -- wp core install --url=$FQDN --title="Azure hosted blog" --admin_user=$MY_WP_ADMIN_USER --admin_password="$MY_WP_ADMIN_PW" --admin_email=$MY_AZURE_USER --path=/var/www/$FQDN 
+  - sudo -u azureadmin -i -- wp core install --url=$FQDN --title="Azure hosted blog" --admin_user=$MY_WP_ADMIN_USER --admin_password="$MY_WP_ADMIN_PW" --admin_email=$MY_AZURE_USER --path=/var/www/$FQDN
   - sudo -u azureadmin -i -- wp plugin update --all --path=/var/www/$FQDN
   - chmod 600 /var/www/$FQDN/wp-config.php
   - mkdir -p -m 0775 /var/www/$FQDN/wp-content/uploads
@@ -491,7 +490,7 @@ EOF
 
 ## Skapa en Flexibel Azure Privat DNS-zon för Azure MySQL – flexibel server
 
-Med Azure Privat DNS Zone-integrering kan du matcha den privata DNS i det aktuella virtuella nätverket eller ett peer-kopplat virtuellt nätverk i regionen där den privata DNS-zonen är länkad. Du använder [az network private-dns zone create](https://learn.microsoft.com/cli/azure/network/private-dns/zone#az-network-private-dns-zone-create) för att skapa den privata DNS-zonen.
+Med Azure Privat DNS Zone-integrering kan du matcha den privata DNS i det aktuella virtuella nätverket eller ett peer-kopplat virtuellt nätverk i regionen där den privata DNS-zonen är länkad. Använd [az network private-dns zone create](/cli/azure/network/private-dns/zone#az-network-private-dns-zone-create) för att skapa den privata DNS-zonen.
 
 ```bash
 az network private-dns zone create \
@@ -522,7 +521,7 @@ Resultat:
 
 ## Skapa en Azure Database for MySQL – flexibel server
 
-Azure Database for MySQL – Flexibel server är en hanterad tjänst som du kan använda för att köra, hantera och skala MySQL-servrar med hög tillgänglighet i molnet. Skapa en flexibel server med [kommandot az mysql flexible-server create](https://learn.microsoft.com/cli/azure/mysql/flexible-server#az-mysql-flexible-server-create) . En server kan innehålla flera databaser. Följande kommando skapar en server med tjänstens standardvärden och variabelvärden från azure CLI:s lokala miljö:
+Azure Database for MySQL – Flexibel server är en hanterad tjänst som du kan använda för att köra, hantera och skala MySQL-servrar med hög tillgänglighet i molnet. Skapa en flexibel server med [kommandot az mysql flexible-server create](../../mysql/flexible-server/quickstart-create-server-cli.md#create-an-azure-database-for-mysql-flexible-server) . En server kan innehålla flera databaser. Följande kommando skapar en server med tjänstens standardvärden och variabelvärden från azure CLI:s lokala miljö:
 
 ```bash
 az mysql flexible-server create \
@@ -569,14 +568,13 @@ echo "Your MySQL user $MY_MYSQL_ADMIN_USERNAME password is: $MY_WP_ADMIN_PW"
 
 Servern som skapades har följande attribut:
 
-* Servernamnet, administratörsanvändarnamnet, administratörslösenordet, resursgruppens namn, platsen har redan angetts i den lokala kontextmiljön för cloud shell och skapas på samma plats som du är resursgruppen och de andra Azure-komponenterna.
+* Servernamnet, administratörsanvändarnamnet, administratörslösenordet, resursgruppens namn, platsen har redan angetts i den lokala kontextmiljön för cloud shell. De skapas på samma plats som din resursgrupp och andra Azure-komponenter.
 * Tjänstens standardvärden för återstående serverkonfigurationer: beräkningsnivå (burstable), beräkningsstorlek/SKU (Standard_B2s), kvarhållningsperiod för säkerhetskopiering (7 dagar) och MySQL-version (8.0.21)
 * Standardanslutningsmetoden är Privat åtkomst (VNet-integrering) med ett länkat virtuellt nätverk och ett automatiskt genererat undernät.
 
 > [!NOTE]
-> Det går inte att ändra anslutningsmetoden när servern har skapats. Om du till exempel valde `Private access (VNet Integration)` under skapande kan du inte ändra till efter att `Public access (allowed IP addresses)` du har skapat. Vi rekommenderar starkt att du skapar en server med privat åtkomst för säker åtkomst till servern med hjälp av VNet-integrering. Läs mer om privat åtkomst i begreppsartikeln[](https://learn.microsoft.com/azure/mysql/flexible-server/concepts-networking-vnet).
-
-Om du vill ändra några standardvärden läser du referensdokumentationen[ för Azure CLI ](https://learn.microsoft.com/cli/azure//mysql/flexible-server)för den fullständiga listan över konfigurerbara CLI-parametrar.
+> Det går inte att ändra anslutningsmetoden när servern har skapats. Om du till exempel valde `Private access (VNet Integration)` under skapande kan du inte ändra till efter att `Public access (allowed IP addresses)` du har skapat. Vi rekommenderar starkt att du skapar en server med privat åtkomst för säker åtkomst till servern med hjälp av VNet-integrering. Läs mer om privat åtkomst i begreppsartikeln[](../../mysql/flexible-server/concepts-networking-vnet.md).
+Om du vill ändra några standardvärden läser du referensdokumentationen[ för Azure CLI ](../../mysql/flexible-server/quickstart-create-server-cli.md)för den fullständiga listan över konfigurerbara CLI-parametrar.
 
 ## Kontrollera Status för Azure Database for MySQL – flexibel server
 
@@ -600,11 +598,15 @@ done
 
 Du kan hantera Azure Database for MySQL – flexibel serverkonfiguration med hjälp av serverparametrar. Serverparametrarna konfigureras med standardvärdet och det rekommenderade värdet när du skapar servern.
 
-Visa serverparameterinformation Om du vill visa information om en viss parameter för en server kör [du kommandot az mysql flexible-server parameter show](https://learn.microsoft.com/cli/azure/mysql/flexible-server/parameter) .
+Visa information om serverparametern:
 
-### Inaktivera Azure Database for MySQL – SSL-anslutningsparameter för flexibel server för Wordpress-integrering
+[Kör kommandot az mysql flexible-server show](../../mysql/flexible-server/how-to-configure-server-parameters-cli.md) för att visa information om en viss parameter för servern.
 
-Ändra ett serverparametervärde Du kan också ändra värdet för en viss serverparameter, vilket uppdaterar det underliggande konfigurationsvärdet för MySQL-servermotorn. Om du vill uppdatera serverparametern använder du [kommandot az mysql flexible-server parameter set](https://learn.microsoft.com/cli/azure/mysql/flexible-server/parameter#az-mysql-flexible-server-parameter-set) .
+## Inaktivera Azure Database for MySQL – SSL-anslutningsparameter för flexibel server för Wordpress-integrering
+
+Ändra ett serverparametervärde:
+
+Du kan också ändra värdet för en viss serverparameter, vilket uppdaterar det underliggande konfigurationsvärdet för MySQL-servermotorn. Om du vill uppdatera serverparametern använder du [kommandot az mysql flexible-server parameter set](../../mysql/flexible-server/how-to-configure-server-parameters-cli.md#modify-a-server-parameter-value) .
 
 ```bash
 az mysql flexible-server parameter set \
@@ -637,10 +639,11 @@ Resultat:
 
 ## Skapa en virtuell Azure Linux-dator
 
-Följande exempel skapar en virtuell dator som heter `$MY_VM_NAME`, och SSH-nycklar skapas om de inte redan finns på en standardnyckelplats. Kommandot anger `$MY_VM_USERNAME` även som administratörsanvändarnamn.
-För att förbättra säkerheten för virtuella Linux-datorer i Azure kan du integrera med Azure Active Directory-autentisering. Nu kan du använda Azure AD som en grundläggande autentiseringsplattform och en certifikatutfärdare till SSH till en virtuell Linux-dator med hjälp av Azure AD- och OpenSSH-certifikatbaserad autentisering. Med den här funktionen kan organisationer hantera åtkomst till virtuella datorer med rollbaserad åtkomstkontroll i Azure och principer för villkorsstyrd åtkomst.
+I följande exempel skapas en virtuell dator med namnet `$MY_VM_NAME` och SSH-nycklar skapas om de inte redan finns på en standardnyckelplats. Kommandot anger `$MY_VM_USERNAME` även som administratörsanvändarnamn.
 
-Skapa en virtuell dator med kommandot [az vm create](https://learn.microsoft.com/cli/azure/vm#az-vm-create).
+För att förbättra säkerheten för virtuella Linux-datorer i Azure kan du integrera med Azure Active Directory-autentisering. Nu kan du använda Azure AD som en grundläggande autentiseringsplattform. Du kan också SSH till den virtuella Linux-datorn med hjälp av Azure AD- och OpenSSH-certifikatbaserad autentisering. Med den här funktionen kan organisationer hantera åtkomst till virtuella datorer med rollbaserad åtkomstkontroll i Azure och principer för villkorsstyrd åtkomst.
+
+Skapa en virtuell dator med kommandot [az vm create](/cli/azure/vm#az-vm-create).
 
 ```bash
 az vm create \
@@ -686,17 +689,17 @@ Resultat:
 
 ## Kontrollera statusen för den virtuella Azure Linux-datorn
 
-Det tar några minuter att skapa den virtuella datorn och stödresurser. Värdet provisioningState för Succeeded visas när tillägget har installerats på den virtuella datorn. Den virtuella datorn måste ha en vm-agent[ som körs ](https://learn.microsoft.com/azure/virtual-machines/extensions/agent-linux)för att installera tillägget.
+Det tar några minuter att skapa den virtuella datorn och stödresurser. Värdet provisioningState för Succeeded visas när tillägget har installerats på den virtuella datorn. Den virtuella datorn måste ha en vm-agent[ som körs ](../extensions/agent-linux.md)för att installera tillägget.
 
 ```bash
 runtime="5 minute";
 endtime=$(date -ud "$runtime" +%s);
-while [[ $(date -u +%s) -le $endtime ]]; do 
-    STATUS=$(ssh -o StrictHostKeyChecking=no $MY_VM_USERNAME@$FQDN "cloud-init status --wait"); 
-    echo $STATUS; 
-    if [[ "$STATUS" == *'status: done'* ]]; then 
-        break; 
-    else 
+while [[ $(date -u +%s) -le $endtime ]]; do
+    STATUS=$(ssh -o StrictHostKeyChecking=no $MY_VM_USERNAME@$FQDN "cloud-init status --wait");
+    echo $STATUS;
+    if [[ "$STATUS" == *'status: done'* ]]; then
+        break;
+    else
         sleep 10;
     fi;
 done
@@ -704,21 +707,16 @@ done
 
 <!--
 ## Assign Azure AD RBAC for Azure AD login for Linux Virtual Machine
-
 The below command uses [az role assignment create](https://learn.microsoft.com/cli/azure/role/assignment#az-role-assignment-create) to assign the `Virtual Machine Administrator Login` role to the VM for your current Azure user.
-
 ```bash
 export MY_RESOURCE_GROUP_ID=$(az group show --resource-group $MY_RESOURCE_GROUP_NAME --query id -o tsv)
-
 az role assignment create \
     --role "Virtual Machine Administrator Login" \
     --assignee $MY_AZURE_USER_ID \
     --scope $MY_RESOURCE_GROUP_ID -o JSON
 ```
-
-
 Results:
-<!-- expected_similarity=0.3
+<!-- expected_similarity=0.3 -->
 ```JSON
 {
   "condition": null,
@@ -739,13 +737,11 @@ Results:
   "updatedOn": "2023-09-04T09:29:17.237445+00:00"
 }
 ```
--->
 
-<!-- 
+
+<!--
 ## Export the SSH configuration for use with SSH clients that support OpenSSH
-
 Login to Azure Linux VMs with Azure AD supports exporting the OpenSSH certificate and configuration. That means you can use any SSH clients that support OpenSSH-based certificates to sign in through Azure AD. The following example exports the configuration for all IP addresses assigned to the VM:
-
 ```bash
 az ssh config --file ~/.ssh/azure-config --name $MY_VM_NAME --resource-group $MY_RESOURCE_GROUP_NAME
 ```
@@ -791,7 +787,7 @@ Resultat:
 
 ## Kontrollera och bläddra på din WordPress-webbplats
 
-[WordPress](https://www.wordpress.org) är ett öppen källkod innehållshanteringssystem (CMS) som används av över 40 % av webben för att skapa webbplatser, bloggar och andra program. WordPress kan köras på några olika Azure-tjänster: [AKS](https://learn.microsoft.com/azure/mysql/flexible-server/tutorial-deploy-wordpress-on-aks), Virtuella datorer och App Service. En fullständig lista över WordPress-alternativ i Azure finns [i WordPress på Azure Marketplace](https://azuremarketplace.microsoft.com/marketplace/apps?page=1&search=wordpress).
+[WordPress](https://www.wordpress.org) är ett öppen källkod innehållshanteringssystem (CMS) som används av över 40 % av webben för att skapa webbplatser, bloggar och andra program. WordPress kan köras på några olika Azure-tjänster: [AKS](../../mysql/flexible-server/tutorial-deploy-wordpress-on-aks.md), Virtuella datorer och App Service. En fullständig lista över WordPress-alternativ i Azure finns [i WordPress på Azure Marketplace](https://azuremarketplace.microsoft.com/marketplace/apps?page=1&search=wordpress).
 
 Den här WordPress-installationen är endast avsedd för ”Proof of concept”. Om du vill installera senaste WordPress i produktion med rekommenderade säkerhetsinställningar läser du [WordPress-dokumentationen](https://codex.wordpress.org/Main_Page).
 
@@ -801,10 +797,10 @@ Kontrollera att programmet körs genom att curla program-URL:en:
 runtime="5 minute";
 endtime=$(date -ud "$runtime" +%s);
 while [[ $(date -u +%s) -le $endtime ]]; do
-    if curl -I -s -f $FQDN > /dev/null ; then 
+    if curl -I -s -f $FQDN > /dev/null ; then
         curl -L -s -f $FQDN 2> /dev/null | head -n 9
         break
-    else 
+    else
         sleep 10
     fi;
 done
