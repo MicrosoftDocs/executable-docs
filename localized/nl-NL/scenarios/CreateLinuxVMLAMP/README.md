@@ -1,31 +1,40 @@
 ---
-title: Een LEMP-stack installeren in Azure
-description: Deze zelfstudie laat zien hoe u een LEMP-stack installeert in Azure.
-author: mbifeld
-ms.author: mbifeld
-ms.topic: article
-ms.date: 11/28/2023
-ms.custom: innovation-engine
+title: 'Zelfstudie: Een LEMP-stack implementeren met WordPress op een VIRTUELE machine'
+description: In deze zelfstudie leert u hoe u de LEMP-stack en WordPress installeert op een virtuele Linux-machine in Azure.
+author: chasecrum
+ms.collection: linux
+ms.service: virtual-machines
+ms.devlang: azurecli
+ms.custom: 'innovation-engine, linux-related-content, devx-track-azurecli'
+ms.topic: tutorial
+ms.date: 2/29/2024
+ms.author: chasecrum
+ms.reviewer: jushim
 ---
 
-# Een LEMP-stack installeren in Azure
+# Zelfstudie: Een LEMP-stack installeren op een Virtuele Linux-machine in Azure
 
-[![Implementeren naar Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2263118)
+**Van toepassing op:** :heavy_check_mark: Virtuele Linux-machines
 
+[![Implementeren naar Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#view/Microsoft_Azure_CloudNative/SubscriptionSelectionPage.ReactView/tutorialKey/CreateLinuxVMLAMP)
 
 In dit artikel wordt uitgelegd hoe u een NGINX-webserver, Azure MySQL Flexible Server en PHP (de LEMP-stack) implementeert op een Ubuntu Linux-VM in Azure. Als u de LEMP-server in actie wilt zien, kunt u eventueel een WordPress-site installeren en configureren. In deze zelfstudie leert u het volgende:
 
 > [!div class="checklist"]
-
-> * Een Virtuele Linux Ubuntu-machine maken
+>
+> * Maken van een Ubuntu-VM
 > * Poorten 80 en 443 openen voor webverkeer
 > * NGINX, Azure Flexible MySQL-server en PHP installeren en beveiligen
 > * Installatie en configuratie verifiëren
-> * WordPress installeren
+> * WordPress installeren Deze installatie is bedoeld voor snelle tests of proof-of-concept. Zie de [Ubuntu-documentatie](https://help.ubuntu.com/community/ApacheMySQLPHP) voor meer informatie over de LEMP-stack, inclusief aanbevelingen voor een productieomgeving.
+
+In deze zelfstudie wordt gebruikgemaakt van de CLI in de [Azure Cloud Shell](../../cloud-shell/overview.md), die voortdurend wordt bijgewerkt naar de nieuwste versie. Als u de Cloud Shell wilt openen, selecteert u **Probeer het** bovenaan een willekeurig codeblok.
+
+Als u ervoor kiest om de CLI lokaal te installeren en te gebruiken, moet u voor deze zelfstudie versie 2.0.30 of hoger van Azure CLI uitvoeren. Zoek de versie door de opdracht uit te `az --version` voeren. Als u Azure CLI 2.0 wilt installeren of upgraden, raadpleegt u [Azure CLI 2.0 installeren]( /cli/azure/install-azure-cli).
 
 ## Variabeledeclaratie
 
-Eerst definiëren we enkele variabelen die helpen bij de configuratie van de LEMP-workload.
+Eerst moeten we enkele variabelen definiëren die helpen bij de configuratie van de LEMP-workload.
 
 ```bash
 export NETWORK_PREFIX="$(($RANDOM % 254 + 1))"
@@ -55,13 +64,15 @@ export MY_AZURE_USER=$(az account show --query user.name --output tsv)
 export FQDN="${MY_DNS_LABEL}.${REGION}.cloudapp.azure.com"
 ```
 
-<!--```bash
+<!--
+```bash
 export MY_AZURE_USER_ID=$(az ad user list --filter "mail eq '$MY_AZURE_USER'" --query "[0].id" -o tsv)
-```-->
+```
+-->
 
-## RG maken
+## Een brongroep maken
 
-Een resourcegroep maken met de opdracht [az group create](https://learn.microsoft.com/cli/azure/group#az-group-create). Een Azure-resourcegroep is een logische container waarin Azure-resources worden geïmplementeerd en beheerd.
+Een resourcegroep maken met de opdracht [az group create](/cli/azure/group#az-group-create). Een Azure-resourcegroep is een logische container waarin Azure-resources worden geïmplementeerd en beheerd.
 In het volgende voorbeeld wordt een resourcegroep met de naam `$MY_RESOURCE_GROUP_NAME` gemaakt op de locatie `eastus`.
 
 ```bash
@@ -92,7 +103,7 @@ Resultaten:
 ## Een virtueel netwerk van Azure maken
 
 Een virtueel netwerk is de fundamentele bouwsteen voor privénetwerken in Azure. Met Azure Virtual Network kunnen Azure-resources, zoals VM's, veilig met elkaar en internet communiceren.
-Gebruik [az network vnet create](https://learn.microsoft.com/cli/azure/network/vnet#az-network-vnet-create) om een virtueel netwerk `$MY_VNET_NAME` te maken met een subnet met de naam `$MY_SN_NAME` in de `$MY_RESOURCE_GROUP_NAME` resourcegroep.
+Gebruik [az network vnet create](/cli/azure/network/vnet#az-network-vnet-create) om een virtueel netwerk `$MY_VNET_NAME` te maken met een subnet met de naam `$MY_SN_NAME` in de `$MY_RESOURCE_GROUP_NAME` resourcegroep.
 
 ```bash
 az network vnet create \
@@ -142,11 +153,10 @@ Resultaten:
 
 ## Een openbaar IP-adres van Azure maken
 
-Gebruik [az network public-ip create](https://learn.microsoft.com/cli/azure/network/public-ip#az-network-public-ip-create) om een standaard zone-redundant openbaar IPv4-adres met de naam `MY_PUBLIC_IP_NAME` in `$MY_RESOURCE_GROUP_NAME`te maken.
+Gebruik [az network public-ip create](/cli/azure/network/public-ip#az-network-public-ip-create) om een standaard zone-redundant openbaar IPv4-adres met de naam `MY_PUBLIC_IP_NAME` in `$MY_RESOURCE_GROUP_NAME`te maken.
 
 >[!NOTE]
->De onderstaande opties voor zones zijn alleen geldige selecties in regio's met [Beschikbaarheidszones](https://learn.microsoft.com/azure/reliability/availability-zones-service-support).
-
+>De onderstaande opties voor zones zijn alleen geldige selecties in regio's met [Beschikbaarheidszones](../../reliability/availability-zones-service-support.md).
 ```bash
 az network public-ip create \
     --name $MY_PUBLIC_IP_NAME \
@@ -197,7 +207,7 @@ Resultaten:
 
 ## Een Azure-netwerkbeveiligingsgroep maken
 
-Met beveiligingsregels in netwerkbeveiligingsgroepen kunt u filteren op het type netwerkverkeer dat van en naar subnetten van virtuele netwerken en netwerkinterfaces kan stromen. Zie [het overzicht](https://learn.microsoft.com/azure/virtual-network/network-security-groups-overview) van netwerkbeveiligingsgroepen voor meer informatie over netwerkbeveiligingsgroepen.
+Met beveiligingsregels in netwerkbeveiligingsgroepen kunt u filteren op het type netwerkverkeer dat van en naar subnetten van virtuele netwerken en netwerkinterfaces kan stromen. Zie [het overzicht](../../virtual-network/network-security-groups-overview.md) van netwerkbeveiligingsgroepen voor meer informatie over netwerkbeveiligingsgroepen.
 
 ```bash
 az network nsg create \
@@ -246,7 +256,7 @@ Resultaten:
 
 ## Regels voor Azure-netwerkbeveiligingsgroepen maken
 
-U maakt een regel om verbindingen met de virtuele machine toe te staan op poort 22 voor SSH en poorten 80, 443 voor HTTP en HTTPS. Er wordt een extra regel gemaakt om alle poorten voor uitgaande verbindingen toe te staan. Gebruik [az network nsg rule create](https://learn.microsoft.com/cli/azure/network/nsg/rule#az-network-nsg-rule-create) om een netwerkbeveiligingsgroepregel te maken.
+Maak een regel om verbindingen met de virtuele machine toe te staan op poort 22 voor SSH en poorten 80, 443 voor HTTP en HTTPS. Er wordt een extra regel gemaakt om alle poorten voor uitgaande verbindingen toe te staan. Gebruik [az network nsg rule create](/cli/azure/network/nsg/rule#az-network-nsg-rule-create) om een netwerkbeveiligingsgroepregel te maken.
 
 ```bash
 az network nsg rule create \
@@ -293,7 +303,7 @@ Resultaten:
 
 ## Een Azure-netwerkinterface maken
 
-U gebruikt [az network nic create](https://learn.microsoft.com/cli/azure/network/nic#az-network-nic-create) om de netwerkinterface voor de virtuele machine te maken. De openbare IP-adressen en de NSG die eerder zijn gemaakt, zijn gekoppeld aan de NIC. De netwerkinterface is gekoppeld aan het virtuele netwerk dat u eerder hebt gemaakt.
+Gebruik [az network nic create](/cli/azure/network/nic#az-network-nic-create) om de netwerkinterface voor de virtuele machine te maken. De openbare IP-adressen en de NSG die eerder zijn gemaakt, zijn gekoppeld aan de NIC. De netwerkinterface is gekoppeld aan het virtuele netwerk dat u eerder hebt gemaakt.
 
 ```bash
 az network nic create \
@@ -356,14 +366,13 @@ Resultaten:
   }
 }
 ```
-
 ## Overzicht van cloud-init
 
-Cloud-init is een veelgebruikte benadering voor het aanpassen van een Linux-VM als deze voor de eerste keer wordt opgestart. U kunt cloud-init gebruiken voor het installeren van pakketten en schrijven van bestanden, of om gebruikers en beveiliging te configureren. Als de initialisatie van de cloud-init wordt uitgevoerd tijdens het opstartproces, zijn er geen extra stappen of agents vereist om uw configuratie toe te passen.
+Cloud-init is een veelgebruikte benadering voor het aanpassen van een Linux-VM als deze voor de eerste keer wordt opgestart. U kunt cloud-init gebruiken voor het installeren van pakketten en schrijven van bestanden, of om gebruikers en beveiliging te configureren. Als cloud-init wordt uitgevoerd tijdens het eerste opstartproces, zijn er geen andere stappen of vereiste agents die op uw configuratie moeten worden toegepast.
 
 Cloud-init werkt ook in distributies. U gebruikt bijvoorbeeld niet apt-get install of yum install om een pakket te installeren. In plaats daarvan kunt u een lijst definiëren met te installeren pakketten. Cloud-init maakt automatisch gebruik van het hulpprogramma voor systeemeigen pakketbeheer voor de distro die u selecteert.
 
-Samen met onze partners willen we cloud-init opnemen en werkend krijgen in de installatiekopieën die zij aan Azure leveren. Raadpleeg [Cloud-init-ondersteuning voor virtuele machines in Azure](https://learn.microsoft.com/azure/virtual-machines/linux/using-cloud-init) voor gedetailleerde informatie over Cloud-init-ondersteuning voor elke distributie.
+We werken samen met onze partners om cloud-init op te nemen en te werken in de installatiekopieën die ze aan Azure leveren. Raadpleeg [Cloud-init-ondersteuning voor virtuele machines in Azure](./using-cloud-init.md) voor gedetailleerde informatie over Cloud-init-ondersteuning voor elke distributie.
 
 ### Een cloud-init-configuratiebestand maken
 
@@ -372,12 +381,10 @@ Als u cloud-init in actie wilt zien, maakt u een VIRTUELE machine die een LEMP-s
 ```bash
 cat << EOF > cloud-init.txt
 #cloud-config
-
 # Install, update, and upgrade packages
 package_upgrade: true
 package_update: true
 package_reboot_if_require: true
-
 # Install packages
 packages:
   - vim
@@ -400,7 +407,6 @@ packages:
   - php-xmlrpc
   - php-zip
   - php-fpm
-
 write_files:
   - owner: www-data:www-data
     path: /etc/nginx/sites-available/default.conf
@@ -411,7 +417,6 @@ write_files:
             root /var/www/html;
             server_name $FQDN;
         }
-
 write_files:
   - owner: www-data:www-data
     path: /etc/nginx/sites-available/$FQDN.conf
@@ -422,15 +427,11 @@ write_files:
         server {
             listen 443 ssl http2;
             listen [::]:443 ssl http2;
-
             server_name $FQDN;
-
             ssl_certificate /etc/letsencrypt/live/$FQDN/fullchain.pem;
             ssl_certificate_key /etc/letsencrypt/live/$FQDN/privkey.pem;
-
             root /var/www/$FQDN;
             index index.php;
-
             location / {
                 try_files \$uri \$uri/ /index.php?\$args;
             }
@@ -448,7 +449,6 @@ write_files:
                     log_not_found off;
                     access_log off;
             }
-
             location = /robots.txt {
                     allow all;
                     log_not_found off;
@@ -461,7 +461,6 @@ write_files:
             server_name $FQDN;
             return 301 https://$FQDN\$request_uri;
         }
-
 runcmd:
   - sed -i 's/;cgi.fix_pathinfo.*/cgi.fix_pathinfo = 1/' /etc/php/8.1/fpm/php.ini
   - sed -i 's/^max_execution_time \= .*/max_execution_time \= 300/g' /etc/php/8.1/fpm/php.ini
@@ -481,7 +480,7 @@ runcmd:
   - chown -R azureadmin:www-data /var/www/$FQDN
   - sudo -u azureadmin -i -- wp core download --path=/var/www/$FQDN
   - sudo -u azureadmin -i -- wp config create --dbhost=$MY_MYSQL_DB_NAME.mysql.database.azure.com --dbname=wp001 --dbuser=$MY_MYSQL_ADMIN_USERNAME --dbpass="$MY_MYSQL_ADMIN_PW" --path=/var/www/$FQDN
-  - sudo -u azureadmin -i -- wp core install --url=$FQDN --title="Azure hosted blog" --admin_user=$MY_WP_ADMIN_USER --admin_password="$MY_WP_ADMIN_PW" --admin_email=$MY_AZURE_USER --path=/var/www/$FQDN 
+  - sudo -u azureadmin -i -- wp core install --url=$FQDN --title="Azure hosted blog" --admin_user=$MY_WP_ADMIN_USER --admin_password="$MY_WP_ADMIN_PW" --admin_email=$MY_AZURE_USER --path=/var/www/$FQDN
   - sudo -u azureadmin -i -- wp plugin update --all --path=/var/www/$FQDN
   - chmod 600 /var/www/$FQDN/wp-config.php
   - mkdir -p -m 0775 /var/www/$FQDN/wp-content/uploads
@@ -491,7 +490,7 @@ EOF
 
 ## Een Azure Privé-DNS-zone maken voor Azure MySQL Flexible Server
 
-Met Azure Privé-DNS Zone-integratie kunt u de privé-DNS binnen het huidige VNET of een peered VNET in de regio omzetten waar de privé-DNS-zone is gekoppeld. U gebruikt [az network private-dns zone create](https://learn.microsoft.com/cli/azure/network/private-dns/zone#az-network-private-dns-zone-create) om de privé-DNS-zone te maken.
+Met Azure Privé-DNS Zone-integratie kunt u de privé-DNS binnen het huidige VNET of een peered VNET in de regio omzetten waar de privé-DNS-zone is gekoppeld. Gebruik [az network private-dns zone create](/cli/azure/network/private-dns/zone#az-network-private-dns-zone-create) om de privé-DNS-zone te maken.
 
 ```bash
 az network private-dns zone create \
@@ -522,7 +521,7 @@ Resultaten:
 
 ## Azure Database for MySQL - flexibele server maken
 
-Azure Database for MySQL - Flexible Server is een beheerde service die u kunt gebruiken voor het uitvoeren, beheren en schalen van maximaal beschikbare MySQL-servers in de cloud. Maak een flexibele server met de [opdracht az mysql flexible-server create](https://learn.microsoft.com/cli/azure/mysql/flexible-server#az-mysql-flexible-server-create) . Een server kan meerdere databases bevatten. Met de volgende opdracht maakt u een server met behulp van servicestandaarden en variabele waarden uit de lokale omgeving van uw Azure CLI:
+Azure Database for MySQL - Flexible Server is een beheerde service die u kunt gebruiken voor het uitvoeren, beheren en schalen van maximaal beschikbare MySQL-servers in de cloud. Maak een flexibele server met de [opdracht az mysql flexible-server create](../../mysql/flexible-server/quickstart-create-server-cli.md#create-an-azure-database-for-mysql-flexible-server) . Een server kan meerdere databases bevatten. Met de volgende opdracht maakt u een server met behulp van servicestandaarden en variabele waarden uit de lokale omgeving van uw Azure CLI:
 
 ```bash
 az mysql flexible-server create \
@@ -569,14 +568,13 @@ echo "Your MySQL user $MY_MYSQL_ADMIN_USERNAME password is: $MY_WP_ADMIN_PW"
 
 De gemaakte server heeft de volgende kenmerken:
 
-* De servernaam, de gebruikersnaam van de beheerder, het beheerderswachtwoord, de naam van de resourcegroep, de locatie zijn al opgegeven in de lokale contextomgeving van de Cloud Shell en worden gemaakt op dezelfde locatie als u de resourcegroep en de andere Azure-onderdelen bent.
+* De servernaam, de gebruikersnaam van de beheerder, het beheerderswachtwoord, de naam van de resourcegroep, de locatie zijn al opgegeven in de lokale contextomgeving van de Cloud Shell. Ze worden gemaakt op dezelfde locatie als uw resourcegroep en andere Azure-onderdelen.
 * Servicestandaarden voor resterende serverconfiguraties: rekenlaag (Burstable), rekengrootte/SKU (Standard_B2s), bewaarperiode voor back-ups (7 dagen) en MySQL-versie (8.0.21)
 * De standaardverbindingsmethode is Privétoegang (VNet-integratie) met een gekoppeld virtueel netwerk en een automatisch gegenereerd subnet.
 
 > [!NOTE]
-> De verbindingsmethode kan niet worden gewijzigd na het maken van de server. Als u bijvoorbeeld tijdens het maken hebt geselecteerd `Private access (VNet Integration)` , kunt u deze niet wijzigen `Public access (allowed IP addresses)` na het maken. U kunt het beste een server met privétoegang maken om veilig toegang te krijgen tot uw server met behulp van VNet-integratie. Meer informatie over persoonlijke toegang vindt u in het [artikel over concepten](https://learn.microsoft.com/azure/mysql/flexible-server/concepts-networking-vnet).
-
-Als u een standaardinstelling wilt wijzigen, raadpleegt u de [referentiedocumentatie](https://learn.microsoft.com/cli/azure//mysql/flexible-server) van Azure CLI voor de complete lijst van configureerbare CLI-parameters.
+> De verbindingsmethode kan niet worden gewijzigd na het maken van de server. Als u bijvoorbeeld tijdens het maken hebt geselecteerd `Private access (VNet Integration)` , kunt u deze niet wijzigen `Public access (allowed IP addresses)` na het maken. U kunt het beste een server met privétoegang maken om veilig toegang te krijgen tot uw server met behulp van VNet-integratie. Meer informatie over persoonlijke toegang vindt u in het [artikel over concepten](../../mysql/flexible-server/concepts-networking-vnet.md).
+Als u de standaardinstellingen wilt wijzigen, raadpleegt u de Azure CLI-referentiedocumentatie [](../../mysql/flexible-server/quickstart-create-server-cli.md) voor de volledige lijst met configureerbare CLI-parameters.
 
 ## De status van Azure Database for MySQL - Flexible Server controleren
 
@@ -600,11 +598,15 @@ done
 
 U kunt de configuratie van Azure Database for MySQL - Flexible Server beheren met behulp van serverparameters. De serverparameters worden geconfigureerd met de standaardwaarde en aanbevolen waarde wanneer u de server maakt.
 
-Geef de details van de serverparameter weer om details weer te geven over een bepaalde parameter voor een server, voert u de [opdracht az mysql flexible-server parameter show](https://learn.microsoft.com/cli/azure/mysql/flexible-server/parameter) uit.
+Details van serverparameter weergeven:
 
-### Azure Database for MySQL - Flexible Server SSL-verbindingsparameter uitschakelen voor Wordpress-integratie
+Voer de [opdracht az mysql flexible-server show uit](../../mysql/flexible-server/how-to-configure-server-parameters-cli.md) om details over een bepaalde parameter voor de server weer te geven.
 
-Wijzig de waarde van een serverparameter U kunt ook de waarde van een bepaalde serverparameter wijzigen, waarmee de onderliggende configuratiewaarde voor de MySQL-serverengine wordt bijgewerkt. Als u de serverparameter wilt bijwerken, gebruikt u de [opdracht az mysql flexible-server parameter set](https://learn.microsoft.com/cli/azure/mysql/flexible-server/parameter#az-mysql-flexible-server-parameter-set) .
+## Azure Database for MySQL - Flexible Server SSL-verbindingsparameter uitschakelen voor Wordpress-integratie
+
+Wijzig de waarde van een serverparameter:
+
+U kunt ook de waarde van een bepaalde serverparameter wijzigen, waarmee de onderliggende configuratiewaarde voor de MySQL-serverengine wordt bijgewerkt. Als u de serverparameter wilt bijwerken, gebruikt u de [opdracht az mysql flexible-server parameter set](../../mysql/flexible-server/how-to-configure-server-parameters-cli.md#modify-a-server-parameter-value) .
 
 ```bash
 az mysql flexible-server parameter set \
@@ -637,10 +639,11 @@ Resultaten:
 
 ## Een virtuele Azure Linux-machine maken
 
-In het volgende voorbeeld wordt een virtuele machine gemaakt met de naam `$MY_VM_NAME` en worden er SSH-sleutels gemaakt, als deze nog niet bestaan op een standaardsleutellocatie. De opdracht wordt ook ingesteld `$MY_VM_USERNAME` als een gebruikersnaam van de beheerder.
-Om de beveiliging van virtuele Linux-machines in Azure te verbeteren, kunt u integreren met Azure Active Directory-verificatie. U kunt Azure AD nu gebruiken als een basisverificatieplatform en een certificeringsinstantie voor SSH in een Linux-VM met behulp van Azure AD- en OpenSSH-verificatie op basis van certificaten. Met deze functionaliteit kunnen organisaties de toegang tot VM's beheren met op rollen gebaseerd toegangsbeheer en beleid voor voorwaardelijke toegang van Azure.
+In het volgende voorbeeld wordt een virtuele machine gemaakt met de naam `$MY_VM_NAME` en worden SSH-sleutels gemaakt als deze nog niet bestaan op een standaardsleutellocatie. De opdracht wordt ook ingesteld `$MY_VM_USERNAME` als een gebruikersnaam van de beheerder.
 
-Maak een VM met de opdracht [az vm create](https://learn.microsoft.com/cli/azure/vm#az-vm-create).
+Om de beveiliging van virtuele Linux-machines in Azure te verbeteren, kunt u integreren met Azure Active Directory-verificatie. U kunt Nu Azure AD gebruiken als basisverificatieplatform. U kunt ook SSH gebruiken voor de Virtuele Linux-machine met behulp van Verificatie op basis van Azure AD- en OpenSSH-certificaten. Met deze functionaliteit kunnen organisaties de toegang tot VM's beheren met op rollen gebaseerd toegangsbeheer en beleid voor voorwaardelijke toegang van Azure.
+
+Maak een VM met de opdracht [az vm create](/cli/azure/vm#az-vm-create).
 
 ```bash
 az vm create \
@@ -686,17 +689,17 @@ Resultaten:
 
 ## De status van de virtuele Linux-machine van Azure controleren
 
-Het maken van de VM en de ondersteunende resources duurt enkele minuten. De provisioningState-waarde van Succeeded wordt weergegeven wanneer de extensie is geïnstalleerd op de VIRTUELE machine. De VM moet een actieve [VM-agent](https://learn.microsoft.com/azure/virtual-machines/extensions/agent-linux) hebben om de extensie te installeren.
+Het maken van de VM en de ondersteunende resources duurt enkele minuten. De provisioningState-waarde van Succeeded wordt weergegeven wanneer de extensie is geïnstalleerd op de VIRTUELE machine. De VM moet een actieve [VM-agent](../extensions/agent-linux.md) hebben om de extensie te installeren.
 
 ```bash
 runtime="5 minute";
 endtime=$(date -ud "$runtime" +%s);
-while [[ $(date -u +%s) -le $endtime ]]; do 
-    STATUS=$(ssh -o StrictHostKeyChecking=no $MY_VM_USERNAME@$FQDN "cloud-init status --wait"); 
-    echo $STATUS; 
-    if [[ "$STATUS" == *'status: done'* ]]; then 
-        break; 
-    else 
+while [[ $(date -u +%s) -le $endtime ]]; do
+    STATUS=$(ssh -o StrictHostKeyChecking=no $MY_VM_USERNAME@$FQDN "cloud-init status --wait");
+    echo $STATUS;
+    if [[ "$STATUS" == *'status: done'* ]]; then
+        break;
+    else
         sleep 10;
     fi;
 done
@@ -704,21 +707,16 @@ done
 
 <!--
 ## Assign Azure AD RBAC for Azure AD login for Linux Virtual Machine
-
 The below command uses [az role assignment create](https://learn.microsoft.com/cli/azure/role/assignment#az-role-assignment-create) to assign the `Virtual Machine Administrator Login` role to the VM for your current Azure user.
-
 ```bash
 export MY_RESOURCE_GROUP_ID=$(az group show --resource-group $MY_RESOURCE_GROUP_NAME --query id -o tsv)
-
 az role assignment create \
     --role "Virtual Machine Administrator Login" \
     --assignee $MY_AZURE_USER_ID \
     --scope $MY_RESOURCE_GROUP_ID -o JSON
 ```
-
-
 Results:
-<!-- expected_similarity=0.3
+<!-- expected_similarity=0.3 -->
 ```JSON
 {
   "condition": null,
@@ -739,13 +737,11 @@ Results:
   "updatedOn": "2023-09-04T09:29:17.237445+00:00"
 }
 ```
--->
 
-<!-- 
+
+<!--
 ## Export the SSH configuration for use with SSH clients that support OpenSSH
-
 Login to Azure Linux VMs with Azure AD supports exporting the OpenSSH certificate and configuration. That means you can use any SSH clients that support OpenSSH-based certificates to sign in through Azure AD. The following example exports the configuration for all IP addresses assigned to the VM:
-
 ```bash
 az ssh config --file ~/.ssh/azure-config --name $MY_VM_NAME --resource-group $MY_RESOURCE_GROUP_NAME
 ```
@@ -791,7 +787,7 @@ Resultaten:
 
 ## Uw WordPress-website controleren en bekijken
 
-[WordPress](https://www.wordpress.org) is een open source content management system (CMS) dat door meer dan 40% van het web wordt gebruikt om websites, blogs en andere toepassingen te maken. WordPress kan worden uitgevoerd op een aantal verschillende Azure-services: [AKS](https://learn.microsoft.com/azure/mysql/flexible-server/tutorial-deploy-wordpress-on-aks), Virtual Machines en App Service. Zie WordPress op Azure Marketplace[ voor een volledige lijst met WordPress-opties in Azure](https://azuremarketplace.microsoft.com/marketplace/apps?page=1&search=wordpress).
+[WordPress](https://www.wordpress.org) is een open source content management system (CMS) dat door meer dan 40% van het web wordt gebruikt om websites, blogs en andere toepassingen te maken. WordPress kan worden uitgevoerd op een aantal verschillende Azure-services: [AKS](../../mysql/flexible-server/tutorial-deploy-wordpress-on-aks.md), Virtual Machines en App Service. Zie WordPress op Azure Marketplace[ voor een volledige lijst met WordPress-opties in Azure](https://azuremarketplace.microsoft.com/marketplace/apps?page=1&search=wordpress).
 
 Deze WordPress-installatie is alleen bedoeld als Proof of Concept. Raadpleeg de [WordPress-documentatie](https://codex.wordpress.org/Main_Page) voor het installeren van de nieuwste WordPress-versie in een productieomgeving met de aanbevolen beveiligingsinstellingen.
 
@@ -801,10 +797,10 @@ Controleer of de toepassing wordt uitgevoerd door de url van de toepassing te cu
 runtime="5 minute";
 endtime=$(date -ud "$runtime" +%s);
 while [[ $(date -u +%s) -le $endtime ]]; do
-    if curl -I -s -f $FQDN > /dev/null ; then 
+    if curl -I -s -f $FQDN > /dev/null ; then
         curl -L -s -f $FQDN 2> /dev/null | head -n 9
         break
-    else 
+    else
         sleep 10
     fi;
 done

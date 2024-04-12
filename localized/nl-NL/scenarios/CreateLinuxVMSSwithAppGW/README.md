@@ -1,23 +1,35 @@
 ---
-title: Een virtuele-machineschaalset maken met Application Gateway met linux-installatiekopieën
-description: In deze zelfstudie ziet u hoe u een virtuele-machineschaalset maakt met Application Gateway met een Linux-installatiekopieën
-author: belginceran
-ms.author: belginceran
-ms.topic: article
-ms.date: 01/05/2024
-ms.custom: innovation-engine
+title: Virtuele machines maken in een flexibele schaalset met behulp van Azure CLI
+description: Meer informatie over het maken van een virtuele-machineschaalset in de flexibele indelingsmodus met behulp van Azure CLI.
+author: fitzgeraldsteele
+ms.author: fisteele
+ms.topic: how-to
+ms.service: virtual-machine-scale-sets
+ms.date: 3/19/2024
+ms.reviewer: jushiman
+ms.custom: 'mimckitt, devx-track-azurecli, vmss-flex, innovation-engine, linux-related-content'
 ---
 
-# Een virtuele-machineschaalset maken met Application Gateway met linux-installatiekopieën
+# Virtuele machines maken in een schaalset met behulp van Azure CLI
 
 [![Implementeren naar Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262759)
 
+In dit artikel wordt stapsgewijs uitgelegd hoe u de Azure CLI gebruikt om een virtuele-machineschaalset te maken.
+
+Zorg ervoor dat u de nieuwste [Azure CLI](/cli/azure/install-az-cli2) hebt geïnstalleerd en bent aangemeld bij een Azure-account met [az login](/cli/azure/reference-index).
+
+
+## Azure Cloud Shell starten
+
+Azure Cloud Shell is een gratis interactieve shell waarmee u de stappen in dit artikel kunt uitvoeren. In deze shell zijn algemene Azure-hulpprogramma's vooraf geïnstalleerd en geconfigureerd voor gebruik met uw account.
+
+Als u Cloud Shell wilt openen, selecteert u **Cloud Shell** openen in de rechterbovenhoek van een codeblok. U kunt Cloud Shell ook openen in een afzonderlijk browsertabblad door naar [https://shell.azure.com/cli](https://shell.azure.com/cli) te gaan. Klik op **Kopiëren** om de codeblokken te kopiëren, plak deze in Cloud Shell en druk vervolgens op Enter om de code uit te voeren.
+
 ## Omgevingsvariabelen definiëren
 
-De eerste stap in deze zelfstudie is het definiëren van omgevingsvariabelen.
+Definieer omgevingsvariabelen als volgt.
 
 ```bash
-
 export RANDOM_ID="$(openssl rand -hex 3)"
 export MY_RESOURCE_GROUP_NAME="myVMSSResourceGroup$RANDOM_ID"
 export REGION=EastUS
@@ -33,22 +45,17 @@ export MY_APPGW_SN_NAME="myAPPGWSN$RANDOM_ID"
 export MY_APPGW_SN_PREFIX="10.$NETWORK_PREFIX.1.0/24"
 export MY_APPGW_NAME="myAPPGW$RANDOM_ID"
 export MY_APPGW_PUBLIC_IP_NAME="myAPPGWPublicIP$RANDOM_ID"
-
 ```
-# Aanmelden bij Azure met behulp van de CLI
 
-Als u opdrachten wilt uitvoeren voor Azure met behulp van de CLI, moet u zich aanmelden. Dit wordt gedaan, heel eenvoudig, hoewel de `az login` opdracht:
+## Een brongroep maken
 
-# Een brongroep maken
-
-Een resourcegroep is een container voor gerelateerde resources. Alle resources moeten in een resourcegroep worden geplaatst. We maken er een voor deze zelfstudie. Met de volgende opdracht maakt u een resourcegroep met de eerder gedefinieerde parameters $MY_RESOURCE_GROUP_NAME en $REGION parameters.
+Een resourcegroep is een logische container waarin Azure-resources worden geïmplementeerd en beheerd. Alle resources moeten in een resourcegroep worden geplaatst. Met de volgende opdracht maakt u een resourcegroep met de eerder gedefinieerde parameters $MY_RESOURCE_GROUP_NAME en $REGION parameters.
 
 ```bash
 az group create --name $MY_RESOURCE_GROUP_NAME --location $REGION -o JSON
 ```
 
 Resultaten:
-
 <!-- expected_similarity=0.3 -->
 ```json   
 {
@@ -64,19 +71,17 @@ Resultaten:
 }
 ```
 
-# Netwerkbronnen maken 
+## Netwerkbronnen maken 
 
-U moet netwerkbronnen maken voordat u verdergaat met de VMSS-stappen. In deze stap maakt u een VNET, twee subnetten 1 voor Application Gateway en 1 voor VM's. U moet ook een openbaar IP-adres hebben om uw Application Gateway te koppelen om uw webtoepassing via internet te kunnen bereiken. 
+U gaat nu netwerkbronnen maken. In deze stap gaat u een virtueel netwerk, één subnet 1 voor Application Gateway en één subnet voor VM's maken. U moet ook een openbaar IP-adres hebben om uw Toepassingsgateway te koppelen om uw webtoepassing vanaf internet te bereiken. 
 
-
-#### Virtueel netwerk (VNET) en VM-subnet maken
+#### Virtueel netwerk en subnet maken
 
 ```bash
 az network vnet create  --name $MY_VNET_NAME  --resource-group $MY_RESOURCE_GROUP_NAME --location $REGION  --address-prefix $MY_VNET_PREFIX  --subnet-name $MY_VM_SN_NAME --subnet-prefix $MY_VM_SN_PREFIX -o JSON
 ```
 
 Resultaten:
-
 <!-- expected_similarity=0.3 -->
 ```json   
 {
@@ -116,15 +121,13 @@ Resultaten:
 
 ### Application Gateway-resources maken
 
-Azure-toepassing Gateway vereist een toegewezen subnet in uw virtuele netwerk. Met de onderstaande opdracht maakt u een subnet met de naam $MY_APPGW_SN_NAME met het opgegeven adresvoorvoegsel $MY_APPGW_SN_PREFIX in uw VNET $MY_VNET_NAME 
-
+Azure-toepassing Gateway vereist een toegewezen subnet in uw virtuele netwerk. Met de volgende opdracht maakt u een subnet met de naam $MY_APPGW_SN_NAME met een opgegeven adresvoorvoegsel met de naam $MY_APPGW_SN_PREFIX in uw virtuele netwerk $MY_VNET_NAME.
 
 ```bash
 az network vnet subnet create  --name $MY_APPGW_SN_NAME  --resource-group $MY_RESOURCE_GROUP_NAME --vnet-name  $MY_VNET_NAME --address-prefix  $MY_APPGW_SN_PREFIX -o JSON
 ```
 
 Resultaten:
-
 <!-- expected_similarity=0.3 -->
 ```json  
 {
@@ -140,14 +143,13 @@ Resultaten:
   "type": "Microsoft.Network/virtualNetworks/subnets"
 }
 ```
-Met de onderstaande opdracht maakt u een standaard, zoneredundant, statisch, openbaar IPv4 in uw resourcegroep.  
+Met de volgende opdracht maakt u een standaard, zoneredundant, statisch, openbaar IPv4 in uw resourcegroep.  
 
 ```bash
 az network public-ip create  --resource-group $MY_RESOURCE_GROUP_NAME --name $MY_APPGW_PUBLIC_IP_NAME --sku Standard   --location $REGION  --allocation-method static --version IPv4 --zone 1 2 3 -o JSON
- ```
+```
 
 Resultaten:
-
 <!-- expected_similarity=0.3 -->
 ```json  
 {
@@ -181,11 +183,11 @@ Resultaten:
 }
 ```
 
-In deze stap maakt u een Toepassingsgateway die u gaat integreren met uw virtuele-machineschaalset. In dit voorbeeld maken we een zoneredundante Application Gateway met Standard_v2 SKU en schakelen we Http-communicatie in voor de Application Gateway. Het openbare IP-$MY_APPGW_PUBLIC_IP_NAME dat we in de vorige stap hebben gemaakt, gekoppeld aan de Toepassingsgateway. 
+In deze stap maakt u een toepassingsgateway die u gaat integreren met uw virtuele-machineschaalset. In dit voorbeeld wordt een zoneredundante Application Gateway met Standard_v2 SKU gemaakt en http-communicatie voor de Toepassingsgateway ingeschakeld. Het openbare IP-$MY_APPGW_PUBLIC_IP_NAME dat u in de vorige stap hebt gemaakt, wordt gekoppeld aan de Toepassingsgateway. 
 
 ```bash
 az network application-gateway create   --name $MY_APPGW_NAME --location $REGION --resource-group $MY_RESOURCE_GROUP_NAME --vnet-name $MY_VNET_NAME --subnet $MY_APPGW_SN_NAME --capacity 2  --zones 1 2 3 --sku Standard_v2   --http-settings-cookie-based-affinity Disabled   --frontend-port 80 --http-settings-port 80   --http-settings-protocol Http --public-ip-address $MY_APPGW_PUBLIC_IP_NAME --priority 1001 -o JSON
- ```
+```
 
 <!-- expected_similarity=0.3 -->
 ```json 
@@ -375,19 +377,21 @@ az network application-gateway create   --name $MY_APPGW_NAME --location $REGION
     "urlPathMaps": []
   }
 }
- ```
+```
 
+## Een virtuele-machineschaalset maken
 
-# Virtuele-machineschaalset maken 
+> [!IMPORTANT]
+>Vanaf november 2023 worden VM-schaalsets die zijn gemaakt met PowerShell en Azure CLI standaard ingesteld op de flexibele indelingsmodus als er geen indelingsmodus is opgegeven. Voor meer informatie over deze wijziging en welke acties u moet ondernemen, gaat u naar [Belangrijke wijziging voor VMSS PowerShell/CLI-klanten - Microsoft Community Hub](
+https://techcommunity.microsoft.com/t5/azure-compute-blog/breaking-change-for-vmss-powershell-cli-customers/ba-p/3818295)
 
-Met de onderstaande opdracht maakt u een zoneredundante VIRTUELE-machineschaalset (VMSS) in uw resourcegroep $MY_RESOURCE_GROUP_NAME. We integreren de Application Gateway die we in de vorige stap hebben gemaakt. Met deze opdracht maakt u 2 Standard_DS2_v2 virtuele SKU-machines met openbaar IP-adres in subnet $MY_VM_SN_NAME. Tijdens de onderstaande stap wordt een ssh-sleutel gemaakt die u mogelijk wilt opslaan als u zich bij uw VM's moet aanmelden via ssh.
+Maak nu een virtuele-machineschaalset met [az vmss create](/cli/azure/vmss). In het volgende voorbeeld wordt een zoneredundante schaalset gemaakt met het aantal exemplaren van *2* met een openbaar IP-adres in het subnet $MY_VM_SN_NAME binnen uw resourcegroep $MY_RESOURCE_GROUP_NAME, wordt de Application Gateway geïntegreerd en worden SSH-sleutels gegenereerd. Zorg ervoor dat u de SSH-sleutels opslaat als u zich via ssh moet aanmelden bij uw VM's.
 
 ```bash
 az vmss create --name $MY_VMSS_NAME --resource-group $MY_RESOURCE_GROUP_NAME --image $MY_VM_IMAGE --admin-username $MY_USERNAME --generate-ssh-keys --public-ip-per-vm --orchestration-mode Uniform --instance-count 2 --zones 1 2 3 --vnet-name $MY_VNET_NAME --subnet $MY_VM_SN_NAME --vm-sku Standard_DS2_v2 --upgrade-policy-mode Automatic --app-gateway $MY_APPGW_NAME --backend-pool-name appGatewayBackendPool -o JSON
  ```
 
 Resultaten:
-
 <!-- expected_similarity=0.3 -->
 ```json  
 {
@@ -499,17 +503,15 @@ Resultaten:
 }
 ```
 
-### ngnix installeren met VMSS-extensies 
+### ngnix installeren met extensies voor virtuele-machineschaalsets 
 
-De onderstaande opdracht maakt gebruik van de VMSS-extensie om een aangepast script uit te voeren. Voor testdoeleinden installeren we ngnix en publiceren we een pagina met de hostnaam van de virtuele machine die uw HTTP-aanvragen raakt. We gebruiken dit aangepaste script voor deze pusposes: https://raw.githubusercontent.com/Azure-Samples/compute-automation-configurations/master/automate_nginx.sh 
-
+Met de volgende opdracht wordt de extensie Virtual Machine Scale Sets gebruikt om een [aangepast script](https://github.com/Azure-Samples/compute-automation-configurations/blob/master/automate_nginx.sh) uit te voeren waarmee ngnix wordt geïnstalleerd en een pagina wordt gepubliceerd met de hostnaam van de virtuele machine die uw HTTP-aanvragen raken. 
 
 ```bash
 az vmss extension set --publisher Microsoft.Azure.Extensions --version 2.0  --name CustomScript --resource-group $MY_RESOURCE_GROUP_NAME --vmss-name $MY_VMSS_NAME --settings '{ "fileUris": ["https://raw.githubusercontent.com/Azure-Samples/compute-automation-configurations/master/automate_nginx.sh"], "commandToExecute": "./automate_nginx.sh" }' -o JSON
 ```
 
 Resultaten:
-
 <!-- expected_similarity=0.3 -->
 ```json  
 {
@@ -703,19 +705,16 @@ Resultaten:
 }
 ```
 
+## Een profiel voor automatisch schalen definiëren  
 
-# Een profiel voor automatisch schalen definiëren  
-
-Als u automatisch schalen wilt inschakelen voor een schaalset, moet u eerst een profiel voor automatisch schalen definiëren. In dit profiel worden de minimum-, maximum- en standaardcapaciteit ingesteld voor de schaalset. Met behulp van deze limieten kunt u de kosten in de hand houden doordat er niet steeds VM-exemplaren hoeven te worden gemaakt, en kunt u aanvaardbare prestaties realiseren met een minimum aantal exemplaren die altijd kunnen worden ingeschaald.
-In het volgende voorbeeld worden de minimum- en standaardcapaciteit ingesteld op 2 VM-exemplaren en het maximum op 10:
+Als u automatische schaalaanpassing wilt inschakelen voor een schaalset, moet u eerst een profiel voor automatische schaalaanpassing definiëren. In dit profiel worden de minimum-, maximum- en standaardcapaciteit ingesteld voor de schaalset. Met deze limieten kunt u de kosten beheren door niet voortdurend VM-exemplaren te maken en acceptabele prestaties te verdelen met een minimum aantal exemplaren dat in een inschaalgebeurtenis blijft.
+In het volgende voorbeeld wordt de standaard, minimale capaciteit van twee VM-exemplaren en een maximale capaciteit van 10 ingesteld:
 
 ```bash
 az monitor autoscale create --resource-group $MY_RESOURCE_GROUP_NAME --resource  $MY_VMSS_NAME --resource-type Microsoft.Compute/virtualMachineScaleSets --name autoscale --min-count 2 --max-count 10 --count 2
 ```
 
-
 Resultaten:
-
 <!-- expected_similarity=0.3 -->
 ```json  
 {
@@ -760,16 +759,15 @@ Resultaten:
 }
 ```
 
-# Een regel maken voor automatisch uitschalen
+## Een regel maken voor automatisch uitschalen
 
-Met de volgende opdracht maakt u een regel waarmee het aantal VM-exemplaren in een schaalset wordt verhoogd wanneer de gemiddelde CPU-belasting gedurende een periode van vijf minuten groter is dan 70%. Wanneer de regel wordt geactiveerd, wordt het aantal VM-exemplaren met drie verhoogd.
+Met de volgende opdracht maakt u een regel waarmee het aantal VM-exemplaren in een schaalset wordt verhoogd wanneer de gemiddelde CPU-belasting gedurende een periode van vijf minuten groter is dan 70%. Wanneer de regel wordt geactiveerd, neemt het aantal VM-exemplaren met drie toe.
 
 ```bash
 az monitor autoscale rule create --resource-group $MY_RESOURCE_GROUP_NAME --autoscale-name autoscale --condition "Percentage CPU > 70 avg 5m" --scale out 3
 ```
 
 Resultaten:
-
 <!-- expected_similarity=0.3 -->
 ```json 
 {
@@ -796,16 +794,15 @@ Resultaten:
 } 
 ```
 
-# Een regel maken voor automatisch inschalen
+## Een regel maken voor automatisch inschalen
 
-We gaan nog een regel maken met az monitor autoscale create, maar met deze regel wordt het aantal VM-exemplaren in een schaalset verlaagd wanneer de gemiddelde CPU-belasting gedurende een periode van vijf minuten minder dan 30% is. In het volgende voorbeeld wordt een regel gedefinieerd voor het inschalen van het aantal VM-exemplaren met één.
+Maak een andere regel waarmee `az monitor autoscale rule create` het aantal VM-exemplaren in een schaalset wordt verlaagd wanneer de gemiddelde CPU-belasting gedurende een periode van vijf minuten lager is dan 30%. In het volgende voorbeeld wordt een regel gedefinieerd voor het inschalen van het aantal VM-exemplaren met één.
 
 ```bash
 az monitor autoscale rule create --resource-group  $MY_RESOURCE_GROUP_NAME --autoscale-name autoscale --condition "Percentage CPU < 30 avg 5m" --scale in 1
 ```
 
 Resultaten:
-
 <!-- expected_similarity=0.3 -->
 ```json 
 {
@@ -832,19 +829,19 @@ Resultaten:
 }
 ```
 
-
 ### De pagina testen
 
-In de onderstaande opdracht ziet u het openbare IP-adres van uw Toepassingsgateway. U kunt de IP-adressen plakken op een browserpagina om te testen.
+Met de volgende opdracht ziet u het openbare IP-adres van uw Toepassingsgateway. Plak het IP-adres in een browserpagina om te testen.
 
 ```bash
 az network public-ip show --resource-group $MY_RESOURCE_GROUP_NAME --name $MY_APPGW_PUBLIC_IP_NAME --query [ipAddress]  --output tsv
 ```
 
+## Resources opschonen (optioneel)
 
+Om Azure-kosten te vermijden, moet u overbodige resources opschonen. Wanneer u uw schaalset en andere resources niet meer nodig hebt, verwijdert u de resourcegroep en alle bijbehorende resources met [az group delete](/cli/azure/group). De parameter `--no-wait` retourneert het besturingselement naar de prompt zonder te wachten totdat de bewerking is voltooid. De `--yes` parameter bevestigt dat u de resources wilt verwijderen zonder een andere prompt om dit te doen. In deze zelfstudie worden resources voor u opgeschoond.
 
-# Verwijzingen
-
-* [Documentatie voor VMSS](https://learn.microsoft.com/en-us/azure/virtual-machine-scale-sets/overview)
-* [Automatische schaalaanpassing van VMSS](https://learn.microsoft.com/en-us/azure/virtual-machine-scale-sets/tutorial-autoscale-cli?tabs=Ubuntu)
-
+## Volgende stappen
+- [Meer informatie over het maken van een schaalset in Azure Portal.](flexible-virtual-machine-scale-sets-portal.md)
+- [Meer informatie over virtuele-machineschaalsets.](overview.md)
+- [Een virtuele-machineschaalset automatisch schalen met de Azure CLI](tutorial-autoscale-cli.md)

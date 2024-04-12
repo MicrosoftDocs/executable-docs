@@ -1,18 +1,35 @@
 ---
-title: Een schaalbaar en beveiligd WordPress-exemplaar implementeren op AKS
-description: Deze zelfstudie laat zien hoe u een Scalable & Secure WordPress-exemplaar implementeert op AKS via CLI
-author: adrian.joian
-ms.author: adrian.joian
-ms.topic: article
-ms.date: 12/06/2023
-ms.custom: innovation-engine
+title: 'Zelfstudie: WordPress implementeren in een AKS-cluster met behulp van Azure CLI'
+description: 'Meer informatie over hoe u WordPress snel kunt bouwen en implementeren op AKS met Azure Database for MySQL: flexibele server.'
+ms.service: mysql
+ms.subservice: flexible-server
+author: mksuni
+ms.author: sumuth
+ms.topic: tutorial
+ms.date: 3/20/2024
+ms.custom: 'vc, devx-track-azurecli, innovation-engine, linux-related-content'
 ---
 
-# Quickstart: Een schaalbaar en beveiligd WordPress-exemplaar implementeren op AKS
+# Zelfstudie: WordPress-app implementeren op AKS met Azure Database for MySQL - Flexible Server
+
+[!INCLUDE[applies-to-mysql-flexible-server](../includes/applies-to-mysql-flexible-server.md)]
 
 [![Implementeren naar Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262843)
 
-Welkom bij deze zelfstudie waarin we u stapsgewijs zullen volgen bij het maken van een Azure Kubernetes-webtoepassing die is beveiligd via https. In deze zelfstudie wordt ervan uitgegaan dat u al bent aangemeld bij Azure CLI en een abonnement hebt geselecteerd voor gebruik met de CLI. Er wordt ook van uitgegaan dat Helm is geïnstalleerd ([hier vindt](https://helm.sh/docs/intro/install/) u instructies).
+In deze zelfstudie implementeert u een schaalbare WordPress-toepassing die is beveiligd via HTTPS op een AKS-cluster (Azure Kubernetes Service) met Azure Database for MySQL flexibele server met behulp van de Azure CLI.
+**[AKS](../../aks/intro-kubernetes.md)** is een beheerde Kubernetes-service waarmee u snel clusters kunt implementeren en beheren. **[Azure Database for MySQL flexibele server](overview.md)** is een volledig beheerde databaseservice die is ontworpen om gedetailleerdere controle en flexibiliteit te bieden voor databasebeheerfuncties en configuratie-instellingen.
+
+> [!NOTE]
+> In deze zelfstudie wordt ervan uitgegaan dat u basiskennis hebt van Kubernetes-concepten, WordPress en MySQL.
+
+[!INCLUDE [flexible-server-free-trial-note](../includes/flexible-server-free-trial-note.md)]
+
+## Vereisten 
+
+Voordat u aan de slag gaat, moet u ervoor zorgen dat u bent aangemeld bij Azure CLI en een abonnement hebt geselecteerd dat u wilt gebruiken met de CLI. Zorg ervoor dat Helm is [geïnstalleerd](https://helm.sh/docs/intro/install/).
+
+> [!NOTE]
+> Als u de opdrachten in deze zelfstudie lokaal uitvoert in plaats van Azure Cloud Shell, voert u de opdrachten uit als beheerder.
 
 ## Omgevingsvariabelen definiëren
 
@@ -43,7 +60,7 @@ export FQDN="${MY_DNS_LABEL}.${REGION}.cloudapp.azure.com"
 
 ## Een brongroep maken
 
-Een resourcegroep is een container voor gerelateerde resources. Alle resources moeten in een resourcegroep worden geplaatst. We maken er een voor deze zelfstudie. Met de volgende opdracht maakt u een resourcegroep met de eerder gedefinieerde parameters $MY_RESOURCE_GROUP_NAME en $REGION parameters.
+Een Azure-resourcegroep is een logische groep waarin Azure-resources worden geïmplementeerd en beheerd. Alle resources moeten in een resourcegroep worden geplaatst. Met de volgende opdracht maakt u een resourcegroep met de eerder gedefinieerde `$MY_RESOURCE_GROUP_NAME` parameters.`$REGION`
 
 ```bash
 az group create \
@@ -52,7 +69,6 @@ az group create \
 ```
 
 Resultaten:
-
 <!-- expected_similarity=0.3 -->
 ```json
 {
@@ -67,6 +83,9 @@ Resultaten:
   "type": "Microsoft.Resources/resourceGroups"
 }
 ```
+
+> [!NOTE]
+> De locatie voor de resourcegroep is de plaats waar de metagegevens van de resourcegroep worden opgeslagen. Hier worden uw resources ook uitgevoerd in Azure als u geen andere regio opgeeft tijdens het maken van resources.
 
 ## Een virtueel netwerk en een subnet maken
 
@@ -83,7 +102,6 @@ az network vnet create \
 ```
 
 Resultaten:
-
 <!-- expected_similarity=0.3 -->
 ```json
 {
@@ -118,9 +136,9 @@ Resultaten:
 }
 ```
 
-## Azure Database for MySQL - flexibele server maken
+## Een exemplaar van een flexibele Azure Database for MySQL-server maken
 
-Azure Database for MySQL - Flexible Server is een beheerde service die u kunt gebruiken voor het uitvoeren, beheren en schalen van maximaal beschikbare MySQL-servers in de cloud. Maak een flexibele server met de [opdracht az mysql flexible-server create](https://learn.microsoft.com/cli/azure/mysql/flexible-server#az-mysql-flexible-server-create) . Een server kan meerdere databases bevatten. Met de volgende opdracht maakt u een server met behulp van servicestandaarden en variabele waarden uit de lokale omgeving van uw Azure CLI:
+Flexibele Azure Database for MySQL-server is een beheerde service die u kunt gebruiken voor het uitvoeren, beheren en schalen van maximaal beschikbare MySQL-servers in de cloud. Maak een exemplaar van een flexibele Azure Database for MySQL-server met de [opdracht az mysql flexible-server create](/cli/azure/mysql/flexible-server) . Een server kan meerdere databases bevatten. Met de volgende opdracht maakt u een server met behulp van servicestandaarden en variabele waarden vanuit de lokale context van uw Azure CLI:
 
 ```bash
 echo "Your MySQL user $MY_MYSQL_ADMIN_USERNAME password is: $MY_WP_ADMIN_PW" 
@@ -149,7 +167,6 @@ az mysql flexible-server create \
 ```
 
 Resultaten:
-
 <!-- expected_similarity=0.3 -->
 ```json
 {
@@ -167,14 +184,15 @@ Resultaten:
 
 De gemaakte server heeft de volgende kenmerken:
 
-- De servernaam, de gebruikersnaam van de beheerder, het beheerderswachtwoord, de naam van de resourcegroep, de locatie zijn al opgegeven in de lokale contextomgeving van de Cloud Shell en worden gemaakt op dezelfde locatie als u de resourcegroep en de andere Azure-onderdelen bent.
-- Servicestandaarden voor resterende serverconfiguraties: rekenlaag (Burstable), rekengrootte/SKU (Standard_B2s), bewaarperiode voor back-ups (7 dagen) en MySQL-versie (8.0.21)
-- De standaardverbindingsmethode is Privétoegang (VNet-integratie) met een gekoppeld virtueel netwerk en een automatisch gegenereerd subnet.
+- Er wordt een nieuwe lege database gemaakt wanneer de server voor het eerst wordt ingericht.
+- De servernaam, de gebruikersnaam van de beheerder, het beheerderswachtwoord, de naam van de resourcegroep en de locatie zijn al opgegeven in de lokale contextomgeving van de cloudshell en bevinden zich op dezelfde locatie als uw resourcegroep en andere Azure-onderdelen.
+- De standaardinstellingen voor de overige serverconfiguraties zijn de rekenlaag (Burstable), de rekenkracht/SKU (Standard_B2s), de bewaarperiode voor back-ups (zeven dagen) en de MySQL-versie (8.0.21).
+- De standaardverbindingsmethode is Privétoegang (integratie van virtueel netwerk) met een gekoppeld virtueel netwerk en een automatisch gegenereerd subnet.
 
 > [!NOTE]
-> De verbindingsmethode kan niet worden gewijzigd na het maken van de server. Als u bijvoorbeeld tijdens het maken hebt geselecteerd `Private access (VNet Integration)` , kunt u deze niet wijzigen `Public access (allowed IP addresses)` na het maken. U kunt het beste een server met privétoegang maken om veilig toegang te krijgen tot uw server met behulp van VNet-integratie. Meer informatie over persoonlijke toegang vindt u in het [artikel over concepten](https://learn.microsoft.com/azure/mysql/flexible-server/concepts-networking-vnet).
+> De verbindingsmethode kan niet worden gewijzigd na het maken van de server. Als u bijvoorbeeld tijdens het maken hebt geselecteerd `Private access (VNet Integration)` , kunt u niet wijzigen `Public access (allowed IP addresses)` in na het maken. U kunt het beste een server met privétoegang maken om veilig toegang te krijgen tot uw server met behulp van VNet-integratie. Meer informatie over persoonlijke toegang vindt u in het [artikel over concepten](./concepts-networking-vnet.md).
 
-Als u een standaardinstelling wilt wijzigen, raadpleegt u de [referentiedocumentatie](https://learn.microsoft.com/cli/azure//mysql/flexible-server) van Azure CLI voor de complete lijst van configureerbare CLI-parameters.
+Als u de standaardinstellingen wilt wijzigen, raadpleegt u de Azure CLI-referentiedocumentatie [](/cli/azure//mysql/flexible-server) voor de volledige lijst met configureerbare CLI-parameters.
 
 ## De status van Azure Database for MySQL - Flexible Server controleren
 
@@ -188,11 +206,11 @@ runtime="10 minute"; endtime=$(date -ud "$runtime" +%s); while [[ $(date -u +%s)
 
 U kunt de configuratie van Azure Database for MySQL - Flexible Server beheren met behulp van serverparameters. De serverparameters worden geconfigureerd met de standaardwaarde en aanbevolen waarde wanneer u de server maakt.
 
-Geef de details van de serverparameter weer om details weer te geven over een bepaalde parameter voor een server, voert u de [opdracht az mysql flexible-server parameter show](https://learn.microsoft.com/cli/azure/mysql/flexible-server/parameter) uit.
+Als u details over een bepaalde parameter voor een server wilt weergeven, voert u de [opdracht az mysql flexible-server parameter show](/cli/azure/mysql/flexible-server/parameter) uit.
 
 ### Azure Database for MySQL - SSL-verbindingsparameter flexibele server uitschakelen voor WordPress-integratie
 
-U kunt ook de waarde van bepaalde serverparameters wijzigen, waarmee de onderliggende configuratiewaarden voor de MySQL-serverengine worden bijgewerkt. Als u de serverparameter wilt bijwerken, gebruikt u de [opdracht az mysql flexible-server parameter set](https://learn.microsoft.com/cli/azure/mysql/flexible-server/parameter#az-mysql-flexible-server-parameter-set) .
+U kunt ook de waarde van bepaalde serverparameters wijzigen om de onderliggende configuratiewaarden voor de MySQL-serverengine bij te werken. Als u de serverparameter wilt bijwerken, gebruikt u de [opdracht az mysql flexible-server parameter set](/cli/azure/mysql/flexible-server/parameter#az-mysql-flexible-server-parameter-set) .
 
 ```bash
 az mysql flexible-server parameter set \
@@ -202,7 +220,6 @@ az mysql flexible-server parameter set \
 ```
 
 Resultaten:
-
 <!-- expected_similarity=0.3 -->
 ```json
 {
@@ -223,11 +240,11 @@ Resultaten:
 }
 ```
 
-## AKS-cluster maken
+## Een AKS-cluster maken
 
-Maak een AKS-cluster met behulp van de opdracht az aks create met de bewakingsparameter --enable-addons om Container Insights in te schakelen. In het volgende voorbeeld wordt een cluster met automatische schaalaanpassing, beschikbaarheidszone met de naam myAKSCluster gemaakt:
+Als u een AKS-cluster wilt maken met Container Insights, gebruikt u de [opdracht az aks create](/cli/azure/aks#az-aks-create) met de **bewakingsparameter --enable-addons** . In het volgende voorbeeld wordt een cluster met automatische schaalaanpassing, beschikbaarheidszone ingeschakeld met de naam **myAKSCluster** gemaakt:
 
-Dit duurt enkele minuten
+Deze actie duurt enkele minuten.
 
 ```bash
 export MY_SN_ID=$(az network vnet subnet list --resource-group $MY_RESOURCE_GROUP_NAME --vnet-name $MY_VNET_NAME --query "[0].id" --output tsv)
@@ -251,62 +268,46 @@ az aks create \
     --dns-service-ip 10.255.0.10 \
     --zones 1 2 3
 ```
+> [!NOTE]
+> Wanneer een AKS-cluster wordt gemaakt, wordt automatisch een tweede resourcegroep gemaakt om de AKS-resources in op te slaan. Zie [Waarom worden er twee resourcegroepen gemaakt met AKS?](../../aks/faq.md#why-are-two-resource-groups-created-with-aks)
 
 ## Verbinding maken met het cluster
 
-Als u een Kubernetes-cluster wilt beheren, gebruikt u de Kubernetes-opdrachtregelclient kubectl. kubectl is al geïnstalleerd als u Azure Cloud Shell gebruikt.
+Als u een Kubernetes-cluster wilt beheren, gebruikt u [kubectl](https://kubernetes.io/docs/reference/kubectl/overview/), de Kubernetes-opdrachtregelclient. Als u Azure Cloud Shell gebruikt, is `kubectl` al geïnstalleerd. In het volgende voorbeeld wordt `kubectl` lokaal geïnstalleerd met behulp van de [opdracht az aks install-cli](/cli/azure/aks#az-aks-install-cli) . 
 
-1. Installeer az aks CLI lokaal met behulp van de opdracht az aks install-cli
-
-    ```bash
+ ```bash
     if ! [ -x "$(command -v kubectl)" ]; then az aks install-cli; fi
-    ```
+```
 
-2. Configureer kubectl om verbinding te maken met uw Kubernetes-cluster met behulp van de opdracht az aks get-credentials. De volgende opdracht:
+`kubectl` Configureer vervolgens om verbinding te maken met uw Kubernetes-cluster met behulp van de [opdracht az aks get-credentials](/cli/azure/aks#az-aks-get-credentials). Bij deze opdracht worden referenties gedownload en wordt Kubernetes CLI geconfigureerd voor het gebruik van deze referenties. De opdracht maakt gebruik `~/.kube/config`van de standaardlocatie voor het [Kubernetes-configuratiebestand](https://kubernetes.io/docs/concepts/configuration/organize-cluster-access-kubeconfig/). U kunt een andere locatie opgeven voor uw Kubernetes-configuratiebestand met behulp van het **argument --file** .
 
-    - Hiermee downloadt u referenties en configureert u de Kubernetes CLI om deze te gebruiken.
-    - Maakt gebruik van ~/.kube/config, de standaardlocatie voor het Kubernetes-configuratiebestand. Geef een andere locatie op voor uw Kubernetes-configuratiebestand met behulp van het argument --file.
+> [!WARNING]
+> Met deze opdracht worden alle bestaande referenties met dezelfde vermelding overschreven.
 
-    > [!WARNING]
-    > Hiermee worden alle bestaande referenties met dezelfde vermelding overschreven
+```bash
+az aks get-credentials --resource-group $MY_RESOURCE_GROUP_NAME --name $MY_AKS_CLUSTER_NAME --overwrite-existing
+```
 
-    ```bash
-    az aks get-credentials --resource-group $MY_RESOURCE_GROUP_NAME --name $MY_AKS_CLUSTER_NAME --overwrite-existing
-    ```
+Als u de verbinding met uw cluster wilt controleren, gebruikt u de opdracht [kubectl get]( https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands#get) om een lijst met clusterknooppunten te retourneren.
 
-3. Controleer de verbinding met uw cluster met behulp van de opdracht kubectl get. Met deze opdracht wordt een lijst met de clusterknooppunten geretourneerd.
-
-    ```bash
-    kubectl get nodes
-    ```
+```bash
+kubectl get nodes
+```
 
 ## NGINX-ingangscontroller installeren
 
 U kunt uw ingangscontroller configureren met een statisch openbaar IP-adres. Het statische openbare IP-adres blijft behouden als u de ingangscontroller verwijdert. Het IP-adres blijft niet behouden als u uw AKS-cluster verwijdert.
-Wanneer u uw ingangscontroller bijwerken, moet u een parameter doorgeven aan de Helm-release om ervoor te zorgen dat de controllerservice voor inkomend verkeer op de hoogte wordt gesteld van de load balancer die eraan wordt toegewezen. Voor een correcte werking van de HTTPS-certificaten gebruikt u een DNS-label om een FQDN te configureren voor het IP-adres van de ingangscontroller.
-Uw FQDN moet dit formulier volgen: $MY_DNS_LABEL. AZURE_REGION_NAME.cloudapp.azure.com.
+Wanneer u uw ingangscontroller bijwerken, moet u een parameter doorgeven aan de Helm-release om ervoor te zorgen dat de controllerservice voor inkomend verkeer op de hoogte wordt gesteld van de load balancer die eraan wordt toegewezen. Gebruik een DNS-label om een FQDN (Fully Qualified Domain Name) te configureren voor het IP-adres van de ingangscontroller om de HTTPS-certificaten correct te laten werken. Uw FQDN moet dit formulier volgen: $MY_DNS_LABEL. AZURE_REGION_NAME.cloudapp.azure.com.
 
 ```bash
 export MY_STATIC_IP=$(az network public-ip create --resource-group MC_${MY_RESOURCE_GROUP_NAME}_${MY_AKS_CLUSTER_NAME}_${REGION} --location ${REGION} --name ${MY_PUBLIC_IP_NAME} --dns-name ${MY_DNS_LABEL} --sku Standard --allocation-method static --version IPv4 --zone 1 2 3 --query publicIp.ipAddress -o tsv)
 ```
 
-Voeg de aantekeningen --set controller.service.annotaties toe. service\.beta\.kubernetes\.io/azure-dns-label-name"="<DNS_LABEL>" parameter. Het DNS-label kan worden ingesteld wanneer de ingangscontroller voor het eerst wordt geïmplementeerd of later kan worden geconfigureerd. Voeg de parameter --set controller.service.loadBalancerIP="<STATIC_IP>" toe. Geef uw eigen openbare IP-adres op dat in de vorige stap is gemaakt.
+Vervolgens voegt u de ingress-nginx Helm-opslagplaats toe, werkt u de cache van de lokale Helm-grafiekopslagplaats bij en installeert u de ingress-nginx-invoegtoepassing via Helm. U kunt het DNS-label instellen met de **aantekeningen --set controller.service.annotaties. service\.beta\.kubernetes\.io/azure-dns-label-name"="<DNS_LABEL>"** parameter ofwel wanneer u de ingangscontroller voor het eerst implementeert of hoger. In dit voorbeeld geeft u uw eigen openbare IP-adres op dat u in de vorige stap hebt gemaakt met de **parameter** --set controller.service.loadBalancerIP="<STATIC_IP>".
 
-1. De Helm-opslagplaats voor inkomend verkeer toevoegen
-
-    ```bash
+```bash
     helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
-    ```
-
-2. Cache van lokale Helm-grafiekopslagplaats bijwerken
-
-    ```bash
     helm repo update
-    ```
-
-3. Installeer de invoegtoepassing ingress-nginx via Helm door het volgende uit te voeren:
-
-    ```bash
     helm upgrade --install --cleanup-on-fail --atomic ingress-nginx ingress-nginx/ingress-nginx \
         --namespace ingress-nginx \
         --create-namespace \
@@ -314,29 +315,29 @@ Voeg de aantekeningen --set controller.service.annotaties toe. service\.beta\.ku
         --set controller.service.loadBalancerIP=$MY_STATIC_IP \
         --set controller.service.annotations."service\.beta\.kubernetes\.io/azure-load-balancer-health-probe-request-path"=/healthz \
         --wait --timeout 10m0s
-    ```
+```
 
 ## HTTPS-beëindiging toevoegen aan aangepast domein
 
-Op dit moment in de zelfstudie hebt u een AKS-web-app met NGINX als de ingangscontroller en een aangepast domein dat u kunt gebruiken voor toegang tot uw toepassing. De volgende stap is het toevoegen van een SSL-certificaat aan het domein, zodat gebruikers uw toepassing veilig kunnen bereiken via https.
+Op dit moment in de zelfstudie hebt u een AKS-web-app met NGINX als ingangscontroller en een aangepast domein dat u kunt gebruiken voor toegang tot uw toepassing. De volgende stap is het toevoegen van een SSL-certificaat aan het domein, zodat gebruikers uw toepassing veilig kunnen bereiken via https.
 
-## Certificaatbeheer instellen
+### Certificaatbeheer instellen
 
-Om HTTPS toe te voegen gaan we Cert Manager gebruiken. Cert Manager is een opensource-hulpprogramma dat wordt gebruikt voor het verkrijgen en beheren van SSL-certificaat voor Kubernetes-implementaties. Cert Manager verkrijgt certificaten van verschillende verleners, zowel populaire openbare verleners als privéverleners, en zorgt ervoor dat de certificaten geldig en up-to-date zijn en proberen certificaten te vernieuwen op een geconfigureerd tijdstip voordat ze verlopen.
+We gaan Cert Manager gebruiken om HTTPS toe te voegen. Cert Manager is een opensource-hulpprogramma voor het verkrijgen en beheren van SSL-certificaten voor Kubernetes-implementaties. Cert Manager verkrijgt certificaten van populaire openbare verleners en particuliere verleners, zorgt ervoor dat de certificaten geldig en up-to-date zijn en probeert certificaten te vernieuwen op een geconfigureerd tijdstip voordat ze verlopen.
 
-1. Als u cert-manager wilt installeren, moet u eerst een naamruimte maken om deze in uit te voeren. In deze zelfstudie wordt certificaatbeheer geïnstalleerd in de naamruimte cert-manager. Het is mogelijk om certificaatbeheer uit te voeren in een andere naamruimte, hoewel u wijzigingen moet aanbrengen in de implementatiemanifesten.
+1. Als u cert-manager wilt installeren, moet u eerst een naamruimte maken om deze in uit te voeren. In deze zelfstudie wordt cert-manager geïnstalleerd in de naamruimte cert-manager. U kunt certificaatbeheer uitvoeren in een andere naamruimte, maar u moet wijzigingen aanbrengen in de implementatiemanifesten.
 
     ```bash
     kubectl create namespace cert-manager
     ```
 
-2. We kunnen nu certificaatbeheer installeren. Alle resources zijn opgenomen in één YAML-manifestbestand. Dit kan worden geïnstalleerd door het volgende uit te voeren:
+2. We kunnen nu certificaatbeheer installeren. Alle resources zijn opgenomen in één YAML-manifestbestand. Installeer het manifestbestand met de volgende opdracht:
 
     ```bash
     kubectl apply -f https://github.com/jetstack/cert-manager/releases/download/v1.7.0/cert-manager.crds.yaml
     ```
 
-3. Voeg het label certmanager.k8s.io/disable-validation: 'true' toe aan de naamruimte cert-manager door het volgende uit te voeren. Hierdoor kunnen de systeembronnen die certificaatbeheer vereist, TLS opstarten om te worden gemaakt in een eigen naamruimte.
+3. Voeg het `certmanager.k8s.io/disable-validation: "true"` label toe aan de naamruimte cert-manager door het volgende uit te voeren. Hierdoor kunnen de systeembronnen die certificaatbeheer vereist, TLS opstarten om te worden gemaakt in een eigen naamruimte.
 
     ```bash
     kubectl label namespace cert-manager certmanager.k8s.io/disable-validation=true
@@ -344,25 +345,23 @@ Om HTTPS toe te voegen gaan we Cert Manager gebruiken. Cert Manager is een opens
 
 ## Certificaat verkrijgen via Helm-grafieken
 
-Helm is een Kubernetes-implementatieprogramma voor het automatiseren van het maken, verpakken, configureren en implementeren van toepassingen en services voor Kubernetes-clusters.
+Helm is een Kubernetes-implementatieprogramma voor het automatiseren van het maken, verpakken, configureren en implementeren van toepassingen en services in Kubernetes-clusters.
 
 Cert-manager biedt Helm-grafieken als een eersteklas installatiemethode op Kubernetes.
 
-1. De Jetstack Helm-opslagplaats toevoegen
-
-    Deze opslagplaats is de enige ondersteunde bron van cert-manager-grafieken. Er zijn enkele andere spiegels en kopieën via internet, maar die zijn volledig onofficiële en kunnen een beveiligingsrisico opleveren.
+1. Voeg de Jetstack Helm-opslagplaats toe. Deze opslagplaats is de enige ondersteunde bron van cert-manager-grafieken. Er zijn andere spiegels en kopieën via internet, maar die zijn niet officieel en kunnen een beveiligingsrisico opleveren.
 
     ```bash
     helm repo add jetstack https://charts.jetstack.io
     ```
 
-2. Cache van lokale Helm-grafiekopslagplaats bijwerken
+2. Cache van lokale Helm-grafiekopslagplaats bijwerken.
 
     ```bash
     helm repo update
     ```
 
-3. Installeer de Cert-Manager-invoegtoepassing via Helm door het volgende uit te voeren:
+3. Installeer de Cert-Manager-invoegtoepassing via Helm.
 
     ```bash
     helm upgrade --install --cleanup-on-fail --atomic \
@@ -372,10 +371,7 @@ Cert-manager biedt Helm-grafieken als een eersteklas installatiemethode op Kuber
         cert-manager jetstack/cert-manager
     ```
 
-4. YAML-bestand van certificaatverlener toepassen
-
-    ClusterIssuers zijn Kubernetes-resources die certificeringsinstanties (CA's) vertegenwoordigen die ondertekende certificaten kunnen genereren door aanvragen voor certificaatondertekening te respecteren. Voor alle certificaten van certificaatbeheer is een verlener vereist waarnaar wordt verwezen, die in een kant-en-klare voorwaarde staat om te proberen de aanvraag te respecteren.
-    De uitgever die we gebruiken, vindt u in de `cluster-issuer-prod.yml file`
+4. Pas het YAML-bestand van de certificaatverlener toe. ClusterIssuers zijn Kubernetes-resources die certificeringsinstanties (CA's) vertegenwoordigen die ondertekende certificaten kunnen genereren door aanvragen voor certificaatondertekening te respecteren. Voor alle certificaten van certificaatbeheer is een verlener vereist waarnaar wordt verwezen, die in een kant-en-klare voorwaarde staat om te proberen de aanvraag te respecteren. U kunt de verlener vinden die we in de `cluster-issuer-prod.yaml file`.
 
     ```bash
     cluster_issuer_variables=$(<cluster-issuer-prod.yaml)
@@ -384,8 +380,8 @@ Cert-manager biedt Helm-grafieken als een eersteklas installatiemethode op Kuber
 
 ## Een aangepaste opslagklasse maken
 
-De standaardopslagklassen zijn geschikt voor de meest voorkomende scenario's, maar niet allemaal. In sommige gevallen wilt u mogelijk uw eigen opslagklasse aanpassen met uw eigen parameters. Gebruik bijvoorbeeld het volgende manifest om de mountOptions van de bestandsshare te configureren.
-De standaardwaarde voor fileMode en dirMode is 0755 voor gekoppelde Kubernetes-bestandsshares. U kunt de verschillende koppelingsopties voor het opslagklasseobject opgeven.
+De standaardopslagklassen zijn geschikt voor de meest voorkomende scenario's, maar niet allemaal. In sommige gevallen wilt u mogelijk uw eigen opslagklasse aanpassen met uw eigen parameters. Gebruik bijvoorbeeld het volgende manifest om de **mountOptions** van de bestandsshare te configureren.
+De standaardwaarde voor **fileMode** en **dirMode** is **0755** voor gekoppelde Kubernetes-bestandsshares. U kunt de verschillende koppelingsopties voor het opslagklasseobject opgeven.
 
 ```bash
 kubectl apply -f wp-azurefiles-sc.yaml
@@ -393,21 +389,21 @@ kubectl apply -f wp-azurefiles-sc.yaml
 
 ## WordPress implementeren op AKS-cluster
 
-Voor dit document gebruiken we een bestaande Helm-grafiek voor WordPress die is gebouwd door Bitnami. Bitnami Helm-grafiek maakt bijvoorbeeld gebruik van lokale MariaDB als de database en we moeten deze waarden overschrijven om de app te gebruiken met Azure Database for MySQL. Alle onderdrukkingswaarden U kunt de waarden overschrijven en de aangepaste instellingen vindt u in het bestand `helm-wp-aks-values.yaml`
+Voor deze zelfstudie gebruiken we een bestaande Helm-grafiek voor WordPress die is gebouwd door Bitnami. De Bitnami Helm-grafiek maakt gebruik van een lokale MariaDB als de database. Daarom moeten we deze waarden overschrijven om de app te gebruiken met Azure Database for MySQL. U kunt de waarden en de aangepaste instellingen van het `helm-wp-aks-values.yaml` bestand overschrijven.
 
-1. De Wordpress Bitnami Helm-opslagplaats toevoegen
+1. Voeg de Wordpress Bitnami Helm-opslagplaats toe.
 
     ```bash
     helm repo add bitnami https://charts.bitnami.com/bitnami
     ```
 
-2. Cache van lokale Helm-grafiekopslagplaats bijwerken
+2. Cache van lokale Helm-grafiekopslagplaats bijwerken.
 
     ```bash
     helm repo update
     ```
 
-3. Installeer de Wordpress-workload via Helm door het volgende uit te voeren:
+3. Installeer de Wordpress-workload via Helm.
 
     ```bash
     helm upgrade --install --cleanup-on-fail \
@@ -426,7 +422,6 @@ Voor dit document gebruiken we een bestaande Helm-grafiek voor WordPress die is 
     ```
 
 Resultaten:
-
 <!-- expected_similarity=0.3 -->
 ```text
 Release "wordpress" does not exist. Installing it now.
@@ -471,7 +466,7 @@ To access your WordPress site from outside the cluster follow the steps below:
 Voer de volgende opdracht uit om het HTTPS-eindpunt voor uw toepassing op te halen:
 
 > [!NOTE]
-> Het duurt vaak 2-3 minuten voordat het SSL-certificaat is gepropogaat en ongeveer 5 minuten om alle WordPress POD-replica's gereed te hebben en de site volledig bereikbaar te zijn via https.
+> Het duurt vaak 2-3 minuten voordat het SSL-certificaat is doorgegeven en ongeveer 5 minuten dat alle WordPress POD-replica's gereed zijn en de site volledig bereikbaar is via https.
 
 ```bash
 runtime="5 minute"
@@ -487,7 +482,7 @@ while [[ $(date -u +%s) -le $endtime ]]; do
 done
 ```
 
-Controleren of WordPress-inhoud correct wordt geleverd.
+Controleer of WordPress-inhoud correct wordt geleverd met behulp van de volgende opdracht:
 
 ```bash
 if curl -I -s -f https://$FQDN > /dev/null ; then 
@@ -498,7 +493,6 @@ fi;
 ```
 
 Resultaten:
-
 <!-- expected_similarity=0.3 -->
 ```HTML
 {
@@ -514,8 +508,22 @@ Resultaten:
 }
 ```
 
-De website kan worden bezocht door de onderstaande URL te volgen:
+Ga naar de website via de volgende URL:
 
 ```bash
 echo "You can now visit your web server at https://$FQDN"
 ```
+
+## De resources opschonen (optioneel)
+
+Om Azure-kosten te vermijden, moet u overbodige resources opschonen. Wanneer u het cluster niet meer nodig hebt, gebruikt u de [opdracht az group delete](/cli/azure/group#az-group-delete) om de resourcegroep, containerservice en alle gerelateerde resources te verwijderen. 
+
+> [!NOTE]
+> Wanneer u het cluster verwijdert, wordt de Microsoft Entra-service-principal die door het AKS-cluster wordt gebruikt, niet verwijderd. Zie [Overwegingen voor en verwijdering van AKS service-principal](../../aks/kubernetes-service-principal.md#other-considerations) voor stappen voor het verwijderen van de service-principal. Als u een beheerde identiteit hebt gebruikt, wordt de identiteit beheerd door het platform en hoeft deze niet te worden verwijderd.
+
+## Volgende stappen
+
+- Leer hoe u [toegang krijgt tot het Kubernetes-dashboard](../../aks/kubernetes-dashboard.md) voor uw AKS-cluster
+- Leer hoe u uw [cluster kunt schalen](../../aks/tutorial-kubernetes-scale.md)
+- Meer informatie over het beheren van uw [flexibele Azure Database for MySQL-serverexemplaren](./quickstart-create-server-cli.md)
+- Meer informatie over het [configureren van serverparameters](./how-to-configure-server-parameters-cli.md) voor uw databaseserver
