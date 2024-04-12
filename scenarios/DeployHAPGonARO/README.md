@@ -386,5 +386,6 @@ For this tutorial, we're using an existing Helm chart for Drupal built by Bitnam
 5. Access the workload
 
     ```bash
-    curl -Iv https://drupal-cms-demo.$SUFFIX.westus.aroapp.io
+    URL=$(oc get route drupal -o json | jq -r '.spec.host')
+    curl -Iv https://$URL
     ```
