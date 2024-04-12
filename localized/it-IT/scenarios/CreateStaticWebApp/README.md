@@ -1,23 +1,35 @@
 ---
-title: Creare un sito statico usando l'interfaccia della riga di comando di Azure
-description: Questa esercitazione illustra come creare un sito statico in Azure.
-author: namanparikh
-ms.author: namanparikh
-ms.topic: article
-ms.date: 02/06/2024
-ms.custom: innovation-engine
-ms.service: Azure
+title: 'Guida introduttiva: Creazione del primo sito statico con il App Web statiche di Azure usando l''interfaccia della riga di comando'
+description: Informazioni su come distribuire un sito statico in App Web statiche di Azure con l'interfaccia della riga di comando di Azure.
+services: static-web-apps
+author: craigshoemaker
+ms.service: static-web-apps
+ms.topic: quickstart
+ms.date: 03/21/2024
+ms.author: cshoe
+ms.custom: 'mode-api, devx-track-azurecli, innovation-engine, linux-related-content'
+ms.devlang: azurecli
 ---
 
-# App Web statiche di Azure Avvio rapido: Creazione del primo sito statico con l'interfaccia della riga di comando di Azure
+# Guida introduttiva: Creazione del primo sito statico con l'interfaccia della riga di comando di Azure
 
 [![Distribuzione in Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262845)
 
-App Web statiche di Azure pubblica siti Web in produzione creando app da un repository di codice. In questa guida introduttiva si distribuisce un'applicazione Web in App Web statiche di Azure usando l'interfaccia della riga di comando di Azure.
+App Web statiche di Azure pubblica siti Web in produzione creando app da un repository di codice.
+
+In questa guida di avvio rapido si distribuisce un'applicazione Web in App Web statiche di Azure usando l'interfaccia della riga di comando di Azure.
+
+## Prerequisiti
+
+- [Account GitHub](https://github.com) .
+- [Account Azure](https://portal.azure.com).
+  - Se non si ha una sottoscrizione di Azure, è possibile [creare un account](https://azure.microsoft.com/free) di valutazione gratuito.
+- [Interfaccia della riga di comando](/cli/azure/install-azure-cli) di Azure installata (versione 2.29.0 o successiva).
+- [Configurazione di Git](https://www.git-scm.com/downloads). 
 
 ## Definire le variabili di ambiente
 
-Il primo passaggio di questa esercitazione consiste nel definire le variabili di ambiente.
+Il primo passaggio di questa guida introduttiva consiste nel definire le variabili di ambiente.
 
 ```bash
 export RANDOM_ID="$(openssl rand -hex 3)"
@@ -30,16 +42,17 @@ export MY_STATIC_WEB_APP_NAME="myStaticWebApp$RANDOM_ID"
 
 (Facoltativo) Questo articolo usa un repository di modelli GitHub come un altro modo per semplificare l'avvio. Il modello include un'app iniziale da distribuire in App Web statiche di Azure.
 
-- Passare al percorso seguente per creare un nuovo repository: https://github.com/staticwebdev/vanilla-basic/generate
-- Assegnare un nome al repository `my-first-static-web-app`
+1. Passare al percorso seguente per creare un nuovo repository: https://github.com/staticwebdev/vanilla-basic/generate.
+2. Assegnare al repository `my-first-static-web-app`il nome .
 
-> **Nota:** App Web statiche di Azure richiede almeno un file HTML per creare un'app Web. Il repository creato in questo passaggio include un singolo `index.html` file.
+> [!NOTE]
+> Con App Web statiche di Azure è necessario almeno un file HTML per creare un'app Web. Il repository creato in questo passaggio include un singolo `index.html` file.
 
-Selezionare `Create repository`.
+3. Selezionare **Create repository**.
 
 ## Distribuire un'app Web statica
 
-È possibile distribuire l'app come app Web statica dall'interfaccia della riga di comando di Azure.
+Distribuire l'app come app Web statica dall'interfaccia della riga di comando di Azure.
 
 1. Crea un gruppo di risorse.
 
@@ -50,7 +63,6 @@ az group create \
 ```
 
 Risultati:
-
 <!-- expected_similarity=0.3 -->
 ```json
 {
@@ -99,7 +111,6 @@ done
 ```
 
 Risultati:
-
 <!-- expected_similarity=0.3 -->
 ```HTML
 <!DOCTYPE html>
@@ -117,13 +128,13 @@ Risultati:
 echo "You can now visit your web server at https://$MY_STATIC_WEB_APP_URL"
 ```
 
-## Passaggi successivi
+## Usare un modello GitHub
 
-Complimenti. È stata distribuita correttamente un'app Web statica in App Web statiche di Azure usando l'interfaccia della riga di comando di Azure. Ora che si ha una conoscenza di base di come distribuire un'app Web statica, è possibile esplorare funzionalità e funzionalità più avanzate di App Web statiche di Azure.
+È stata distribuita correttamente un'app Web statica in App Web statiche di Azure usando l'interfaccia della riga di comando di Azure. Ora che si ha una conoscenza di base di come distribuire un'app Web statica, è possibile esplorare funzionalità e funzionalità più avanzate di App Web statiche di Azure.
 
-Se si vuole usare il repository di modelli GitHub, seguire questa procedura aggiuntiva.
+Se si vuole usare il repository di modelli GitHub, seguire questa procedura:
 
-Passare a https://github.com/login/device e immettere il codice utente 329B-3945 per attivare e recuperare il token di accesso personale di GitHub.
+Passare a https://github.com/login/device e immettere il codice ottenuto da GitHub per attivare e recuperare il token di accesso personale di GitHub.
 
 1. Vai a https://github.com/login/device.
 2. Immettere il codice utente come visualizzato nel messaggio della console.
@@ -135,13 +146,22 @@ Passare a https://github.com/login/device e immettere il codice utente 329B-3945
 1. Quando si ottiene l'URL del repository durante l'esecuzione dello script, copiare l'URL del repository e incollarlo nel browser.
 2. Selezionare la scheda `Actions`.
 
-   A questo punto, Azure sta creando le risorse per supportare l'app Web statica. Attendere che l'icona accanto al flusso di lavoro in esecuzione si trasformi in un segno di spunta con sfondo verde ( ). L'esecuzione di questa operazione può richiedere alcuni minuti.
+   A questo punto, Azure sta creando le risorse per supportare l'app Web statica. Attendere fino a quando l'icona accanto al flusso di lavoro in esecuzione diventa un segno di spunta con sfondo verde. L'esecuzione di questa operazione potrebbe richiedere alcuni minuti.
 
 3. Quando viene visualizzata l'icona di operazione riuscita, il flusso di lavoro è completo ed è possibile tornare alla finestra della console.
 4. Eseguire il comando seguente per eseguire una query sull'URL del sito Web.
-
+```bash
    az staticwebapp show \
      --name $MY_STATIC_WEB_APP_NAME \
      --query "defaultHostname"
-
+```
 5. Copiare l'URL nel browser per passare al sito Web.
+
+## Pulire le risorse (facoltativo)
+
+Se non si intende continuare a usare questa applicazione, eliminare il gruppo di risorse e l'app Web statica usando il [comando az group delete](/cli/azure/group#az-group-delete) .
+
+## Passaggi successivi
+
+> [!div class="nextstepaction"]
+> [Aggiungere un'API](add-api.md)

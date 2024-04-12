@@ -1,23 +1,35 @@
 ---
-title: Creare un set di scalabilità di macchine virtuali con gateway applicazione con l'immagine Linux
-description: Questa esercitazione illustra come creare un set di scalabilità di macchine virtuali con gateway applicazione con l'immagine Linux
-author: belginceran
-ms.author: belginceran
-ms.topic: article
-ms.date: 01/05/2024
-ms.custom: innovation-engine
+title: Creare macchine virtuali in un set di scalabilità flessibile usando l'interfaccia della riga di comando di Azure
+description: Informazioni su come creare un set di scalabilità di macchine virtuali in modalità di orchestrazione flessibile usando l'interfaccia della riga di comando di Azure.
+author: fitzgeraldsteele
+ms.author: fisteele
+ms.topic: how-to
+ms.service: virtual-machine-scale-sets
+ms.date: 3/19/2024
+ms.reviewer: jushiman
+ms.custom: 'mimckitt, devx-track-azurecli, vmss-flex, innovation-engine, linux-related-content'
 ---
 
-# Creare un set di scalabilità di macchine virtuali con gateway applicazione con l'immagine Linux
+# Creare macchine virtuali in un set di scalabilità usando l'interfaccia della riga di comando di Azure
 
 [![Distribuzione in Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262759)
 
+Questo articolo illustra come usare l'interfaccia della riga di comando di Azure per creare un set di scalabilità di macchine virtuali.
+
+Assicurarsi di aver installato la versione più recente [dell'interfaccia della riga di comando di Azure](/cli/azure/install-az-cli2) e di aver effettuato l'accesso a un account Azure con [az login](/cli/azure/reference-index).
+
+
+## Avviare Azure Cloud Shell
+
+Azure Cloud Shell è una shell interattiva gratuita che può essere usata per eseguire la procedura di questo articolo. Include strumenti comuni di Azure preinstallati e configurati per l'uso con l'account.
+
+Per aprire Cloud Shell, selezionare **Apri Cloud Shell** nell'angolo superiore destro di un blocco di codice. È anche possibile avviare Cloud Shell in una scheda separata del browser visitando [https://shell.azure.com/cli](https://shell.azure.com/cli). Selezionare **Copia** per copiare i blocchi di codice, incollarli in Cloud Shell e premere INVIO per eseguirli.
+
 ## Definire le variabili di ambiente
 
-Il primo passaggio di questa esercitazione consiste nel definire le variabili di ambiente.
+Definire le variabili di ambiente come indicato di seguito.
 
 ```bash
-
 export RANDOM_ID="$(openssl rand -hex 3)"
 export MY_RESOURCE_GROUP_NAME="myVMSSResourceGroup$RANDOM_ID"
 export REGION=EastUS
@@ -33,22 +45,17 @@ export MY_APPGW_SN_NAME="myAPPGWSN$RANDOM_ID"
 export MY_APPGW_SN_PREFIX="10.$NETWORK_PREFIX.1.0/24"
 export MY_APPGW_NAME="myAPPGW$RANDOM_ID"
 export MY_APPGW_PUBLIC_IP_NAME="myAPPGWPublicIP$RANDOM_ID"
-
 ```
-# Accedere ad Azure usando l'interfaccia della riga di comando
 
-Per eseguire i comandi in Azure usando l'interfaccia della riga di comando di cui è necessario accedere. Questa operazione viene eseguita, molto semplicemente, anche se il `az login` comando :
+## Creare un gruppo di risorse
 
-# Creare un gruppo di risorse
-
-Un gruppo di risorse è un contenitore per le risorse correlate. Tutte le risorse devono essere inserite in un gruppo di risorse. Ne verrà creata una per questa esercitazione. Il comando seguente crea un gruppo di risorse con i parametri $MY_RESOURCE_GROUP_NAME definiti in precedenza e $REGION.
+Un gruppo di risorse è un contenitore logico in cui vengono distribuite e gestite le risorse di Azure. Tutte le risorse devono essere inserite in un gruppo di risorse. Il comando seguente crea un gruppo di risorse con i parametri $MY_RESOURCE_GROUP_NAME definiti in precedenza e $REGION.
 
 ```bash
 az group create --name $MY_RESOURCE_GROUP_NAME --location $REGION -o JSON
 ```
 
 Risultati:
-
 <!-- expected_similarity=0.3 -->
 ```json   
 {
@@ -64,19 +71,17 @@ Risultati:
 }
 ```
 
-# Creare risorse di rete 
+## Creare risorse di rete 
 
-È necessario creare risorse di rete prima di procedere con i passaggi del set di scalabilità di macchine virtuali. In questo passaggio si creerà una rete virtuale, 2 subnet 1 per gateway applicazione e 1 per le macchine virtuali. È anche necessario disporre di un indirizzo IP pubblico per collegare il gateway applicazione per poter raggiungere l'applicazione Web da Internet. 
+A questo punto si creeranno le risorse di rete. In questo passaggio si creerà una rete virtuale, una subnet 1 per gateway applicazione e una subnet per le macchine virtuali. È anche necessario disporre di un indirizzo IP pubblico per collegare il gateway applicazione per raggiungere l'applicazione Web da Internet. 
 
-
-#### Creare Rete virtuale (VNET) e subnet della macchina virtuale
+#### Creare una rete virtuale e una subnet
 
 ```bash
 az network vnet create  --name $MY_VNET_NAME  --resource-group $MY_RESOURCE_GROUP_NAME --location $REGION  --address-prefix $MY_VNET_PREFIX  --subnet-name $MY_VM_SN_NAME --subnet-prefix $MY_VM_SN_PREFIX -o JSON
 ```
 
 Risultati:
-
 <!-- expected_similarity=0.3 -->
 ```json   
 {
@@ -116,15 +121,13 @@ Risultati:
 
 ### Creare risorse gateway applicazione
 
-app Azure gateway di comunicazione richiede una subnet dedicata all'interno della rete virtuale. Il comando seguente crea una subnet denominata $MY_APPGW_SN_NAME con il prefisso di indirizzo specificato denominato $MY_APPGW_SN_PREFIX nella rete virtuale $MY_VNET_NAME 
-
+app Azure gateway di comunicazione richiede una subnet dedicata all'interno della rete virtuale. Il comando seguente crea una subnet denominata $MY_APPGW_SN_NAME con un prefisso di indirizzo specificato denominato $MY_APPGW_SN_PREFIX nella rete virtuale $MY_VNET_NAME.
 
 ```bash
 az network vnet subnet create  --name $MY_APPGW_SN_NAME  --resource-group $MY_RESOURCE_GROUP_NAME --vnet-name  $MY_VNET_NAME --address-prefix  $MY_APPGW_SN_PREFIX -o JSON
 ```
 
 Risultati:
-
 <!-- expected_similarity=0.3 -->
 ```json  
 {
@@ -144,10 +147,9 @@ Il comando seguente crea un IPv4 standard, con ridondanza della zona, statica e 
 
 ```bash
 az network public-ip create  --resource-group $MY_RESOURCE_GROUP_NAME --name $MY_APPGW_PUBLIC_IP_NAME --sku Standard   --location $REGION  --allocation-method static --version IPv4 --zone 1 2 3 -o JSON
- ```
+```
 
 Risultati:
-
 <!-- expected_similarity=0.3 -->
 ```json  
 {
@@ -181,11 +183,11 @@ Risultati:
 }
 ```
 
-In questo passaggio si crea un gateway applicazione che si intende integrare con il set di scalabilità di macchine virtuali. In questo esempio viene creata una gateway applicazione con ridondanza della zona con SKU Standard_v2 e viene abilitata la comunicazione Http per il gateway applicazione. Indirizzo IP pubblico $MY_APPGW_PUBLIC_IP_NAME creato nel passaggio precedente collegato al gateway applicazione. 
+In questo passaggio si crea un gateway applicazione che si intende integrare con il set di scalabilità di macchine virtuali. In questo esempio viene creata una gateway applicazione con ridondanza della zona con SKU Standard_v2 e viene abilitata la comunicazione HTTP per il gateway applicazione. L'indirizzo IP pubblico $MY_APPGW_PUBLIC_IP_NAME creato nel passaggio precedente è collegato al gateway applicazione. 
 
 ```bash
 az network application-gateway create   --name $MY_APPGW_NAME --location $REGION --resource-group $MY_RESOURCE_GROUP_NAME --vnet-name $MY_VNET_NAME --subnet $MY_APPGW_SN_NAME --capacity 2  --zones 1 2 3 --sku Standard_v2   --http-settings-cookie-based-affinity Disabled   --frontend-port 80 --http-settings-port 80   --http-settings-protocol Http --public-ip-address $MY_APPGW_PUBLIC_IP_NAME --priority 1001 -o JSON
- ```
+```
 
 <!-- expected_similarity=0.3 -->
 ```json 
@@ -375,19 +377,21 @@ az network application-gateway create   --name $MY_APPGW_NAME --location $REGION
     "urlPathMaps": []
   }
 }
- ```
+```
 
+## Creare un set di scalabilità di macchine virtuali
 
-# Creare un set di scalabilità di macchine virtuali 
+> [!IMPORTANT]
+>A partire da novembre 2023, i set di scalabilità di macchine virtuali creati con PowerShell e l'interfaccia della riga di comando di Azure avranno per impostazione predefinita la modalità di orchestrazione flessibile se non è specificata alcuna modalità di orchestrazione. Per altre informazioni su questa modifica e sulle azioni da eseguire, vedere [Modifica che causa un'interruzione per i clienti di PowerShell/CLI di VMSS - Hub della community Microsoft](
+https://techcommunity.microsoft.com/t5/azure-compute-blog/breaking-change-for-vmss-powershell-cli-customers/ba-p/3818295)
 
-Il comando seguente crea un set di scalabilità di macchine virtuali con ridondanza della zona all'interno del gruppo di risorse $MY_RESOURCE_GROUP_NAME. È stata integrata la gateway applicazione creata nel passaggio precedente. Questo comando crea 2 Standard_DS2_v2 SKU Macchine virtuali con indirizzo IP pubblico nella subnet $MY_VM_SN_NAME. Durante il passaggio seguente verrà creata una chiave SSH per salvare la chiave se è necessario accedere alle macchine virtuali tramite ssh.
+Creare ora un set di scalabilità di macchine virtuali con [az vmss create](/cli/azure/vmss). L'esempio seguente crea un set di scalabilità con ridondanza della zona con un numero di istanze pari *a 2* con indirizzo IP pubblico nella subnet $MY_VM_SN_NAME all'interno del gruppo di risorse $MY_RESOURCE_GROUP_NAME, integra il gateway applicazione e genera chiavi SSH. Assicurarsi di salvare le chiavi SSH se è necessario accedere alle macchine virtuali tramite ssh.
 
 ```bash
 az vmss create --name $MY_VMSS_NAME --resource-group $MY_RESOURCE_GROUP_NAME --image $MY_VM_IMAGE --admin-username $MY_USERNAME --generate-ssh-keys --public-ip-per-vm --orchestration-mode Uniform --instance-count 2 --zones 1 2 3 --vnet-name $MY_VNET_NAME --subnet $MY_VM_SN_NAME --vm-sku Standard_DS2_v2 --upgrade-policy-mode Automatic --app-gateway $MY_APPGW_NAME --backend-pool-name appGatewayBackendPool -o JSON
  ```
 
 Risultati:
-
 <!-- expected_similarity=0.3 -->
 ```json  
 {
@@ -499,17 +503,15 @@ Risultati:
 }
 ```
 
-### Installare ngnix con le estensioni VMSS 
+### Installare ngnix con estensioni set di scalabilità di macchine virtuali 
 
-Il comando seguente usa l'estensione VMSS per eseguire script personalizzati. Ai fini dei test, qui installiamo ngnix e pubblichiamo una pagina che mostra il nome host della macchina virtuale raggiunto dalle richieste HTTP. Questo script personalizzato viene usato per questo pusposes : https://raw.githubusercontent.com/Azure-Samples/compute-automation-configurations/master/automate_nginx.sh 
-
+Il comando seguente usa l'estensione set di scalabilità di macchine virtuali per eseguire uno [script](https://github.com/Azure-Samples/compute-automation-configurations/blob/master/automate_nginx.sh) personalizzato che installa ngnix e pubblica una pagina che mostra il nome host della macchina virtuale raggiunto dalle richieste HTTP. 
 
 ```bash
 az vmss extension set --publisher Microsoft.Azure.Extensions --version 2.0  --name CustomScript --resource-group $MY_RESOURCE_GROUP_NAME --vmss-name $MY_VMSS_NAME --settings '{ "fileUris": ["https://raw.githubusercontent.com/Azure-Samples/compute-automation-configurations/master/automate_nginx.sh"], "commandToExecute": "./automate_nginx.sh" }' -o JSON
 ```
 
 Risultati:
-
 <!-- expected_similarity=0.3 -->
 ```json  
 {
@@ -703,19 +705,16 @@ Risultati:
 }
 ```
 
+## Definire un profilo di scalabilità automatica  
 
-# Definire un profilo di scalabilità automatica  
-
-Per abilitare la scalabilità automatica su un set di scalabilità, è innanzitutto necessario definire un profilo di scalabilità automatica. Questo profilo definisce la capacità predefinita, minima e massima del set di scalabilità. Questi limiti consentono di controllare i costi perché le istanze di macchine virtuali non vengono create di continuo. Permettono anche di trovare un equilibrio appropriato tra prestazioni e numero minimo di istanze che rimangono in un evento di riduzione.
-L'esempio seguente imposta la capacità predefinita e minima di 2 istanze di macchine virtuali e la capacità massima di 10:
+Per abilitare la scalabilità automatica in un set di scalabilità, definire prima di tutto un profilo di scalabilità automatica. Questo profilo definisce la capacità predefinita, minima e massima del set di scalabilità. Questi limiti consentono di controllare i costi non creando continuamente istanze di macchine virtuali e bilanciando le prestazioni accettabili con un numero minimo di istanze che rimangono in un evento di scalabilità orizzontale.
+L'esempio seguente imposta la capacità predefinita, minima di due istanze di macchina virtuale e una capacità massima di 10:
 
 ```bash
 az monitor autoscale create --resource-group $MY_RESOURCE_GROUP_NAME --resource  $MY_VMSS_NAME --resource-type Microsoft.Compute/virtualMachineScaleSets --name autoscale --min-count 2 --max-count 10 --count 2
 ```
 
-
 Risultati:
-
 <!-- expected_similarity=0.3 -->
 ```json  
 {
@@ -760,16 +759,15 @@ Risultati:
 }
 ```
 
-# Creare una regola per aumentare automaticamente il numero di istanze
+## Creare una regola per aumentare automaticamente il numero di istanze
 
-Il comando Following crea una regola che aumenta il numero di istanze di macchine virtuali in un set di scalabilità quando il carico medio della CPU è maggiore del 70% in un periodo di 5 minuti. Quando la regola viene attivata, il numero di istanze di VM viene incrementato di tre.
+Il comando seguente crea una regola che aumenta il numero di istanze di macchine virtuali in un set di scalabilità quando il carico medio della CPU è maggiore del 70% in un periodo di 5 minuti. Quando la regola viene attivata, il numero di istanze della macchina virtuale aumenta di tre.
 
 ```bash
 az monitor autoscale rule create --resource-group $MY_RESOURCE_GROUP_NAME --autoscale-name autoscale --condition "Percentage CPU > 70 avg 5m" --scale out 3
 ```
 
 Risultati:
-
 <!-- expected_similarity=0.3 -->
 ```json 
 {
@@ -796,16 +794,15 @@ Risultati:
 } 
 ```
 
-# Creare una regola per ridurre automaticamente il numero di istanze
+## Creare una regola per ridurre automaticamente il numero di istanze
 
-Creare quindi un'altra regola con az monitor autoscale rule create che riduca il numero di istanze di macchine virtuali in un set di scalabilità quando il carico medio della CPU è inferiore al 30% per un periodo di 5 minuti. L'esempio seguente definisce la regola per ridurre il numero di istanze di VM di uno.
+Creare un'altra regola con `az monitor autoscale rule create` che riduce il numero di istanze di macchine virtuali in un set di scalabilità quando il carico medio della CPU scende sotto il 30% in un periodo di 5 minuti. L'esempio seguente definisce la regola per ridurre il numero di istanze di VM di uno.
 
 ```bash
 az monitor autoscale rule create --resource-group  $MY_RESOURCE_GROUP_NAME --autoscale-name autoscale --condition "Percentage CPU < 30 avg 5m" --scale in 1
 ```
 
 Risultati:
-
 <!-- expected_similarity=0.3 -->
 ```json 
 {
@@ -832,19 +829,19 @@ Risultati:
 }
 ```
 
-
 ### Testare la pagina
 
-Il comando seguente mostra l'indirizzo IP pubblico del gateway applicazione. È possibile incollare l'indirizzo IP in una pagina del browser per il test.
+Il comando seguente mostra l'indirizzo IP pubblico del gateway applicazione. Incollare l'indirizzo IP in una pagina del browser per il test.
 
 ```bash
 az network public-ip show --resource-group $MY_RESOURCE_GROUP_NAME --name $MY_APPGW_PUBLIC_IP_NAME --query [ipAddress]  --output tsv
 ```
 
+## Pulire le risorse (facoltativo)
 
+Per evitare addebiti per Azure, è necessario eliminare le risorse non necessarie. Quando non sono più necessari il set di scalabilità e altre risorse, eliminare il gruppo di risorse e tutte le relative risorse con [az group delete](/cli/azure/group). Il parametro `--no-wait` restituisce il controllo al prompt senza attendere il completamento dell'operazione. Il `--yes` parametro conferma che si desidera eliminare le risorse senza un'altra richiesta. Questa esercitazione pulisce automaticamente le risorse.
 
-# Riferimenti
-
-* [Documentazione del set di scalabilità di macchine virtuali](https://learn.microsoft.com/en-us/azure/virtual-machine-scale-sets/overview)
-* [Scalabilità automatica del set di scalabilità automatica di macchine virtuali](https://learn.microsoft.com/en-us/azure/virtual-machine-scale-sets/tutorial-autoscale-cli?tabs=Ubuntu)
-
+## Passaggi successivi
+- [Informazioni su come creare un set di scalabilità nel portale di Azure.](flexible-virtual-machine-scale-sets-portal.md)
+- [Informazioni sulle set di scalabilità di macchine virtuali.](overview.md)
+- [Ridimensionare automaticamente un set di scalabilità di macchine virtuali con l'interfaccia della riga di comando di Azure](tutorial-autoscale-cli.md)
