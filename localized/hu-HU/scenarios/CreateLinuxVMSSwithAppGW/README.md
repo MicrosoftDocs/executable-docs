@@ -1,23 +1,35 @@
 ---
-title: Virtuálisgép-méretezési csoport létrehozása Az Application Gateway használatával Linux rendszerképpel
-description: 'Ez az oktatóanyag bemutatja, hogyan hozhat létre virtuálisgép-méretezési csoportot az Application Gateway használatával Linux rendszerképpel'
-author: belginceran
-ms.author: belginceran
-ms.topic: article
-ms.date: 01/05/2024
-ms.custom: innovation-engine
+title: Virtuális gépek létrehozása rugalmas méretezési csoportban az Azure CLI használatával
+description: 'Megtudhatja, hogyan hozhat létre virtuálisgép-méretezési csoportot rugalmas vezénylési módban az Azure CLI használatával.'
+author: fitzgeraldsteele
+ms.author: fisteele
+ms.topic: how-to
+ms.service: virtual-machine-scale-sets
+ms.date: 3/19/2024
+ms.reviewer: jushiman
+ms.custom: 'mimckitt, devx-track-azurecli, vmss-flex, innovation-engine, linux-related-content'
 ---
 
-# Virtuálisgép-méretezési csoport létrehozása Az Application Gateway használatával Linux rendszerképpel
+# Virtuális gépek létrehozása méretezési csoportban az Azure CLI használatával
 
 [![Üzembe helyezés az Azure-ban](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262759)
 
+Ez a cikk végigvezeti az Azure CLI használatával egy virtuálisgép-méretezési csoport létrehozását.
+
+Győződjön meg arról, hogy a legújabb [Azure CLI-t](/cli/azure/install-az-cli2) telepítette, és bejelentkezett egy Azure-fiókba az bejelentkezéssel[](/cli/azure/reference-index).
+
+
+## Az Azure Cloud Shell elindítása
+
+Az Azure Cloud Shell egy olyan ingyenes interaktív kezelőfelület, amelyet a jelen cikkben található lépések futtatására használhat. A fiókjával való használat érdekében a gyakran használt Azure-eszközök már előre telepítve és konfigurálva vannak rajta.
+
+A Cloud Shell megnyitásához válassza **a Kódblokk jobb felső sarkában található Open Cloud Shell (Cloud Shell** megnyitása) lehetőséget. A Cloud Shellt egy külön böngészőlapon is elindíthatja a [https://shell.azure.com/cli](https://shell.azure.com/cli) cím megnyitásával. A **Copy** (másolás) gombra kattintva másolja és illessze be a kódot a Cloud Shellbe, majd nyomja le az Enter billentyűt a futtatáshoz.
+
 ## Környezeti változók definiálása
 
-Az oktatóanyag első lépése a környezeti változók definiálása.
+A környezeti változók meghatározása az alábbiak szerint.
 
 ```bash
-
 export RANDOM_ID="$(openssl rand -hex 3)"
 export MY_RESOURCE_GROUP_NAME="myVMSSResourceGroup$RANDOM_ID"
 export REGION=EastUS
@@ -33,22 +45,17 @@ export MY_APPGW_SN_NAME="myAPPGWSN$RANDOM_ID"
 export MY_APPGW_SN_PREFIX="10.$NETWORK_PREFIX.1.0/24"
 export MY_APPGW_NAME="myAPPGW$RANDOM_ID"
 export MY_APPGW_PUBLIC_IP_NAME="myAPPGWPublicIP$RANDOM_ID"
-
 ```
-# Bejelentkezés az Azure-ba a parancssori felület használatával
 
-Ahhoz, hogy parancsokat futtasson az Azure-on a parancssori felülettel, be kell jelentkeznie. Ez nagyon egyszerűen történik, bár a `az login` parancs:
+## Erőforráscsoport létrehozása
 
-# Erőforráscsoport létrehozása
-
-Az erőforráscsoportok a kapcsolódó erőforrások tárolói. Minden erőforrást egy erőforráscsoportba kell helyezni. Létrehozunk egyet ehhez az oktatóanyaghoz. A következő parancs létrehoz egy erőforráscsoportot a korábban definiált $MY_RESOURCE_GROUP_NAME és $REGION paraméterekkel.
+Az erőforráscsoport olyan logikai tároló, amelybe a rendszer üzembe helyezi és kezeli az Azure-erőforrásokat. Minden erőforrást egy erőforráscsoportba kell helyezni. A következő parancs létrehoz egy erőforráscsoportot a korábban definiált $MY_RESOURCE_GROUP_NAME és $REGION paraméterekkel.
 
 ```bash
 az group create --name $MY_RESOURCE_GROUP_NAME --location $REGION -o JSON
 ```
 
 Eredmények:
-
 <!-- expected_similarity=0.3 -->
 ```json   
 {
@@ -64,19 +71,17 @@ Eredmények:
 }
 ```
 
-# Hálózati erőforrások létrehozása 
+## Hálózati erőforrások létrehozása 
 
-A VMSS lépéseinek végrehajtása előtt létre kell hoznia hálózati erőforrásokat. Ebben a lépésben létrehoz egy virtuális hálózatot, 2 alhálózatot 1 az Application Gatewayhez és 1-et virtuális gépekhez. Az Application Gateway csatlakoztatásához nyilvános IP-cím is szükséges ahhoz, hogy a webalkalmazást az internetről elérhesse. 
+Most hálózati erőforrásokat fog létrehozni. Ebben a lépésben létrehoz egy virtuális hálózatot, egy 1. alhálózatot az Application Gatewayhez és egy alhálózatot a virtuális gépekhez. Az Application Gateway csatlakoztatásához nyilvános IP-cím is szükséges a webalkalmazás internetről való eléréséhez. 
 
-
-#### Virtuális hálózat (VNET) és virtuálisgép-alhálózat létrehozása
+#### Virtuális hálózat és alhálózat létrehozása
 
 ```bash
 az network vnet create  --name $MY_VNET_NAME  --resource-group $MY_RESOURCE_GROUP_NAME --location $REGION  --address-prefix $MY_VNET_PREFIX  --subnet-name $MY_VM_SN_NAME --subnet-prefix $MY_VM_SN_PREFIX -o JSON
 ```
 
 Eredmények:
-
 <!-- expected_similarity=0.3 -->
 ```json   
 {
@@ -116,15 +121,13 @@ Eredmények:
 
 ### Application Gateway-erőforrások létrehozása
 
-Azure-alkalmazás Átjárónak dedikált alhálózatra van szüksége a virtuális hálózaton belül. Az alábbi parancs létrehoz egy $MY_APPGW_SN_NAME nevű alhálózatot $MY_APPGW_SN_PREFIX nevű megadott címelőtaggal a virtuális hálózatban $MY_VNET_NAME 
-
+Azure-alkalmazás Átjárónak dedikált alhálózatra van szüksége a virtuális hálózaton belül. Az alábbi parancs létrehoz egy $MY_APPGW_SN_NAME nevű alhálózatot egy $MY_APPGW_SN_PREFIX nevű megadott címelőtaggal a virtuális hálózatban $MY_VNET_NAME néven.
 
 ```bash
 az network vnet subnet create  --name $MY_APPGW_SN_NAME  --resource-group $MY_RESOURCE_GROUP_NAME --vnet-name  $MY_VNET_NAME --address-prefix  $MY_APPGW_SN_PREFIX -o JSON
 ```
 
 Eredmények:
-
 <!-- expected_similarity=0.3 -->
 ```json  
 {
@@ -144,10 +147,9 @@ Az alábbi parancs létrehoz egy szabványos, zónaredundáns, statikus, nyilvá
 
 ```bash
 az network public-ip create  --resource-group $MY_RESOURCE_GROUP_NAME --name $MY_APPGW_PUBLIC_IP_NAME --sku Standard   --location $REGION  --allocation-method static --version IPv4 --zone 1 2 3 -o JSON
- ```
+```
 
 Eredmények:
-
 <!-- expected_similarity=0.3 -->
 ```json  
 {
@@ -181,11 +183,11 @@ Eredmények:
 }
 ```
 
-Ebben a lépésben létrehoz egy Application Gatewayt, amelyet integrálni fog a virtuálisgép-méretezési csoporttal. Ebben a példában létrehozunk egy zónaredundáns Application Gatewayt Standard_v2 termékváltozattal, és engedélyezzük a Http-kommunikációt az Application Gateway számára. Az Application Gatewayhez csatolt, az előző lépésben létrehozott nyilvános IP-$MY_APPGW_PUBLIC_IP_NAME. 
+Ebben a lépésben létrehoz egy Application Gatewayt, amelyet integrálni fog a virtuálisgép-méretezési csoporttal. Ez a példa létrehoz egy zónaredundáns Application Gatewayt Standard_v2 termékváltozattal, és engedélyezi a Http-kommunikációt az Application Gateway számára. Az előző lépésben létrehozott nyilvános IP-$MY_APPGW_PUBLIC_IP_NAME az Application Gatewayhez van csatolva. 
 
 ```bash
 az network application-gateway create   --name $MY_APPGW_NAME --location $REGION --resource-group $MY_RESOURCE_GROUP_NAME --vnet-name $MY_VNET_NAME --subnet $MY_APPGW_SN_NAME --capacity 2  --zones 1 2 3 --sku Standard_v2   --http-settings-cookie-based-affinity Disabled   --frontend-port 80 --http-settings-port 80   --http-settings-protocol Http --public-ip-address $MY_APPGW_PUBLIC_IP_NAME --priority 1001 -o JSON
- ```
+```
 
 <!-- expected_similarity=0.3 -->
 ```json 
@@ -375,19 +377,21 @@ az network application-gateway create   --name $MY_APPGW_NAME --location $REGION
     "urlPathMaps": []
   }
 }
- ```
+```
 
+## Virtuálisgép-méretezési csoport létrehozása
 
-# Virtuálisgép-méretezési csoport létrehozása 
+> [!IMPORTANT]
+>2023 novemberétől a PowerShell és az Azure CLI használatával létrehozott virtuálisgép-méretezési csoportok alapértelmezés szerint rugalmas vezénylési módba kerülnek, ha nincs megadva vezénylési mód. A módosítással és a végrehajtandó műveletekkel kapcsolatos további információkért tekintse meg [a VMSS PowerShell/CLI-ügyfelek kompatibilitástörő változását – Microsoft Community Hub](
+https://techcommunity.microsoft.com/t5/azure-compute-blog/breaking-change-for-vmss-powershell-cli-customers/ba-p/3818295)
 
-Az alábbi parancs létrehoz egy zónaredundáns virtuálisgép-méretezési csoportot (VMSS) a $MY_RESOURCE_GROUP_NAME erőforráscsoporton belül. Integráljuk az előző lépésben létrehozott Application Gatewayt. Ez a parancs 2 Standard_DS2_v2 SKU virtuális gépet hoz létre nyilvános IP-címmel a $MY_VM_SN_NAME alhálózatban. Az alábbi lépés során létrejön egy ssh-kulcs, amelyet érdemes lehet menteni, ha ssh-val kell bejelentkeznie a virtuális gépekre.
+Most hozzon létre egy virtuálisgép-méretezési csoportot az az vmss create használatával[](/cli/azure/vmss). Az alábbi példa létrehoz egy zónaredundáns méretezési csoportot, amelynek példányszáma *2* , nyilvános IP-címmel a $MY_VM_SN_NAME alhálózatban a $MY_RESOURCE_GROUP_NAME erőforráscsoportban, integrálja az Application Gatewayt, és SSH-kulcsokat hoz létre. Mindenképpen mentse az SSH-kulcsokat, ha ssh-val kell bejelentkeznie a virtuális gépekre.
 
 ```bash
 az vmss create --name $MY_VMSS_NAME --resource-group $MY_RESOURCE_GROUP_NAME --image $MY_VM_IMAGE --admin-username $MY_USERNAME --generate-ssh-keys --public-ip-per-vm --orchestration-mode Uniform --instance-count 2 --zones 1 2 3 --vnet-name $MY_VNET_NAME --subnet $MY_VM_SN_NAME --vm-sku Standard_DS2_v2 --upgrade-policy-mode Automatic --app-gateway $MY_APPGW_NAME --backend-pool-name appGatewayBackendPool -o JSON
  ```
 
 Eredmények:
-
 <!-- expected_similarity=0.3 -->
 ```json  
 {
@@ -499,17 +503,15 @@ Eredmények:
 }
 ```
 
-### Ngnix telepítése VMSS-bővítményekkel 
+### Ngnix telepítése virtuálisgép-méretezési csoportok bővítményeivel 
 
-Az alábbi parancs VMSS-bővítményt használ egyéni szkriptek futtatásához. Tesztelési célokból itt telepítjük az ngnixet, és közzéteszünk egy oldalt, amely megjeleníti annak a virtuális gépnek a gazdanevét, amelyet a HTTP-kérések érnek el. Ezt az egyéni szkriptet használjuk a következő pusposokhoz: https://raw.githubusercontent.com/Azure-Samples/compute-automation-configurations/master/automate_nginx.sh 
-
+A következő parancs a Virtuálisgép-méretezési csoportok bővítmény használatával futtat egy [egyéni szkriptet](https://github.com/Azure-Samples/compute-automation-configurations/blob/master/automate_nginx.sh) , amely telepíti az ngnixet, és közzétesz egy lapot, amely megjeleníti a HTTP-kérések által látogatott virtuális gép állomásnevét. 
 
 ```bash
 az vmss extension set --publisher Microsoft.Azure.Extensions --version 2.0  --name CustomScript --resource-group $MY_RESOURCE_GROUP_NAME --vmss-name $MY_VMSS_NAME --settings '{ "fileUris": ["https://raw.githubusercontent.com/Azure-Samples/compute-automation-configurations/master/automate_nginx.sh"], "commandToExecute": "./automate_nginx.sh" }' -o JSON
 ```
 
 Eredmények:
-
 <!-- expected_similarity=0.3 -->
 ```json  
 {
@@ -703,19 +705,16 @@ Eredmények:
 }
 ```
 
+## Automatikus skálázási profil meghatározása  
 
-# Automatikus skálázási profil meghatározása  
-
-Az automatikus skálázás méretezési csoportban történő engedélyezéséhez először határozza meg az automatikus skálázási profilt. Ez a profil határozza meg a méretezési csoport alapértelmezett, minimális és maximális kapacitását. Ezek a korlátok lehetővé teszik a költségek szabályozását azáltal, hogy nem hoz létre folyamatosan virtuálisgép-példányokat, és kiegyensúlyozza az elfogadható teljesítményt a méretarányos eseményben maradó példányok minimális számával.
-A következő példa a virtuálisgép-példányok alapértelmezett és egyben minimális (2), valamint a maximális (10) értékét állítja be:
+Ha egy méretezési csoportban szeretné engedélyezni az automatikus skálázást, először definiáljon egy automatikus skálázási profilt. Ez a profil határozza meg a méretezési csoport alapértelmezett, minimális és maximális kapacitását. Ezek a korlátok lehetővé teszik a költségek szabályozását azáltal, hogy nem hoz létre folyamatosan virtuálisgép-példányokat, és nem egyensúlyozza ki az elfogadható teljesítményt egy minimális számú példánysal, amelyek továbbra is skálázási eseményben maradnak.
+Az alábbi példa két virtuálisgép-példány alapértelmezett, minimális kapacitását és legfeljebb 10 kapacitását állítja be:
 
 ```bash
 az monitor autoscale create --resource-group $MY_RESOURCE_GROUP_NAME --resource  $MY_VMSS_NAME --resource-type Microsoft.Compute/virtualMachineScaleSets --name autoscale --min-count 2 --max-count 10 --count 2
 ```
 
-
 Eredmények:
-
 <!-- expected_similarity=0.3 -->
 ```json  
 {
@@ -760,16 +759,15 @@ Eredmények:
 }
 ```
 
-# Automatikus felskálázási szabály létrehozása
+## Automatikus felskálázási szabály létrehozása
 
-Az Alábbi parancs létrehoz egy szabályt, amely növeli a méretezési csoportban lévő virtuálisgép-példányok számát, ha az átlagos processzorterhelés 5 perc alatt meghaladja a 70%-ot. A szabály aktiválásakor a virtuálisgép-példányok száma hárommal nő.
+A következő parancs létrehoz egy szabályt, amely növeli a méretezési csoportban lévő virtuálisgép-példányok számát, ha az átlagos processzorterhelés 5 perc alatt meghaladja a 70%-ot. Amikor a szabály aktiválódik, a virtuálisgép-példányok száma hárommal nő.
 
 ```bash
 az monitor autoscale rule create --resource-group $MY_RESOURCE_GROUP_NAME --autoscale-name autoscale --condition "Percentage CPU > 70 avg 5m" --scale out 3
 ```
 
 Eredmények:
-
 <!-- expected_similarity=0.3 -->
 ```json 
 {
@@ -796,16 +794,15 @@ Eredmények:
 } 
 ```
 
-# Automatikus leskálázási szabály létrehozása
+## Automatikus leskálázási szabály létrehozása
 
-Hozzunk létre egy másik szabályt az az monitor autoscale rule create paranccsal a méretezési csoportban lévő virtuálisgép-példányok csökkentésére, ha az átlagos processzorterhelés ezután 5 percen keresztül nem éri el a 30%-ot. Az alábbi példa a virtuálisgép-példányok mennyiségét eggyel leskálázó szabályt definiálja.
+Hozzon létre egy másik szabályt, amely `az monitor autoscale rule create` csökkenti a méretezési csoportban lévő virtuálisgép-példányok számát, amikor az átlagos CPU-terhelés 5 perc alatt 30% alá csökken. Az alábbi példa a virtuálisgép-példányok mennyiségét eggyel leskálázó szabályt definiálja.
 
 ```bash
 az monitor autoscale rule create --resource-group  $MY_RESOURCE_GROUP_NAME --autoscale-name autoscale --condition "Percentage CPU < 30 avg 5m" --scale in 1
 ```
 
 Eredmények:
-
 <!-- expected_similarity=0.3 -->
 ```json 
 {
@@ -832,19 +829,19 @@ Eredmények:
 }
 ```
 
-
 ### Az oldal tesztelése
 
-Az alábbi parancs az Application Gateway nyilvános IP-címét jeleníti meg. A teszteléshez beillesztheti az IP-címet egy böngészőlapra.
+Az alábbi parancs az Application Gateway nyilvános IP-címét mutatja be. Illessze be az IP-címet egy böngészőlapra tesztelés céljából.
 
 ```bash
 az network public-ip show --resource-group $MY_RESOURCE_GROUP_NAME --name $MY_APPGW_PUBLIC_IP_NAME --query [ipAddress]  --output tsv
 ```
 
+## Erőforrások törlése (nem kötelező)
 
+Az Azure-díjak elkerülése érdekében távolítsa el a szükségtelen erőforrásokat. Ha már nincs szüksége a méretezési csoportra és más erőforrásokra, törölje az erőforráscsoportot és annak összes erőforrását az az csoporttörléssel[](/cli/azure/group). A `--no-wait` paraméter visszaadja a vezérlést a parancssornak, és nem várja meg a művelet befejeztét. A `--yes` paraméter megerősíti, hogy további kérés nélkül szeretné törölni az erőforrásokat. Ez az oktatóanyag megtisztítja az erőforrásokat az Ön számára.
 
-# Hivatkozások
-
-* [A VMSS dokumentációja](https://learn.microsoft.com/en-us/azure/virtual-machine-scale-sets/overview)
-* [VMSS automatikus skálázás](https://learn.microsoft.com/en-us/azure/virtual-machine-scale-sets/tutorial-autoscale-cli?tabs=Ubuntu)
-
+## Következő lépések
+- [Megtudhatja, hogyan hozhat létre méretezési csoportot az Azure Portalon.](flexible-virtual-machine-scale-sets-portal.md)
+- [Tudnivalók a virtuálisgép-méretezési csoportokról.](overview.md)
+- [Virtuálisgép-méretezési csoport automatikus méretezése az Azure CLI-vel](tutorial-autoscale-cli.md)

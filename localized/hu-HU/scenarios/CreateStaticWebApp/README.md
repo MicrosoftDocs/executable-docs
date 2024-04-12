@@ -1,23 +1,35 @@
 ---
-title: Statikus webhely létrehozása az Azure CLI használatával
-description: 'Ez az oktatóanyag bemutatja, hogyan hozhat létre statikus webhelyet az Azure-ban.'
-author: namanparikh
-ms.author: namanparikh
-ms.topic: article
-ms.date: 02/06/2024
-ms.custom: innovation-engine
-ms.service: Azure
+title: 'Rövid útmutató: Az első statikus webhely létrehozása az Azure Static Web Apps használatával a parancssori felület használatával'
+description: 'Ismerje meg, hogyan helyezhet üzembe statikus webhelyet az Azure Static Web Appsben az Azure CLI-vel.'
+services: static-web-apps
+author: craigshoemaker
+ms.service: static-web-apps
+ms.topic: quickstart
+ms.date: 03/21/2024
+ms.author: cshoe
+ms.custom: 'mode-api, devx-track-azurecli, innovation-engine, linux-related-content'
+ms.devlang: azurecli
 ---
 
-# Az Azure Static Web Apps rövid útmutatója: Az első statikus webhely létrehozása az Azure CLI használatával
+# Rövid útmutató: Az első statikus webhely létrehozása az Azure CLI használatával
 
 [![Üzembe helyezés az Azure-ban](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262845)
 
-Az Azure Static Web Apps egy kódtárból származó alkalmazások létrehozásával teszi közzé a webhelyeket az éles környezetben. Ebben a rövid útmutatóban üzembe helyez egy webalkalmazást az Azure Static Web Appsben az Azure CLI használatával.
+Az Azure Static Web Apps egy kódtárból származó alkalmazások létrehozásával teszi közzé a webhelyeket az éles környezetben.
+
+Ebben a rövid útmutatóban egy webalkalmazást helyez üzembe az Azure Static Web Appsben az Azure CLI használatával.
+
+## Előfeltételek
+
+- [GitHub-fiók](https://github.com) .
+- [Egy Azure-fiók](https://portal.azure.com).
+  - Ha nem rendelkezik Azure-előfizetéssel, [létrehozhat egy ingyenes próbaverziós fiókot](https://azure.microsoft.com/free).
+- [Telepített Azure CLI](/cli/azure/install-azure-cli) (2.29.0-s vagy újabb verzió).
+- [Egy Git-beállítás](https://www.git-scm.com/downloads). 
 
 ## Környezeti változók definiálása
 
-Az oktatóanyag első lépése a környezeti változók definiálása.
+A rövid útmutató első lépése a környezeti változók definiálása.
 
 ```bash
 export RANDOM_ID="$(openssl rand -hex 3)"
@@ -30,16 +42,17 @@ export MY_STATIC_WEB_APP_NAME="myStaticWebApp$RANDOM_ID"
 
 (Nem kötelező) Ez a cikk egy GitHub-sablontárházat használ, amely megkönnyíti az első lépéseket. A sablon tartalmaz egy kezdőalkalmazást, amely üzembe helyezhető az Azure Static Web Appsben.
 
-- Új adattár létrehozásához lépjen a következő helyre: https://github.com/staticwebdev/vanilla-basic/generate
-- Az adattár elnevezése `my-first-static-web-app`
+1. Új adattár létrehozásához lépjen a következő helyre: https://github.com/staticwebdev/vanilla-basic/generate.
+2. Nevezze el az adattárat `my-first-static-web-app`.
 
-> **Megjegyzés:** Az Azure Static Web Appsnek legalább egy HTML-fájlra van szüksége egy webalkalmazás létrehozásához. Az ebben a lépésben létrehozott adattár egyetlen `index.html` fájlt tartalmaz.
+> [!NOTE]
+> Az Azure Static Web Apps használatához legalább egy HTML-fájl szükséges egy webalkalmazás létrehozásához. Az ebben a lépésben létrehozott adattár egyetlen `index.html` fájlt tartalmaz.
 
-Válassza ki `Create repository`.
+3. Válassza a **Create repository** (Adattár létrehozása) gombot.
 
 ## Statikus webalkalmazás üzembe helyezése
 
-Az alkalmazást statikus webalkalmazásként is üzembe helyezheti az Azure CLI-ből.
+Az alkalmazás üzembe helyezése statikus webalkalmazásként az Azure CLI-ből.
 
 1. Hozzon létre egy erőforráscsoportot.
 
@@ -50,7 +63,6 @@ az group create \
 ```
 
 Eredmények:
-
 <!-- expected_similarity=0.3 -->
 ```json
 {
@@ -99,7 +111,6 @@ done
 ```
 
 Eredmények:
-
 <!-- expected_similarity=0.3 -->
 ```HTML
 <!DOCTYPE html>
@@ -117,13 +128,13 @@ Eredmények:
 echo "You can now visit your web server at https://$MY_STATIC_WEB_APP_URL"
 ```
 
-## Következő lépések
+## GitHub-sablon használata
 
-Gratulálunk! Sikeresen üzembe helyezett egy statikus webalkalmazást az Azure Static Web Appsben az Azure CLI használatával. Most, hogy alapszintű ismeretekkel rendelkezik a statikus webalkalmazások üzembe helyezéséről, megismerheti az Azure Static Web Apps fejlettebb funkcióit és funkcióit.
+Sikeresen üzembe helyezett egy statikus webalkalmazást az Azure Static Web Appsben az Azure CLI használatával. Most, hogy alapszintű ismeretekkel rendelkezik a statikus webalkalmazások üzembe helyezéséről, megismerheti az Azure Static Web Apps fejlettebb funkcióit és funkcióit.
 
-Ha a GitHub-sablontárházat szeretné használni, kövesse az alábbi további lépéseket.
+Ha a GitHub-sablontárházat szeretné használni, kövesse az alábbi lépéseket:
 
-Nyissa meg https://github.com/login/device és írja be a 329B-3945 felhasználói kódot a GitHub személyes hozzáférési jogkivonatának aktiválásához és lekéréséhez.
+Nyissa meg https://github.com/login/device és adja meg a GitHubról kapott kódot a GitHub személyes hozzáférési jogkivonatának aktiválásához és lekéréséhez.
 
 1. Odamegy https://github.com/login/device.
 2. Adja meg a felhasználói kódot a konzol üzenetének megfelelően.
@@ -135,13 +146,22 @@ Nyissa meg https://github.com/login/device és írja be a 329B-3945 felhasznál�
 1. Amikor a szkript futtatása közben megkapja az adattár URL-címét, másolja ki az adattár URL-címét, és illessze be a böngészőbe.
 2. Válassza ki a(z) `Actions` lapot.
 
-   Ezen a ponton az Azure létrehozza az erőforrásokat a statikus webalkalmazás támogatásához. Várja meg, amíg a futó munkafolyamat melletti ikon zöld háttérrel () pipává változik. A művelet végrehajtása eltarthat néhány percig.
+   Ezen a ponton az Azure létrehozza az erőforrásokat a statikus webalkalmazás támogatásához. Várja meg, amíg a futó munkafolyamat melletti ikon zöld háttérrel rendelkező pipává válik. A művelet végrehajtása eltarthat néhány percig.
 
 3. A sikeresség ikon megjelenése után a munkafolyamat befejeződött, és visszatérhet a konzolablakba.
 4. Futtassa a következő parancsot a webhely URL-címének lekérdezéséhez.
-
+```bash
    az staticwebapp show \
      --name $MY_STATIC_WEB_APP_NAME \
      --query "defaultHostname"
-
+```
 5. Másolja az URL-címet a böngészőbe a webhelyre való ugráshoz.
+
+## Erőforrások törlése (nem kötelező)
+
+Ha nem folytatja az alkalmazás használatát, törölje az erőforráscsoportot és a statikus webalkalmazást az [az group delete](/cli/azure/group#az-group-delete) paranccsal.
+
+## Következő lépések
+
+> [!div class="nextstepaction"]
+> [API hozzáadása](add-api.md)

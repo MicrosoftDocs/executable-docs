@@ -1,31 +1,40 @@
 ---
-title: LEMP-verem telepítése az Azure-ban
-description: 'Ez az oktatóanyag bemutatja, hogyan telepíthet LEMP-vermet az Azure-ban.'
-author: mbifeld
-ms.author: mbifeld
-ms.topic: article
-ms.date: 11/28/2023
-ms.custom: innovation-engine
+title: Oktatóanyag – LEMP-verem üzembe helyezése a WordPress használatával virtuális gépen
+description: 'Ebben az oktatóanyagban megtudhatja, hogyan telepítheti a LEMP-vermet és a WordPresst egy Linux rendszerű virtuális gépre az Azure-ban.'
+author: chasecrum
+ms.collection: linux
+ms.service: virtual-machines
+ms.devlang: azurecli
+ms.custom: 'innovation-engine, linux-related-content, devx-track-azurecli'
+ms.topic: tutorial
+ms.date: 2/29/2024
+ms.author: chasecrum
+ms.reviewer: jushim
 ---
 
-# LEMP-verem telepítése az Azure-ban
+# Oktatóanyag: LEMP-verem telepítése Azure Linux rendszerű virtuális gépre
 
-[![Üzembe helyezés az Azure-ban](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2263118)
+**A következőre vonatkozik:** :heavy_check_mark: Linux rendszerű virtuális gépek
 
+[![Üzembe helyezés az Azure-ban](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#view/Microsoft_Azure_CloudNative/SubscriptionSelectionPage.ReactView/tutorialKey/CreateLinuxVMLAMP)
 
 Ez a cikk bemutatja, hogyan helyezhet üzembe NGINX-webkiszolgálót, rugalmas Azure MySQL-kiszolgálót és PHP-t (a LEMP-vermet) egy Ubuntu Linux rendszerű virtuális gépen az Azure-ban. Ha szeretné működés közben megtekinteni a LEMP-kiszolgálót, telepíthet és konfigurálhat egy WordPress-webhelyet. Ezen oktatóanyag segítségével megtanulhatja a következőket:
 
 > [!div class="checklist"]
-
-> * Linux Ubuntu rendszerű virtuális gép létrehozása
+>
+> * Ubuntu rendszerű virtuális gép létrehozása
 > * Nyissa meg a 80-at és a 443-at webes forgalomhoz
 > * NGINX, rugalmas Azure MySQL-kiszolgáló és PHP telepítése és védelme
 > * A telepítés és a konfigurálás ellenőrzése
-> * A WordPress telepítése
+> * A WordPress telepítése Ez a beállítás gyors tesztekhez vagy koncepcióigazoláshoz használható. A LEMP-veremről, beleértve az éles környezetre vonatkozó javaslatokat is, tekintse meg az [Ubuntu dokumentációját](https://help.ubuntu.com/community/ApacheMySQLPHP).
+
+Ez az oktatóanyag az Azure Cloud Shell[ parancssori felületét ](../../cloud-shell/overview.md)használja, amely folyamatosan frissül a legújabb verzióra. A Cloud Shell megnyitásához válassza **a Kipróbálás** lehetőséget bármely kódblokk tetején.
+
+Ha a parancssori felület helyi telepítését és használatát választja, ehhez az oktatóanyaghoz az Azure CLI 2.0.30-s vagy újabb verzióját kell futtatnia. Keresse meg a verziót a `az --version` parancs futtatásával. Ha telepíteni vagy frissíteni szeretne: [Az Azure CLI telepítése]( /cli/azure/install-azure-cli).
 
 ## Változó deklarációja
 
-Először meghatározunk néhány változót, amelyek segítenek a LEMP számítási feladat konfigurálásában.
+Először meg kell határoznunk néhány változót, amelyek segítenek a LEMP számítási feladat konfigurálásában.
 
 ```bash
 export NETWORK_PREFIX="$(($RANDOM % 254 + 1))"
@@ -55,13 +64,15 @@ export MY_AZURE_USER=$(az account show --query user.name --output tsv)
 export FQDN="${MY_DNS_LABEL}.${REGION}.cloudapp.azure.com"
 ```
 
-<!--```bash
+<!--
+```bash
 export MY_AZURE_USER_ID=$(az ad user list --filter "mail eq '$MY_AZURE_USER'" --query "[0].id" -o tsv)
-```-->
+```
+-->
 
-## RG létrehozása
+## Erőforráscsoport létrehozása
 
-Hozzon létre egy erőforráscsoportot az [az group create](https://learn.microsoft.com/cli/azure/group#az-group-create) paranccsal. Az Azure-erőforráscsoport olyan logikai tároló, amelybe a rendszer üzembe helyezi és kezeli az Azure-erőforrásokat.
+Hozzon létre egy erőforráscsoportot az [az group create](/cli/azure/group#az-group-create) paranccsal. Az Azure-erőforráscsoport olyan logikai tároló, amelybe a rendszer üzembe helyezi és kezeli az Azure-erőforrásokat.
 A következő példában létrehozunk egy `eastus` nevű erőforráscsoportot a `$MY_RESOURCE_GROUP_NAME` helyen.
 
 ```bash
@@ -92,7 +103,7 @@ Eredmények:
 ## Azure-beli virtuális hálózat létrehozása
 
 A virtuális hálózat az Azure-beli magánhálózatok alapvető építőeleme. Az Azure Virtual Network lehetővé teszi, hogy az Azure-erőforrások, például a virtuális gépek biztonságosan kommunikáljanak egymással és az internettel.
-Az az network vnet create[ használatával ](https://learn.microsoft.com/cli/azure/network/vnet#az-network-vnet-create)hozzon létre egy, az `$MY_RESOURCE_GROUP_NAME` erőforráscsoportban elnevezett alhálózattal elnevezett `$MY_VNET_NAME` `$MY_SN_NAME` virtuális hálózatot.
+Az az network vnet create[ használatával ](/cli/azure/network/vnet#az-network-vnet-create)hozzon létre egy, az `$MY_RESOURCE_GROUP_NAME` erőforráscsoportban elnevezett alhálózattal elnevezett `$MY_VNET_NAME` `$MY_SN_NAME` virtuális hálózatot.
 
 ```bash
 az network vnet create \
@@ -142,11 +153,10 @@ Eredmények:
 
 ## Nyilvános Azure-IP-cím létrehozása
 
-Az az network public-ip create[ használatával ](https://learn.microsoft.com/cli/azure/network/public-ip#az-network-public-ip-create)hozzon létre egy standard zónaredundáns nyilvános IPv4-címet a következőben`$MY_RESOURCE_GROUP_NAME`: `MY_PUBLIC_IP_NAME` .
+Az az network public-ip create[ használatával ](/cli/azure/network/public-ip#az-network-public-ip-create)hozzon létre egy standard zónaredundáns nyilvános IPv4-címet a következőben`$MY_RESOURCE_GROUP_NAME`: `MY_PUBLIC_IP_NAME` .
 
 >[!NOTE]
->A zónák alábbi beállításai csak a rendelkezésre állási zónákkal[ rendelkező ](https://learn.microsoft.com/azure/reliability/availability-zones-service-support)régiókban érvényesek.
-
+>A zónák alábbi beállításai csak a rendelkezésre állási zónákkal[ rendelkező ](../../reliability/availability-zones-service-support.md)régiókban érvényesek.
 ```bash
 az network public-ip create \
     --name $MY_PUBLIC_IP_NAME \
@@ -197,7 +207,7 @@ Eredmények:
 
 ## Azure Hálózati biztonsági csoport létrehozása
 
-A hálózati biztonsági csoportok biztonsági szabályai lehetővé teszik, hogy megszűrje a virtuális hálózat alhálózatain és hálózati adapterein bejövő és kimenő forgalom típusait. A hálózati biztonsági csoportokkal kapcsolatos további információkért tekintse meg [a hálózati biztonsági csoportok áttekintését](https://learn.microsoft.com/azure/virtual-network/network-security-groups-overview).
+A hálózati biztonsági csoportok biztonsági szabályai lehetővé teszik, hogy megszűrje a virtuális hálózat alhálózatain és hálózati adapterein bejövő és kimenő forgalom típusait. A hálózati biztonsági csoportokkal kapcsolatos további információkért tekintse meg [a hálózati biztonsági csoportok áttekintését](../../virtual-network/network-security-groups-overview.md).
 
 ```bash
 az network nsg create \
@@ -246,7 +256,7 @@ Eredmények:
 
 ## Azure Hálózati biztonsági csoport szabályainak létrehozása
 
-Létre fog hozni egy szabályt, amely engedélyezi a virtuális géphez való csatlakozást a 22-s porton az SSH-hoz, valamint a 80-at, a 443-at a HTTP-hez és a HTTPS-hez. Létrejön egy további szabály, amely lehetővé teszi az összes portot a kimenő kapcsolatok számára. Az az network nsg rule create[ használatával ](https://learn.microsoft.com/cli/azure/network/nsg/rule#az-network-nsg-rule-create)hozzon létre egy hálózati biztonsági csoportszabályt.
+Hozzon létre egy szabályt, amely engedélyezi a virtuális géphez való csatlakozást a 22-s porton az SSH-hoz, valamint a 80-at, a 443-at a HTTP-hez és a HTTPS-hez. Létrejön egy további szabály, amely lehetővé teszi az összes portot a kimenő kapcsolatok számára. Az az network nsg rule create[ használatával ](/cli/azure/network/nsg/rule#az-network-nsg-rule-create)hozzon létre egy hálózati biztonsági csoportszabályt.
 
 ```bash
 az network nsg rule create \
@@ -293,7 +303,7 @@ Eredmények:
 
 ## Azure Hálózati adapter létrehozása
 
-Az az network nic create[ használatával ](https://learn.microsoft.com/cli/azure/network/nic#az-network-nic-create)hozza létre a virtuális gép hálózati adapterét. A nyilvános IP-címek és a korábban létrehozott NSG a hálózati adapterhez vannak társítva. A hálózati adapter a korábban létrehozott virtuális hálózathoz van csatolva.
+Az az network nic create[ használatával ](/cli/azure/network/nic#az-network-nic-create)hozza létre a virtuális gép hálózati adapterét. A nyilvános IP-címek és a korábban létrehozott NSG a hálózati adapterhez vannak társítva. A hálózati adapter a korábban létrehozott virtuális hálózathoz van csatolva.
 
 ```bash
 az network nic create \
@@ -356,14 +366,13 @@ Eredmények:
   }
 }
 ```
-
 ## A cloud-init áttekintése
 
-A cloud-init egy széles körben használt módszer a Linux rendszerű virtuális gépek első indításkor való testreszabásához. A cloud-init használatával csomagokat telepíthet és fájlokat írhat, vagy beállíthatja a felhasználókat és a biztonságot. Mivel a cloud-init a kezdeti rendszerindítás során fut, nincs szükség további lépésekre vagy ügynökökre a konfiguráció alkalmazásához.
+A cloud-init egy széles körben használt módszer a Linux rendszerű virtuális gépek első indításkor való testreszabásához. A cloud-init használatával csomagokat telepíthet és fájlokat írhat, vagy beállíthatja a felhasználókat és a biztonságot. Mivel a cloud-init a kezdeti rendszerindítási folyamat során fut, nincs más lépés vagy szükséges ügynök a konfigurációra.
 
 A cloud-init különböző disztribúciókon is működik. Például nem kell az apt-get install vagy a yum install használatával telepítenie a csomagokat. Ehelyett megadhatja a telepítendő csomagok listáját. A cloud-init automatikusan a natív csomagkezelő eszközt használja a kiválasztott disztribúcióhoz.
 
-A partnereinkkel dolgozunk rajta, hogy egyre több általuk biztosított Azure-rendszerkép tartalmazza a cloud-init eszközt. Az egyes disztribúciók cloud-init-támogatásával kapcsolatos részletes információkért lásd [: Cloud-init támogatás az Azure-beli](https://learn.microsoft.com/azure/virtual-machines/linux/using-cloud-init) virtuális gépekhez.
+Partnereinkkel együttműködve a felhőbeli initet is belefoglaljuk, és az Azure-nak biztosított képeken dolgozunk. Az egyes disztribúciók cloud-init-támogatásával kapcsolatos részletes információkért lásd [: Cloud-init támogatás az Azure-beli](./using-cloud-init.md) virtuális gépekhez.
 
 ### Cloud-init konfigurációs fájl létrehozása
 
@@ -372,12 +381,10 @@ A cloud-init működés közbeni megtekintéséhez hozzon létre egy LEMP-vermet
 ```bash
 cat << EOF > cloud-init.txt
 #cloud-config
-
 # Install, update, and upgrade packages
 package_upgrade: true
 package_update: true
 package_reboot_if_require: true
-
 # Install packages
 packages:
   - vim
@@ -400,7 +407,6 @@ packages:
   - php-xmlrpc
   - php-zip
   - php-fpm
-
 write_files:
   - owner: www-data:www-data
     path: /etc/nginx/sites-available/default.conf
@@ -411,7 +417,6 @@ write_files:
             root /var/www/html;
             server_name $FQDN;
         }
-
 write_files:
   - owner: www-data:www-data
     path: /etc/nginx/sites-available/$FQDN.conf
@@ -422,15 +427,11 @@ write_files:
         server {
             listen 443 ssl http2;
             listen [::]:443 ssl http2;
-
             server_name $FQDN;
-
             ssl_certificate /etc/letsencrypt/live/$FQDN/fullchain.pem;
             ssl_certificate_key /etc/letsencrypt/live/$FQDN/privkey.pem;
-
             root /var/www/$FQDN;
             index index.php;
-
             location / {
                 try_files \$uri \$uri/ /index.php?\$args;
             }
@@ -448,7 +449,6 @@ write_files:
                     log_not_found off;
                     access_log off;
             }
-
             location = /robots.txt {
                     allow all;
                     log_not_found off;
@@ -461,7 +461,6 @@ write_files:
             server_name $FQDN;
             return 301 https://$FQDN\$request_uri;
         }
-
 runcmd:
   - sed -i 's/;cgi.fix_pathinfo.*/cgi.fix_pathinfo = 1/' /etc/php/8.1/fpm/php.ini
   - sed -i 's/^max_execution_time \= .*/max_execution_time \= 300/g' /etc/php/8.1/fpm/php.ini
@@ -481,7 +480,7 @@ runcmd:
   - chown -R azureadmin:www-data /var/www/$FQDN
   - sudo -u azureadmin -i -- wp core download --path=/var/www/$FQDN
   - sudo -u azureadmin -i -- wp config create --dbhost=$MY_MYSQL_DB_NAME.mysql.database.azure.com --dbname=wp001 --dbuser=$MY_MYSQL_ADMIN_USERNAME --dbpass="$MY_MYSQL_ADMIN_PW" --path=/var/www/$FQDN
-  - sudo -u azureadmin -i -- wp core install --url=$FQDN --title="Azure hosted blog" --admin_user=$MY_WP_ADMIN_USER --admin_password="$MY_WP_ADMIN_PW" --admin_email=$MY_AZURE_USER --path=/var/www/$FQDN 
+  - sudo -u azureadmin -i -- wp core install --url=$FQDN --title="Azure hosted blog" --admin_user=$MY_WP_ADMIN_USER --admin_password="$MY_WP_ADMIN_PW" --admin_email=$MY_AZURE_USER --path=/var/www/$FQDN
   - sudo -u azureadmin -i -- wp plugin update --all --path=/var/www/$FQDN
   - chmod 600 /var/www/$FQDN/wp-config.php
   - mkdir -p -m 0775 /var/www/$FQDN/wp-content/uploads
@@ -491,7 +490,7 @@ EOF
 
 ## Rugalmas Azure MySQL-kiszolgálóhoz készült Azure saját DNS-zóna létrehozása
 
-Az Azure saját DNS Zónaintegráció lehetővé teszi a privát DNS feloldását az aktuális virtuális hálózaton belül, vagy bármely régión belüli társviszonyban lévő virtuális hálózaton, ahol a privát DNS-zóna kapcsolódik. Az az network private-dns zone create[ használatával ](https://learn.microsoft.com/cli/azure/network/private-dns/zone#az-network-private-dns-zone-create)hozza létre a privát DNS-zónát.
+Az Azure saját DNS Zónaintegráció lehetővé teszi a privát DNS feloldását az aktuális virtuális hálózaton belül, vagy bármely régión belüli társviszonyban lévő virtuális hálózaton, ahol a privát DNS-zóna kapcsolódik. A privát DNS-zóna létrehozásához használja [az az network private-dns zone create (Privát DNS-zóna létrehozása](/cli/azure/network/private-dns/zone#az-network-private-dns-zone-create) ) elemet.
 
 ```bash
 az network private-dns zone create \
@@ -522,7 +521,7 @@ Eredmények:
 
 ## Rugalmas Azure Database for MySQL-kiszolgáló létrehozása
 
-A rugalmas Azure Database for MySQL-kiszolgáló egy felügyelt szolgáltatás, amellyel magas rendelkezésre állású MySQL-kiszolgálókat futtathat, kezelhet és skálázhat a felhőben. Hozzon létre egy rugalmas kiszolgálót az az [mysql flexible-server create](https://learn.microsoft.com/cli/azure/mysql/flexible-server#az-mysql-flexible-server-create) paranccsal. Egy kiszolgáló több adatbázist tartalmazhat. Az alábbi parancs létrehoz egy kiszolgálót az Azure CLI helyi környezetéből származó szolgáltatás alapértelmezései és változó értékei alapján:
+A rugalmas Azure Database for MySQL-kiszolgáló egy felügyelt szolgáltatás, amellyel magas rendelkezésre állású MySQL-kiszolgálókat futtathat, kezelhet és skálázhat a felhőben. Hozzon létre egy rugalmas kiszolgálót az az [mysql flexible-server create](../../mysql/flexible-server/quickstart-create-server-cli.md#create-an-azure-database-for-mysql-flexible-server) paranccsal. Egy kiszolgáló több adatbázist tartalmazhat. Az alábbi parancs létrehoz egy kiszolgálót az Azure CLI helyi környezetéből származó szolgáltatás alapértelmezései és változó értékei alapján:
 
 ```bash
 az mysql flexible-server create \
@@ -569,14 +568,13 @@ echo "Your MySQL user $MY_MYSQL_ADMIN_USERNAME password is: $MY_WP_ADMIN_PW"
 
 A létrehozott kiszolgáló az alábbi attribútumokkal rendelkezik:
 
-* A kiszolgálónév, a rendszergazdai felhasználónév, a rendszergazdai jelszó, az erőforráscsoport neve és a hely már meg van adva a felhőhéj helyi környezetében, és ugyanabban a helyen lesz létrehozva, ahol Ön az erőforráscsoport és a többi Azure-összetevő.
+* A kiszolgáló neve, rendszergazdai felhasználónév, rendszergazdai jelszó, erőforráscsoport neve és helye már meg van adva a felhőhéj helyi környezetében. Az erőforráscsoport és más Azure-összetevők ugyanazon a helyen jönnek létre.
 * A fennmaradó kiszolgálókonfigurációk szolgáltatás alapértelmezései: számítási szint (Burstable), számítási méret/termékváltozat (Standard_B2s), biztonsági mentés megőrzési időtartama (7 nap) és MySQL-verzió (8.0.21)
 * Az alapértelmezett kapcsolati módszer a privát hozzáférés (VNet-integráció) egy csatolt virtuális hálózattal és egy automatikusan létrehozott alhálózattal.
 
 > [!NOTE]
-> A kapcsolati módszer nem módosítható a kiszolgáló létrehozása után. Ha például a létrehozás során van kiválasztva `Private access (VNet Integration)` , akkor a létrehozás után nem válthat rá `Public access (allowed IP addresses)` . Javasoljuk, hogy hozzon létre egy privát hozzáféréssel rendelkező kiszolgálót, hogy biztonságosan elérhesse a kiszolgálót a VNet-integráció használatával. További információ a privát hozzáférésről az [alapfogalmakról szóló cikkben](https://learn.microsoft.com/azure/mysql/flexible-server/concepts-networking-vnet).
-
-Ha módosítani szeretné az alapértelmezett beállításokat, tekintse meg az Azure CLI [referenciadokumentációját](https://learn.microsoft.com/cli/azure//mysql/flexible-server) a konfigurálható CLI-paraméterek teljes listájához.
+> A kapcsolati módszer nem módosítható a kiszolgáló létrehozása után. Ha például a létrehozás során van kiválasztva `Private access (VNet Integration)` , akkor a létrehozás után nem válthat rá `Public access (allowed IP addresses)` . Javasoljuk, hogy hozzon létre egy privát hozzáféréssel rendelkező kiszolgálót, hogy biztonságosan elérhesse a kiszolgálót a VNet-integráció használatával. További információ a privát hozzáférésről az [alapfogalmakról szóló cikkben](../../mysql/flexible-server/concepts-networking-vnet.md).
+Ha módosítani szeretné az alapértelmezett beállításokat, tekintse meg az Azure CLI [referenciadokumentációját](../../mysql/flexible-server/quickstart-create-server-cli.md) a konfigurálható CLI-paraméterek teljes listájához.
 
 ## Ellenőrizze az Azure Database for MySQL rugalmas kiszolgálói állapotát
 
@@ -600,11 +598,15 @@ done
 
 Az Azure Database for MySQL rugalmas kiszolgálókonfigurációját kiszolgálóparaméterekkel kezelheti. A kiszolgálóparaméterek a kiszolgáló létrehozásakor az alapértelmezett és ajánlott értékkel vannak konfigurálva.
 
-A kiszolgálóparaméter részleteinek megjelenítése A kiszolgáló adott paraméterének részleteinek megjelenítéséhez futtassa az az [mysql flexible-server parameter show](https://learn.microsoft.com/cli/azure/mysql/flexible-server/parameter) parancsot.
+Kiszolgálóparaméter részleteinek megjelenítése:
 
-### Az Azure Database for MySQL letiltása – Rugalmas kiszolgálói SSL-kapcsolati paraméter a Wordpress-integrációhoz
+Futtassa a [rugalmas mysql-kiszolgáló paraméter megjelenítési](../../mysql/flexible-server/how-to-configure-server-parameters-cli.md) parancsát a kiszolgáló bármely paraméterének részleteinek megjelenítéséhez.
 
-Kiszolgálóparaméter értékének módosítása Egy adott kiszolgálóparaméter értékét is módosíthatja, amely frissíti a MySQL-kiszolgálómotor mögöttes konfigurációs értékét. A kiszolgálóparaméter frissítéséhez használja az az [mysql flexible-server paraméterkészlet](https://learn.microsoft.com/cli/azure/mysql/flexible-server/parameter#az-mysql-flexible-server-parameter-set) parancsot.
+## Az Azure Database for MySQL letiltása – Rugalmas kiszolgálói SSL-kapcsolati paraméter a Wordpress-integrációhoz
+
+Kiszolgálóparaméter értékének módosítása:
+
+Módosíthatja egy adott kiszolgálóparaméter értékét is, amely frissíti a MySQL-kiszolgálómotor mögöttes konfigurációs értékét. A kiszolgálóparaméter frissítéséhez használja az az [mysql flexible-server paraméterkészlet](../../mysql/flexible-server/how-to-configure-server-parameters-cli.md#modify-a-server-parameter-value) parancsot.
 
 ```bash
 az mysql flexible-server parameter set \
@@ -637,10 +639,11 @@ Eredmények:
 
 ## Azure Linux rendszerű virtuális gép létrehozása
 
-Az alábbi példa egy `$MY_VM_NAME` nevű virtuális gépet és SSH-kulcsokat hoz létre, ha azok még nem léteznek a kulcsok alapméretezett helyén. A parancs rendszergazdai felhasználónevet is beállít `$MY_VM_USERNAME` .
-Az Azure-beli Linux rendszerű virtuális gépek biztonságának javítása érdekében integrálható az Azure Active Directory-hitelesítéssel. Mostantól az Azure AD-t használhatja alaphitelesítési platformként és hitelesítésszolgáltatóként, hogy SSH-t hozzon létre Linux rendszerű virtuális gépre az Azure AD és az OpenSSH tanúsítványalapú hitelesítés használatával. Ez a funkció lehetővé teszi a szervezetek számára, hogy azure-beli szerepköralapú hozzáférés-vezérlési és feltételes hozzáférési szabályzatokkal kezeljék a virtuális gépekhez való hozzáférést.
+Az alábbi példa létrehoz egy elnevezett `$MY_VM_NAME` virtuális gépet, és SSH-kulcsokat hoz létre, ha még nem léteznek alapértelmezett kulcshelyen. A parancs rendszergazdai felhasználónevet is beállít `$MY_VM_USERNAME` .
 
-Hozzon létre egy virtuális gépet az [az vm create](https://learn.microsoft.com/cli/azure/vm#az-vm-create) paranccsal.
+Az Azure-beli Linux rendszerű virtuális gépek biztonságának javítása érdekében integrálható az Azure Active Directory-hitelesítéssel. Mostantól az Azure AD-t használhatja alapszintű hitelesítési platformként. Az Azure AD és az OpenSSH tanúsítványalapú hitelesítéssel SSH-t is használhat a Linux rendszerű virtuális gépre. Ez a funkció lehetővé teszi a szervezetek számára, hogy azure-beli szerepköralapú hozzáférés-vezérlési és feltételes hozzáférési szabályzatokkal kezeljék a virtuális gépekhez való hozzáférést.
+
+Hozzon létre egy virtuális gépet az [az vm create](/cli/azure/vm#az-vm-create) paranccsal.
 
 ```bash
 az vm create \
@@ -686,17 +689,17 @@ Eredmények:
 
 ## Az Azure Linux rendszerű virtuális gép állapotának ellenőrzése
 
-A virtuális gép és a kapcsolódó erőforrások létrehozása csak néhány percet vesz igénybe. A sikeres provisioningState érték akkor jelenik meg, ha a bővítmény sikeresen telepítve van a virtuális gépen. A bővítmény telepítéséhez a virtuális gépnek rendelkeznie kell egy futó [virtuálisgép-ügynökkel](https://learn.microsoft.com/azure/virtual-machines/extensions/agent-linux) .
+A virtuális gép és a kapcsolódó erőforrások létrehozása csak néhány percet vesz igénybe. A sikeres provisioningState érték akkor jelenik meg, ha a bővítmény sikeresen telepítve van a virtuális gépen. A bővítmény telepítéséhez a virtuális gépnek rendelkeznie kell egy futó [virtuálisgép-ügynökkel](../extensions/agent-linux.md) .
 
 ```bash
 runtime="5 minute";
 endtime=$(date -ud "$runtime" +%s);
-while [[ $(date -u +%s) -le $endtime ]]; do 
-    STATUS=$(ssh -o StrictHostKeyChecking=no $MY_VM_USERNAME@$FQDN "cloud-init status --wait"); 
-    echo $STATUS; 
-    if [[ "$STATUS" == *'status: done'* ]]; then 
-        break; 
-    else 
+while [[ $(date -u +%s) -le $endtime ]]; do
+    STATUS=$(ssh -o StrictHostKeyChecking=no $MY_VM_USERNAME@$FQDN "cloud-init status --wait");
+    echo $STATUS;
+    if [[ "$STATUS" == *'status: done'* ]]; then
+        break;
+    else
         sleep 10;
     fi;
 done
@@ -704,21 +707,16 @@ done
 
 <!--
 ## Assign Azure AD RBAC for Azure AD login for Linux Virtual Machine
-
 The below command uses [az role assignment create](https://learn.microsoft.com/cli/azure/role/assignment#az-role-assignment-create) to assign the `Virtual Machine Administrator Login` role to the VM for your current Azure user.
-
 ```bash
 export MY_RESOURCE_GROUP_ID=$(az group show --resource-group $MY_RESOURCE_GROUP_NAME --query id -o tsv)
-
 az role assignment create \
     --role "Virtual Machine Administrator Login" \
     --assignee $MY_AZURE_USER_ID \
     --scope $MY_RESOURCE_GROUP_ID -o JSON
 ```
-
-
 Results:
-<!-- expected_similarity=0.3
+<!-- expected_similarity=0.3 -->
 ```JSON
 {
   "condition": null,
@@ -739,13 +737,11 @@ Results:
   "updatedOn": "2023-09-04T09:29:17.237445+00:00"
 }
 ```
--->
 
-<!-- 
+
+<!--
 ## Export the SSH configuration for use with SSH clients that support OpenSSH
-
 Login to Azure Linux VMs with Azure AD supports exporting the OpenSSH certificate and configuration. That means you can use any SSH clients that support OpenSSH-based certificates to sign in through Azure AD. The following example exports the configuration for all IP addresses assigned to the VM:
-
 ```bash
 az ssh config --file ~/.ssh/azure-config --name $MY_VM_NAME --resource-group $MY_RESOURCE_GROUP_NAME
 ```
@@ -791,7 +787,7 @@ Eredmények:
 
 ## A WordPress webhelyének ellenőrzése és tallózása
 
-[A WordPress](https://www.wordpress.org) egy nyílt forráskód tartalomkezelő rendszer (CMS), amelyet a web több mint 40%-a használ webhelyek, blogok és egyéb alkalmazások létrehozásához. A WordPress több különböző Azure-szolgáltatáson is futtatható: [AKS](https://learn.microsoft.com/azure/mysql/flexible-server/tutorial-deploy-wordpress-on-aks), Virtual Machines és App Service. Az Azure-beli WordPress-lehetőségek teljes listáját az Azure Marketplace-en[ található WordPressben találja](https://azuremarketplace.microsoft.com/marketplace/apps?page=1&search=wordpress).
+[A WordPress](https://www.wordpress.org) egy nyílt forráskód tartalomkezelő rendszer (CMS), amelyet a web több mint 40%-a használ webhelyek, blogok és egyéb alkalmazások létrehozásához. A WordPress több különböző Azure-szolgáltatáson is futtatható: [AKS](../../mysql/flexible-server/tutorial-deploy-wordpress-on-aks.md), Virtual Machines és App Service. Az Azure-beli WordPress-lehetőségek teljes listáját az Azure Marketplace-en[ található WordPressben találja](https://azuremarketplace.microsoft.com/marketplace/apps?page=1&search=wordpress).
 
 Ez a WordPress-telepítés csak a működés ellenőrzésére szolgál. A WordPress legfrissebb verziójának az ajánlott biztonsági beállításokkal való telepítéséhez tekintse meg [a WordPress dokumentációját](https://codex.wordpress.org/Main_Page).
 
@@ -801,10 +797,10 @@ Ellenőrizze, hogy az alkalmazás fut-e az alkalmazás URL-címének curlingelé
 runtime="5 minute";
 endtime=$(date -ud "$runtime" +%s);
 while [[ $(date -u +%s) -le $endtime ]]; do
-    if curl -I -s -f $FQDN > /dev/null ; then 
+    if curl -I -s -f $FQDN > /dev/null ; then
         curl -L -s -f $FQDN 2> /dev/null | head -n 9
         break
-    else 
+    else
         sleep 10
     fi;
 done

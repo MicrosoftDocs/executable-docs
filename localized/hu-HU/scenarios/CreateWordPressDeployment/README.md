@@ -1,18 +1,35 @@
 ---
-title: Méretezhető és biztonságos WordPress-példány üzembe helyezése az AKS-ben
-description: 'Ez az oktatóanyag bemutatja, hogyan helyezhet üzembe skálázható és biztonságos WordPress-példányt az AKS-en parancssori felületen'
-author: adrian.joian
-ms.author: adrian.joian
-ms.topic: article
-ms.date: 12/06/2023
-ms.custom: innovation-engine
+title: 'Oktatóanyag: A WordPress üzembe helyezése AKS-fürtön az Azure CLI használatával'
+description: 'Megtudhatja, hogyan hozhatja létre és helyezheti üzembe gyorsan a WordPresst az AKS-en a rugalmas Azure Database for MySQL-kiszolgálóval.'
+ms.service: mysql
+ms.subservice: flexible-server
+author: mksuni
+ms.author: sumuth
+ms.topic: tutorial
+ms.date: 3/20/2024
+ms.custom: 'vc, devx-track-azurecli, innovation-engine, linux-related-content'
 ---
 
-# Rövid útmutató: Méretezhető és biztonságos WordPress-példány üzembe helyezése az AKS-ben
+# Oktatóanyag: WordPress-alkalmazás üzembe helyezése az AKS-ben az Azure Database for MySQL-kiszolgálóval – rugalmas kiszolgáló
+
+[!INCLUDE[applies-to-mysql-flexible-server](../includes/applies-to-mysql-flexible-server.md)]
 
 [![Üzembe helyezés az Azure-ban](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262843)
 
-Üdvözöljük ebben az oktatóanyagban, amelyben lépésről lépésre haladva létrehozunk egy Https-en keresztül biztonságos Azure Kubernetes-webalkalmazást. Ez az oktatóanyag feltételezi, hogy már bejelentkezett az Azure CLI-be, és kiválasztotta a parancssori felülettel használni kívánt előfizetést. Azt is feltételezi, hogy a Helm telepítve van ([az utasítások itt](https://helm.sh/docs/intro/install/) találhatók).
+Ebben az oktatóanyagban egy skálázható, HTTPS-en keresztül védett WordPress-alkalmazást helyez üzembe egy Rugalmas Azure Database for MySQL-kiszolgálóval rendelkező Azure Kubernetes Service-fürtön az Azure CLI használatával.
+**[Az AKS](../../aks/intro-kubernetes.md)** egy felügyelt Kubernetes-szolgáltatás, amely lehetővé teszi a fürtök gyors üzembe helyezését és kezelését. **[A rugalmas Azure Database for MySQL-kiszolgáló](overview.md)** egy teljes mértékben felügyelt adatbázis-szolgáltatás, amely részletesebb vezérlést és rugalmasságot biztosít az adatbázis-kezelési funkciók és a konfigurációs beállítások felett.
+
+> [!NOTE]
+> Ez az oktatóanyag feltételezi a Kubernetes-fogalmak, a WordPress és a MySQL alapszintű megértését.
+
+[!INCLUDE [flexible-server-free-trial-note](../includes/flexible-server-free-trial-note.md)]
+
+## Előfeltételek 
+
+Az első lépések előtt győződjön meg arról, hogy bejelentkezett az Azure CLI-be, és kiválasztotta a parancssori felülettel használni kívánt előfizetést. Győződjön meg arról, hogy telepítve[ van a ](https://helm.sh/docs/intro/install/)Helm.
+
+> [!NOTE]
+> Ha az oktatóanyagban szereplő parancsokat az Azure Cloud Shell helyett helyileg futtatja, futtassa a parancsokat rendszergazdaként.
 
 ## Környezeti változók definiálása
 
@@ -43,7 +60,7 @@ export FQDN="${MY_DNS_LABEL}.${REGION}.cloudapp.azure.com"
 
 ## Erőforráscsoport létrehozása
 
-Az erőforráscsoportok a kapcsolódó erőforrások tárolói. Minden erőforrást egy erőforráscsoportba kell helyezni. Létrehozunk egyet ehhez az oktatóanyaghoz. A következő parancs létrehoz egy erőforráscsoportot a korábban definiált $MY_RESOURCE_GROUP_NAME és $REGION paraméterekkel.
+Az Azure-erőforráscsoport olyan logikai csoport, amelyben az Azure-erőforrások üzembe helyezése és kezelése zajlik. Minden erőforrást egy erőforráscsoportba kell helyezni. Az alábbi parancs létrehoz egy erőforráscsoportot a korábban definiált `$MY_RESOURCE_GROUP_NAME` és `$REGION` paraméterekkel.
 
 ```bash
 az group create \
@@ -52,7 +69,6 @@ az group create \
 ```
 
 Eredmények:
-
 <!-- expected_similarity=0.3 -->
 ```json
 {
@@ -67,6 +83,9 @@ Eredmények:
   "type": "Microsoft.Resources/resourceGroups"
 }
 ```
+
+> [!NOTE]
+> Az erőforráscsoport helye az erőforráscsoport metaadatainak tárolása. Az erőforrások akkor is az Azure-ban futnak, ha nem ad meg egy másik régiót az erőforrás létrehozása során.
 
 ## Virtuális hálózat és alhálózat létrehozása
 
@@ -83,7 +102,6 @@ az network vnet create \
 ```
 
 Eredmények:
-
 <!-- expected_similarity=0.3 -->
 ```json
 {
@@ -118,9 +136,9 @@ Eredmények:
 }
 ```
 
-## Rugalmas Azure Database for MySQL-kiszolgáló létrehozása
+## Rugalmas Azure Database for MySQL-kiszolgálópéldány létrehozása
 
-A rugalmas Azure Database for MySQL-kiszolgáló egy felügyelt szolgáltatás, amellyel magas rendelkezésre állású MySQL-kiszolgálókat futtathat, kezelhet és skálázhat a felhőben. Hozzon létre egy rugalmas kiszolgálót az az [mysql flexible-server create](https://learn.microsoft.com/cli/azure/mysql/flexible-server#az-mysql-flexible-server-create) paranccsal. Egy kiszolgáló több adatbázist tartalmazhat. Az alábbi parancs létrehoz egy kiszolgálót az Azure CLI helyi környezetéből származó szolgáltatás alapértelmezései és változó értékei alapján:
+A rugalmas Azure Database for MySQL-kiszolgáló egy felügyelt szolgáltatás, amellyel magas rendelkezésre állású MySQL-kiszolgálókat futtathat, kezelhet és méretezhet a felhőben. Hozzon létre egy rugalmas Azure Database for MySQL-kiszolgálópéldányt az az [mysql flexible-server create](/cli/azure/mysql/flexible-server) paranccsal. Egy kiszolgáló több adatbázist tartalmazhat. A következő parancs létrehoz egy kiszolgálót az Azure CLI helyi környezetéből származó szolgáltatás alapértelmezései és változó értékei alapján:
 
 ```bash
 echo "Your MySQL user $MY_MYSQL_ADMIN_USERNAME password is: $MY_WP_ADMIN_PW" 
@@ -149,7 +167,6 @@ az mysql flexible-server create \
 ```
 
 Eredmények:
-
 <!-- expected_similarity=0.3 -->
 ```json
 {
@@ -167,14 +184,15 @@ Eredmények:
 
 A létrehozott kiszolgáló az alábbi attribútumokkal rendelkezik:
 
-- A kiszolgálónév, a rendszergazdai felhasználónév, a rendszergazdai jelszó, az erőforráscsoport neve és a hely már meg van adva a felhőhéj helyi környezetében, és ugyanabban a helyen lesz létrehozva, ahol Ön az erőforráscsoport és a többi Azure-összetevő.
-- A fennmaradó kiszolgálókonfigurációk szolgáltatás alapértelmezései: számítási szint (Burstable), számítási méret/termékváltozat (Standard_B2s), biztonsági mentés megőrzési időtartama (7 nap) és MySQL-verzió (8.0.21)
-- Az alapértelmezett kapcsolati módszer a privát hozzáférés (VNet-integráció) egy csatolt virtuális hálózattal és egy automatikusan létrehozott alhálózattal.
+- A kiszolgáló első kiépítésekor létrejön egy új üres adatbázis.
+- A kiszolgálónév, a rendszergazdai felhasználónév, a rendszergazdai jelszó, az erőforráscsoport neve és a hely már meg van adva a felhőhéj helyi környezetében, és ugyanazon a helyen vannak, mint az erőforráscsoport és más Azure-összetevők.
+- A fennmaradó kiszolgálókonfigurációk alapértelmezett szolgáltatása a számítási szint (Burstable), a számítási méret/termékváltozat (Standard_B2s), a biztonsági mentés megőrzési időtartama (hét nap) és a MySQL-verzió (8.0.21).
+- Az alapértelmezett kapcsolati módszer a privát hozzáférés (virtuális hálózat integrációja) egy csatolt virtuális hálózattal és egy automatikusan létrehozott alhálózattal.
 
 > [!NOTE]
-> A kapcsolati módszer nem módosítható a kiszolgáló létrehozása után. Ha például a létrehozás során van kiválasztva `Private access (VNet Integration)` , akkor a létrehozás után nem válthat rá `Public access (allowed IP addresses)` . Javasoljuk, hogy hozzon létre egy privát hozzáféréssel rendelkező kiszolgálót, hogy biztonságosan elérhesse a kiszolgálót a VNet-integráció használatával. További információ a privát hozzáférésről az [alapfogalmakról szóló cikkben](https://learn.microsoft.com/azure/mysql/flexible-server/concepts-networking-vnet).
+> A kapcsolati módszer nem módosítható a kiszolgáló létrehozása után. Ha például a létrehozás során van kiválasztva `Private access (VNet Integration)` , akkor a létrehozás után nem válthat át `Public access (allowed IP addresses)` . Javasoljuk, hogy hozzon létre egy privát hozzáféréssel rendelkező kiszolgálót, hogy biztonságosan elérhesse a kiszolgálót a VNet-integráció használatával. További információ a privát hozzáférésről az [alapfogalmakról szóló cikkben](./concepts-networking-vnet.md).
 
-Ha módosítani szeretné az alapértelmezett beállításokat, tekintse meg az Azure CLI [referenciadokumentációját](https://learn.microsoft.com/cli/azure//mysql/flexible-server) a konfigurálható CLI-paraméterek teljes listájához.
+Ha módosítani szeretné az alapértelmezett beállításokat, tekintse meg az Azure CLI [referenciadokumentációját](/cli/azure//mysql/flexible-server) a konfigurálható CLI-paraméterek teljes listájához.
 
 ## Ellenőrizze az Azure Database for MySQL rugalmas kiszolgálói állapotát
 
@@ -188,11 +206,11 @@ runtime="10 minute"; endtime=$(date -ud "$runtime" +%s); while [[ $(date -u +%s)
 
 Az Azure Database for MySQL rugalmas kiszolgálókonfigurációját kiszolgálóparaméterekkel kezelheti. A kiszolgálóparaméterek a kiszolgáló létrehozásakor az alapértelmezett és ajánlott értékkel vannak konfigurálva.
 
-A kiszolgálóparaméter részleteinek megjelenítése A kiszolgáló adott paraméterének részleteinek megjelenítéséhez futtassa az az [mysql flexible-server parameter show](https://learn.microsoft.com/cli/azure/mysql/flexible-server/parameter) parancsot.
+Egy kiszolgáló adott paraméterének részleteinek megjelenítéséhez futtassa az az [mysql rugalmas-kiszolgáló paraméterbemutató](/cli/azure/mysql/flexible-server/parameter) parancsot.
 
 ### Az Azure Database for MySQL letiltása – Rugalmas kiszolgálói SSL-kapcsolati paraméter a WordPress-integrációhoz
 
-Módosíthatja bizonyos kiszolgálóparaméterek értékét is, amelyek frissítik a MySQL-kiszolgálómotor mögöttes konfigurációs értékeit. A kiszolgálóparaméter frissítéséhez használja az az [mysql flexible-server paraméterkészlet](https://learn.microsoft.com/cli/azure/mysql/flexible-server/parameter#az-mysql-flexible-server-parameter-set) parancsot.
+Bizonyos kiszolgálóparaméterek értékét is módosíthatja a MySQL-kiszolgálómotor mögöttes konfigurációs értékeinek frissítéséhez. A kiszolgálóparaméter frissítéséhez használja az az [mysql flexible-server paraméterkészlet](/cli/azure/mysql/flexible-server/parameter#az-mysql-flexible-server-parameter-set) parancsot.
 
 ```bash
 az mysql flexible-server parameter set \
@@ -202,7 +220,6 @@ az mysql flexible-server parameter set \
 ```
 
 Eredmények:
-
 <!-- expected_similarity=0.3 -->
 ```json
 {
@@ -225,9 +242,9 @@ Eredmények:
 
 ## AKS-fürt létrehozása
 
-Hozzon létre egy AKS-fürtöt az az aks create paranccsal az --enable-addons monitorozási paraméterrel a Container Insights engedélyezéséhez. Az alábbi példa egy myAKSCluster nevű automatikus skálázási, rendelkezésre állási zóna-kompatibilis fürtöt hoz létre:
+Ha AKS-fürtöt szeretne létrehozni a Container Elemzések használatával, használja az az aks [create](/cli/azure/aks#az-aks-create) parancsot az **--enable-addons monitorozási** paraméterrel. Az alábbi példa egy myAKSCluster** nevű **automatikus skálázási, rendelkezésre állási zóna-kompatibilis fürtöt hoz létre:
 
-Ez néhány percet vesz igénybe
+Ez a művelet néhány percet vesz igénybe.
 
 ```bash
 export MY_SN_ID=$(az network vnet subnet list --resource-group $MY_RESOURCE_GROUP_NAME --vnet-name $MY_VNET_NAME --query "[0].id" --output tsv)
@@ -251,62 +268,46 @@ az aks create \
     --dns-service-ip 10.255.0.10 \
     --zones 1 2 3
 ```
+> [!NOTE]
+> AKS-fürt létrehozásakor a rendszer automatikusan létrehoz egy második erőforráscsoportot az AKS-erőforrások tárolásához. Lásd: [Miért jön létre két erőforráscsoport az AKS-sel?](../../aks/faq.md#why-are-two-resource-groups-created-with-aks)
 
 ## Csatlakozás a fürthöz
 
-Kubernetes-fürt kezeléséhez használja a Kubernetes parancssori ügyfelet, a kubectl-et. Az Azure Cloud Shell használata esetén a kubectl már telepítve van.
+Kubernetes-fürtök kezeléséhez használja a [kubectl](https://kubernetes.io/docs/reference/kubectl/overview/) eszközt, a Kubernetes parancssori ügyfelét. Ha az Azure Cloud Shellt használja, `kubectl` már telepítve van. Az alábbi példa helyileg telepíti `kubectl` az az aks [install-cli](/cli/azure/aks#az-aks-install-cli) parancsot. 
 
-1. Az az aks CLI helyi telepítése az az aks install-cli paranccsal
-
-    ```bash
+ ```bash
     if ! [ -x "$(command -v kubectl)" ]; then az aks install-cli; fi
-    ```
+```
 
-2. A Kubectl konfigurálása a Kubernetes-fürthöz való csatlakozáshoz az az aks get-credentials paranccsal. A következő parancs:
+Ezután konfigurálja `kubectl` a Kubernetes-fürthöz való csatlakozást az az aks [get-credentials](/cli/azure/aks#az-aks-get-credentials) paranccsal. Ez a parancs letölti a hitelesítő adatokat, és konfigurálja a Kubernetes parancssori felületét a használatukhoz. A parancs a Kubernetes-konfigurációs fájl[ alapértelmezett helyét ](https://kubernetes.io/docs/concepts/configuration/organize-cluster-access-kubeconfig/)használja`~/.kube/config`. A --file** argumentum használatával **megadhatja a Kubernetes-konfigurációs fájl egy másik helyét.
 
-    - Letölti a hitelesítő adatokat, és konfigurálja a Kubernetes parancssori felületét a használatukhoz.
-    - A Kubernetes-konfigurációs fájl alapértelmezett helye a ~/.kube/config. Adjon meg egy másik helyet a Kubernetes-konfigurációs fájlhoz a --file argumentum használatával.
+> [!WARNING]
+> Ez a parancs felülírja a meglévő hitelesítő adatokat ugyanazzal a bejegyzéssel.
 
-    > [!WARNING]
-    > Ez felülírja a meglévő hitelesítő adatokat ugyanazzal a bejegyzéssel
+```bash
+az aks get-credentials --resource-group $MY_RESOURCE_GROUP_NAME --name $MY_AKS_CLUSTER_NAME --overwrite-existing
+```
 
-    ```bash
-    az aks get-credentials --resource-group $MY_RESOURCE_GROUP_NAME --name $MY_AKS_CLUSTER_NAME --overwrite-existing
-    ```
+A fürthöz való csatlakozás ellenőrzéséhez használja a [kubectl get]( https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands#get) parancsot a fürtcsomópontok listájának lekéréséhez.
 
-3. Ellenőrizze a fürthöz való kapcsolatot a kubectl get paranccsal. Ez a parancs a fürtcsomópontok listáját adja vissza.
-
-    ```bash
-    kubectl get nodes
-    ```
+```bash
+kubectl get nodes
+```
 
 ## NGINX bejövőforgalom-vezérlő telepítése
 
 A bejövőforgalom-vezérlőt statikus nyilvános IP-címmel konfigurálhatja. A statikus nyilvános IP-cím megmarad, ha törli a bejövőforgalom-vezérlőt. Az IP-cím nem marad meg, ha törli az AKS-fürtöt.
-A bejövőforgalom-vezérlő frissítésekor egy paramétert kell átadnia a Helm-kiadásnak, hogy a bejövőforgalom-vezérlő szolgáltatás értesüljön a terheléselosztóról, amely hozzá lesz rendelve. Ahhoz, hogy a HTTPS-tanúsítványok megfelelően működjenek, egy DNS-címkével konfiguráljon egy teljes tartománynevet a bejövőforgalom-vezérlő IP-címéhez.
-A teljes tartománynévnek a következő űrlapot kell követnie: $MY_DNS_LABEL. AZURE_REGION_NAME.cloudapp.azure.com.
+A bejövőforgalom-vezérlő frissítésekor egy paramétert kell átadnia a Helm-kiadásnak, hogy a bejövőforgalom-vezérlő szolgáltatás értesüljön a terheléselosztóról, amely hozzá lesz rendelve. Ahhoz, hogy a HTTPS-tanúsítványok megfelelően működjenek, egy DNS-címkével konfiguráljon egy teljes tartománynevet (FQDN) a bejövőforgalom-vezérlő IP-címéhez. A teljes tartománynévnek a következő űrlapot kell követnie: $MY_DNS_LABEL. AZURE_REGION_NAME.cloudapp.azure.com.
 
 ```bash
 export MY_STATIC_IP=$(az network public-ip create --resource-group MC_${MY_RESOURCE_GROUP_NAME}_${MY_AKS_CLUSTER_NAME}_${REGION} --location ${REGION} --name ${MY_PUBLIC_IP_NAME} --dns-name ${MY_DNS_LABEL} --sku Standard --allocation-method static --version IPv4 --zone 1 2 3 --query publicIp.ipAddress -o tsv)
 ```
 
-Adja hozzá a --set controller.service.annotations parancsot." service\.beta\.kubernetes\.io/azure-dns-label-name"="<DNS_LABEL>" paraméter. A DNS-címke beállítható a bejövőforgalom-vezérlő első üzembe helyezésekor, vagy később is konfigurálható. Adja hozzá a --set controller.service.loadBalancerIP="<STATIC_IP>" paramétert. Adja meg az előző lépésben létrehozott saját nyilvános IP-címét.
+Ezután hozzáadja az ingress-nginx Helm-adattárat, frissíti a helyi Helm-diagram adattár-gyorsítótárát, és telepíti az ingress-nginx bővítményt a Helmen keresztül. A DNS-címkét a **--set controller.service.annotations beállítással állíthatja be." service\.beta\.kubernetes\.io/azure-dns-label-name"="<DNS_LABEL>"** paraméter a bejövőforgalom-vezérlő vagy újabb telepítésekor. Ebben a példában az előző lépésben létrehozott saját nyilvános IP-címét adja meg a **--set controller.service.loadBalancerIP="<STATIC_IP>" paraméterrel**.
 
-1. Az ingress-nginx Helm-adattár hozzáadása
-
-    ```bash
+```bash
     helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
-    ```
-
-2. Helyi Helm Chart-adattár gyorsítótárának frissítése
-
-    ```bash
     helm repo update
-    ```
-
-3. Telepítse az ingress-nginx bővítményt a Helmen keresztül az alábbiak futtatásával:
-
-    ```bash
     helm upgrade --install --cleanup-on-fail --atomic ingress-nginx ingress-nginx/ingress-nginx \
         --namespace ingress-nginx \
         --create-namespace \
@@ -314,29 +315,29 @@ Adja hozzá a --set controller.service.annotations parancsot." service\.beta\.ku
         --set controller.service.loadBalancerIP=$MY_STATIC_IP \
         --set controller.service.annotations."service\.beta\.kubernetes\.io/azure-load-balancer-health-probe-request-path"=/healthz \
         --wait --timeout 10m0s
-    ```
+```
 
 ## HTTPS-megszakítás hozzáadása egyéni tartományhoz
 
-Az oktatóanyag ezen szakaszában egy NGINX-et használó AKS-webalkalmazással rendelkezik bejövőforgalom-vezérlőként, és egy egyéni tartományt, amellyel hozzáférhet az alkalmazáshoz. A következő lépés egy SSL-tanúsítvány hozzáadása a tartományhoz, hogy a felhasználók biztonságosan elérjék az alkalmazást https-en keresztül.
+Az oktatóanyag ezen szakaszában egy NGINX-et használó AKS-webalkalmazással rendelkezik bejövőforgalom-vezérlőként, valamint egy egyéni tartományt, amellyel hozzáférhet az alkalmazáshoz. A következő lépés egy SSL-tanúsítvány hozzáadása a tartományhoz, hogy a felhasználók biztonságosan elérjék az alkalmazást https-en keresztül.
 
-## A Cert Manager beállítása
+### A Cert Manager beállítása
 
-A HTTPS hozzáadásához a Cert Managert fogjuk használni. A Cert Manager egy nyílt forráskód eszköz, aMellyel SSL-tanúsítványt szerezhet be és kezelhet a Kubernetes-környezetekhez. A Cert Manager számos kiállítótól szerez be tanúsítványokat, mind a népszerű nyilvános kiállítóktól, mind a magánkibocsátóktól, és gondoskodik arról, hogy a tanúsítványok érvényesek és naprakészek legyenek, és a lejárat előtt egy konfigurált időpontban megkísérli megújítani a tanúsítványokat.
+HTTPS hozzáadásához a Cert Managert fogjuk használni. A Cert Manager egy nyílt forráskód eszköz a Kubernetes-üzemelő példányok SSL-tanúsítványainak beszerzéséhez és kezeléséhez. A Cert Manager a népszerű nyilvános kiállítóktól és magánkibocsátóktól szerzi be a tanúsítványokat, gondoskodik arról, hogy a tanúsítványok érvényesek és naprakészek legyenek, és a tanúsítványokat a lejáratuk előtt konfigurált időpontban próbálja meg megújítani.
 
-1. A tanúsítványkezelő telepítéséhez először létre kell hoznunk egy névteret a futtatáshoz. Ez az oktatóanyag telepíti a cert-managert a cert-manager névtérbe. A tanúsítványkezelőt másik névtérben is futtathatja, bár módosítania kell az üzembehelyezési jegyzékeket.
+1. A tanúsítványkezelő telepítéséhez először létre kell hoznunk egy névteret a futtatáshoz. Ez az oktatóanyag telepíti a cert-managert a cert-manager névtérbe. A tanúsítványkezelőt másik névtérben is futtathatja, de módosítania kell az üzembehelyezési jegyzékeket.
 
     ```bash
     kubectl create namespace cert-manager
     ```
 
-2. Most már telepítheti a cert-managert. Minden erőforrás egyetlen YAML-jegyzékfájlban található. Ez az alábbiak futtatásával telepíthető:
+2. Most már telepítheti a cert-managert. Minden erőforrás egyetlen YAML-jegyzékfájlban található. Telepítse a jegyzékfájlt a következő paranccsal:
 
     ```bash
     kubectl apply -f https://github.com/jetstack/cert-manager/releases/download/v1.7.0/cert-manager.crds.yaml
     ```
 
-3. Adja hozzá a certmanager.k8s.io/disable-validation: "true" címkét a cert-manager névtérhez az alábbiak futtatásával. Ez lehetővé teszi, hogy a cert-manager által igényelt rendszererőforrások a TLS-t a saját névterében hozzák létre.
+3. Adja hozzá a `certmanager.k8s.io/disable-validation: "true"` címkét a cert-manager névtérhez az alábbiak futtatásával. Ez lehetővé teszi, hogy a cert-manager által igényelt rendszererőforrások a TLS-t a saját névterében hozzák létre.
 
     ```bash
     kubectl label namespace cert-manager certmanager.k8s.io/disable-validation=true
@@ -344,25 +345,23 @@ A HTTPS hozzáadásához a Cert Managert fogjuk használni. A Cert Manager egy n
 
 ## Tanúsítvány beszerzése Helm-diagramokkal
 
-A Helm egy Kubernetes-üzembehelyezési eszköz az alkalmazások és szolgáltatások Kubernetes-fürtökben való létrehozásának, csomagolásának, konfigurálásának és üzembe helyezésének automatizálásához.
+A Helm egy Kubernetes-üzembehelyezési eszköz, amely automatizálja az alkalmazások és szolgáltatások Létrehozását, csomagolását, konfigurálását és üzembe helyezését a Kubernetes-fürtökben.
 
 A Cert-manager a Helm-diagramokat első osztályú telepítési módszerként biztosítja a Kubernetesen.
 
-1. A Jetstack Helm-adattár hozzáadása
-
-    Ez az adattár a cert-manager diagramok egyetlen támogatott forrása. Vannak más tükrözések és másolatok az interneten keresztül, de ezek teljesen nem hivatalosak, és biztonsági kockázatot jelenthetnek.
+1. Vegye fel a Jetstack Helm adattárat. Ez az adattár a cert-manager diagramok egyetlen támogatott forrása. Vannak más tükrözések és másolatok az interneten keresztül, de ezek nem hivatalosak, és biztonsági kockázatot jelenthetnek.
 
     ```bash
     helm repo add jetstack https://charts.jetstack.io
     ```
 
-2. Helyi Helm Chart-adattár gyorsítótárának frissítése
+2. Frissítse a helyi Helm Chart-adattár gyorsítótárát.
 
     ```bash
     helm repo update
     ```
 
-3. Telepítse a Cert-Manager bővítményt a Helmen keresztül az alábbiak futtatásával:
+3. Telepítse a Cert-Manager bővítményt a Helm használatával.
 
     ```bash
     helm upgrade --install --cleanup-on-fail --atomic \
@@ -372,10 +371,7 @@ A Cert-manager a Helm-diagramokat első osztályú telepítési módszerként bi
         cert-manager jetstack/cert-manager
     ```
 
-4. Tanúsítványkibocsátó YAML-fájl alkalmazása
-
-    A ClusterIssuers olyan Kubernetes-erőforrások, amelyek olyan hitelesítésszolgáltatókat (CA-kat) képviselnek, amelyek tanúsítvány-aláírási kérések teljesítésével képesek aláírt tanúsítványokat létrehozni. Minden tanúsítványkezelő tanúsítványhoz szükség van egy hivatkozott kiállítóra, amely készen áll a kérés teljesítésére.
-    A használt kiállító a következő helyen található: `cluster-issuer-prod.yml file`
+4. A tanúsítványkibocsátó YAML-fájljának alkalmazása. A ClusterIssuers olyan Kubernetes-erőforrások, amelyek olyan hitelesítésszolgáltatókat (CA-kat) képviselnek, amelyek tanúsítvány-aláírási kérések teljesítésével létrehozhatnak aláírt tanúsítványokat. Minden tanúsítványkezelő tanúsítványhoz szükség van egy hivatkozott kiállítóra, amely készen áll a kérés teljesítésére. Megtalálhatja a kiállítót, akiben `cluster-issuer-prod.yaml file`a .
 
     ```bash
     cluster_issuer_variables=$(<cluster-issuer-prod.yaml)
@@ -384,8 +380,8 @@ A Cert-manager a Helm-diagramokat első osztályú telepítési módszerként bi
 
 ## Egyéni tárosztály létrehozása
 
-Az alapértelmezett tárolási osztályok megfelelnek a leggyakoribb forgatókönyveknek, de nem mindegyiknek. Bizonyos esetekben előfordulhat, hogy saját tárolóosztályt szeretne testreszabni a saját paramétereivel. Például a következő jegyzék használatával konfigurálhatja a fájlmegosztás mountOptions parancsait.
-A fileMode és a dirMode alapértelmezett értéke a Kuberneteshez csatlakoztatott fájlmegosztások esetében 0755. A tárolási osztály objektumán különböző csatlakoztatási beállításokat adhat meg.
+Az alapértelmezett tárolási osztályok megfelelnek a leggyakoribb forgatókönyveknek, de nem mindegyiknek. Bizonyos esetekben előfordulhat, hogy saját tárolóosztályt szeretne testreszabni a saját paramétereivel. Például a következő jegyzék használatával konfigurálhatja a **fájlmegosztás mountOptions** parancsait.
+A fileMode és a dirMode** **alapértelmezett értéke **a Kuberneteshez csatlakoztatott fájlmegosztások esetében 0755**.**** A tárolási osztály objektumán különböző csatlakoztatási beállításokat adhat meg.
 
 ```bash
 kubectl apply -f wp-azurefiles-sc.yaml
@@ -393,21 +389,21 @@ kubectl apply -f wp-azurefiles-sc.yaml
 
 ## A WordPress üzembe helyezése az AKS-fürtben
 
-Ebben a dokumentumban egy meglévő, Bitnami által készített Helm-diagramot használunk a WordPresshez. A Bitnami Helm-diagram például a helyi MariaDB-t használja adatbázisként, és felül kell bírálnunk ezeket az értékeket az alkalmazás Azure Database for MySQL-hez való használatához. Az összes felülbírálási érték: Felülbírálhatja az értékeket, és az egyéni beállítások megtalálhatók a fájlban `helm-wp-aks-values.yaml`
+Ebben az oktatóanyagban egy meglévő Helm-diagramot használunk a Bitnami által készített WordPresshez. A Bitnami Helm-diagram egy helyi MariaDB-t használ adatbázisként, ezért felül kell bírálnunk ezeket az értékeket, hogy az alkalmazást az Azure Database for MySQL-hez használhassuk. Felülbírálhatja a fájl értékeit és egyéni beállításait `helm-wp-aks-values.yaml` .
 
-1. Adja hozzá a Wordpress Bitnami Helm-adattárat
+1. Adja hozzá a Wordpress Bitnami Helm-adattárat.
 
     ```bash
     helm repo add bitnami https://charts.bitnami.com/bitnami
     ```
 
-2. Helyi Helm Chart-adattár gyorsítótárának frissítése
+2. Frissítse a helyi Helm-diagramtártár gyorsítótárát.
 
     ```bash
     helm repo update
     ```
 
-3. Telepítse a Wordpress számítási feladatait a Helm-en keresztül a következő futtatásával:
+3. Telepítse a Wordpress számítási feladatait a Helmen keresztül.
 
     ```bash
     helm upgrade --install --cleanup-on-fail \
@@ -426,7 +422,6 @@ Ebben a dokumentumban egy meglévő, Bitnami által készített Helm-diagramot h
     ```
 
 Eredmények:
-
 <!-- expected_similarity=0.3 -->
 ```text
 Release "wordpress" does not exist. Installing it now.
@@ -466,12 +461,12 @@ To access your WordPress site from outside the cluster follow the steps below:
     echo Password: $(kubectl get secret --namespace wordpress wordpress -o jsonpath="{.data.wordpress-password}" | base64 -d)
 ```
 
-## Böngésszen a HTTPS-en keresztül biztonságos AKS-telepítés között
+## Tallózás a HTTPS-en keresztül biztonságos AKS-üzembe helyezés között
 
 Futtassa a következő parancsot az alkalmazás HTTPS-végpontjának lekéréséhez:
 
 > [!NOTE]
-> Gyakran 2-3 percet vesz igénybe az SSL-tanúsítvány propogatása, és körülbelül 5 percig, amíg az összes WordPress POD-replika készen áll, és a webhely teljes mértékben elérhető https-en keresztül.
+> Az SSL-tanúsítvány propagálása gyakran 2-3 percet vesz igénybe, és körülbelül 5 percet vesz igénybe, hogy az összes WordPress POD-replika készen álljon, és a webhely teljes mértékben elérhető legyen https-en keresztül.
 
 ```bash
 runtime="5 minute"
@@ -487,7 +482,7 @@ while [[ $(date -u +%s) -le $endtime ]]; do
 done
 ```
 
-Annak ellenőrzése, hogy a WordPress-tartalom megfelelően van-e kézbesítve.
+Ellenőrizze, hogy a WordPress-tartalom megfelelően van-e kézbesítve a következő paranccsal:
 
 ```bash
 if curl -I -s -f https://$FQDN > /dev/null ; then 
@@ -498,7 +493,6 @@ fi;
 ```
 
 Eredmények:
-
 <!-- expected_similarity=0.3 -->
 ```HTML
 {
@@ -514,8 +508,22 @@ Eredmények:
 }
 ```
 
-A webhely az alábbi URL-címen érhető el:
+Látogasson el a webhelyre a következő URL-címen keresztül:
 
 ```bash
 echo "You can now visit your web server at https://$FQDN"
 ```
+
+## Erőforrások törlése (nem kötelező)
+
+Az Azure-díjak elkerülése érdekében távolítsa el a szükségtelen erőforrásokat. Ha már nincs szüksége a fürtre, az az [group delete](/cli/azure/group#az-group-delete) paranccsal távolítsa el az erőforráscsoportot, a tárolószolgáltatást és az összes kapcsolódó erőforrást. 
+
+> [!NOTE]
+> A fürt törlésekor az AKS-fürt által használt Microsoft Entra szolgáltatásnév nem lesz eltávolítva. A szolgáltatásnév eltávolításának lépéseiért lásd [az AKS-szolgáltatásnevekre vonatkozó szempontokat és a szolgáltatásnevek törlését](../../aks/kubernetes-service-principal.md#other-considerations) ismertető cikket. Ha felügyelt identitást használt, az identitást a platform kezeli, és nem igényel eltávolítást.
+
+## Következő lépések
+
+- Megtudhatja, [hogyan érheti el az AKS-fürt Kubernetes webes irányítópultját](../../aks/kubernetes-dashboard.md)
+- Megtudhatja, [hogyan méretezheti a fürtöt](../../aks/tutorial-kubernetes-scale.md)
+- Ismerje meg, hogyan kezelheti rugalmas [Azure Database for MySQL-kiszolgálópéldányát](./quickstart-create-server-cli.md)
+- Megtudhatja, hogyan konfigurálhatja az [adatbázis-kiszolgáló kiszolgálóparamétereit](./how-to-configure-server-parameters-cli.md)
