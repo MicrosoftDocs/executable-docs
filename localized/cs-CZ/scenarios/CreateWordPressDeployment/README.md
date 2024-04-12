@@ -1,18 +1,35 @@
 ---
-title: Nasazení škálovatelné a zabezpečené instance WordPressu v AKS
-description: 'V tomto kurzu se dozvíte, jak nasadit škálovatelnou a zabezpečenou instanci WordPressu v AKS prostřednictvím rozhraní příkazového řádku.'
-author: adrian.joian
-ms.author: adrian.joian
-ms.topic: article
-ms.date: 12/06/2023
-ms.custom: innovation-engine
+title: 'Kurz: Nasazení WordPressu v clusteru AKS pomocí Azure CLI'
+description: 'Zjistěte, jak rychle sestavit a nasadit WordPress v AKS pomocí flexibilního serveru Azure Database for MySQL.'
+ms.service: mysql
+ms.subservice: flexible-server
+author: mksuni
+ms.author: sumuth
+ms.topic: tutorial
+ms.date: 3/20/2024
+ms.custom: 'vc, devx-track-azurecli, innovation-engine, linux-related-content'
 ---
 
-# Rychlý start: Nasazení škálovatelné a zabezpečené instance WordPressu v AKS
+# Kurz: Nasazení aplikace WordPress v AKS s flexibilním serverem Azure Database for MySQL
+
+[!INCLUDE[applies-to-mysql-flexible-server](../includes/applies-to-mysql-flexible-server.md)]
 
 [![Nasazení do Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262843)
 
-Vítejte v tomto kurzu, kde vás provedeme krok za krokem při vytváření webové aplikace Azure Kubernetes, která je zabezpečená přes https. V tomto kurzu se předpokládá, že jste už přihlášení k Azure CLI a vybrali jste předplatné, které se má použít s rozhraním příkazového řádku. Předpokládá se také, že máte nainstalovaný Helm ([pokyny najdete tady](https://helm.sh/docs/intro/install/)).
+V tomto kurzu nasadíte škálovatelnou aplikaci WordPress zabezpečenou přes HTTPS v clusteru Azure Kubernetes Service (AKS) s flexibilním serverem Azure Database for MySQL pomocí Azure CLI.
+**[AKS](../../aks/intro-kubernetes.md)** je spravovaná služba Kubernetes, která umožňuje rychle nasazovat a spravovat clustery. **[Flexibilní server](overview.md)** Azure Database for MySQL je plně spravovaná databázová služba navržená tak, aby poskytovala podrobnější kontrolu a flexibilitu nad funkcemi správy databází a nastavením konfigurace.
+
+> [!NOTE]
+> V tomto kurzu se předpokládá základní znalost konceptů Kubernetes, WordPressu a MySQL.
+
+[!INCLUDE [flexible-server-free-trial-note](../includes/flexible-server-free-trial-note.md)]
+
+## Požadavky 
+
+Než začnete, ujistěte se, že jste přihlášeni k Azure CLI a vybrali předplatné, které se má použít s rozhraním příkazového řádku. Ujistěte se, že máte [nainstalovaný](https://helm.sh/docs/intro/install/) Helm.
+
+> [!NOTE]
+> Pokud příkazy v tomto kurzu spouštíte místně místo Azure Cloud Shellu, spusťte příkazy jako správce.
 
 ## Definování proměnných prostředí
 
@@ -43,7 +60,7 @@ export FQDN="${MY_DNS_LABEL}.${REGION}.cloudapp.azure.com"
 
 ## Vytvoření skupiny zdrojů
 
-Skupina prostředků je kontejner pro související prostředky. Všechny prostředky musí být umístěné ve skupině prostředků. Pro účely tohoto kurzu ho vytvoříme. Následující příkaz vytvoří skupinu prostředků s dříve definovanými parametry $MY_RESOURCE_GROUP_NAME a $REGION.
+Skupina prostředků Azure je logická skupina, ve které se nasazují a spravují prostředky Azure. Všechny prostředky musí být umístěné ve skupině prostředků. Následující příkaz vytvoří skupinu prostředků s dříve definovanými `$MY_RESOURCE_GROUP_NAME` parametry a `$REGION` parametry.
 
 ```bash
 az group create \
@@ -52,7 +69,6 @@ az group create \
 ```
 
 Výsledky:
-
 <!-- expected_similarity=0.3 -->
 ```json
 {
@@ -67,6 +83,9 @@ Výsledky:
   "type": "Microsoft.Resources/resourceGroups"
 }
 ```
+
+> [!NOTE]
+> Umístění skupiny prostředků je místo, kde jsou uložena metadata skupiny prostředků. Pokud během vytváření prostředků nezadáte jinou oblast, je to také místo, kde se vaše prostředky spouštějí v Azure.
 
 ## Vytvoření virtuální sítě a podsítě
 
@@ -83,7 +102,6 @@ az network vnet create \
 ```
 
 Výsledky:
-
 <!-- expected_similarity=0.3 -->
 ```json
 {
@@ -118,9 +136,9 @@ Výsledky:
 }
 ```
 
-## Vytvoření flexibilního serveru Azure Database for MySQL
+## Vytvoření instance flexibilního serveru Azure Database for MySQL
 
-Flexibilní server Azure Database for MySQL je spravovaná služba, kterou můžete použít ke spouštění, správě a škálování vysoce dostupných serverů MySQL v cloudu. Vytvořte flexibilní server pomocí [příkazu az mysql flexible-server create](https://learn.microsoft.com/cli/azure/mysql/flexible-server#az-mysql-flexible-server-create) . Server může obsahovat více databází. Následující příkaz vytvoří server s použitím výchozích hodnot služby a proměnných z místního prostředí Azure CLI:
+Flexibilní server Azure Database for MySQL je spravovaná služba, kterou můžete použít ke spouštění, správě a škálování vysoce dostupných serverů MySQL v cloudu. Vytvořte instanci flexibilního serveru Azure Database for MySQL pomocí [příkazu az mysql flexible-server create](/cli/azure/mysql/flexible-server) . Server může obsahovat více databází. Následující příkaz vytvoří server s použitím výchozích hodnot služby a proměnných z místního kontextu Azure CLI:
 
 ```bash
 echo "Your MySQL user $MY_MYSQL_ADMIN_USERNAME password is: $MY_WP_ADMIN_PW" 
@@ -149,7 +167,6 @@ az mysql flexible-server create \
 ```
 
 Výsledky:
-
 <!-- expected_similarity=0.3 -->
 ```json
 {
@@ -167,14 +184,15 @@ Výsledky:
 
 Vytvořený server má následující atributy:
 
-- Název serveru, uživatelské jméno správce, heslo správce, název skupiny prostředků, umístění jsou již zadané v místním kontextovém prostředí cloud shellu a vytvoří se ve stejném umístění jako skupina prostředků a další komponenty Azure.
-- Výchozí nastavení služby pro zbývající konfigurace serveru: výpočetní úroveň (burstable), velikost výpočetních prostředků/skladová položka (Standard_B2s), doba uchovávání záloh (7 dnů) a MySQL verze (8.0.21)
+- Při prvním zřízení serveru se vytvoří nová prázdná databáze.
+- Název serveru, uživatelské jméno správce, heslo správce, název skupiny prostředků a umístění jsou již zadané v místním kontextovém prostředí cloud shellu a jsou ve stejném umístění jako vaše skupina prostředků a další komponenty Azure.
+- Výchozí nastavení služby pro zbývající konfigurace serveru jsou výpočetní úroveň (burstable), velikost výpočetních prostředků a skladová položka (Standard_B2s), doba uchovávání záloh (sedm dnů) a MySQL verze (8.0.21).
 - Výchozí metoda připojení je privátní přístup (integrace virtuální sítě) s propojenou virtuální sítí a automaticky vygenerovanou podsítí.
 
 > [!NOTE]
-> Po vytvoření serveru nelze změnit metodu připojení. Pokud jste například vybrali `Private access (VNet Integration)` během vytváření, nemůžete po vytvoření změnit.`Public access (allowed IP addresses)` Důrazně doporučujeme vytvořit server s privátním přístupem pro bezpečný přístup k vašemu serveru pomocí integrace virtuální sítě. Další informace o privátním přístupu najdete v [článku](https://learn.microsoft.com/azure/mysql/flexible-server/concepts-networking-vnet) o konceptech.
+> Po vytvoření serveru nelze změnit metodu připojení. Pokud jste například vybrali `Private access (VNet Integration)` během vytváření, nemůžete po vytvoření přejít na `Public access (allowed IP addresses)` . Důrazně doporučujeme vytvořit server s privátním přístupem pro bezpečný přístup k vašemu serveru pomocí integrace virtuální sítě. Další informace o privátním přístupu najdete v [článku](./concepts-networking-vnet.md) o konceptech.
 
-Pokud chcete změnit výchozí hodnoty, projděte si referenční dokumentaci[ k Azure CLI](https://learn.microsoft.com/cli/azure//mysql/flexible-server), kde najdete úplný seznam konfigurovatelných parametrů rozhraní příkazového řádku.
+Pokud chcete změnit výchozí hodnoty, projděte si referenční dokumentaci[ k Azure CLI](/cli/azure//mysql/flexible-server), kde najdete úplný seznam konfigurovatelných parametrů rozhraní příkazového řádku.
 
 ## Kontrola stavu flexibilního serveru Azure Database for MySQL
 
@@ -188,11 +206,11 @@ runtime="10 minute"; endtime=$(date -ud "$runtime" +%s); while [[ $(date -u +%s)
 
 Konfiguraci flexibilního serveru Azure Database for MySQL můžete spravovat pomocí parametrů serveru. Parametry serveru se při vytváření serveru konfigurují s výchozí a doporučenou hodnotou.
 
-Zobrazení podrobností parametru serveru Pro zobrazení podrobností o konkrétním parametru pro server spusťte [příkaz az mysql flexible-server show](https://learn.microsoft.com/cli/azure/mysql/flexible-server/parameter) .
+Pokud chcete zobrazit podrobnosti o konkrétním parametru pro server, spusťte [příkaz az mysql flexible-server parameter show](/cli/azure/mysql/flexible-server/parameter) .
 
 ### Zakázání parametru připojení SSL flexibilního serveru azure Database for MySQL pro integraci WordPressu
 
-Můžete také upravit hodnotu určitých parametrů serveru, které aktualizují základní konfigurační hodnoty pro serverový stroj MySQL. Pokud chcete aktualizovat parametr serveru, použijte [příkaz az mysql flexible-server parameter set](https://learn.microsoft.com/cli/azure/mysql/flexible-server/parameter#az-mysql-flexible-server-parameter-set) .
+Můžete také upravit hodnotu určitých parametrů serveru tak, aby se aktualizovaly základní konfigurační hodnoty pro serverový stroj MySQL. Pokud chcete aktualizovat parametr serveru, použijte [příkaz az mysql flexible-server parameter set](/cli/azure/mysql/flexible-server/parameter#az-mysql-flexible-server-parameter-set) .
 
 ```bash
 az mysql flexible-server parameter set \
@@ -202,7 +220,6 @@ az mysql flexible-server parameter set \
 ```
 
 Výsledky:
-
 <!-- expected_similarity=0.3 -->
 ```json
 {
@@ -225,9 +242,9 @@ Výsledky:
 
 ## Vytvoření clusteru AKS
 
-Vytvořte cluster AKS pomocí příkazu az aks create s parametrem monitorování --enable-addons, který povolí Container Insights. Následující příklad vytvoří cluster s povoleným automatickým škálováním a zónou dostupnosti myAKSCluster:
+Pokud chcete vytvořit cluster AKS s kontejnerem Přehledy, použijte [příkaz az aks create](/cli/azure/aks#az-aks-create) s parametrem **monitorování --enable-addons**. Následující příklad vytvoří cluster s podporou automatického škálování a zóny dostupnosti s názvem **myAKSCluster**:
 
-To bude trvat několik minut.
+Tato akce trvá několik minut.
 
 ```bash
 export MY_SN_ID=$(az network vnet subnet list --resource-group $MY_RESOURCE_GROUP_NAME --vnet-name $MY_VNET_NAME --query "[0].id" --output tsv)
@@ -251,62 +268,46 @@ az aks create \
     --dns-service-ip 10.255.0.10 \
     --zones 1 2 3
 ```
+> [!NOTE]
+> Při vytváření clusteru AKS se automaticky vytvoří druhá skupina prostředků pro ukládání prostředků AKS. Přečtěte si, [proč se v AKS vytvářejí dvě skupiny prostředků?](../../aks/faq.md#why-are-two-resource-groups-created-with-aks)
 
 ## Připojení ke clusteru
 
-Ke správě clusteru Kubernetes použijte klienta příkazového řádku Kubernetes kubectl. Kubectl je už nainstalovaný, pokud používáte Azure Cloud Shell.
+Ke správě clusteru Kubernetes použijte klienta příkazového řádku Kubernetes [kubectl](https://kubernetes.io/docs/reference/kubectl/overview/). Pokud používáte Azure Cloud Shell, `kubectl` je už nainstalovaný. Následující příklad se nainstaluje `kubectl` místně pomocí [příkazu az aks install-cli](/cli/azure/aks#az-aks-install-cli) . 
 
-1. Místní instalace az aks CLI pomocí příkazu az aks install-cli
-
-    ```bash
+ ```bash
     if ! [ -x "$(command -v kubectl)" ]; then az aks install-cli; fi
-    ```
+```
 
-2. Pomocí příkazu az aks get-credentials nakonfigurujte kubectl pro připojení ke clusteru Kubernetes. Následující příkaz:
+Dále nakonfigurujte `kubectl` připojení ke clusteru Kubernetes pomocí [příkazu az aks get-credentials](/cli/azure/aks#az-aks-get-credentials) . Tento příkaz stáhne přihlašovací údaje a nakonfiguruje rozhraní příkazového řádku Kubernetes tak, aby je používalo. Příkaz používá `~/.kube/config`výchozí umístění konfiguračního [souboru](https://kubernetes.io/docs/concepts/configuration/organize-cluster-access-kubeconfig/) Kubernetes. Pomocí argumentu **--file** můžete pro konfigurační soubor Kubernetes zadat jiné umístění.
 
-    - Stáhne přihlašovací údaje a nakonfiguruje rozhraní příkazového řádku Kubernetes tak, aby je používalo.
-    - Používá ~/.kube/config, výchozí umístění konfiguračního souboru Kubernetes. Pomocí argumentu --file zadejte jiné umístění konfiguračního souboru Kubernetes.
+> [!WARNING]
+> Tento příkaz přepíše všechny existující přihlašovací údaje se stejnou položkou.
 
-    > [!WARNING]
-    > Tím se přepíše všechny existující přihlašovací údaje se stejnou položkou.
+```bash
+az aks get-credentials --resource-group $MY_RESOURCE_GROUP_NAME --name $MY_AKS_CLUSTER_NAME --overwrite-existing
+```
 
-    ```bash
-    az aks get-credentials --resource-group $MY_RESOURCE_GROUP_NAME --name $MY_AKS_CLUSTER_NAME --overwrite-existing
-    ```
+Pokud chcete ověřit připojení ke clusteru, použijte příkaz [kubectl get]( https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands#get), který vrátí seznam uzlů clusteru.
 
-3. Pomocí příkazu kubectl get ověřte připojení ke clusteru. Tento příkaz vrátí seznam uzlů clusteru.
-
-    ```bash
-    kubectl get nodes
-    ```
+```bash
+kubectl get nodes
+```
 
 ## Instalace kontroleru příchozího přenosu dat NGINX
 
 Kontroler příchozího přenosu dat můžete nakonfigurovat se statickou veřejnou IP adresou. Statická veřejná IP adresa zůstane, pokud odstraníte kontroler příchozího přenosu dat. IP adresa nezůstane, pokud odstraníte cluster AKS.
-Při upgradu kontroleru příchozího přenosu dat musíte předat do verze Helm parametr, aby služba kontroleru příchozího přenosu dat věděla o nástroji pro vyrovnávání zatížení, který bude přidělen. Aby certifikáty HTTPS fungovaly správně, pomocí popisku DNS nakonfigurujete plně kvalifikovaný název domény pro IP adresu kontroleru příchozího přenosu dat.
-Plně kvalifikovaný název domény by měl vypadat takto: $MY_DNS_LABEL. AZURE_REGION_NAME.cloudapp.azure.com.
+Při upgradu kontroleru příchozího přenosu dat musíte předat do verze Helm parametr, aby služba kontroleru příchozího přenosu dat věděla o nástroji pro vyrovnávání zatížení, který bude přidělen. Aby certifikáty HTTPS fungovaly správně, použijte popisek DNS ke konfiguraci plně kvalifikovaného názvu domény (FQDN) pro IP adresu kontroleru příchozího přenosu dat. Plně kvalifikovaný název domény by měl vypadat takto: $MY_DNS_LABEL. AZURE_REGION_NAME.cloudapp.azure.com.
 
 ```bash
 export MY_STATIC_IP=$(az network public-ip create --resource-group MC_${MY_RESOURCE_GROUP_NAME}_${MY_AKS_CLUSTER_NAME}_${REGION} --location ${REGION} --name ${MY_PUBLIC_IP_NAME} --dns-name ${MY_DNS_LABEL} --sku Standard --allocation-method static --version IPv4 --zone 1 2 3 --query publicIp.ipAddress -o tsv)
 ```
 
-Přidejte --set controller.service.annotations." service\.beta\.kubernetes\.io/azure-dns-label-name"="<DNS_LABEL>" parametr. Popisek DNS lze nastavit buď při prvním nasazení kontroleru příchozího přenosu dat, nebo je možné ho nakonfigurovat později. Přidejte parametr --set controller.service.loadBalancerIP="<STATIC_IP>". Zadejte vlastní veřejnou IP adresu vytvořenou v předchozím kroku.
+Dále přidáte úložiště Helm ingress-nginx, aktualizujete místní mezipaměť úložiště Helm Chart a prostřednictvím Helmu nainstalujete doplněk ingress-nginx. Popisek DNS můžete nastavit pomocí **--set controller.service.annotations. service\.beta\.kubernetes\.io/azure-dns-label-name"="<DNS_LABEL>"** parametr buď při prvním nasazení kontroleru příchozího přenosu dat, nebo novějším. V tomto příkladu zadáte vlastní veřejnou IP adresu, kterou jste vytvořili v předchozím kroku pomocí parametru ****--set controller.service.loadBalancerIP="<STATIC_IP>".
 
-1. Přidání úložiště Helm ingress-nginx
-
-    ```bash
+```bash
     helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
-    ```
-
-2. Aktualizace místní mezipaměti úložiště Helm Chart
-
-    ```bash
     helm repo update
-    ```
-
-3. Nainstalujte doplněk ingress-nginx přes Helm spuštěním následujícího příkazu:
-
-    ```bash
     helm upgrade --install --cleanup-on-fail --atomic ingress-nginx ingress-nginx/ingress-nginx \
         --namespace ingress-nginx \
         --create-namespace \
@@ -314,29 +315,29 @@ Přidejte --set controller.service.annotations." service\.beta\.kubernetes\.io/a
         --set controller.service.loadBalancerIP=$MY_STATIC_IP \
         --set controller.service.annotations."service\.beta\.kubernetes\.io/azure-load-balancer-health-probe-request-path"=/healthz \
         --wait --timeout 10m0s
-    ```
+```
 
 ## Přidání ukončení protokolu HTTPS do vlastní domény
 
-V tomto okamžiku v kurzu máte webovou aplikaci AKS s NGINX jako kontrolerem příchozího přenosu dat a vlastní doménou, kterou můžete použít pro přístup k aplikaci. Dalším krokem je přidání certifikátu SSL do domény, aby se uživatelé mohli k vaší aplikaci bezpečně dostat přes https.
+V tomto okamžiku v kurzu máte webovou aplikaci AKS s NGINX jako kontrolerem příchozího přenosu dat a vlastní doménu, kterou můžete použít pro přístup k aplikaci. Dalším krokem je přidání certifikátu SSL do domény, aby se uživatelé mohli k vaší aplikaci bezpečně dostat přes https.
 
-## Nastavení správce certifikátů
+### Nastavení správce certifikátů
 
-Abychom mohli přidat HTTPS, použijeme Správce certifikátů. Cert Manager je opensourcový nástroj používaný k získání a správě certifikátu SSL pro nasazení Kubernetes. Správce certifikátů získá certifikáty od různých vystavitelů, oblíbených veřejných vystavitelů i privátních vystavitelů a zajistí, že certifikáty jsou platné a aktuální, a pokusí se obnovit certifikáty v nakonfigurované době před vypršením platnosti.
+Pokud chcete přidat HTTPS, použijeme Správce certifikátů. Cert Manager je opensourcový nástroj pro získávání a správu certifikátů SSL pro nasazení Kubernetes. Cert Manager získává certifikáty od oblíbených veřejných vystavitelů a privátních vystavitelů, zajišťuje, že certifikáty jsou platné a aktuální, a pokusí se obnovit certifikáty v nakonfigurovaný čas před vypršením jejich platnosti.
 
-1. Abychom mohli nainstalovat nástroj cert-manager, musíme nejprve vytvořit obor názvů pro jeho spuštění. Tento kurz nainstaluje nástroj cert-manager do oboru názvů cert-manager. Nástroj cert-manager je možné spustit v jiném oboru názvů, i když budete muset provést změny manifestů nasazení.
+1. Abychom mohli nainstalovat nástroj cert-manager, musíme nejprve vytvořit obor názvů pro jeho spuštění. Tento kurz nainstaluje nástroj cert-manager do oboru názvů cert-manager. Nástroj cert-manager můžete spustit v jiném oboru názvů, ale musíte provést změny manifestů nasazení.
 
     ```bash
     kubectl create namespace cert-manager
     ```
 
-2. Teď můžeme nainstalovat nástroj cert-manager. Všechny prostředky jsou součástí jednoho souboru manifestu YAML. Můžete ho nainstalovat spuštěním následujícího příkazu:
+2. Teď můžeme nainstalovat nástroj cert-manager. Všechny prostředky jsou součástí jednoho souboru manifestu YAML. Nainstalujte soubor manifestu pomocí následujícího příkazu:
 
     ```bash
     kubectl apply -f https://github.com/jetstack/cert-manager/releases/download/v1.7.0/cert-manager.crds.yaml
     ```
 
-3. Přidejte popisek certmanager.k8s.io/disable-validation: true do oboru názvů cert-manager spuštěním následujícího příkazu. To umožní systémovým prostředkům, které cert-manager vyžaduje, aby se protokol TLS bootstrap vytvořil ve vlastním oboru názvů.
+3. `certmanager.k8s.io/disable-validation: "true"` Přidejte popisek do oboru názvů cert-manager spuštěním následujícího příkazu. To umožňuje systémovým prostředkům, které cert-manager vyžaduje, aby se protokol TLS bootstrap vytvořil ve vlastním oboru názvů.
 
     ```bash
     kubectl label namespace cert-manager certmanager.k8s.io/disable-validation=true
@@ -344,25 +345,23 @@ Abychom mohli přidat HTTPS, použijeme Správce certifikátů. Cert Manager je 
 
 ## Získání certifikátu prostřednictvím chartů Helm
 
-Helm je nástroj pro nasazení Kubernetes pro automatizaci vytváření, balení, konfigurace a nasazování aplikací a služeb do clusterů Kubernetes.
+Helm je nástroj pro nasazení Kubernetes pro automatizaci vytváření, balení, konfigurace a nasazení aplikací a služeb do clusterů Kubernetes.
 
 Cert-manager poskytuje charty Helm jako prvotřídní metodu instalace v Kubernetes.
 
-1. Přidání úložiště Jetstack Helm
-
-    Toto úložiště je jediným podporovaným zdrojem grafů cert-manageru. Existují další zrcadla a kopie po internetu, ale ty jsou zcela neoficiální a můžou představovat bezpečnostní riziko.
+1. Přidejte úložiště Jetstack Helm. Toto úložiště je jediným podporovaným zdrojem grafů cert-manageru. Existují další zrcadla a kopie po internetu, ale ty jsou neoficiální a můžou představovat bezpečnostní riziko.
 
     ```bash
     helm repo add jetstack https://charts.jetstack.io
     ```
 
-2. Aktualizace místní mezipaměti úložiště Helm Chart
+2. Aktualizujte místní mezipaměť úložiště Helm Chart.
 
     ```bash
     helm repo update
     ```
 
-3. Nainstalujte doplněk Cert-Manager přes Helm spuštěním následujícího příkazu:
+3. Nainstalujte doplněk Cert-Manager přes Helm.
 
     ```bash
     helm upgrade --install --cleanup-on-fail --atomic \
@@ -372,10 +371,7 @@ Cert-manager poskytuje charty Helm jako prvotřídní metodu instalace v Kuberne
         cert-manager jetstack/cert-manager
     ```
 
-4. Použití souboru YAML vystavitele certifikátu
-
-    ClusterIssuers jsou prostředky Kubernetes, které představují certifikační autority (CA), které můžou generovat podepsané certifikáty tím, že dodržují žádosti o podepsání certifikátu. Všechny certifikáty cert-manager vyžadují odkazovaného vystavitele, který je v připravené podmínce, aby se pokusil požadavek respektovat.
-    Vystavitel, který používáme, najdete v části `cluster-issuer-prod.yml file`
+4. Použijte soubor YAML vystavitele certifikátu. ClusterIssuers jsou prostředky Kubernetes, které představují certifikační autority(CA), které můžou generovat podepsané certifikáty tím, že dodržují žádosti o podepsání certifikátu. Všechny certifikáty cert-manager vyžadují odkazovaného vystavitele, který je v připravené podmínce, aby se pokusil požadavek respektovat. Můžete najít vystavitele, který jsme v sadě `cluster-issuer-prod.yaml file`.
 
     ```bash
     cluster_issuer_variables=$(<cluster-issuer-prod.yaml)
@@ -384,8 +380,8 @@ Cert-manager poskytuje charty Helm jako prvotřídní metodu instalace v Kuberne
 
 ## Vytvoření vlastní třídy úložiště
 
-Výchozí třídy úložiště odpovídají nejběžnějším scénářům, ale ne všem. V některých případech můžete chtít mít vlastní třídu úložiště přizpůsobenou vlastními parametry. Například pomocí následujícího manifestu nakonfigurujte připojeníOptions sdílené složky.
-Výchozí hodnota pro fileMode a dirMode je 0755 pro připojené sdílené složky Kubernetes. U objektu třídy úložiště můžete zadat různé možnosti připojení.
+Výchozí třídy úložiště odpovídají nejběžnějším scénářům, ale ne všem. V některých případech můžete chtít mít vlastní třídu úložiště přizpůsobenou vlastními parametry. Například pomocí následujícího manifestu **nakonfigurujte připojeníOptions** sdílené složky.
+Výchozí hodnota pro **fileMode** a **dirMode** je **0755** pro připojené sdílené složky Kubernetes. U objektu třídy úložiště můžete zadat různé možnosti připojení.
 
 ```bash
 kubectl apply -f wp-azurefiles-sc.yaml
@@ -393,21 +389,21 @@ kubectl apply -f wp-azurefiles-sc.yaml
 
 ## Nasazení WordPressu do clusteru AKS
 
-Pro tento dokument používáme existující Chart Helm pro WordPress vytvořený Bitnami. Například chart Bitnami Helm používá jako databázi místní MariaDB a potřebujeme tyto hodnoty přepsat, aby se aplikace používala se službou Azure Database for MySQL. Všechny hodnoty přepsání Můžete přepsat hodnoty a vlastní nastavení najdete v souboru. `helm-wp-aks-values.yaml`
+Pro účely tohoto kurzu používáme existující chart Helm pro WordPress vytvořený nástrojem Bitnami. Chart Bitnami Helm používá jako databázi místní MariaDB, takže musíme tyto hodnoty přepsat, aby se aplikace používala se službou Azure Database for MySQL. Můžete přepsat hodnoty a vlastní nastavení `helm-wp-aks-values.yaml` souboru.
 
-1. Přidání úložiště Wordpress Bitnami Helm
+1. Přidejte úložiště Wordpress Bitnami Helm.
 
     ```bash
     helm repo add bitnami https://charts.bitnami.com/bitnami
     ```
 
-2. Aktualizace místní mezipaměti úložiště Helm Chart
+2. Aktualizujte místní mezipaměť úložiště chartů Helm.
 
     ```bash
     helm repo update
     ```
 
-3. Nainstalujte úlohu Wordpressu přes Helm spuštěním následujícího příkazu:
+3. Nainstalujte úlohu Wordpressu přes Helm.
 
     ```bash
     helm upgrade --install --cleanup-on-fail \
@@ -426,7 +422,6 @@ Pro tento dokument používáme existující Chart Helm pro WordPress vytvořen�
     ```
 
 Výsledky:
-
 <!-- expected_similarity=0.3 -->
 ```text
 Release "wordpress" does not exist. Installing it now.
@@ -466,12 +461,12 @@ To access your WordPress site from outside the cluster follow the steps below:
     echo Password: $(kubectl get secret --namespace wordpress wordpress -o jsonpath="{.data.wordpress-password}" | base64 -d)
 ```
 
-## Procházení nasazení AKS zabezpečeného přes PROTOKOL HTTPS
+## Procházení nasazení AKS zabezpečeného přes HTTPS
 
 Spuštěním následujícího příkazu získejte koncový bod HTTPS pro vaši aplikaci:
 
 > [!NOTE]
-> Často trvá 2 až 3 minuty, než certifikát SSL propogateuje a přibližně 5 minut bude mít všechny repliky POD WordPressu připravené a web bude plně dostupný přes https.
+> Často trvá 2 až 3 minuty, než se certifikát SSL rozšíří a přibližně 5 minut bude mít všechny repliky podu WordPress připravené a web bude plně dostupný přes https.
 
 ```bash
 runtime="5 minute"
@@ -487,7 +482,7 @@ while [[ $(date -u +%s) -le $endtime ]]; do
 done
 ```
 
-Kontrola správného doručení obsahu WordPressu
+Pomocí následujícího příkazu zkontrolujte, jestli je obsah WordPressu správně doručen:
 
 ```bash
 if curl -I -s -f https://$FQDN > /dev/null ; then 
@@ -498,7 +493,6 @@ fi;
 ```
 
 Výsledky:
-
 <!-- expected_similarity=0.3 -->
 ```HTML
 {
@@ -514,8 +508,22 @@ Výsledky:
 }
 ```
 
-Web můžete navštívit pomocí následující adresy URL:
+Navštivte web prostřednictvím následující adresy URL:
 
 ```bash
 echo "You can now visit your web server at https://$FQDN"
 ```
+
+## Vyčištění prostředků (volitelné)
+
+Abyste se vyhnuli poplatkům za Azure, měli byste vyčistit nepotřebné prostředky. Pokud už cluster nepotřebujete, pomocí [příkazu az group delete](/cli/azure/group#az-group-delete) odeberte skupinu prostředků, službu kontejneru a všechny související prostředky. 
+
+> [!NOTE]
+> Při odstranění clusteru se neodebere instanční objekt Microsoft Entra používaný clusterem AKS. Postup odebrání instančního objektu najdete v tématu věnovaném [aspektům instančního objektu AKS a jeho odstranění](../../aks/kubernetes-service-principal.md#other-considerations). Pokud jste použili spravovanou identitu, identita se spravuje platformou a nevyžaduje odebrání.
+
+## Další kroky
+
+- Zjistěte, jak získat přístup k [webovému řídicímu panelu](../../aks/kubernetes-dashboard.md) Kubernetes pro cluster AKS.
+- Informace o [škálování clusteru](../../aks/tutorial-kubernetes-scale.md)
+- Informace o správě [instance flexibilního serveru Azure Database for MySQL](./quickstart-create-server-cli.md)
+- Informace o [konfiguraci parametrů](./how-to-configure-server-parameters-cli.md) serveru pro databázový server

@@ -1,31 +1,40 @@
 ---
-title: Instalace zásobníku LEMP v Azure
-description: 'V tomto kurzu se dozvíte, jak nainstalovat zásobník LEMP v Azure.'
-author: mbifeld
-ms.author: mbifeld
-ms.topic: article
-ms.date: 11/28/2023
-ms.custom: innovation-engine
+title: Kurz – Nasazení zásobníku LEMP pomocí WordPressu na virtuálním počítači
+description: 'V tomto kurzu se dozvíte, jak nainstalovat zásobník LEMP a WordPress na virtuální počítač s Linuxem v Azure.'
+author: chasecrum
+ms.collection: linux
+ms.service: virtual-machines
+ms.devlang: azurecli
+ms.custom: 'innovation-engine, linux-related-content, devx-track-azurecli'
+ms.topic: tutorial
+ms.date: 2/29/2024
+ms.author: chasecrum
+ms.reviewer: jushim
 ---
 
-# Instalace zásobníku LEMP v Azure
+# Kurz: Instalace zásobníku LEMP na virtuálním počítači Azure s Linuxem
 
-[![Nasazení do Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2263118)
+**Platí pro:** :heavy_check_mark: virtuální počítače s Linuxem
 
+[![Nasazení do Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#view/Microsoft_Azure_CloudNative/SubscriptionSelectionPage.ReactView/tutorialKey/CreateLinuxVMLAMP)
 
 Tento článek vás provede nasazením webového serveru NGINX, flexibilního serveru Azure MySQL a PHP (zásobník LEMP) na virtuálním počítači s Ubuntu Linuxem v Azure. Pokud chcete zobrazit server LEMP v akci, můžete volitelně nainstalovat a nakonfigurovat web WordPress. V tomto kurzu se naučíte:
 
 > [!div class="checklist"]
-
-> * Vytvoření virtuálního počítače s Ubuntu s Linuxem
+>
+> * Vytvoření virtuálního počítače s Ubuntu
 > * Otevření portů 80 a 443 pro webový provoz
 > * Instalace a zabezpečení serveru NGINX, flexibilního serveru MySQL Azure a PHP
 > * Ověření instalace a konfigurace
-> * Instalace WordPressu
+> * Instalace WordPressu Toto nastavení je určené pro rychlé testy nebo testování konceptu. Další informace o zásobníku LEMP, včetně doporučení pro produkční prostředí, najdete v [dokumentaci](https://help.ubuntu.com/community/ApacheMySQLPHP) k Ubuntu.
+
+V tomto kurzu se používá rozhraní příkazového řádku v Azure Cloud Shellu[](../../cloud-shell/overview.md), které se neustále aktualizuje na nejnovější verzi. Cloud Shell otevřete tak, že v horní části libovolného bloku kódu vyberete **Vyzkoušet** .
+
+Pokud se rozhodnete nainstalovat a používat rozhraní příkazového řádku místně, musíte mít Azure CLI verze 2.0.30 nebo novější. Najděte verzi spuštěním `az --version` příkazu. Pokud potřebujete instalaci nebo upgrade, přečtěte si téma [Instalace Azure CLI]( /cli/azure/install-azure-cli).
 
 ## Deklarace proměnné
 
-Nejprve definujeme několik proměnných, které vám pomůžou s konfigurací úlohy LEMP.
+Nejprve musíme definovat několik proměnných, které pomáhají s konfigurací úlohy LEMP.
 
 ```bash
 export NETWORK_PREFIX="$(($RANDOM % 254 + 1))"
@@ -55,13 +64,15 @@ export MY_AZURE_USER=$(az account show --query user.name --output tsv)
 export FQDN="${MY_DNS_LABEL}.${REGION}.cloudapp.azure.com"
 ```
 
-<!--```bash
+<!--
+```bash
 export MY_AZURE_USER_ID=$(az ad user list --filter "mail eq '$MY_AZURE_USER'" --query "[0].id" -o tsv)
-```-->
+```
+-->
 
-## Vytvoření skupiny prostředků
+## Vytvoření skupiny zdrojů
 
-Vytvořte skupinu prostředků pomocí příkazu [az group create](https://learn.microsoft.com/cli/azure/group#az-group-create). Skupina prostředků Azure je logický kontejner, ve kterém se nasazují a spravují prostředky Azure.
+Vytvořte skupinu prostředků pomocí příkazu [az group create](/cli/azure/group#az-group-create). Skupina prostředků Azure je logický kontejner, ve kterém se nasazují a spravují prostředky Azure.
 Následující příklad vytvoří skupinu prostředků s názvem `$MY_RESOURCE_GROUP_NAME` v umístění `eastus`.
 
 ```bash
@@ -92,7 +103,7 @@ Výsledky:
 ## Vytvoření služby Azure Virtual Network
 
 Virtuální síť je základním stavebním blokem privátních sítí v Azure. Azure Virtual Network umožňuje prostředkům Azure, jako jsou virtuální počítače, bezpečně komunikovat mezi sebou a internetem.
-Pomocí [příkazu az network vnet create](https://learn.microsoft.com/cli/azure/network/vnet#az-network-vnet-create) vytvořte virtuální síť s názvem `$MY_VNET_NAME` podsíť `$MY_SN_NAME` ve `$MY_RESOURCE_GROUP_NAME` skupině prostředků.
+Pomocí [příkazu az network vnet create](/cli/azure/network/vnet#az-network-vnet-create) vytvořte virtuální síť s názvem `$MY_VNET_NAME` podsíť `$MY_SN_NAME` ve `$MY_RESOURCE_GROUP_NAME` skupině prostředků.
 
 ```bash
 az network vnet create \
@@ -142,11 +153,10 @@ Výsledky:
 
 ## Vytvoření veřejné IP adresy Azure
 
-Pomocí [příkazu az network public-ip create](https://learn.microsoft.com/cli/azure/network/public-ip#az-network-public-ip-create) vytvořte standardní zónově redundantní veřejnou adresu IPv4 s názvem `MY_PUBLIC_IP_NAME` in `$MY_RESOURCE_GROUP_NAME`.
+Pomocí [příkazu az network public-ip create](/cli/azure/network/public-ip#az-network-public-ip-create) vytvořte standardní zónově redundantní veřejnou adresu IPv4 s názvem `MY_PUBLIC_IP_NAME` in `$MY_RESOURCE_GROUP_NAME`.
 
 >[!NOTE]
->Následující možnosti pro zóny jsou platné pouze v oblastech s [Zóny dostupnosti](https://learn.microsoft.com/azure/reliability/availability-zones-service-support).
-
+>Následující možnosti pro zóny jsou platné pouze v oblastech s [Zóny dostupnosti](../../reliability/availability-zones-service-support.md).
 ```bash
 az network public-ip create \
     --name $MY_PUBLIC_IP_NAME \
@@ -197,7 +207,7 @@ Výsledky:
 
 ## Vytvoření skupiny zabezpečení sítě Azure
 
-Pravidla zabezpečení ve skupinách zabezpečení sítě umožňují filtrovat typ síťového provozu, který může přicházet do podsítí virtuálních sítí a síťových rozhraní a odcházet z nich. Další informace o skupinách zabezpečení sítě najdete v tématu [Přehled](https://learn.microsoft.com/azure/virtual-network/network-security-groups-overview) skupin zabezpečení sítě.
+Pravidla zabezpečení ve skupinách zabezpečení sítě umožňují filtrovat typ síťového provozu, který může přicházet do podsítí virtuálních sítí a síťových rozhraní a odcházet z nich. Další informace o skupinách zabezpečení sítě najdete v tématu [Přehled](../../virtual-network/network-security-groups-overview.md) skupin zabezpečení sítě.
 
 ```bash
 az network nsg create \
@@ -246,7 +256,7 @@ Výsledky:
 
 ## Vytvoření pravidel skupiny zabezpečení sítě Azure
 
-Vytvoříte pravidlo, které povolí připojení k virtuálnímu počítači na portu 22 pro SSH a porty 80, 443 pro HTTP a HTTPS. Vytvoří se další pravidlo, které povolí všechny porty pro odchozí připojení. Pomocí [příkazu az network nsg rule create](https://learn.microsoft.com/cli/azure/network/nsg/rule#az-network-nsg-rule-create) vytvořte pravidlo skupiny zabezpečení sítě.
+Vytvořte pravidlo, které povolí připojení k virtuálnímu počítači na portu 22 pro SSH a porty 80, 443 pro HTTP a HTTPS. Vytvoří se další pravidlo, které povolí všechny porty pro odchozí připojení. Pomocí [příkazu az network nsg rule create](/cli/azure/network/nsg/rule#az-network-nsg-rule-create) vytvořte pravidlo skupiny zabezpečení sítě.
 
 ```bash
 az network nsg rule create \
@@ -293,7 +303,7 @@ Výsledky:
 
 ## Vytvoření síťového rozhraní Azure
 
-K vytvoření síťového rozhraní pro virtuální počítač použijete [az network nic create](https://learn.microsoft.com/cli/azure/network/nic#az-network-nic-create) . Veřejné IP adresy a skupina zabezpečení sítě vytvořené dříve jsou přidružené k síťové kartě. Síťové rozhraní je připojené k virtuální síti, kterou jste vytvořili dříve.
+Pomocí [příkazu az network nic create](/cli/azure/network/nic#az-network-nic-create) vytvořte síťové rozhraní pro virtuální počítač. Veřejné IP adresy a skupina zabezpečení sítě vytvořené dříve jsou přidružené k síťové kartě. Síťové rozhraní je připojené k virtuální síti, kterou jste vytvořili dříve.
 
 ```bash
 az network nic create \
@@ -356,14 +366,13 @@ Výsledky:
   }
 }
 ```
-
 ## Přehled Cloud-init
 
-Cloud-init je široce využívaným přístupem k přizpůsobení virtuálního počítače s Linuxem při jeho prvním spuštění. Pomocí cloud-init můžete instalovat balíčky a zapisovat soubory nebo konfigurovat uživatele a zabezpečení. Vzhledem k tomu, že se cloud-init spustí během procesu prvotního spuštění, nevyžaduje použití vaší konfigurace žádné další kroky ani agenty.
+Cloud-init je široce využívaným přístupem k přizpůsobení virtuálního počítače s Linuxem při jeho prvním spuštění. Pomocí cloud-init můžete instalovat balíčky a zapisovat soubory nebo konfigurovat uživatele a zabezpečení. Vzhledem k tomu, že cloud-init běží během počátečního procesu spouštění, neexistují žádné další kroky ani požadované agenty, které by se na vaši konfiguraci použily.
 
 Cloud-init navíc funguje v různých distribucích. K instalaci balíčku tak například nepoužijete apt-get install ani yum install. Místo toho můžete definovat seznam balíčků pro instalaci. Cloud-init automaticky použije nativní nástroj pro správu balíčků pro zvolenou distribuci.
 
-S našimi partnery spolupracujeme na začlenění nástroje cloud-init, aby fungoval v imagích, které pro Azure poskytují. Podrobné informace o podpoře cloud-init pro každou distribuci najdete v tématu [Podpora cloud-init pro virtuální počítače v Azure](https://learn.microsoft.com/azure/virtual-machines/linux/using-cloud-init).
+Pracujeme s našimi partnery na zahrnutí cloud-init a práci na imagích, které poskytují Azure. Podrobné informace o podpoře cloud-init pro každou distribuci najdete v tématu [Podpora cloud-init pro virtuální počítače v Azure](./using-cloud-init.md).
 
 ### Vytvoření konfiguračního souboru cloud-init
 
@@ -372,12 +381,10 @@ Pokud chcete vidět cloud-init v akci, vytvořte virtuální počítač, který 
 ```bash
 cat << EOF > cloud-init.txt
 #cloud-config
-
 # Install, update, and upgrade packages
 package_upgrade: true
 package_update: true
 package_reboot_if_require: true
-
 # Install packages
 packages:
   - vim
@@ -400,7 +407,6 @@ packages:
   - php-xmlrpc
   - php-zip
   - php-fpm
-
 write_files:
   - owner: www-data:www-data
     path: /etc/nginx/sites-available/default.conf
@@ -411,7 +417,6 @@ write_files:
             root /var/www/html;
             server_name $FQDN;
         }
-
 write_files:
   - owner: www-data:www-data
     path: /etc/nginx/sites-available/$FQDN.conf
@@ -422,15 +427,11 @@ write_files:
         server {
             listen 443 ssl http2;
             listen [::]:443 ssl http2;
-
             server_name $FQDN;
-
             ssl_certificate /etc/letsencrypt/live/$FQDN/fullchain.pem;
             ssl_certificate_key /etc/letsencrypt/live/$FQDN/privkey.pem;
-
             root /var/www/$FQDN;
             index index.php;
-
             location / {
                 try_files \$uri \$uri/ /index.php?\$args;
             }
@@ -448,7 +449,6 @@ write_files:
                     log_not_found off;
                     access_log off;
             }
-
             location = /robots.txt {
                     allow all;
                     log_not_found off;
@@ -461,7 +461,6 @@ write_files:
             server_name $FQDN;
             return 301 https://$FQDN\$request_uri;
         }
-
 runcmd:
   - sed -i 's/;cgi.fix_pathinfo.*/cgi.fix_pathinfo = 1/' /etc/php/8.1/fpm/php.ini
   - sed -i 's/^max_execution_time \= .*/max_execution_time \= 300/g' /etc/php/8.1/fpm/php.ini
@@ -481,7 +480,7 @@ runcmd:
   - chown -R azureadmin:www-data /var/www/$FQDN
   - sudo -u azureadmin -i -- wp core download --path=/var/www/$FQDN
   - sudo -u azureadmin -i -- wp config create --dbhost=$MY_MYSQL_DB_NAME.mysql.database.azure.com --dbname=wp001 --dbuser=$MY_MYSQL_ADMIN_USERNAME --dbpass="$MY_MYSQL_ADMIN_PW" --path=/var/www/$FQDN
-  - sudo -u azureadmin -i -- wp core install --url=$FQDN --title="Azure hosted blog" --admin_user=$MY_WP_ADMIN_USER --admin_password="$MY_WP_ADMIN_PW" --admin_email=$MY_AZURE_USER --path=/var/www/$FQDN 
+  - sudo -u azureadmin -i -- wp core install --url=$FQDN --title="Azure hosted blog" --admin_user=$MY_WP_ADMIN_USER --admin_password="$MY_WP_ADMIN_PW" --admin_email=$MY_AZURE_USER --path=/var/www/$FQDN
   - sudo -u azureadmin -i -- wp plugin update --all --path=/var/www/$FQDN
   - chmod 600 /var/www/$FQDN/wp-config.php
   - mkdir -p -m 0775 /var/www/$FQDN/wp-content/uploads
@@ -491,7 +490,7 @@ EOF
 
 ## Vytvoření zóny Azure Privátní DNS pro flexibilní server Azure MySQL
 
-Integrace zóny Azure Privátní DNS umožňuje přeložit privátní DNS v rámci aktuální virtuální sítě nebo jakékoli partnerské virtuální sítě v oblasti, kde je privátní zóna DNS propojená. K vytvoření privátní zóny DNS použijete [az network private-dns zone](https://learn.microsoft.com/cli/azure/network/private-dns/zone#az-network-private-dns-zone-create) create.
+Integrace zóny Azure Privátní DNS umožňuje přeložit privátní DNS v rámci aktuální virtuální sítě nebo jakékoli partnerské virtuální sítě v oblasti, kde je privátní zóna DNS propojená. Pomocí [příkazu az network private-dns zone create](/cli/azure/network/private-dns/zone#az-network-private-dns-zone-create) vytvořte privátní zónu DNS.
 
 ```bash
 az network private-dns zone create \
@@ -522,7 +521,7 @@ Výsledky:
 
 ## Vytvoření flexibilního serveru Azure Database for MySQL
 
-Flexibilní server Azure Database for MySQL je spravovaná služba, kterou můžete použít ke spouštění, správě a škálování vysoce dostupných serverů MySQL v cloudu. Vytvořte flexibilní server pomocí [příkazu az mysql flexible-server create](https://learn.microsoft.com/cli/azure/mysql/flexible-server#az-mysql-flexible-server-create) . Server může obsahovat více databází. Následující příkaz vytvoří server s použitím výchozích hodnot služby a proměnných z místního prostředí Azure CLI:
+Flexibilní server Azure Database for MySQL je spravovaná služba, kterou můžete použít ke spouštění, správě a škálování vysoce dostupných serverů MySQL v cloudu. Vytvořte flexibilní server pomocí [příkazu az mysql flexible-server create](../../mysql/flexible-server/quickstart-create-server-cli.md#create-an-azure-database-for-mysql-flexible-server) . Server může obsahovat více databází. Následující příkaz vytvoří server s použitím výchozích hodnot služby a proměnných z místního prostředí Azure CLI:
 
 ```bash
 az mysql flexible-server create \
@@ -569,14 +568,13 @@ echo "Your MySQL user $MY_MYSQL_ADMIN_USERNAME password is: $MY_WP_ADMIN_PW"
 
 Vytvořený server má následující atributy:
 
-* Název serveru, uživatelské jméno správce, heslo správce, název skupiny prostředků, umístění jsou již zadané v místním kontextovém prostředí cloud shellu a vytvoří se ve stejném umístění jako skupina prostředků a další komponenty Azure.
+* Název serveru, uživatelské jméno správce, heslo správce, název skupiny prostředků, umístění jsou již zadané v místním kontextovém prostředí cloud shellu. Vytvoří se ve stejném umístění jako vaše skupina prostředků a další komponenty Azure.
 * Výchozí nastavení služby pro zbývající konfigurace serveru: výpočetní úroveň (burstable), velikost výpočetních prostředků/skladová položka (Standard_B2s), doba uchovávání záloh (7 dnů) a MySQL verze (8.0.21)
 * Výchozí metoda připojení je privátní přístup (integrace virtuální sítě) s propojenou virtuální sítí a automaticky vygenerovanou podsítí.
 
 > [!NOTE]
-> Po vytvoření serveru nelze změnit metodu připojení. Pokud jste například vybrali `Private access (VNet Integration)` během vytváření, nemůžete po vytvoření změnit.`Public access (allowed IP addresses)` Důrazně doporučujeme vytvořit server s privátním přístupem pro bezpečný přístup k vašemu serveru pomocí integrace virtuální sítě. Další informace o privátním přístupu najdete v [článku](https://learn.microsoft.com/azure/mysql/flexible-server/concepts-networking-vnet) o konceptech.
-
-Pokud chcete změnit výchozí hodnoty, projděte si referenční dokumentaci[ k Azure CLI](https://learn.microsoft.com/cli/azure//mysql/flexible-server), kde najdete úplný seznam konfigurovatelných parametrů rozhraní příkazového řádku.
+> Po vytvoření serveru nelze změnit metodu připojení. Pokud jste například vybrali `Private access (VNet Integration)` během vytváření, nemůžete po vytvoření změnit.`Public access (allowed IP addresses)` Důrazně doporučujeme vytvořit server s privátním přístupem pro bezpečný přístup k vašemu serveru pomocí integrace virtuální sítě. Další informace o privátním přístupu najdete v [článku](../../mysql/flexible-server/concepts-networking-vnet.md) o konceptech.
+Pokud chcete změnit výchozí hodnoty, projděte si referenční dokumentaci[ k Azure CLI](../../mysql/flexible-server/quickstart-create-server-cli.md), kde najdete úplný seznam konfigurovatelných parametrů rozhraní příkazového řádku.
 
 ## Kontrola stavu flexibilního serveru Azure Database for MySQL
 
@@ -600,11 +598,15 @@ done
 
 Konfiguraci flexibilního serveru Azure Database for MySQL můžete spravovat pomocí parametrů serveru. Parametry serveru se při vytváření serveru konfigurují s výchozí a doporučenou hodnotou.
 
-Zobrazení podrobností parametru serveru Pro zobrazení podrobností o konkrétním parametru pro server spusťte [příkaz az mysql flexible-server show](https://learn.microsoft.com/cli/azure/mysql/flexible-server/parameter) .
+Zobrazení podrobností o parametrech serveru:
 
-### Zakázání parametru připojení SSL flexibilního serveru azure Database for MySQL pro integraci Wordpressu
+[Spusťte příkaz az mysql flexible-server show](../../mysql/flexible-server/how-to-configure-server-parameters-cli.md) command to show details about any particular parameter for the server.
 
-Upravte hodnotu parametru serveru. Můžete také upravit hodnotu určitého parametru serveru, který aktualizuje základní konfigurační hodnotu pro serverový stroj MySQL. Pokud chcete aktualizovat parametr serveru, použijte [příkaz az mysql flexible-server parameter set](https://learn.microsoft.com/cli/azure/mysql/flexible-server/parameter#az-mysql-flexible-server-parameter-set) .
+## Zakázání parametru připojení SSL flexibilního serveru azure Database for MySQL pro integraci Wordpressu
+
+Úprava hodnoty parametru serveru:
+
+Můžete také upravit hodnotu určitého parametru serveru, který aktualizuje základní konfigurační hodnotu pro serverový stroj MySQL. Pokud chcete aktualizovat parametr serveru, použijte [příkaz az mysql flexible-server parameter set](../../mysql/flexible-server/how-to-configure-server-parameters-cli.md#modify-a-server-parameter-value) .
 
 ```bash
 az mysql flexible-server parameter set \
@@ -637,10 +639,11 @@ Výsledky:
 
 ## Vytvoření virtuálního počítače Azure s Linuxem
 
-Následující příklad vytvoří virtuální počítač `$MY_VM_NAME`, a pokud ve výchozím umístění klíčů ještě neexistují klíče SSH, vytvoří je. Příkaz se také nastaví `$MY_VM_USERNAME` jako uživatelské jméno správce.
-Pokud chcete zlepšit zabezpečení virtuálních počítačů s Linuxem v Azure, můžete provést integraci s ověřováním Azure Active Directory. Azure AD teď můžete použít jako základní ověřovací platformu a certifikační autoritu pro připojení SSH k virtuálnímu počítači s Linuxem pomocí ověřování založeného na certifikátech Azure AD a OpenSSH. Tato funkce umožňuje organizacím spravovat přístup k virtuálním počítačům pomocí řízení přístupu na základě role Azure a zásad podmíněného přístupu.
+Následující příklad vytvoří virtuální počítač s názvem `$MY_VM_NAME` a vytvoří klíče SSH, pokud ještě neexistují ve výchozím umístění klíče. Příkaz se také nastaví `$MY_VM_USERNAME` jako uživatelské jméno správce.
 
-Vytvořte virtuální počítač pomocí příkazu [az vm create](https://learn.microsoft.com/cli/azure/vm#az-vm-create).
+Pokud chcete zlepšit zabezpečení virtuálních počítačů s Linuxem v Azure, můžete provést integraci s ověřováním Azure Active Directory. Teď můžete azure AD používat jako základní ověřovací platformu. SSH můžete do virtuálního počítače s Linuxem použít také ověřování založené na certifikátech Azure AD a OpenSSH. Tato funkce umožňuje organizacím spravovat přístup k virtuálním počítačům pomocí řízení přístupu na základě role Azure a zásad podmíněného přístupu.
+
+Vytvořte virtuální počítač pomocí příkazu [az vm create](/cli/azure/vm#az-vm-create).
 
 ```bash
 az vm create \
@@ -686,17 +689,17 @@ Výsledky:
 
 ## Kontrola stavu virtuálního počítače Azure s Linuxem
 
-Vytvoření virtuálního počítače a podpůrných prostředků trvá několik minut. Hodnota provisioningState úspěchu se zobrazí, když je rozšíření úspěšně nainstalováno na virtuálním počítači. Aby mohl virtuální počítač nainstalovat rozšíření, musí mít spuštěného [agenta](https://learn.microsoft.com/azure/virtual-machines/extensions/agent-linux) virtuálního počítače.
+Vytvoření virtuálního počítače a podpůrných prostředků trvá několik minut. Hodnota provisioningState úspěchu se zobrazí, když je rozšíření úspěšně nainstalováno na virtuálním počítači. Aby mohl virtuální počítač nainstalovat rozšíření, musí mít spuštěného [agenta](../extensions/agent-linux.md) virtuálního počítače.
 
 ```bash
 runtime="5 minute";
 endtime=$(date -ud "$runtime" +%s);
-while [[ $(date -u +%s) -le $endtime ]]; do 
-    STATUS=$(ssh -o StrictHostKeyChecking=no $MY_VM_USERNAME@$FQDN "cloud-init status --wait"); 
-    echo $STATUS; 
-    if [[ "$STATUS" == *'status: done'* ]]; then 
-        break; 
-    else 
+while [[ $(date -u +%s) -le $endtime ]]; do
+    STATUS=$(ssh -o StrictHostKeyChecking=no $MY_VM_USERNAME@$FQDN "cloud-init status --wait");
+    echo $STATUS;
+    if [[ "$STATUS" == *'status: done'* ]]; then
+        break;
+    else
         sleep 10;
     fi;
 done
@@ -704,21 +707,16 @@ done
 
 <!--
 ## Assign Azure AD RBAC for Azure AD login for Linux Virtual Machine
-
 The below command uses [az role assignment create](https://learn.microsoft.com/cli/azure/role/assignment#az-role-assignment-create) to assign the `Virtual Machine Administrator Login` role to the VM for your current Azure user.
-
 ```bash
 export MY_RESOURCE_GROUP_ID=$(az group show --resource-group $MY_RESOURCE_GROUP_NAME --query id -o tsv)
-
 az role assignment create \
     --role "Virtual Machine Administrator Login" \
     --assignee $MY_AZURE_USER_ID \
     --scope $MY_RESOURCE_GROUP_ID -o JSON
 ```
-
-
 Results:
-<!-- expected_similarity=0.3
+<!-- expected_similarity=0.3 -->
 ```JSON
 {
   "condition": null,
@@ -739,13 +737,11 @@ Results:
   "updatedOn": "2023-09-04T09:29:17.237445+00:00"
 }
 ```
--->
 
-<!-- 
+
+<!--
 ## Export the SSH configuration for use with SSH clients that support OpenSSH
-
 Login to Azure Linux VMs with Azure AD supports exporting the OpenSSH certificate and configuration. That means you can use any SSH clients that support OpenSSH-based certificates to sign in through Azure AD. The following example exports the configuration for all IP addresses assigned to the VM:
-
 ```bash
 az ssh config --file ~/.ssh/azure-config --name $MY_VM_NAME --resource-group $MY_RESOURCE_GROUP_NAME
 ```
@@ -791,7 +787,7 @@ Výsledky:
 
 ## Kontrola a procházení webu WordPress
 
-[WordPress](https://www.wordpress.org) je opensourcový systém pro správu obsahu (CMS) používaný více než 40 % webu k vytváření webů, blogů a dalších aplikací. WordPress je možné spustit na několika různých službách Azure: [AKS](https://learn.microsoft.com/azure/mysql/flexible-server/tutorial-deploy-wordpress-on-aks), Virtual Machines a App Service. Úplný seznam možností WordPressu v Azure najdete v tématu [WordPress na Azure Marketplace](https://azuremarketplace.microsoft.com/marketplace/apps?page=1&search=wordpress).
+[WordPress](https://www.wordpress.org) je opensourcový systém pro správu obsahu (CMS) používaný více než 40 % webu k vytváření webů, blogů a dalších aplikací. WordPress je možné spustit na několika různých službách Azure: [AKS](../../mysql/flexible-server/tutorial-deploy-wordpress-on-aks.md), Virtual Machines a App Service. Úplný seznam možností WordPressu v Azure najdete v tématu [WordPress na Azure Marketplace](https://azuremarketplace.microsoft.com/marketplace/apps?page=1&search=wordpress).
 
 Tato instalace WordPressu slouží pouze pro účely testování konceptu. Pokud chcete nainstalovat nejnovější produkční verzi WordPressu s doporučeným nastavením zabezpečení, přečtěte si [dokumentaci WordPressu](https://codex.wordpress.org/Main_Page).
 
@@ -801,10 +797,10 @@ Ověřte, že je aplikace spuštěná, a to pomocí z curlingu adresy URL aplika
 runtime="5 minute";
 endtime=$(date -ud "$runtime" +%s);
 while [[ $(date -u +%s) -le $endtime ]]; do
-    if curl -I -s -f $FQDN > /dev/null ; then 
+    if curl -I -s -f $FQDN > /dev/null ; then
         curl -L -s -f $FQDN 2> /dev/null | head -n 9
         break
-    else 
+    else
         sleep 10
     fi;
 done

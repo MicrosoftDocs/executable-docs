@@ -1,23 +1,35 @@
 ---
-title: Vytvoření škálovací sady virtuálních počítačů se službou Application Gateway s imagí Linuxu
-description: 'V tomto kurzu se dozvíte, jak vytvořit škálovací sadu virtuálních počítačů se službou Application Gateway s imagí Linuxu.'
-author: belginceran
-ms.author: belginceran
-ms.topic: article
-ms.date: 01/05/2024
-ms.custom: innovation-engine
+title: Vytvoření virtuálních počítačů v flexibilní škálovací sadě pomocí Azure CLI
+description: 'Zjistěte, jak vytvořit škálovací sadu virtuálních počítačů v flexibilním režimu orchestrace pomocí Azure CLI.'
+author: fitzgeraldsteele
+ms.author: fisteele
+ms.topic: how-to
+ms.service: virtual-machine-scale-sets
+ms.date: 3/19/2024
+ms.reviewer: jushiman
+ms.custom: 'mimckitt, devx-track-azurecli, vmss-flex, innovation-engine, linux-related-content'
 ---
 
-# Vytvoření škálovací sady virtuálních počítačů se službou Application Gateway s imagí Linuxu
+# Vytvoření virtuálních počítačů ve škálovací sadě pomocí Azure CLI
 
 [![Nasazení do Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262759)
 
+Tento článek popisuje použití Azure CLI k vytvoření škálovací sady virtuálních počítačů.
+
+Ujistěte se, že jste nainstalovali nejnovější [rozhraní příkazového řádku](/cli/azure/install-az-cli2) Azure a že jste přihlášeni k účtu Azure pomocí [příkazu az login](/cli/azure/reference-index).
+
+
+## Spuštění služby Azure Cloud Shell
+
+Azure Cloud Shell je bezplatné interaktivní prostředí, které můžete použít k provedení kroků v tomto článku. Má předinstalované obecné nástroje Azure, které jsou nakonfigurované pro použití s vaším účtem.
+
+Cloud Shell otevřete tak, že v pravém horním rohu bloku kódu vyberete **Otevřít Cloud Shell** . Cloud Shell můžete spustit také na samostatné kartě prohlížeče na adrese [https://shell.azure.com/cli](https://shell.azure.com/cli). Zkopírujte bloky kódu výběrem možnosti **Kopírovat**, vložte je do služby Cloud Shell a potom je spusťte stisknutím klávesy Enter.
+
 ## Definování proměnných prostředí
 
-Prvním krokem v tomto kurzu je definování proměnných prostředí.
+Definujte proměnné prostředí následujícím způsobem.
 
 ```bash
-
 export RANDOM_ID="$(openssl rand -hex 3)"
 export MY_RESOURCE_GROUP_NAME="myVMSSResourceGroup$RANDOM_ID"
 export REGION=EastUS
@@ -33,22 +45,17 @@ export MY_APPGW_SN_NAME="myAPPGWSN$RANDOM_ID"
 export MY_APPGW_SN_PREFIX="10.$NETWORK_PREFIX.1.0/24"
 export MY_APPGW_NAME="myAPPGW$RANDOM_ID"
 export MY_APPGW_PUBLIC_IP_NAME="myAPPGWPublicIP$RANDOM_ID"
-
 ```
-# Přihlášení k Azure pomocí rozhraní příkazového řádku
 
-Pokud chcete spouštět příkazy v Azure pomocí rozhraní příkazového řádku, musíte se přihlásit. To se provádí velmi jednoduše, i když příkaz `az login` :
+## Vytvoření skupiny zdrojů
 
-# Vytvoření skupiny zdrojů
-
-Skupina prostředků je kontejner pro související prostředky. Všechny prostředky musí být umístěné ve skupině prostředků. Pro účely tohoto kurzu ho vytvoříme. Následující příkaz vytvoří skupinu prostředků s dříve definovanými parametry $MY_RESOURCE_GROUP_NAME a $REGION.
+Skupina prostředků je logický kontejner, ve kterém se nasazují a spravují prostředky Azure. Všechny prostředky musí být umístěné ve skupině prostředků. Následující příkaz vytvoří skupinu prostředků s dříve definovanými parametry $MY_RESOURCE_GROUP_NAME a $REGION.
 
 ```bash
 az group create --name $MY_RESOURCE_GROUP_NAME --location $REGION -o JSON
 ```
 
 Výsledky:
-
 <!-- expected_similarity=0.3 -->
 ```json   
 {
@@ -64,19 +71,17 @@ Výsledky:
 }
 ```
 
-# Vytvoření síťových prostředků 
+## Vytvoření síťových prostředků 
 
-Než budete pokračovat v krocích VMSS, musíte vytvořit síťové prostředky. V tomto kroku vytvoříte virtuální síť, 2 podsítě 1 pro Službu Application Gateway a 1 pro virtuální počítače. Musíte mít také veřejnou IP adresu pro připojení služby Application Gateway, aby se mohla připojit k vaší webové aplikaci z internetu. 
+Teď vytvoříte síťové prostředky. V tomto kroku vytvoříte virtuální síť, jednu podsíť 1 pro Službu Application Gateway a jednu podsíť pro virtuální počítače. K připojení služby Application Gateway k připojení webové aplikace z internetu musíte mít také veřejnou IP adresu. 
 
-
-#### Vytvoření virtuální sítě a podsítě virtuálního počítače
+#### Vytvoření virtuální sítě a podsítě
 
 ```bash
 az network vnet create  --name $MY_VNET_NAME  --resource-group $MY_RESOURCE_GROUP_NAME --location $REGION  --address-prefix $MY_VNET_PREFIX  --subnet-name $MY_VM_SN_NAME --subnet-prefix $MY_VM_SN_PREFIX -o JSON
 ```
 
 Výsledky:
-
 <!-- expected_similarity=0.3 -->
 ```json   
 {
@@ -116,15 +121,13 @@ Výsledky:
 
 ### Vytvoření prostředků služby Application Gateway
 
-Aplikace Azure Gateway vyžaduje vyhrazenou podsíť ve vaší virtuální síti. Následující příkaz vytvoří podsíť s názvem $MY_APPGW_SN_NAME se zadanou předponou adresy s názvem $MY_APPGW_SN_PREFIX ve vaší virtuální síti $MY_VNET_NAME. 
-
+Aplikace Azure Gateway vyžaduje vyhrazenou podsíť ve vaší virtuální síti. Následující příkaz vytvoří podsíť s názvem $MY_APPGW_SN_NAME se zadanou předponou adresy s názvem $MY_APPGW_SN_PREFIX ve vaší virtuální síti $MY_VNET_NAME.
 
 ```bash
 az network vnet subnet create  --name $MY_APPGW_SN_NAME  --resource-group $MY_RESOURCE_GROUP_NAME --vnet-name  $MY_VNET_NAME --address-prefix  $MY_APPGW_SN_PREFIX -o JSON
 ```
 
 Výsledky:
-
 <!-- expected_similarity=0.3 -->
 ```json  
 {
@@ -144,10 +147,9 @@ Následující příkaz vytvoří ve vaší skupině prostředků standardní z�
 
 ```bash
 az network public-ip create  --resource-group $MY_RESOURCE_GROUP_NAME --name $MY_APPGW_PUBLIC_IP_NAME --sku Standard   --location $REGION  --allocation-method static --version IPv4 --zone 1 2 3 -o JSON
- ```
+```
 
 Výsledky:
-
 <!-- expected_similarity=0.3 -->
 ```json  
 {
@@ -181,11 +183,11 @@ Výsledky:
 }
 ```
 
-V tomto kroku vytvoříte službu Application Gateway, kterou budete integrovat se škálovací sadou virtuálních počítačů. V tomto příkladu vytvoříme zónově redundantní službu Application Gateway s Standard_v2 skladovou jednotkou a povolíme komunikaci HTTP pro službu Application Gateway. Veřejná IP adresa $MY_APPGW_PUBLIC_IP_NAME, kterou jsme vytvořili v předchozím kroku připojeném ke službě Application Gateway. 
+V tomto kroku vytvoříte službu Application Gateway, kterou budete integrovat se škálovací sadou virtuálních počítačů. Tento příklad vytvoří zónově redundantní službu Application Gateway s Standard_v2 skladovou položku a povolí komunikaci HTTP pro službu Application Gateway. Veřejná IP adresa $MY_APPGW_PUBLIC_IP_NAME vytvořená v předchozím kroku je připojená ke službě Application Gateway. 
 
 ```bash
 az network application-gateway create   --name $MY_APPGW_NAME --location $REGION --resource-group $MY_RESOURCE_GROUP_NAME --vnet-name $MY_VNET_NAME --subnet $MY_APPGW_SN_NAME --capacity 2  --zones 1 2 3 --sku Standard_v2   --http-settings-cookie-based-affinity Disabled   --frontend-port 80 --http-settings-port 80   --http-settings-protocol Http --public-ip-address $MY_APPGW_PUBLIC_IP_NAME --priority 1001 -o JSON
- ```
+```
 
 <!-- expected_similarity=0.3 -->
 ```json 
@@ -375,19 +377,21 @@ az network application-gateway create   --name $MY_APPGW_NAME --location $REGION
     "urlPathMaps": []
   }
 }
- ```
+```
 
+## Vytvoření škálovací sady virtuálních počítačů
 
-# Vytvoření škálovací sady virtuálních počítačů 
+> [!IMPORTANT]
+>Od listopadu 2023 se škálovací sady virtuálních počítačů vytvořené pomocí PowerShellu a Azure CLI ve výchozím nastavení nastaví do flexibilního režimu orchestrace, pokud není zadaný žádný režim orchestrace. Další informace o této změně a akcích, které byste měli provést, najdete v tématu [Zásadní změna pro zákazníky PowerShellu nebo rozhraní příkazového řádku VMSS – Microsoft Community Hub.](
+https://techcommunity.microsoft.com/t5/azure-compute-blog/breaking-change-for-vmss-powershell-cli-customers/ba-p/3818295)
 
-Následující příkaz vytvoří zónově redundantní škálovací sadu virtuálních počítačů (VMSS) ve vaší skupině prostředků $MY_RESOURCE_GROUP_NAME. Integrujeme službu Application Gateway, kterou jsme vytvořili v předchozím kroku. Tento příkaz vytvoří 2 Standard_DS2_v2 virtuální počítače SKU s veřejnou IP adresou v podsíti $MY_VM_SN_NAME. Klíč SSH se vytvoří v následujícím kroku, pokud potřebujete přihlašovací údaje k virtuálním počítačům přes ssh.
+Teď vytvořte škálovací sadu virtuálních počítačů pomocí [příkazu az vmss create](/cli/azure/vmss). Následující příklad vytvoří zónově redundantní škálovací sadu s počtem *instancí 2* s veřejnou IP adresou v podsíti $MY_VM_SN_NAME ve vaší skupině prostředků $MY_RESOURCE_GROUP_NAME, integruje službu Application Gateway a generuje klíče SSH. Pokud potřebujete přihlásit se k virtuálním počítačům přes SSH, nezapomeňte klíče SSH uložit.
 
 ```bash
 az vmss create --name $MY_VMSS_NAME --resource-group $MY_RESOURCE_GROUP_NAME --image $MY_VM_IMAGE --admin-username $MY_USERNAME --generate-ssh-keys --public-ip-per-vm --orchestration-mode Uniform --instance-count 2 --zones 1 2 3 --vnet-name $MY_VNET_NAME --subnet $MY_VM_SN_NAME --vm-sku Standard_DS2_v2 --upgrade-policy-mode Automatic --app-gateway $MY_APPGW_NAME --backend-pool-name appGatewayBackendPool -o JSON
  ```
 
 Výsledky:
-
 <!-- expected_similarity=0.3 -->
 ```json  
 {
@@ -499,17 +503,15 @@ Výsledky:
 }
 ```
 
-### Instalace ngnix s rozšířeními VMSS 
+### Instalace ngnix s rozšířeními Virtual Machine Scale Sets 
 
-Následující příkaz používá rozšíření VMSS ke spuštění vlastního skriptu. Pro účely testování nainstalujeme ngnix a publikujeme stránku, která zobrazuje název hostitele virtuálního počítače, na který se vaše požadavky HTTP dostaly. Pro tyto kundičky používáme tento vlastní skript: https://raw.githubusercontent.com/Azure-Samples/compute-automation-configurations/master/automate_nginx.sh 
-
+Následující příkaz používá rozšíření Virtual Machine Scale Sets ke spuštění vlastního [skriptu](https://github.com/Azure-Samples/compute-automation-configurations/blob/master/automate_nginx.sh) , který nainstaluje ngnix, a publikuje stránku, která zobrazuje název hostitele virtuálního počítače, na který dojde k dosažení požadavků HTTP. 
 
 ```bash
 az vmss extension set --publisher Microsoft.Azure.Extensions --version 2.0  --name CustomScript --resource-group $MY_RESOURCE_GROUP_NAME --vmss-name $MY_VMSS_NAME --settings '{ "fileUris": ["https://raw.githubusercontent.com/Azure-Samples/compute-automation-configurations/master/automate_nginx.sh"], "commandToExecute": "./automate_nginx.sh" }' -o JSON
 ```
 
 Výsledky:
-
 <!-- expected_similarity=0.3 -->
 ```json  
 {
@@ -703,19 +705,16 @@ Výsledky:
 }
 ```
 
+## Definice profilu automatického škálování  
 
-# Definice profilu automatického škálování  
-
-Pokud chcete povolit automatické škálování na škálovací sadě, je nejdříve potřeba definovat profil automatického škálování. Tento profil definuje výchozí, minimální a maximální kapacitu škálovací sady. Tato omezení umožňují řídit náklady tím, že neustále nevytvářejí instance virtuálních počítačů a vyrovnávají přijatelný výkon s minimálním počtem instancí, které zůstávají v události škálování.
-Následující příklad nastaví výchozí a minimální kapacitu na 2 instance virtuálních počítačů a maximální kapacitu na 10:
+Pokud chcete povolit automatické škálování ve škálovací sadě, nejprve definujte profil automatického škálování. Tento profil definuje výchozí, minimální a maximální kapacitu škálovací sady. Tato omezení umožňují řídit náklady tím, že nepřestává vytvářet instance virtuálních počítačů a vyrovnávat přijatelný výkon s minimálním počtem instancí, které zůstávají v události škálování.
+Následující příklad nastaví výchozí, minimální kapacitu dvou instancí virtuálních počítačů a maximální kapacitu 10:
 
 ```bash
 az monitor autoscale create --resource-group $MY_RESOURCE_GROUP_NAME --resource  $MY_VMSS_NAME --resource-type Microsoft.Compute/virtualMachineScaleSets --name autoscale --min-count 2 --max-count 10 --count 2
 ```
 
-
 Výsledky:
-
 <!-- expected_similarity=0.3 -->
 ```json  
 {
@@ -760,7 +759,7 @@ Výsledky:
 }
 ```
 
-# Vytvoření pravidla automatického horizontálního navýšení kapacity
+## Vytvoření pravidla automatického horizontálního navýšení kapacity
 
 Následující příkaz vytvoří pravidlo, které zvýší počet instancí virtuálních počítačů ve škálovací sadě, pokud je průměrné zatížení procesoru větší než 70 % za 5 minut. Když se pravidlo aktivuje, počet instancí virtuálních počítačů se zvýší o tři.
 
@@ -769,7 +768,6 @@ az monitor autoscale rule create --resource-group $MY_RESOURCE_GROUP_NAME --auto
 ```
 
 Výsledky:
-
 <!-- expected_similarity=0.3 -->
 ```json 
 {
@@ -796,16 +794,15 @@ Výsledky:
 } 
 ```
 
-# Vytvoření pravidla automatického horizontálního snížení kapacity
+## Vytvoření pravidla automatického horizontálního snížení kapacity
 
-Pomocí příkazu az monitor autoscale rule create vytvořte další pravidlo, které sníží počet instancí virtuálních počítačů ve škálovací sadě, pokud se průměrné zatížení CPU sníží pod 30 % po dobu 5 minut. Následující příklad definuje pravidlo pro škálování počtu instancí virtuálních počítačů na méně instancí o jednu.
+Vytvořte další pravidlo, `az monitor autoscale rule create` které sníží počet instancí virtuálních počítačů ve škálovací sadě, když průměrné zatížení procesoru klesne pod 30 % za 5minutové období. Následující příklad definuje pravidlo pro škálování počtu instancí virtuálních počítačů na méně instancí o jednu.
 
 ```bash
 az monitor autoscale rule create --resource-group  $MY_RESOURCE_GROUP_NAME --autoscale-name autoscale --condition "Percentage CPU < 30 avg 5m" --scale in 1
 ```
 
 Výsledky:
-
 <!-- expected_similarity=0.3 -->
 ```json 
 {
@@ -832,19 +829,19 @@ Výsledky:
 }
 ```
 
-
 ### Testování stránky
 
-Následující příkaz ukazuje veřejnou IP adresu vaší služby Application Gateway. IP adresy můžete vložit na stránku prohlížeče pro účely testování.
+Následující příkaz ukazuje veřejnou IP adresu vaší služby Application Gateway. Vložte IP adresu na stránku prohlížeče pro testování.
 
 ```bash
 az network public-ip show --resource-group $MY_RESOURCE_GROUP_NAME --name $MY_APPGW_PUBLIC_IP_NAME --query [ipAddress]  --output tsv
 ```
 
+## Vyčištění prostředků (volitelné)
 
+Abyste se vyhnuli poplatkům za Azure, měli byste vyčistit nepotřebné prostředky. Pokud už škálovací sadu a další prostředky nepotřebujete, odstraňte skupinu prostředků a všechny její prostředky pomocí [příkazu az group delete](/cli/azure/group). Parametr `--no-wait` vrátí řízení na příkazový řádek bez čekání na dokončení operace. Parametr `--yes` potvrdí, že chcete odstranit prostředky bez další výzvy k tomu. Tento kurz pro vás vyčistí prostředky.
 
-# Reference
-
-* [Dokumentace k VMSS](https://learn.microsoft.com/en-us/azure/virtual-machine-scale-sets/overview)
-* [Automatické škálování VMSS](https://learn.microsoft.com/en-us/azure/virtual-machine-scale-sets/tutorial-autoscale-cli?tabs=Ubuntu)
-
+## Další kroky
+- [Zjistěte, jak vytvořit škálovací sadu na webu Azure Portal.](flexible-virtual-machine-scale-sets-portal.md)
+- [Seznamte se se škálovacími sadami virtuálních počítačů.](overview.md)
+- [Automatické škálování škálovací sady virtuálních počítačů pomocí Azure CLI](tutorial-autoscale-cli.md)
