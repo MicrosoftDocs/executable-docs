@@ -1,23 +1,35 @@
 ---
-title: Criar um site estático usando a CLI do Azure
-description: Este tutorial mostra como criar um Site Estático no Azure.
-author: namanparikh
-ms.author: namanparikh
-ms.topic: article
-ms.date: 02/06/2024
-ms.custom: innovation-engine
-ms.service: Azure
+title: 'Guia de início rápido: criando seu primeiro site estático com os Aplicativos Web Estáticos do Azure usando a CLI'
+description: Aprenda a implantar um site estático nos Aplicativos Web Estáticos do Azure com a CLI do Azure.
+services: static-web-apps
+author: craigshoemaker
+ms.service: static-web-apps
+ms.topic: quickstart
+ms.date: 03/21/2024
+ms.author: cshoe
+ms.custom: 'mode-api, devx-track-azurecli, innovation-engine, linux-related-content'
+ms.devlang: azurecli
 ---
 
-# Guia de início rápido dos aplicativos Web estáticos do Azure: criando seu primeiro site estático usando a CLI do Azure
+# Guia de início rápido: criando seu primeiro site estático usando a CLI do Azure
 
 [![Implementar no Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262845)
 
-Os Aplicativos Web Estáticos do Azure publicam sites para produção criando aplicativos a partir de um repositório de código. Neste início rápido, você implanta um aplicativo Web nos Aplicativos Web Estáticos do Azure usando a CLI do Azure.
+Os Aplicativos Web Estáticos do Azure publicam sites para produção criando aplicativos a partir de um repositório de código.
+
+Neste início rápido, você implanta um aplicativo Web em aplicativos Web estáticos do Azure usando a CLI do Azure.
+
+## Pré-requisitos
+
+- [Conta do GitHub](https://github.com) .
+- [Conta do Azure](https://portal.azure.com).
+  - Se não tiver uma subscrição do Azure, pode [criar uma conta](https://azure.microsoft.com/free) de avaliação gratuita.
+- [CLI](/cli/azure/install-azure-cli) do Azure instalada (versão 2.29.0 ou superior).
+- [Uma configuração](https://www.git-scm.com/downloads) do Git. 
 
 ## Definir variáveis de ambiente
 
-O primeiro passo neste tutorial é definir variáveis de ambiente.
+O primeiro passo neste guia de início rápido é definir variáveis de ambiente.
 
 ```bash
 export RANDOM_ID="$(openssl rand -hex 3)"
@@ -30,16 +42,17 @@ export MY_STATIC_WEB_APP_NAME="myStaticWebApp$RANDOM_ID"
 
 (Opcional) Este artigo usa um repositório de modelos do GitHub como outra maneira de facilitar os primeiros passos. O modelo apresenta um aplicativo inicial para implantar nos Aplicativos Web Estáticos do Azure.
 
-- Navegue até o seguinte local para criar um novo repositório: https://github.com/staticwebdev/vanilla-basic/generate
-- Nomeie seu repositório `my-first-static-web-app`
+1. Navegue até o seguinte local para criar um novo repositório: https://github.com/staticwebdev/vanilla-basic/generate.
+2. Nomeie seu repositório `my-first-static-web-app`.
 
-> **Observação:** os Aplicativos Web Estáticos do Azure exigem pelo menos um arquivo HTML para criar um aplicativo Web. O repositório criado nesta etapa inclui um único `index.html` arquivo.
+> [!NOTE]
+> Os Aplicativos Web Estáticos do Azure exigem pelo menos um arquivo HTML para criar um aplicativo Web. O repositório criado nesta etapa inclui um único `index.html` arquivo.
 
-Selecione `Create repository`.
+3. Selecione **Create repository** (Criar repositório).
 
 ## Implantar um aplicativo Web estático
 
-Você pode implantar o aplicativo como um aplicativo Web estático da CLI do Azure.
+Implante o aplicativo como um aplicativo Web estático da CLI do Azure.
 
 1. Crie um grupo de recursos.
 
@@ -50,7 +63,6 @@ az group create \
 ```
 
 Resultados:
-
 <!-- expected_similarity=0.3 -->
 ```json
 {
@@ -99,7 +111,6 @@ done
 ```
 
 Resultados:
-
 <!-- expected_similarity=0.3 -->
 ```HTML
 <!DOCTYPE html>
@@ -117,13 +128,13 @@ Resultados:
 echo "You can now visit your web server at https://$MY_STATIC_WEB_APP_URL"
 ```
 
-## Passos Seguintes
+## Usar um modelo do GitHub
 
-Parabéns! Você implantou com êxito um aplicativo Web estático nos Aplicativos Web Estáticos do Azure usando a CLI do Azure. Agora que você tem uma compreensão básica de como implantar um aplicativo Web estático, pode explorar recursos e funcionalidades mais avançados dos Aplicativos Web Estáticos do Azure.
+Você implantou com êxito um aplicativo Web estático nos Aplicativos Web Estáticos do Azure usando a CLI do Azure. Agora que você tem uma compreensão básica de como implantar um aplicativo Web estático, pode explorar recursos e funcionalidades mais avançados dos Aplicativos Web Estáticos do Azure.
 
-Caso você queira usar o repositório de modelos do GitHub, siga as etapas adicionais abaixo.
+Caso você queira usar o repositório de modelos do GitHub, siga estas etapas:
 
-Vá e https://github.com/login/device insira o código de usuário 329B-3945 para ativar e recuperar seu token de acesso pessoal do GitHub.
+Vá e https://github.com/login/device insira o código que você recebe do GitHub para ativar e recuperar seu token de acesso pessoal do GitHub.
 
 1. Aceder a https://github.com/login/device.
 2. Insira o código de usuário conforme exibido na mensagem do console.
@@ -135,13 +146,22 @@ Vá e https://github.com/login/device insira o código de usuário 329B-3945 par
 1. À medida que você obtém a URL do repositório enquanto executa o script, copie a URL do repositório e cole-a em seu navegador.
 2. Selecione o separador `Actions`.
 
-   Neste ponto, o Azure está criando os recursos para dar suporte ao seu aplicativo Web estático. Aguarde até que o ícone ao lado do fluxo de trabalho em execução se transforme em uma marca de seleção com fundo verde ( ). Esta operação pode levar alguns minutos para ser executada.
+   Neste ponto, o Azure está criando os recursos para dar suporte ao seu aplicativo Web estático. Aguarde até que o ícone ao lado do fluxo de trabalho em execução se transforme em uma marca de seleção com fundo verde. Esta operação pode levar alguns minutos para ser executada.
 
 3. Quando o ícone de sucesso aparecer, o fluxo de trabalho estará concluído e você poderá retornar à janela do console.
 4. Execute o seguinte comando para consultar o URL do seu site.
-
-   AZ StaticWebApp Mostrar \
+```bash
+   az staticwebapp show \
      --name $MY_STATIC_WEB_APP_NAME \
-     --consulta "defaultHostname"
-
+     --query "defaultHostname"
+```
 5. Copie o URL para o seu navegador para ir para o seu site.
+
+## Limpar recursos (opcional)
+
+Se você não vai continuar a usar este aplicativo, exclua o grupo de recursos e o aplicativo Web estático usando o [comando az group delete](/cli/azure/group#az-group-delete) .
+
+## Próximos passos
+
+> [!div class="nextstepaction"]
+> [Adicionar uma API](add-api.md)
