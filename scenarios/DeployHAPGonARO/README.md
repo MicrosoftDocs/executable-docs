@@ -333,7 +333,7 @@ For this tutorial, we're using an existing Helm chart for Drupal built by Bitnam
     helm repo update
     ```
 
-3. Install Wordpress workload via Helm.
+3. Install Drupal workload via Helm.
 
     ```bash
     helm upgrade --install --cleanup-on-fail \
