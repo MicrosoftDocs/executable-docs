@@ -35,9 +35,10 @@ az aks install-cli
 Install the Openshift client locally.
 
 ```bash
-mkdir ocp && cd ocp
-wget -qO- https://mirror.openshift.com/pub/openshift-v4/clients/ocp/latest/openshift-client-linux.tar.gz | tar -xvz
-export PATH=$PATH:$PWD
+mkdir ~/ocp
+wget -q https://mirror.openshift.com/pub/openshift-v4/clients/ocp/latest/openshift-client-linux.tar.gz -O ~/ocp/openshift-client-linux.tar.gz
+tar -xf ~/ocp/openshift-client-linux.tar.gz
+export PATH="$PATH:~/ocp"
 ```
 
 ## Create a resource group
@@ -181,7 +182,7 @@ In this section, you'll be deploying an Azure Red Hat OpenShift (ARO) cluster. T
 ```bash
 export ARO_CLUSTER_NAME="aro-${LOCAL_NAME}-${SUFFIX}"
 echo "This will take about 30 minutes to complete..." 
-az aro create -g $RG_NAME -n $ARO_CLUSTER_NAME --vnet $VNET_NAME --master-subnet $SUBNET1_NAME --worker-subnet $SUBNET2_NAME --tags $RGTAGS --client-id ${SP_ID} --client-secret ${SP_SECRET} --pull-secret @pull-secrets.json
+az aro create -g $RG_NAME -n $ARO_CLUSTER_NAME --vnet $VNET_NAME --master-subnet $SUBNET1_NAME --worker-subnet $SUBNET2_NAME --tags $RGTAGS --client-id ${SP_ID} --client-secret ${SP_SECRET}
 ```
 
 Results:
@@ -269,3 +270,121 @@ Results:
   ]
 }
 ```
+
+## Obtain cluster credentials and login
+
+This code retrieves the API server URL and login credentials for an Azure Red Hat OpenShift (ARO) cluster using the Azure CLI.
+
+The `az aro show` command is used to get the API server URL by providing the resource group name and ARO cluster name. The `--query` parameter is used to extract the `apiserverProfile.url` property, and the `-o tsv` option is used to output the result as a tab-separated value.
+
+The `az aro list-credentials` command is used to get the login credentials for the ARO cluster. The `--name` parameter specifies the ARO cluster name, and the `--resource-group` parameter specifies the resource group name. The `--query` parameter is used to extract the `kubeadminPassword` property, and the `-o tsv` option is used to output the result as a tab-separated value.
+
+Finally, the `oc login` command is used to log in to the ARO cluster using the retrieved API server URL, the `kubeadmin` username, and the login credentials.
+
+```bash
+apiServer=$(az aro show -g $RG_NAME -n $ARO_CLUSTER_NAME --query apiserverProfile.url -o tsv)
+loginCred=$(az aro list-credentials --name $ARO_CLUSTER_NAME --resource-group $RG_NAME --query "kubeadminPassword" -o tsv)
+
+oc login $apiServer -u kubeadmin -p $loginCred
+```
+
+## Deploy the CMS workload
+
+The code block below sets environment variables for deploying a High Availability PostgreSQL (HAPG) on Azure Red Hat OpenShift (ARO). Here's a breakdown of the variables being set:
+
+- `PGSQL_DB_NAME`: A randomly generated name for the PostgreSQL database.
+- `PGSQL_ADMIN_USERNAME`: A randomly generated username for the PostgreSQL admin.
+- `PGSQL_ADMIN_PW`: A randomly generated password for the PostgreSQL admin.
+- `PGSQL_SN_NAME`: A randomly generated name for the PostgreSQL server name.
+- `PGSQL_HOSTNAME`: The hostname for the PostgreSQL database, constructed using the `PGSQL_DB_NAME` variable.
+
+```bash
+export PGSQL_DB_NAME="pgsqldb$SUFFIX"
+export PGSQL_ADMIN_USERNAME="dbadmin$SUFFIX"
+export PGSQL_ADMIN_PW="$(openssl rand -base64 32)"
+export PGSQL_HOSTNAME="$PGSQL_DB_NAME.PGSQL.database.azure.com"
+```
+
+1. Create ARO project
+
+    ```bash
+    oc new-project cms-demo
+    ```
+
+2. Deploy PostgreSQL
+
+    ```bash
+    kubectl create -n cms-demo secret generic cms-creds --from-literal=postgres-password=$PGSQL_ADMIN_PW
+    ```
+
+## Install your CMS to ARO cluster
+
+For this tutorial, we're using an existing Helm chart for Drupal built by Bitnami. The Bitnami Helm chart uses a local MariaDB as the database, so we need to override these values to use the app with an external PostgreSQL DB.
+
+1. Add the Wordpress Bitnami Helm repository.
+
+    ```bash
+    helm repo add bitnami https://charts.bitnami.com/bitnami
+    ```
+
+2. Update local Helm chart repository cache.
+
+    ```bash
+    helm repo update
+    ```
+
+3. Install Wordpress workload via Helm.
+
+    ```bash
+    helm upgrade --install --cleanup-on-fail \
+        --wait --timeout 10m0s \
+        --namespace cms-demo \
+        --create-namespace \
+        --set externalDatabase.host="$PGSQL_HOSTNAME" \
+        --set externalDatabase.user="$PGSQL_ADMIN_USERNAME" \
+        --set externalDatabase.password="$PGSQL_ADMIN_PW" \
+        --set externalDatabase.database="$PGSQL_DB_NAME" \
+        --set externalDatabase.port=5432
+        drupal bitnami/drupal
+    ```
+
+    Results:
+    <!-- expected_similarity=0.3 -->
+    ```text
+    Release "drupal" does not exist. Installing it now.
+    NAME: drupal
+    LAST DEPLOYED: Fri Apr 12 19:23:50 2024
+    NAMESPACE: demo
+    STATUS: deployed
+    REVISION: 1
+    TEST SUITE: None
+    NOTES:
+    CHART NAME: drupal
+    CHART VERSION: 18.0.2
+    APP VERSION: 10.2.5** Please be patient while the chart is being deployed **
+    
+    1. Get the Drupal URL:
+    
+      NOTE: It may take a few minutes for the LoadBalancer IP to be available.
+            Watch the status with: 'kubectl get svc --namespace demo -w drupal'
+    
+      export SERVICE_IP=$(kubectl get svc --namespace demo drupal --template "{{ range (index .status.loadBalancer.ingress 0) }}{{ . }}{{ end }}")
+      echo "Drupal URL: http://$SERVICE_IP/"
+    
+    2. Get your Drupal login credentials by running:
+    
+      echo Username: user
+      echo Password: $(kubectl get secret --namespace demo drupal -o jsonpath="{.data.drupal-password}" | base64 -d)
+    ```
+
+4. Expose the CMS workload
+
+    ```bash
+    oc create route edge --service=drupal
+    ```
+
+5. Access the workload
+
+    ```bash
+    curl -Iv https://drupal-cms-demo.$SUFFIX.westus.aroapp.io
+    ```
