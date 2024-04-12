@@ -1,23 +1,35 @@
 ---
-title: Membuat Set Skala Komputer Virtual dengan Application Gateway dengan gambar Linux
-description: Tutorial ini menunjukkan cara membuat Set Skala Komputer Virtual dengan Application Gateway dengan gambar Linux
-author: belginceran
-ms.author: belginceran
-ms.topic: article
-ms.date: 01/05/2024
-ms.custom: innovation-engine
+title: Buat mesin virtual dalam set skala Fleksibel menggunakan Azure CLI
+description: Pelajari cara membuat Virtual Machine Scale Set dalam mode orkestrasi Fleksibel menggunakan Azure CLI.
+author: fitzgeraldsteele
+ms.author: fisteele
+ms.topic: how-to
+ms.service: virtual-machine-scale-sets
+ms.date: 3/19/2024
+ms.reviewer: jushiman
+ms.custom: 'mimckitt, devx-track-azurecli, vmss-flex, innovation-engine, linux-related-content'
 ---
 
-# Membuat Set Skala Komputer Virtual dengan Application Gateway dengan gambar Linux
+# Membuat mesin virtual dalam set skala menggunakan Azure CLI
 
 [![Sebarkan ke Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262759)
 
-## Tentukan Variabel Lingkungan
+Artikel ini menjelaskan cara menggunakan Azure CLI untuk membuat Set Skala Komputer Virtual.
 
-Langkah pertama dalam tutorial ini adalah menentukan variabel lingkungan.
+Pastikan Anda telah menginstal [Azure CLI](/cli/azure/install-az-cli2) terbaru dan masuk ke akun Azure dengan [az login](/cli/azure/reference-index).
+
+
+## Meluncurkan Azure Cloud Shell
+
+Azure Cloud Shell adalah shell interaktif gratis yang dapat Anda gunakan untuk menjalankan langkah-langkah dalam artikel ini. Shell ini memiliki alat Azure umum yang telah dipasang sebelumnya dan dikonfigurasi untuk digunakan dengan akun Anda.
+
+Untuk membuka Cloud Shell, pilih **Buka Cloud Shell** dari sudut kanan atas blok kode. Anda juga dapat meluncurkan Cloud Shell di tab browser terpisah dengan membuka [https://shell.azure.com/cli](https://shell.azure.com/cli). Pilih **Salin** untuk menyalin blok kode, tempelkan ke Cloud Shell, dan tekan masukkan untuk menjalankannya.
+
+## Menentukan variabel lingkungan
+
+Tentukan variabel lingkungan sebagai berikut.
 
 ```bash
-
 export RANDOM_ID="$(openssl rand -hex 3)"
 export MY_RESOURCE_GROUP_NAME="myVMSSResourceGroup$RANDOM_ID"
 export REGION=EastUS
@@ -33,22 +45,17 @@ export MY_APPGW_SN_NAME="myAPPGWSN$RANDOM_ID"
 export MY_APPGW_SN_PREFIX="10.$NETWORK_PREFIX.1.0/24"
 export MY_APPGW_NAME="myAPPGW$RANDOM_ID"
 export MY_APPGW_PUBLIC_IP_NAME="myAPPGWPublicIP$RANDOM_ID"
-
 ```
-# Masuk ke Azure menggunakan CLI
 
-Untuk menjalankan perintah terhadap Azure menggunakan CLI, Anda perlu masuk. Ini dilakukan, sangat sederhana, meskipun `az login` perintah:
+## Buat grup sumber daya
 
-# Buat grup sumber daya
-
-Grup sumber daya adalah kontainer untuk sumber daya terkait. Semua sumber daya harus ditempatkan dalam grup sumber daya. Kami akan membuatnya untuk tutorial ini. Perintah berikut membuat grup sumber daya dengan parameter $MY_RESOURCE_GROUP_NAME dan $REGION yang ditentukan sebelumnya.
+Grup sumber daya adalah kontainer logis yang disebarkan dan dikelola oleh sumber daya Azure. Semua sumber daya harus ditempatkan dalam grup sumber daya. Perintah berikut membuat grup sumber daya dengan parameter $MY_RESOURCE_GROUP_NAME dan $REGION yang ditentukan sebelumnya.
 
 ```bash
 az group create --name $MY_RESOURCE_GROUP_NAME --location $REGION -o JSON
 ```
 
 Hasil:
-
 <!-- expected_similarity=0.3 -->
 ```json   
 {
@@ -64,19 +71,17 @@ Hasil:
 }
 ```
 
-# Membuat Sumber Daya Jaringan 
+## Membuat sumber daya jaringan 
 
-Anda perlu membuat sumber daya jaringan sebelum melanjutkan langkah-langkah VMSS. Dalam langkah ini Anda akan membuat VNET, 2 subnet 1 untuk Application Gateway dan 1 untuk VM. Anda juga harus memiliki IP publik untuk melampirkan Application Gateway Anda agar dapat menjangkau aplikasi web Anda dari internet. 
+Sekarang Anda akan membuat sumber daya jaringan. Dalam langkah ini Anda akan membuat jaringan virtual, satu subnet 1 untuk Application Gateway, dan satu subnet untuk VM. Anda juga harus memiliki IP publik untuk melampirkan Application Gateway Anda untuk menjangkau aplikasi web Anda dari internet. 
 
-
-#### Membuat Virtual Network (VNET) dan Subnet VM
+#### Membuat jaringan virtual dan subnet
 
 ```bash
 az network vnet create  --name $MY_VNET_NAME  --resource-group $MY_RESOURCE_GROUP_NAME --location $REGION  --address-prefix $MY_VNET_PREFIX  --subnet-name $MY_VM_SN_NAME --subnet-prefix $MY_VM_SN_PREFIX -o JSON
 ```
 
 Hasil:
-
 <!-- expected_similarity=0.3 -->
 ```json   
 {
@@ -114,17 +119,15 @@ Hasil:
 }
 ```
 
-### Membuat Sumber Daya Application Gateway
+### Membuat sumber daya Application Gateway
 
-Azure Application Gateway memerlukan subnet khusus dalam jaringan virtual Anda. Perintah di bawah ini membuat subnet bernama $MY_APPGW_SN_NAME dengan awalan alamat tertentu bernama $MY_APPGW_SN_PREFIX di VNET $MY_VNET_NAME Anda 
-
+Azure Application Gateway memerlukan subnet khusus dalam jaringan virtual Anda. Perintah berikut membuat subnet bernama $MY_APPGW_SN_NAME dengan awalan alamat tertentu bernama $MY_APPGW_SN_PREFIX di jaringan virtual Anda $MY_VNET_NAME.
 
 ```bash
 az network vnet subnet create  --name $MY_APPGW_SN_NAME  --resource-group $MY_RESOURCE_GROUP_NAME --vnet-name  $MY_VNET_NAME --address-prefix  $MY_APPGW_SN_PREFIX -o JSON
 ```
 
 Hasil:
-
 <!-- expected_similarity=0.3 -->
 ```json  
 {
@@ -140,14 +143,13 @@ Hasil:
   "type": "Microsoft.Network/virtualNetworks/subnets"
 }
 ```
-Perintah di bawah ini membuat IPv4 publik standar, zona redundan, statis, di grup sumber daya Anda.  
+Perintah berikut membuat IPv4 publik standar, zona redundan, statis, di grup sumber daya Anda.  
 
 ```bash
 az network public-ip create  --resource-group $MY_RESOURCE_GROUP_NAME --name $MY_APPGW_PUBLIC_IP_NAME --sku Standard   --location $REGION  --allocation-method static --version IPv4 --zone 1 2 3 -o JSON
- ```
+```
 
 Hasil:
-
 <!-- expected_similarity=0.3 -->
 ```json  
 {
@@ -181,11 +183,11 @@ Hasil:
 }
 ```
 
-Dalam langkah ini Anda membuat Application Gateway yang akan Anda integrasikan dengan Virtual Machine Scale Set Anda. Dalam contoh ini kita membuat Application Gateway zona redundan dengan SKU Standard_v2 dan mengaktifkan komunikasi Http untuk Application Gateway. IP publik $MY_APPGW_PUBLIC_IP_NAME yang kami buat di langkah sebelumnya yang dilampirkan ke Application Gateway. 
+Dalam langkah ini, Anda membuat Application Gateway yang akan Anda integrasikan dengan Virtual Machine Scale Set Anda. Contoh ini membuat Application Gateway zona redundan dengan SKU Standard_v2 dan mengaktifkan komunikasi Http untuk Application Gateway. IP publik $MY_APPGW_PUBLIC_IP_NAME yang dibuat pada langkah sebelumnya dilampirkan ke Application Gateway. 
 
 ```bash
 az network application-gateway create   --name $MY_APPGW_NAME --location $REGION --resource-group $MY_RESOURCE_GROUP_NAME --vnet-name $MY_VNET_NAME --subnet $MY_APPGW_SN_NAME --capacity 2  --zones 1 2 3 --sku Standard_v2   --http-settings-cookie-based-affinity Disabled   --frontend-port 80 --http-settings-port 80   --http-settings-protocol Http --public-ip-address $MY_APPGW_PUBLIC_IP_NAME --priority 1001 -o JSON
- ```
+```
 
 <!-- expected_similarity=0.3 -->
 ```json 
@@ -375,19 +377,21 @@ az network application-gateway create   --name $MY_APPGW_NAME --location $REGION
     "urlPathMaps": []
   }
 }
- ```
+```
 
+## Membuat Set Skala Komputer Virtual
 
-# Membuat Set Skala Komputer Virtual 
+> [!IMPORTANT]
+>Mulai November 2023, set skala VM yang dibuat menggunakan PowerShell dan Azure CLI akan default ke Mode Orkestrasi Fleksibel jika tidak ada mode orkestrasi yang ditentukan. Untuk informasi selengkapnya tentang perubahan ini dan tindakan apa yang harus Anda ambil, buka [Melanggar Perubahan untuk Pelanggan VMSS PowerShell/CLI - Microsoft Community Hub](
+https://techcommunity.microsoft.com/t5/azure-compute-blog/breaking-change-for-vmss-powershell-cli-customers/ba-p/3818295)
 
-Perintah di bawah ini membuat Virtual Machine Scale Set (VMSS) zona redundan dalam grup sumber daya Anda $MY_RESOURCE_GROUP_NAME. Kami mengintegrasikan Application Gateway yang kami buat langkah sebelumnya. Perintah ini membuat 2 Standard_DS2_v2 SKU Virtual Machines dengan IP publik di subnet $MY_VM_SN_NAME. Kunci ssh akan dibuat selama langkah di bawah ini, Anda mungkin ingin menyimpan kunci jika Anda perlu masuk ke VM Anda melalui ssh.
+Sekarang buat Virtual Machine Scale Set dengan [az vmss create](/cli/azure/vmss). Contoh berikut membuat set skala redundan zona dengan jumlah *instans 2* dengan IP publik di subnet $MY_VM_SN_NAME dalam grup sumber daya Anda $MY_RESOURCE_GROUP_NAME, mengintegrasikan Application Gateway, dan menghasilkan kunci SSH. Pastikan untuk menyimpan kunci SSH jika Anda perlu masuk ke VM Anda melalui ssh.
 
 ```bash
 az vmss create --name $MY_VMSS_NAME --resource-group $MY_RESOURCE_GROUP_NAME --image $MY_VM_IMAGE --admin-username $MY_USERNAME --generate-ssh-keys --public-ip-per-vm --orchestration-mode Uniform --instance-count 2 --zones 1 2 3 --vnet-name $MY_VNET_NAME --subnet $MY_VM_SN_NAME --vm-sku Standard_DS2_v2 --upgrade-policy-mode Automatic --app-gateway $MY_APPGW_NAME --backend-pool-name appGatewayBackendPool -o JSON
  ```
 
 Hasil:
-
 <!-- expected_similarity=0.3 -->
 ```json  
 {
@@ -499,17 +503,15 @@ Hasil:
 }
 ```
 
-### Menginstal ngnix dengan ekstensi VMSS 
+### Menginstal ngnix dengan ekstensi Virtual Machine Scale Sets 
 
-Perintah di bawah ini menggunakan ekstensi VMSS untuk menjalankan skrip kustom. Untuk tujuan pengujian, di sini kami menginstal ngnix dan menerbitkan halaman yang menunjukkan nama host Komputer Virtual yang dipukul permintaan HTTP Anda. Kami menggunakan skrip kustom ini untuk pusposes ini : https://raw.githubusercontent.com/Azure-Samples/compute-automation-configurations/master/automate_nginx.sh 
-
+Perintah berikut menggunakan ekstensi Virtual Machine Scale Sets untuk menjalankan [skrip](https://github.com/Azure-Samples/compute-automation-configurations/blob/master/automate_nginx.sh) kustom yang menginstal ngnix dan menerbitkan halaman yang menunjukkan nama host Komputer Virtual yang diminta HTTP Anda terpukul. 
 
 ```bash
 az vmss extension set --publisher Microsoft.Azure.Extensions --version 2.0  --name CustomScript --resource-group $MY_RESOURCE_GROUP_NAME --vmss-name $MY_VMSS_NAME --settings '{ "fileUris": ["https://raw.githubusercontent.com/Azure-Samples/compute-automation-configurations/master/automate_nginx.sh"], "commandToExecute": "./automate_nginx.sh" }' -o JSON
 ```
 
 Hasil:
-
 <!-- expected_similarity=0.3 -->
 ```json  
 {
@@ -703,19 +705,16 @@ Hasil:
 }
 ```
 
+## Menentukan profil skala otomatis  
 
-# Menentukan profil skala otomatis  
-
-Untuk mengaktifkan skala otomatis pada set skala, tentukan profil skala otomatis terlebih dahulu. Profil ini menentukan kapasitas set skala default, minimum, dan maksimum. Batas ini memungkinkan Anda mengontrol biaya dengan tidak terus-menerus membuat instans VM, dan menyeimbangkan kinerja yang dapat diterima dengan jumlah instans minimum yang tetap berada dalam peristiwa penskalaan.
-Contoh berikut menetapkan kapasitas default dan minimum 2 instans VM, dan maksimum 10:
+Untuk mengaktifkan skala otomatis pada set skala, pertama-tama tentukan profil skala otomatis. Profil ini menentukan kapasitas set skala default, minimum, dan maksimum. Batas ini memungkinkan Anda mengontrol biaya dengan tidak terus membuat instans VM dan menyeimbangkan performa yang dapat diterima dengan jumlah minimum instans yang tetap dalam peristiwa penyempurnaan skala.
+Contoh berikut menetapkan kapasitas default, minimum dua instans VM, dan kapasitas maksimum 10:
 
 ```bash
 az monitor autoscale create --resource-group $MY_RESOURCE_GROUP_NAME --resource  $MY_VMSS_NAME --resource-type Microsoft.Compute/virtualMachineScaleSets --name autoscale --min-count 2 --max-count 10 --count 2
 ```
 
-
 Hasil:
-
 <!-- expected_similarity=0.3 -->
 ```json  
 {
@@ -760,16 +759,15 @@ Hasil:
 }
 ```
 
-# Membuat aturan untuk skala otomatis
+## Membuat aturan untuk skala otomatis
 
-Perintah Berikut membuat aturan yang meningkatkan jumlah instans VM dalam set skala saat beban CPU rata-rata lebih besar dari 70% selama periode 5 menit. Ketika aturan memicu, jumlah instans komputer virtual ditingkatkan tiga tingkat.
+Perintah berikut membuat aturan yang meningkatkan jumlah instans VM dalam set skala ketika beban CPU rata-rata lebih besar dari 70% selama periode 5 menit. Ketika aturan memicu, jumlah instans VM meningkat tiga.
 
 ```bash
 az monitor autoscale rule create --resource-group $MY_RESOURCE_GROUP_NAME --autoscale-name autoscale --condition "Percentage CPU > 70 avg 5m" --scale out 3
 ```
 
 Hasil:
-
 <!-- expected_similarity=0.3 -->
 ```json 
 {
@@ -796,16 +794,15 @@ Hasil:
 } 
 ```
 
-# Membuat aturan untuk perluasan skala otomatis
+## Membuat aturan untuk perluasan skala otomatis
 
-Buat aturan lain dengan buat aturan skala otomatis pemantauan az yang mengurangi jumlah instans VM dalam skala yang ditetapkan ketika beban CPU rata-rata kemudian turun hingga kurang dari 30% selama periode 5 menit. Contoh berikut mendefinisikan aturan untuk menskalakan dalam jumlah instans VM satu per satu.
+Buat aturan lain dengan `az monitor autoscale rule create` yang mengurangi jumlah instans VM dalam set skala ketika beban CPU rata-rata kemudian turun di bawah 30% selama periode 5 menit. Contoh berikut mendefinisikan aturan untuk menskalakan dalam jumlah instans VM satu per satu.
 
 ```bash
 az monitor autoscale rule create --resource-group  $MY_RESOURCE_GROUP_NAME --autoscale-name autoscale --condition "Percentage CPU < 30 avg 5m" --scale in 1
 ```
 
 Hasil:
-
 <!-- expected_similarity=0.3 -->
 ```json 
 {
@@ -832,19 +829,19 @@ Hasil:
 }
 ```
 
-
 ### Menguji halaman
 
-Perintah di bawah ini menunjukkan IP publik Application Gateway Anda. Anda dapat menempelkan adress IP ke halaman browser untuk pengujian.
+Perintah berikut menunjukkan IP publik Application Gateway Anda. Tempelkan alamat IP ke halaman browser untuk pengujian.
 
 ```bash
 az network public-ip show --resource-group $MY_RESOURCE_GROUP_NAME --name $MY_APPGW_PUBLIC_IP_NAME --query [ipAddress]  --output tsv
 ```
 
+## Membersihkan sumber daya (opsional)
 
+Untuk menghindari biaya Azure, Anda harus membersihkan sumber daya yang tidak diperlukan. Saat Anda tidak lagi memerlukan set skala dan sumber daya lainnya, hapus grup sumber daya dan semua sumber dayanya dengan [az group delete](/cli/azure/group). Parameter `--no-wait` mengembalikan kontrol ke permintaan tanpa menunggu operasi selesai. Parameter `--yes` mengonfirmasi bahwa Anda ingin menghapus sumber daya tanpa permintaan lain untuk melakukannya. Tutorial ini membersihkan sumber daya untuk Anda.
 
-# Referensi
-
-* [Dokumentasi VMSS](https://learn.microsoft.com/en-us/azure/virtual-machine-scale-sets/overview)
-* [Skala Otomatis VMSS](https://learn.microsoft.com/en-us/azure/virtual-machine-scale-sets/tutorial-autoscale-cli?tabs=Ubuntu)
-
+## Langkah berikutnya
+- [Pelajari cara membuat set skala di portal Microsoft Azure.](flexible-virtual-machine-scale-sets-portal.md)
+- [Pelajari tentang Virtual Machine Scale Sets.](overview.md)
+- [Menskalakan Set Skala Komputer Virtual secara otomatis dengan Azure CLI](tutorial-autoscale-cli.md)

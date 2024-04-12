@@ -1,18 +1,35 @@
 ---
-title: Menyebarkan instans WordPress yang Dapat Diskalakan & Aman di AKS
-description: Tutorial ini menunjukkan cara menyebarkan instans WordPress yang Dapat Diskalakan & Aman pada AKS melalui CLI
-author: adrian.joian
-ms.author: adrian.joian
-ms.topic: article
-ms.date: 12/06/2023
-ms.custom: innovation-engine
+title: 'Tutorial: Menyebarkan WordPress pada kluster AKS dengan menggunakan Azure CLI'
+description: Pelajari cara cepat membangun dan menyebarkan WordPress di AKS dengan Azure Database for MySQL - Server Fleksibel.
+ms.service: mysql
+ms.subservice: flexible-server
+author: mksuni
+ms.author: sumuth
+ms.topic: tutorial
+ms.date: 3/20/2024
+ms.custom: 'vc, devx-track-azurecli, innovation-engine, linux-related-content'
 ---
 
-# Mulai Cepat: Menyebarkan instans WordPress yang Dapat Diskalakan & Aman di AKS
+# Tutorial: Terapkan aplikasi WordPress di AKS dengan Azure Database for MySQL - Flexible Server
+
+[!INCLUDE[applies-to-mysql-flexible-server](../includes/applies-to-mysql-flexible-server.md)]
 
 [![Sebarkan ke Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262843)
 
-Selamat datang di tutorial ini di mana kami akan membawa Anda langkah demi langkah dalam membuat Aplikasi Web Azure Kubernetes yang diamankan melalui https. Tutorial ini mengasumsikan Anda sudah masuk ke Azure CLI dan telah memilih langganan untuk digunakan dengan CLI. Ini juga mengasumsikan bahwa Anda telah menginstal Helm ([Instruksi dapat ditemukan di sini](https://helm.sh/docs/intro/install/)).
+Dalam tutorial ini, Anda menyebarkan aplikasi WordPress yang dapat diskalakan yang diamankan melalui HTTPS pada kluster Azure Kubernetes Service (AKS) dengan server fleksibel Azure Database for MySQL menggunakan Azure CLI.
+**[AKS](../../aks/intro-kubernetes.md)** adalah layanan Kubernetes terkelola yang memungkinkan Anda menyebarkan dan mengelola kluster dengan cepat. **[Server](overview.md)** fleksibel Azure Database for MySQL adalah layanan database terkelola penuh yang dirancang untuk memberikan kontrol dan fleksibilitas yang lebih terperinci atas fungsi manajemen database dan pengaturan konfigurasi.
+
+> [!NOTE]
+> Tutorial ini mengasumsikan pemahaman dasar tentang konsep Kubernetes, WordPress, dan MySQL.
+
+[!INCLUDE [flexible-server-free-trial-note](../includes/flexible-server-free-trial-note.md)]
+
+## Prasyarat 
+
+Sebelum memulai, pastikan Anda masuk ke Azure CLI dan telah memilih langganan untuk digunakan dengan CLI. Pastikan Anda telah [menginstal](https://helm.sh/docs/intro/install/) Helm.
+
+> [!NOTE]
+> Jika Anda menjalankan perintah dalam tutorial ini secara lokal alih-alih Azure Cloud Shell, jalankan perintah sebagai administrator.
 
 ## Tentukan Variabel Lingkungan
 
@@ -43,7 +60,7 @@ export FQDN="${MY_DNS_LABEL}.${REGION}.cloudapp.azure.com"
 
 ## Buat grup sumber daya
 
-Grup sumber daya adalah kontainer untuk sumber daya terkait. Semua sumber daya harus ditempatkan dalam grup sumber daya. Kami akan membuatnya untuk tutorial ini. Perintah berikut membuat grup sumber daya dengan parameter $MY_RESOURCE_GROUP_NAME dan $REGION yang ditentukan sebelumnya.
+Grup sumber daya Azure adalah grup logis tempat sumber daya Azure disebarkan dan dikelola. Semua sumber daya harus ditempatkan dalam grup sumber daya. Perintah berikut membuat grup sumber daya dengan parameter dan `$REGION` yang ditentukan `$MY_RESOURCE_GROUP_NAME` sebelumnya.
 
 ```bash
 az group create \
@@ -52,7 +69,6 @@ az group create \
 ```
 
 Hasil:
-
 <!-- expected_similarity=0.3 -->
 ```json
 {
@@ -67,6 +83,9 @@ Hasil:
   "type": "Microsoft.Resources/resourceGroups"
 }
 ```
+
+> [!NOTE]
+> Lokasi untuk grup sumber daya adalah tempat metadata grup sumber daya disimpan. Ini juga tempat sumber daya Anda berjalan di Azure jika Anda tidak menentukan wilayah lain selama pembuatan sumber daya.
 
 ## Membuat jaringan virtual dan subnet
 
@@ -83,7 +102,6 @@ az network vnet create \
 ```
 
 Hasil:
-
 <!-- expected_similarity=0.3 -->
 ```json
 {
@@ -118,9 +136,9 @@ Hasil:
 }
 ```
 
-## Membuat Server Fleksibel Azure Database for MySQL
+## Membuat instans server fleksibel Azure Database for MySQL
 
-Azure Database for MySQL - Server Fleksibel adalah layanan terkelola yang dapat Anda gunakan untuk menjalankan, mengelola, dan menskalakan server MySQL yang sangat tersedia di cloud. Membuat server fleksibel dengan perintah [az mysql flexible-server create](https://learn.microsoft.com/cli/azure/mysql/flexible-server#az-mysql-flexible-server-create). Server bisa berisi beberapa database. Perintah berikut membuat server menggunakan default layanan dan nilai variabel dari lingkungan lokal Azure CLI Anda:
+Server fleksibel Azure Database for MySQL adalah layanan terkelola yang dapat Anda gunakan untuk menjalankan, mengelola, dan menskalakan server MySQL yang sangat tersedia di cloud. Buat instans server fleksibel Azure Database for MySQL dengan [perintah az mysql flexible-server create](/cli/azure/mysql/flexible-server) . Server bisa berisi beberapa database. Perintah berikut membuat server menggunakan default layanan dan nilai variabel dari konteks lokal Azure CLI Anda:
 
 ```bash
 echo "Your MySQL user $MY_MYSQL_ADMIN_USERNAME password is: $MY_WP_ADMIN_PW" 
@@ -149,7 +167,6 @@ az mysql flexible-server create \
 ```
 
 Hasil:
-
 <!-- expected_similarity=0.3 -->
 ```json
 {
@@ -165,16 +182,17 @@ Hasil:
 }
 ```
 
-Server yang dibuat memiliki atribut di bawah ini:
+Server yang dibuat memiliki atribut berikut:
 
-- Nama server, nama pengguna admin, kata sandi admin, nama grup sumber daya, lokasi sudah ditentukan di lingkungan konteks lokal shell cloud, dan akan dibuat di lokasi yang sama dengan Anda adalah grup sumber daya dan komponen Azure lainnya.
-- Default layanan untuk konfigurasi server yang tersisa: tingkat komputasi (Burstable), ukuran komputasi/SKU (Standard_B2s), periode retensi cadangan (7 hari), dan versi MySQL (8.0.21)
-- Metode konektivitas default adalah Akses privat (Integrasi VNet) dengan jaringan virtual tertaut dan subnet yang dihasilkan secara otomatis.
+- Database kosong baru dibuat saat server pertama kali disediakan.
+- Nama server, nama pengguna admin, kata sandi admin, nama grup sumber daya, dan lokasi sudah ditentukan di lingkungan konteks lokal shell cloud dan berada di lokasi yang sama dengan grup sumber daya Anda dan komponen Azure lainnya.
+- Default layanan untuk konfigurasi server yang tersisa adalah tingkat komputasi (Burstable), ukuran komputasi/SKU (Standard_B2s), periode retensi cadangan (tujuh hari), dan versi MySQL (8.0.21).
+- Metode konektivitas default adalah Akses privat (integrasi jaringan virtual) dengan jaringan virtual tertaut dan subnet yang dihasilkan secara otomatis.
 
 > [!NOTE]
-> Metode konektivitas tidak dapat diubah setelah membuat server. Misalnya, jika Anda memilih `Private access (VNet Integration)` selama pembuatan, Maka Anda tidak dapat mengubahnya `Public access (allowed IP addresses)` setelah membuat. Kami sangat menyarankan untuk membuat server dengan akses Pribadi untuk mengakses server Anda dengan aman menggunakan Integrasi VNet. Pelajari selengkapnya tentang akses Pribadi [di artikel konsep](https://learn.microsoft.com/azure/mysql/flexible-server/concepts-networking-vnet).
+> Metode konektivitas tidak dapat diubah setelah membuat server. Misalnya, jika Anda memilih `Private access (VNet Integration)` selama pembuatan, maka Anda tidak dapat berubah menjadi `Public access (allowed IP addresses)` setelah pembuatan. Kami sangat menyarankan untuk membuat server dengan akses Pribadi untuk mengakses server Anda dengan aman menggunakan Integrasi VNet. Pelajari selengkapnya tentang akses Pribadi [di artikel konsep](./concepts-networking-vnet.md).
 
-Jika Anda ingin mengubah default apa pun, silakan lihat dokumentasi [referensi](https://learn.microsoft.com/cli/azure//mysql/flexible-server) Azure CLI untuk daftar lengkap parameter CLI yang dapat dikonfigurasi.
+Jika Anda ingin mengubah default apa pun, lihat dokumentasi[ referensi Azure CLI ](/cli/azure//mysql/flexible-server)untuk daftar lengkap parameter CLI yang dapat dikonfigurasi.
 
 ## Periksa Status Azure Database for MySQL - Server Fleksibel
 
@@ -188,11 +206,11 @@ runtime="10 minute"; endtime=$(date -ud "$runtime" +%s); while [[ $(date -u +%s)
 
 Anda dapat mengelola Konfigurasi Azure Database for MySQL - Server Fleksibel menggunakan parameter server. Parameter server dikonfigurasi dengan nilai default dan direkomendasikan saat Anda membuat server.
 
-Tampilkan detail parameter server Untuk menampilkan detail tentang parameter tertentu untuk server, jalankan [perintah az mysql flexible-server parameter show](https://learn.microsoft.com/cli/azure/mysql/flexible-server/parameter) .
+Untuk menampilkan rincian parameter tertentu untuk server, jalankan perintah [az mysql flexible-server parameter show](/cli/azure/mysql/flexible-server/parameter).
 
 ### Nonaktifkan Azure Database for MySQL - Parameter koneksi SSL Server Fleksibel untuk integrasi WordPress
 
-Anda juga dapat memodifikasi nilai parameter server tertentu, yang memperbarui nilai konfigurasi yang mendasar untuk mesin server MySQL. Untuk memperbarui parameter server, gunakan perintah [az mysql flexible-server parameter set](https://learn.microsoft.com/cli/azure/mysql/flexible-server/parameter#az-mysql-flexible-server-parameter-set).
+Anda juga dapat memodifikasi nilai parameter server tertentu untuk memperbarui nilai konfigurasi yang mendasar untuk mesin server MySQL. Untuk memperbarui parameter server, gunakan perintah [az mysql flexible-server parameter set](/cli/azure/mysql/flexible-server/parameter#az-mysql-flexible-server-parameter-set).
 
 ```bash
 az mysql flexible-server parameter set \
@@ -202,7 +220,6 @@ az mysql flexible-server parameter set \
 ```
 
 Hasil:
-
 <!-- expected_similarity=0.3 -->
 ```json
 {
@@ -223,11 +240,11 @@ Hasil:
 }
 ```
 
-## Buat Kluster AKS
+## Membuat kluster AKS
 
-Membuat kluster AKS menggunakan perintah az aks create dengan parameter --enable-addons monitoring untuk mengaktifkan insight Kontainer. Contoh berikut membuat kluster berkemampuan zona ketersediaan otomatis bernama myAKSCluster:
+Untuk membuat kluster AKS dengan Container Insights, gunakan [perintah az aks create](/cli/azure/aks#az-aks-create) dengan **parameter pemantauan --enable-addons** . Contoh berikut membuat kluster berkemampuan zona ketersediaan otomatis bernama **myAKSCluster**:
 
-Ini akan memakan waktu beberapa menit
+Tindakan ini membutuhkan waktu beberapa menit.
 
 ```bash
 export MY_SN_ID=$(az network vnet subnet list --resource-group $MY_RESOURCE_GROUP_NAME --vnet-name $MY_VNET_NAME --query "[0].id" --output tsv)
@@ -251,62 +268,46 @@ az aks create \
     --dns-service-ip 10.255.0.10 \
     --zones 1 2 3
 ```
+> [!NOTE]
+> Saat membuat kluster AKS, grup sumber daya kedua secara otomatis dibuat untuk menyimpan sumber daya AKS. Lihat [Mengapa dua grup sumber daya dibuat dengan AKS?](../../aks/faq.md#why-are-two-resource-groups-created-with-aks)
 
 ## Menyambungkan ke kluster
 
-Untuk mengelola kluster Kube, gunakan klien baris perintah Kube, kubectl. kubectl sudah diinstal jika Anda menggunakan Azure Cloud Shell.
+Untuk mengelola kluster Kubernetes, gunakan [kubectl](https://kubernetes.io/docs/reference/kubectl/overview/), klien baris-perintah Kubernetes. Jika Anda menggunakan Azure Cloud Shell, `kubectl` sudah terpasang. Contoh berikut menginstal `kubectl` secara lokal menggunakan [perintah az aks install-cli](/cli/azure/aks#az-aks-install-cli) . 
 
-1. Instal az aks CLI secara lokal menggunakan perintah az aks install-cli
-
-    ```bash
+ ```bash
     if ! [ -x "$(command -v kubectl)" ]; then az aks install-cli; fi
-    ```
+```
 
-2. Konfigurasikan kubectl untuk terhubung ke kluster Kubernetes Anda menggunakan perintah az aks get-credentials. Jalankan perintah berikut:
+Selanjutnya, konfigurasikan `kubectl` untuk terhubung ke kluster Kubernetes menggunakan [perintah az aks get-credentials](/cli/azure/aks#az-aks-get-credentials) . Perintah ini mengunduh informasi masuk dan mengonfigurasi CLI Kube untuk menggunakannya. Perintah menggunakan `~/.kube/config`, lokasi default untuk [file](https://kubernetes.io/docs/concepts/configuration/organize-cluster-access-kubeconfig/) konfigurasi Kubernetes. Anda dapat menentukan lokasi yang berbeda untuk file konfigurasi Kubernetes menggunakan **argumen --file** .
 
-    - Unduh informasi masuk dan konfigurasikan Kube CLI untuk menggunakannya.
-    - Menggunakan ~/.kube/config, lokasi default untuk file konfigurasi Kubernetes. Tentukan lokasi berbeda untuk file konfigurasi Kubernetes Anda menggunakan argumen --file.
+> [!WARNING]
+> Perintah ini akan menimpa kredensial yang ada dengan entri yang sama.
 
-    > [!WARNING]
-    > Ini akan menimpa kredensial yang ada dengan entri yang sama
+```bash
+az aks get-credentials --resource-group $MY_RESOURCE_GROUP_NAME --name $MY_AKS_CLUSTER_NAME --overwrite-existing
+```
 
-    ```bash
-    az aks get-credentials --resource-group $MY_RESOURCE_GROUP_NAME --name $MY_AKS_CLUSTER_NAME --overwrite-existing
-    ```
+Untuk memverifikasi sambungan ke kluster Anda, gunakan perintah [kubectl get]( https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands#get) untuk mengembalikan daftar node kluster.
 
-3. Verifikasi koneksi ke kluster menggunakan perintah kubectl get. Perintah ini menampilkan daftar node kluster.
+```bash
+kubectl get nodes
+```
 
-    ```bash
-    kubectl get nodes
-    ```
-
-## Memasang Pengontrol Ingress NGINX
+## Memasang pengontrol ingress NGINX
 
 Anda dapat mengonfigurasi pengontrol ingress Anda dengan alamat IP publik statis. Alamat IP publik statis tetap ada jika Anda menghapus pengontrol ingress Anda. Alamat IP tidak tetap jika Anda menghapus kluster AKS Anda.
-Saat meningkatkan pengontrol ingress, Anda harus meneruskan parameter ke rilis Helm untuk memastikan layanan pengontrol ingress dibuat mengetahui load balancer yang akan dialokasikan untuk itu. Agar sertifikat HTTPS berfungsi dengan benar, Anda menggunakan label DNS untuk mengonfigurasi FQDN untuk alamat IP pengontrol ingress.
-FQDN Anda harus mengikuti formulir ini: $MY_DNS_LABEL. AZURE_REGION_NAME.cloudapp.azure.com.
+Saat meningkatkan pengontrol ingress, Anda harus meneruskan parameter ke rilis Helm untuk memastikan layanan pengontrol ingress dibuat mengetahui load balancer yang akan dialokasikan untuk itu. Agar sertifikat HTTPS berfungsi dengan benar, gunakan label DNS untuk mengonfigurasi nama domain yang sepenuhnya memenuhi syarat (FQDN) untuk alamat IP pengontrol ingress. FQDN Anda harus mengikuti formulir ini: $MY_DNS_LABEL. AZURE_REGION_NAME.cloudapp.azure.com.
 
 ```bash
 export MY_STATIC_IP=$(az network public-ip create --resource-group MC_${MY_RESOURCE_GROUP_NAME}_${MY_AKS_CLUSTER_NAME}_${REGION} --location ${REGION} --name ${MY_PUBLIC_IP_NAME} --dns-name ${MY_DNS_LABEL} --sku Standard --allocation-method static --version IPv4 --zone 1 2 3 --query publicIp.ipAddress -o tsv)
 ```
 
-Tambahkan --set controller.service.annotations." service\.beta\.kubernetes\.io/azure-dns-label-name"="<DNS_LABEL>" parameter. Label DNS dapat diatur, baik saat pengontrol ingress pertama kali disebarkan atau dapat dikonfigurasi nanti. Tambahkan parameter --set controller.service.loadBalancerIP="<STATIC_IP>". Tentukan alamat IP publik Anda yang dibuat di langkah sebelumnya.
+Selanjutnya, Anda menambahkan repositori Helm ingress-nginx, memperbarui cache repositori Bagan Helm lokal, dan menginstal addon ingress-nginx melalui Helm. Anda dapat mengatur label DNS dengan **--set controller.service.annotations." service\.beta\.kubernetes\.io/azure-dns-label-name"="<DNS_LABEL>"** parameter baik ketika Anda pertama kali menyebarkan pengontrol ingress atau yang lebih baru. Dalam contoh ini, Anda menentukan alamat IP publik Anda sendiri yang Anda buat di langkah sebelumnya dengan **parameter --set controller.service.loadBalancerIP="<STATIC_IP>"**.
 
-1. Tambahkan repositori ingress-nginx Helm
-
-    ```bash
+```bash
     helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
-    ```
-
-2. Memperbarui cache repositori Bagan Helm lokal
-
-    ```bash
     helm repo update
-    ```
-
-3. Instal addon ingress-nginx melalui Helm dengan menjalankan yang berikut:
-
-    ```bash
     helm upgrade --install --cleanup-on-fail --atomic ingress-nginx ingress-nginx/ingress-nginx \
         --namespace ingress-nginx \
         --create-namespace \
@@ -314,29 +315,29 @@ Tambahkan --set controller.service.annotations." service\.beta\.kubernetes\.io/a
         --set controller.service.loadBalancerIP=$MY_STATIC_IP \
         --set controller.service.annotations."service\.beta\.kubernetes\.io/azure-load-balancer-health-probe-request-path"=/healthz \
         --wait --timeout 10m0s
-    ```
+```
 
 ## Menambahkan penghentian HTTPS ke domain kustom
 
-Pada titik ini dalam tutorial, Anda memiliki aplikasi web AKS dengan NGINX sebagai pengontrol Ingress dan domain kustom yang dapat Anda gunakan untuk mengakses aplikasi Anda. Langkah selanjutnya adalah menambahkan sertifikat SSL ke domain sehingga pengguna dapat menjangkau aplikasi Anda dengan aman melalui https.
+Pada titik ini dalam tutorial, Anda memiliki aplikasi web AKS dengan NGINX sebagai pengontrol ingress dan domain kustom yang dapat Anda gunakan untuk mengakses aplikasi Anda. Langkah selanjutnya adalah menambahkan sertifikat SSL ke domain sehingga pengguna dapat menjangkau aplikasi Anda dengan aman melalui https.
 
-## Menyiapkan Cert Manager
+### Menyiapkan Cert Manager
 
-Untuk menambahkan HTTPS, kami akan menggunakan Cert Manager. Cert Manager adalah alat sumber terbuka yang digunakan untuk mendapatkan dan mengelola sertifikat SSL untuk penyebaran Kubernetes. Cert Manager akan mendapatkan sertifikat dari berbagai Penerbit, penerbit publik populer maupun Penerbit privat, dan memastikan sertifikat valid dan terbaru, dan akan mencoba memperbarui sertifikat pada waktu yang dikonfigurasi sebelum kedaluwarsa.
+Untuk menambahkan HTTPS, kita akan menggunakan Cert Manager. Cert Manager adalah alat sumber terbuka untuk mendapatkan dan mengelola sertifikat SSL untuk penyebaran Kubernetes. Cert Manager mendapatkan sertifikat dari penerbit publik dan penerbit privat populer, memastikan sertifikat valid dan terbaru, dan mencoba memperbarui sertifikat pada waktu yang dikonfigurasi sebelum kedaluwarsa.
 
-1. Untuk menginstal cert-manager, kita harus terlebih dahulu membuat namespace layanan untuk menjalankannya. Tutorial ini akan menginstal cert-manager ke dalam namespace layanan cert-manager. Dimungkinkan untuk menjalankan cert-manager di namespace layanan yang berbeda, meskipun Anda harus membuat modifikasi pada manifes penyebaran.
+1. Untuk menginstal cert-manager, kita harus terlebih dahulu membuat namespace layanan untuk menjalankannya. Tutorial ini menginstal cert-manager ke dalam namespace layanan cert-manager. Anda dapat menjalankan cert-manager di namespace layanan yang berbeda, tetapi Anda harus membuat modifikasi pada manifes penyebaran.
 
     ```bash
     kubectl create namespace cert-manager
     ```
 
-2. Kita sekarang dapat menginstal cert-manager. Semua sumber daya disertakan dalam satu file manifes YAML. Ini dapat diinstal dengan menjalankan hal berikut:
+2. Kita sekarang dapat menginstal cert-manager. Semua sumber daya disertakan dalam satu file manifes YAML. Instal file manifes dengan perintah berikut:
 
     ```bash
     kubectl apply -f https://github.com/jetstack/cert-manager/releases/download/v1.7.0/cert-manager.crds.yaml
     ```
 
-3. Tambahkan label certmanager.k8s.io/disable-validation: "true" ke namespace layanan cert-manager dengan menjalankan yang berikut ini. Ini akan memungkinkan sumber daya sistem yang diperlukan cert-manager untuk bootstrap TLS untuk dibuat di namespacenya sendiri.
+3. `certmanager.k8s.io/disable-validation: "true"` Tambahkan label ke namespace layanan cert-manager dengan menjalankan yang berikut ini. Ini memungkinkan sumber daya sistem yang diperlukan cert-manager untuk bootstrap TLS untuk dibuat di namespacenya sendiri.
 
     ```bash
     kubectl label namespace cert-manager certmanager.k8s.io/disable-validation=true
@@ -348,21 +349,19 @@ Helm adalah alat penyebaran Kubernetes untuk mengotomatiskan pembuatan, pengemas
 
 Cert-manager menyediakan bagan Helm sebagai metode penginstalan kelas satu di Kubernetes.
 
-1. Menambahkan repositori Jetstack Helm
-
-    Repositori ini adalah satu-satunya sumber bagan cert-manager yang didukung. Ada beberapa cermin dan salinan lain di internet, tetapi itu sepenuhnya tidak resmi dan dapat menghadirkan risiko keamanan.
+1. Tambahkan repositori Jetstack Helm. Repositori ini adalah satu-satunya sumber bagan cert-manager yang didukung. Ada cermin dan salinan lain di internet, tetapi itu tidak resmi dan dapat menghadirkan risiko keamanan.
 
     ```bash
     helm repo add jetstack https://charts.jetstack.io
     ```
 
-2. Memperbarui cache repositori Bagan Helm lokal
+2. Perbarui cache repositori Bagan Helm lokal.
 
     ```bash
     helm repo update
     ```
 
-3. Instal addon Cert-Manager melalui Helm dengan menjalankan hal berikut:
+3. Instal addon Cert-Manager melalui Helm.
 
     ```bash
     helm upgrade --install --cleanup-on-fail --atomic \
@@ -372,10 +371,7 @@ Cert-manager menyediakan bagan Helm sebagai metode penginstalan kelas satu di Ku
         cert-manager jetstack/cert-manager
     ```
 
-4. Terapkan File YAML Penerbit Sertifikat
-
-    ClusterIssuers adalah sumber daya Kubernetes yang mewakili otoritas sertifikat (CA) yang dapat menghasilkan sertifikat yang ditandatangani dengan mematuhi permintaan penandatanganan sertifikat. Semua sertifikat cert-manager memerlukan pengeluar sertifikat yang direferensikan dalam kondisi siap untuk mencoba memenuhi permintaan.
-    Penerbit yang kami gunakan dapat ditemukan di `cluster-issuer-prod.yml file`
+4. Terapkan file YAML penerbit sertifikat. ClusterIssuers adalah sumber daya Kubernetes yang mewakili otoritas sertifikat (CA) yang dapat menghasilkan sertifikat yang ditandatangani dengan mematuhi permintaan penandatanganan sertifikat. Semua sertifikat cert-manager memerlukan pengeluar sertifikat yang direferensikan dalam kondisi siap untuk mencoba memenuhi permintaan. Anda dapat menemukan pengeluar sertifikat tempat kami berada di `cluster-issuer-prod.yaml file`.
 
     ```bash
     cluster_issuer_variables=$(<cluster-issuer-prod.yaml)
@@ -384,8 +380,8 @@ Cert-manager menyediakan bagan Helm sebagai metode penginstalan kelas satu di Ku
 
 ## Membuat kelas penyimpanan kustom
 
-Kelas penyimpanan default sesuai dengan skenario yang paling umum, tetapi tidak semua. Untuk beberapa kasus, Anda mungkin ingin memiliki kelas penyimpanan yang disesuaikan dengan parameter Anda sendiri. Misalnya, gunakan manifes berikut untuk mengonfigurasi mountOptions dari berbagi file.
-Nilai default untuk fileMode dan dirMode adalah 0755 untuk berbagi file yang dipasang Kubernetes. Anda dapat menentukan opsi pemasangan yang berbeda pada objek kelas penyimpanan.
+Kelas penyimpanan default sesuai dengan skenario yang paling umum, tetapi tidak semua. Untuk beberapa kasus, Anda mungkin ingin memiliki kelas penyimpanan yang disesuaikan dengan parameter Anda sendiri. Misalnya, gunakan manifes berikut untuk mengonfigurasi **mountOptions** dari berbagi file.
+Nilai default untuk **fileMode** dan **dirMode** adalah **0755** untuk berbagi file yang dipasang Kubernetes. Anda dapat menentukan opsi pemasangan yang berbeda pada objek kelas penyimpanan.
 
 ```bash
 kubectl apply -f wp-azurefiles-sc.yaml
@@ -393,21 +389,21 @@ kubectl apply -f wp-azurefiles-sc.yaml
 
 ## Menyebarkan WordPress ke kluster AKS
 
-Untuk dokumen ini, kami menggunakan Bagan Helm yang ada untuk WordPress yang dibangun oleh Bitnami. Misalnya bagan Bitnami Helm menggunakan MariaDB lokal sebagai database dan kita perlu mengambil alih nilai-nilai ini untuk menggunakan aplikasi dengan Azure Database for MySQL. Semua nilai penimpaan Anda dapat mengambil alih nilai dan pengaturan kustom dapat ditemukan dalam file `helm-wp-aks-values.yaml`
+Untuk tutorial ini, kami menggunakan bagan Helm yang ada untuk WordPress yang dibangun oleh Bitnami. Bagan Bitnami Helm menggunakan MariaDB lokal sebagai database, jadi kita perlu mengambil alih nilai-nilai ini untuk menggunakan aplikasi dengan Azure Database for MySQL. Anda dapat mengambil alih nilai dan pengaturan `helm-wp-aks-values.yaml` kustom file.
 
-1. Menambahkan repositori Wordpress Bitnami Helm
+1. Tambahkan repositori Wordpress Bitnami Helm.
 
     ```bash
     helm repo add bitnami https://charts.bitnami.com/bitnami
     ```
 
-2. Memperbarui cache repositori Bagan Helm lokal
+2. Perbarui cache repositori bagan Helm lokal.
 
     ```bash
     helm repo update
     ```
 
-3. Instal beban kerja Wordpress melalui Helm dengan menjalankan hal berikut:
+3. Instal beban kerja Wordpress melalui Helm.
 
     ```bash
     helm upgrade --install --cleanup-on-fail \
@@ -426,7 +422,6 @@ Untuk dokumen ini, kami menggunakan Bagan Helm yang ada untuk WordPress yang dib
     ```
 
 Hasil:
-
 <!-- expected_similarity=0.3 -->
 ```text
 Release "wordpress" does not exist. Installing it now.
@@ -466,12 +461,12 @@ To access your WordPress site from outside the cluster follow the steps below:
     echo Password: $(kubectl get secret --namespace wordpress wordpress -o jsonpath="{.data.wordpress-password}" | base64 -d)
 ```
 
-## Telusuri Penyebaran AKS Anda Diamankan melalui HTTPS
+## Telusuri penyebaran AKS Anda yang diamankan melalui HTTPS
 
 Jalankan perintah berikut untuk mendapatkan titik akhir HTTPS untuk aplikasi Anda:
 
 > [!NOTE]
-> Sering kali diperlukan waktu 2-3 menit agar sertifikat SSL menyebar dan sekitar 5 menit agar semua replika POD WordPress siap dan situs dapat dijangkau sepenuhnya melalui https.
+> Sering kali dibutuhkan 2-3 menit agar sertifikat SSL menyebar dan sekitar 5 menit agar semua replika POD WordPress siap dan situs dapat dijangkau sepenuhnya melalui https.
 
 ```bash
 runtime="5 minute"
@@ -487,7 +482,7 @@ while [[ $(date -u +%s) -le $endtime ]]; do
 done
 ```
 
-Memeriksa apakah konten WordPress sedang dikirimkan dengan benar.
+Periksa apakah konten WordPress dikirimkan dengan benar menggunakan perintah berikut:
 
 ```bash
 if curl -I -s -f https://$FQDN > /dev/null ; then 
@@ -498,7 +493,6 @@ fi;
 ```
 
 Hasil:
-
 <!-- expected_similarity=0.3 -->
 ```HTML
 {
@@ -514,8 +508,22 @@ Hasil:
 }
 ```
 
-Situs web dapat dikunjungi dengan mengikuti URL di bawah ini:
+Kunjungi situs web melalui URL berikut:
 
 ```bash
 echo "You can now visit your web server at https://$FQDN"
 ```
+
+## Membersihkan sumber daya (opsional)
+
+Untuk menghindari biaya Azure, Anda harus membersihkan sumber daya yang tidak diperlukan. Saat Anda tidak lagi memerlukan kluster, gunakan [perintah az group delete](/cli/azure/group#az-group-delete) untuk menghapus grup sumber daya, layanan kontainer, dan semua sumber daya terkait. 
+
+> [!NOTE]
+> Saat Anda menghapus kluster, perwakilan layanan Microsoft Entra yang digunakan oleh kluster AKS tidak dihapus. Untuk langkah tentang cara menghapus perwakilan layanan, lihat [Pertimbangan dan penghapusan perwakilan layanan AKS](../../aks/kubernetes-service-principal.md#other-considerations). Jika Anda menggunakan identitas terkelola, identitas dikelola oleh platform dan tidak memerlukan penghapusan.
+
+## Langkah berikutnya
+
+- Pelajari cara [mengakses dasbor web Kubernetes](../../aks/kubernetes-dashboard.md) untuk kluster AKS Anda
+- Pelajari cara [menskalakan kluster Anda](../../aks/tutorial-kubernetes-scale.md)
+- Pelajari cara mengelola instans server fleksibel Azure Database for MySQL Anda [](./quickstart-create-server-cli.md)
+- Pelajari cara [mengonfigurasi parameter](./how-to-configure-server-parameters-cli.md) server untuk server database Anda

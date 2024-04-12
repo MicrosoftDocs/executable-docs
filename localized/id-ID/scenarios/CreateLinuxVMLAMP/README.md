@@ -1,31 +1,40 @@
 ---
-title: Menginstal tumpukan LEMP di Azure
-description: Tutorial ini menunjukkan cara menginstal tumpukan LEMP di Azure.
-author: mbifeld
-ms.author: mbifeld
-ms.topic: article
-ms.date: 11/28/2023
-ms.custom: innovation-engine
+title: Tutorial - Menyebarkan tumpukan LEMP menggunakan WordPress pada VM
+description: 'Dalam tutorial ini, Anda mempelajari cara menginstal tumpukan LEMP, dan WordPress, pada komputer virtual Linux di Azure.'
+author: chasecrum
+ms.collection: linux
+ms.service: virtual-machines
+ms.devlang: azurecli
+ms.custom: 'innovation-engine, linux-related-content, devx-track-azurecli'
+ms.topic: tutorial
+ms.date: 2/29/2024
+ms.author: chasecrum
+ms.reviewer: jushim
 ---
 
-# Menginstal tumpukan LEMP di Azure
+# Tutorial: Menginstal tumpukan LEMP pada VM Linux Azure
 
-[![Sebarkan ke Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2263118)
+**Berlaku untuk:** :heavy_check_mark: VM Linux
 
+[![Sebarkan ke Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#view/Microsoft_Azure_CloudNative/SubscriptionSelectionPage.ReactView/tutorialKey/CreateLinuxVMLAMP)
 
 Artikel ini memandu Anda melalui cara menyebarkan server web NGINX, Server Fleksibel Azure MySQL, dan PHP (tumpukan LEMP) pada VM Linux Ubuntu di Azure. Untuk melihat server LEMP beraksi, Anda dapat secara opsional menginstal dan mengonfigurasi situs WordPress. Dalam tutorial ini, Anda akan mempelajari cara:
 
 > [!div class="checklist"]
-
-> * Membuat Linux Ubuntu VM
+>
+> * Membuat VM Ubuntu
 > * Buka port 80 dan 443 untuk lalu lintas web
 > * Menginstal dan Mengamankan NGINX, Azure Flexible MySQL Server, dan PHP
 > * Memverifikasi penginstalan dan konfigurasi
-> * Menginstal WordPress
+> * Instal WordPress Pengaturan ini adalah untuk tes cepat atau bukti konsep. Untuk informasi selengkapnya tentang tumpukan LEMP, termasuk rekomendasi untuk lingkungan produksi, lihat [dokumentasi](https://help.ubuntu.com/community/ApacheMySQLPHP) Ubuntu.
+
+Tutorial ini menggunakan CLI dalam [Azure Cloud Shell](../../cloud-shell/overview.md), yang terus diperbarui ke versi terkini. Untuk membuka Cloud Shell, pilih **Coba** dari bagian atas blok kode apa pun.
+
+Jika Anda memilih untuk menginstal dan menggunakan CLI secara lokal, tutorial ini mengharuskan Anda menjalankan Azure CLI versi 2.0.30 atau yang lebih baru. Temukan versi dengan menjalankan `az --version` perintah . Jika Anda perlu memasang atau meningkatkan, lihat [Memasang Azure CLI]( /cli/azure/install-azure-cli).
 
 ## Deklarasi variabel
 
-Pertama, kita akan menentukan beberapa variabel yang akan membantu konfigurasi beban kerja LEMP.
+Pertama, kita perlu menentukan beberapa variabel yang membantu konfigurasi beban kerja LEMP.
 
 ```bash
 export NETWORK_PREFIX="$(($RANDOM % 254 + 1))"
@@ -55,13 +64,15 @@ export MY_AZURE_USER=$(az account show --query user.name --output tsv)
 export FQDN="${MY_DNS_LABEL}.${REGION}.cloudapp.azure.com"
 ```
 
-<!--```bash
+<!--
+```bash
 export MY_AZURE_USER_ID=$(az ad user list --filter "mail eq '$MY_AZURE_USER'" --query "[0].id" -o tsv)
-```-->
+```
+-->
 
-## Membuat RG
+## Buat grup sumber daya
 
-Buat grup sumber daya dengan perintah [az group create](https://learn.microsoft.com/cli/azure/group#az-group-create). Grup sumber daya Azure adalah kontainer logis tempat sumber daya Azure disebarkan dan dikelola.
+Buat grup sumber daya dengan perintah [az group create](/cli/azure/group#az-group-create). Grup sumber daya Azure adalah kontainer logis tempat sumber daya Azure disebarkan dan dikelola.
 Contoh berikut ini menampilkan cara membuat grup sumber daya bernama `$MY_RESOURCE_GROUP_NAME` di `eastus` lokasi.
 
 ```bash
@@ -92,7 +103,7 @@ Hasil:
 ## Membuat Azure Virtual Network
 
 Jaringan virtual adalah blok penyusun dasar untuk jaringan privat di Azure. Azure Virtual Network memungkinkan sumber daya Azure seperti VM untuk berkomunikasi satu sama lain dengan aman dan internet.
-Gunakan [az network vnet create](https://learn.microsoft.com/cli/azure/network/vnet#az-network-vnet-create) untuk membuat jaringan virtual bernama `$MY_VNET_NAME` dengan subnet bernama `$MY_SN_NAME` dalam `$MY_RESOURCE_GROUP_NAME` grup sumber daya.
+Gunakan [az network vnet create](/cli/azure/network/vnet#az-network-vnet-create) untuk membuat jaringan virtual bernama `$MY_VNET_NAME` dengan subnet bernama `$MY_SN_NAME` dalam `$MY_RESOURCE_GROUP_NAME` grup sumber daya.
 
 ```bash
 az network vnet create \
@@ -142,11 +153,10 @@ Hasil:
 
 ## Membuat IP Publik Azure
 
-Gunakan [az network public-ip create](https://learn.microsoft.com/cli/azure/network/public-ip#az-network-public-ip-create) untuk membuat alamat IPv4 publik zona redundan standar bernama `MY_PUBLIC_IP_NAME` di `$MY_RESOURCE_GROUP_NAME`.
+Gunakan [az network public-ip create](/cli/azure/network/public-ip#az-network-public-ip-create) untuk membuat alamat IPv4 publik zona redundan standar bernama `MY_PUBLIC_IP_NAME` di `$MY_RESOURCE_GROUP_NAME`.
 
 >[!NOTE]
->Opsi di bawah ini untuk zona hanya merupakan pilihan yang valid di wilayah dengan [Zona](https://learn.microsoft.com/azure/reliability/availability-zones-service-support) Ketersediaan.
-
+>Opsi di bawah ini untuk zona hanya merupakan pilihan yang valid di wilayah dengan [Zona](../../reliability/availability-zones-service-support.md) Ketersediaan.
 ```bash
 az network public-ip create \
     --name $MY_PUBLIC_IP_NAME \
@@ -197,7 +207,7 @@ Hasil:
 
 ## Membuat Grup Keamanan Jaringan Azure
 
-Aturan keamanan dalam grup keamanan jaringan memungkinkan Anda memfilter jenis lalu lintas jaringan yang masuk dan keluar dari subnet jaringan virtual dan antarmuka jaringan. Untuk mempelajari selengkapnya tentang grup keamanan jaringan, baca [Gambaran umum grup keamanan jaringan](https://learn.microsoft.com/azure/virtual-network/network-security-groups-overview).
+Aturan keamanan dalam grup keamanan jaringan memungkinkan Anda memfilter jenis lalu lintas jaringan yang masuk dan keluar dari subnet jaringan virtual dan antarmuka jaringan. Untuk mempelajari selengkapnya tentang grup keamanan jaringan, baca [Gambaran umum grup keamanan jaringan](../../virtual-network/network-security-groups-overview.md).
 
 ```bash
 az network nsg create \
@@ -246,7 +256,7 @@ Hasil:
 
 ## Membuat aturan Grup Keamanan Jaringan Azure
 
-Anda akan membuat aturan untuk mengizinkan koneksi ke komputer virtual pada port 22 untuk SSH dan port 80, 443 untuk HTTP dan HTTPS. Aturan tambahan dibuat untuk memungkinkan semua port untuk koneksi keluar. Gunakan [az network nsg rule create](https://learn.microsoft.com/cli/azure/network/nsg/rule#az-network-nsg-rule-create) untuk membuat aturan kelompok keamanan jaringan.
+Buat aturan untuk mengizinkan koneksi ke komputer virtual pada port 22 untuk SSH dan port 80, 443 untuk HTTP dan HTTPS. Aturan tambahan dibuat untuk memungkinkan semua port untuk koneksi keluar. Gunakan [az network nsg rule create](/cli/azure/network/nsg/rule#az-network-nsg-rule-create) untuk membuat aturan kelompok keamanan jaringan.
 
 ```bash
 az network nsg rule create \
@@ -293,7 +303,7 @@ Hasil:
 
 ## Membuat Antarmuka Jaringan Azure
 
-Anda akan menggunakan [az network nic create](https://learn.microsoft.com/cli/azure/network/nic#az-network-nic-create) untuk membuat antarmuka jaringan untuk mesin virtual. Alamat IP publik dan NSG yang dibuat sebelumnya dikaitkan dengan NIC. Antarmuka jaringan dipasang ke jaringan virtual yang Anda buat sebelumnya.
+Gunakan [az network nic create](/cli/azure/network/nic#az-network-nic-create) untuk membuat antarmuka jaringan untuk komputer virtual. Alamat IP publik dan NSG yang dibuat sebelumnya dikaitkan dengan NIC. Antarmuka jaringan dipasang ke jaringan virtual yang Anda buat sebelumnya.
 
 ```bash
 az network nic create \
@@ -356,14 +366,13 @@ Hasil:
   }
 }
 ```
-
 ## Gambaran Umum cloud-init
 
-Cloud-init adalah pendekatan yang digunakan secara luas untuk mengustomisasi Linux VM saat boot pertama kali. Anda dapat menggunakan cloud-init untuk memasang paket dan menulis file, atau untuk mengonfigurasi pengguna dan keamanan. Saat cloud-init berjalan selama proses booting awal, tidak ada langkah tambahan atau agen yang diperlukan untuk menerapkan konfigurasi Anda.
+Cloud-init adalah pendekatan yang digunakan secara luas untuk mengustomisasi Linux VM saat boot pertama kali. Anda dapat menggunakan cloud-init untuk memasang paket dan menulis file, atau untuk mengonfigurasi pengguna dan keamanan. Saat cloud-init berjalan selama proses boot awal, tidak ada langkah lain atau agen yang diperlukan untuk diterapkan ke konfigurasi Anda.
 
 Cloud-init juga berjalan di seluruh distribusi. Misalnya, Anda tidak menggunakan apt-get install atau yum install untuk memasang paket. Sebagai gantinya, Anda dapat menentukan daftar paket yang akan dipasang. Cloud-init secara otomatis menggunakan alat manajemen paket asli untuk distro yang Anda pilih.
 
-Kami bekerja sama dengan mitra kami untuk memasukkan cloud-init dan bekerja dalam gambar yang mereka berikan kepada Azure. Untuk informasi terperinci dukungan cloud-init untuk setiap distribusi, lihat [ Dukungan cloud-init untuk VM di Azure](https://learn.microsoft.com/azure/virtual-machines/linux/using-cloud-init).
+Kami bekerja sama dengan mitra kami untuk menyertakan cloud-init dan bekerja dalam gambar yang mereka berikan ke Azure. Untuk informasi terperinci dukungan cloud-init untuk setiap distribusi, lihat [ Dukungan cloud-init untuk VM di Azure](./using-cloud-init.md).
 
 ### Membuat file konfigurasi cloud-init
 
@@ -372,12 +381,10 @@ Untuk melihat cloud-init dalam tindakan, buat VM yang menginstal tumpukan LEMP d
 ```bash
 cat << EOF > cloud-init.txt
 #cloud-config
-
 # Install, update, and upgrade packages
 package_upgrade: true
 package_update: true
 package_reboot_if_require: true
-
 # Install packages
 packages:
   - vim
@@ -400,7 +407,6 @@ packages:
   - php-xmlrpc
   - php-zip
   - php-fpm
-
 write_files:
   - owner: www-data:www-data
     path: /etc/nginx/sites-available/default.conf
@@ -411,7 +417,6 @@ write_files:
             root /var/www/html;
             server_name $FQDN;
         }
-
 write_files:
   - owner: www-data:www-data
     path: /etc/nginx/sites-available/$FQDN.conf
@@ -422,15 +427,11 @@ write_files:
         server {
             listen 443 ssl http2;
             listen [::]:443 ssl http2;
-
             server_name $FQDN;
-
             ssl_certificate /etc/letsencrypt/live/$FQDN/fullchain.pem;
             ssl_certificate_key /etc/letsencrypt/live/$FQDN/privkey.pem;
-
             root /var/www/$FQDN;
             index index.php;
-
             location / {
                 try_files \$uri \$uri/ /index.php?\$args;
             }
@@ -448,7 +449,6 @@ write_files:
                     log_not_found off;
                     access_log off;
             }
-
             location = /robots.txt {
                     allow all;
                     log_not_found off;
@@ -461,7 +461,6 @@ write_files:
             server_name $FQDN;
             return 301 https://$FQDN\$request_uri;
         }
-
 runcmd:
   - sed -i 's/;cgi.fix_pathinfo.*/cgi.fix_pathinfo = 1/' /etc/php/8.1/fpm/php.ini
   - sed -i 's/^max_execution_time \= .*/max_execution_time \= 300/g' /etc/php/8.1/fpm/php.ini
@@ -481,7 +480,7 @@ runcmd:
   - chown -R azureadmin:www-data /var/www/$FQDN
   - sudo -u azureadmin -i -- wp core download --path=/var/www/$FQDN
   - sudo -u azureadmin -i -- wp config create --dbhost=$MY_MYSQL_DB_NAME.mysql.database.azure.com --dbname=wp001 --dbuser=$MY_MYSQL_ADMIN_USERNAME --dbpass="$MY_MYSQL_ADMIN_PW" --path=/var/www/$FQDN
-  - sudo -u azureadmin -i -- wp core install --url=$FQDN --title="Azure hosted blog" --admin_user=$MY_WP_ADMIN_USER --admin_password="$MY_WP_ADMIN_PW" --admin_email=$MY_AZURE_USER --path=/var/www/$FQDN 
+  - sudo -u azureadmin -i -- wp core install --url=$FQDN --title="Azure hosted blog" --admin_user=$MY_WP_ADMIN_USER --admin_password="$MY_WP_ADMIN_PW" --admin_email=$MY_AZURE_USER --path=/var/www/$FQDN
   - sudo -u azureadmin -i -- wp plugin update --all --path=/var/www/$FQDN
   - chmod 600 /var/www/$FQDN/wp-config.php
   - mkdir -p -m 0775 /var/www/$FQDN/wp-content/uploads
@@ -491,7 +490,7 @@ EOF
 
 ## Membuat Zona DNS Privat Azure untuk Server Fleksibel Azure MySQL
 
-Integrasi Zona DNS Privat Azure memungkinkan Anda menyelesaikan DNS privat dalam VNET saat ini atau VNET yang di-peering di wilayah mana pun tempat Zona DNS privat ditautkan. Anda akan menggunakan [az network private-dns zone create](https://learn.microsoft.com/cli/azure/network/private-dns/zone#az-network-private-dns-zone-create) untuk membuat zona DNS privat.
+Integrasi Zona DNS Privat Azure memungkinkan Anda menyelesaikan DNS privat dalam VNET saat ini atau VNET yang di-peering di wilayah mana pun tempat Zona DNS privat ditautkan. Gunakan [buat zona](/cli/azure/network/private-dns/zone#az-network-private-dns-zone-create) dns privat jaringan az untuk membuat zona DNS privat.
 
 ```bash
 az network private-dns zone create \
@@ -522,7 +521,7 @@ Hasil:
 
 ## Membuat Server Fleksibel Azure Database for MySQL
 
-Azure Database for MySQL - Server Fleksibel adalah layanan terkelola yang dapat Anda gunakan untuk menjalankan, mengelola, dan menskalakan server MySQL yang sangat tersedia di cloud. Membuat server fleksibel dengan perintah [az mysql flexible-server create](https://learn.microsoft.com/cli/azure/mysql/flexible-server#az-mysql-flexible-server-create). Server bisa berisi beberapa database. Perintah berikut membuat server menggunakan default layanan dan nilai variabel dari lingkungan lokal Azure CLI Anda:
+Azure Database for MySQL - Server Fleksibel adalah layanan terkelola yang dapat Anda gunakan untuk menjalankan, mengelola, dan menskalakan server MySQL yang sangat tersedia di cloud. Membuat server fleksibel dengan perintah [az mysql flexible-server create](../../mysql/flexible-server/quickstart-create-server-cli.md#create-an-azure-database-for-mysql-flexible-server). Server bisa berisi beberapa database. Perintah berikut membuat server menggunakan default layanan dan nilai variabel dari lingkungan lokal Azure CLI Anda:
 
 ```bash
 az mysql flexible-server create \
@@ -569,14 +568,13 @@ echo "Your MySQL user $MY_MYSQL_ADMIN_USERNAME password is: $MY_WP_ADMIN_PW"
 
 Server yang dibuat memiliki atribut di bawah ini:
 
-* Nama server, nama pengguna admin, kata sandi admin, nama grup sumber daya, lokasi sudah ditentukan di lingkungan konteks lokal shell cloud, dan akan dibuat di lokasi yang sama dengan Anda adalah grup sumber daya dan komponen Azure lainnya.
+* Nama server, nama pengguna admin, kata sandi admin, nama grup sumber daya, lokasi sudah ditentukan di lingkungan konteks lokal shell cloud. Mereka dibuat di lokasi yang sama dengan grup sumber daya Anda dan komponen Azure lainnya.
 * Default layanan untuk konfigurasi server yang tersisa: tingkat komputasi (Burstable), ukuran komputasi/SKU (Standard_B2s), periode retensi cadangan (7 hari), dan versi MySQL (8.0.21)
 * Metode konektivitas default adalah Akses privat (Integrasi VNet) dengan jaringan virtual tertaut dan subnet yang dihasilkan secara otomatis.
 
 > [!NOTE]
-> Metode konektivitas tidak dapat diubah setelah membuat server. Misalnya, jika Anda memilih `Private access (VNet Integration)` selama pembuatan, Maka Anda tidak dapat mengubahnya `Public access (allowed IP addresses)` setelah membuat. Kami sangat menyarankan untuk membuat server dengan akses Pribadi untuk mengakses server Anda dengan aman menggunakan Integrasi VNet. Pelajari selengkapnya tentang akses Pribadi [di artikel konsep](https://learn.microsoft.com/azure/mysql/flexible-server/concepts-networking-vnet).
-
-Jika Anda ingin mengubah default apa pun, silakan lihat dokumentasi [referensi](https://learn.microsoft.com/cli/azure//mysql/flexible-server) Azure CLI untuk daftar lengkap parameter CLI yang dapat dikonfigurasi.
+> Metode konektivitas tidak dapat diubah setelah membuat server. Misalnya, jika Anda memilih `Private access (VNet Integration)` selama pembuatan, Maka Anda tidak dapat mengubahnya `Public access (allowed IP addresses)` setelah membuat. Kami sangat menyarankan untuk membuat server dengan akses Pribadi untuk mengakses server Anda dengan aman menggunakan Integrasi VNet. Pelajari selengkapnya tentang akses Pribadi [di artikel konsep](../../mysql/flexible-server/concepts-networking-vnet.md).
+Jika Anda ingin mengubah default apa pun, lihat dokumentasi[ referensi Azure CLI ](../../mysql/flexible-server/quickstart-create-server-cli.md)untuk daftar lengkap parameter CLI yang dapat dikonfigurasi.
 
 ## Periksa Status Azure Database for MySQL - Server Fleksibel
 
@@ -600,11 +598,15 @@ done
 
 Anda dapat mengelola Konfigurasi Azure Database for MySQL - Server Fleksibel menggunakan parameter server. Parameter server dikonfigurasi dengan nilai default dan direkomendasikan saat Anda membuat server.
 
-Tampilkan detail parameter server Untuk menampilkan detail tentang parameter tertentu untuk server, jalankan [perintah az mysql flexible-server parameter show](https://learn.microsoft.com/cli/azure/mysql/flexible-server/parameter) .
+Tampilkan detail parameter server:
 
-### Nonaktifkan Azure Database for MySQL - Parameter koneksi SSL Server Fleksibel untuk integrasi Wordpress
+Jalankan [perintah az mysql flexible-server parameter show](../../mysql/flexible-server/how-to-configure-server-parameters-cli.md) untuk menampilkan detail tentang parameter tertentu untuk server.
 
-Ubah nilai parameter server Anda juga dapat memodifikasi nilai parameter server tertentu, yang memperbarui nilai konfigurasi yang mendasar untuk mesin server MySQL. Untuk memperbarui parameter server, gunakan perintah [az mysql flexible-server parameter set](https://learn.microsoft.com/cli/azure/mysql/flexible-server/parameter#az-mysql-flexible-server-parameter-set).
+## Nonaktifkan Azure Database for MySQL - Parameter koneksi SSL Server Fleksibel untuk integrasi Wordpress
+
+Ubah nilai parameter server:
+
+Anda juga dapat mengubah nilai parameter server tertentu, yang memperbarui nilai konfigurasi dasar untuk mesin server MySQL. Untuk memperbarui parameter server, gunakan perintah [az mysql flexible-server parameter set](../../mysql/flexible-server/how-to-configure-server-parameters-cli.md#modify-a-server-parameter-value).
 
 ```bash
 az mysql flexible-server parameter set \
@@ -638,9 +640,10 @@ Hasil:
 ## Membuat Azure Linux Virtual Machine
 
 Contoh berikut membuat VM bernama `$MY_VM_NAME` dan membuat kunci SSH jika belum ada di lokasi kunci default. Perintah ini juga ditetapkan `$MY_VM_USERNAME` sebagai nama pengguna administrator.
-Untuk meningkatkan keamanan komputer virtual Linux di Azure, Anda dapat berintegrasi dengan autentikasi Azure Active Directory. Anda kini dapat menggunakan Azure AD sebagai platform autentikasi utama dan otoritas sertifikat untuk SSH ke Mesin Virtual Linux dengan menggunakan Azure AD dan autentikasi berbasis sertifikat OpenSSH. Fungsionalitas ini memungkinkan organisasi mengelola akses ke VM dengan kontrol akses berbasis peran Azure dan kebijakan Akses Bersyar.
 
-Buat VM dengan perintah [az vm create](https://learn.microsoft.com/cli/azure/vm#az-vm-create).
+Untuk meningkatkan keamanan komputer virtual Linux di Azure, Anda dapat berintegrasi dengan autentikasi Azure Active Directory. Sekarang Anda dapat menggunakan Azure AD sebagai platform autentikasi inti. Anda juga dapat SSH ke VM Linux dengan menggunakan AAD dan autentikasi berbasis sertifikat OpenSSH. Fungsionalitas ini memungkinkan organisasi mengelola akses ke VM dengan kontrol akses berbasis peran Azure dan kebijakan Akses Bersyar.
+
+Buat VM dengan perintah [az vm create](/cli/azure/vm#az-vm-create).
 
 ```bash
 az vm create \
@@ -686,17 +689,17 @@ Hasil:
 
 ## Periksa status Azure Linux Virtual Machine
 
-Dibutuhkan beberapa menit untuk membuat komputer virtual dan sumber daya pendukung. Nilai provisioningState dari Berhasil muncul ketika ekstensi berhasil diinstal pada VM. Komputer virtual harus memiliki [Agen komputer virtual](https://learn.microsoft.com/azure/virtual-machines/extensions/agent-linux) yang sedang berjalan untuk menginstal ekstensi.
+Dibutuhkan beberapa menit untuk membuat komputer virtual dan sumber daya pendukung. Nilai provisioningState dari Berhasil muncul ketika ekstensi berhasil diinstal pada VM. Komputer virtual harus memiliki [Agen komputer virtual](../extensions/agent-linux.md) yang sedang berjalan untuk menginstal ekstensi.
 
 ```bash
 runtime="5 minute";
 endtime=$(date -ud "$runtime" +%s);
-while [[ $(date -u +%s) -le $endtime ]]; do 
-    STATUS=$(ssh -o StrictHostKeyChecking=no $MY_VM_USERNAME@$FQDN "cloud-init status --wait"); 
-    echo $STATUS; 
-    if [[ "$STATUS" == *'status: done'* ]]; then 
-        break; 
-    else 
+while [[ $(date -u +%s) -le $endtime ]]; do
+    STATUS=$(ssh -o StrictHostKeyChecking=no $MY_VM_USERNAME@$FQDN "cloud-init status --wait");
+    echo $STATUS;
+    if [[ "$STATUS" == *'status: done'* ]]; then
+        break;
+    else
         sleep 10;
     fi;
 done
@@ -704,21 +707,16 @@ done
 
 <!--
 ## Assign Azure AD RBAC for Azure AD login for Linux Virtual Machine
-
 The below command uses [az role assignment create](https://learn.microsoft.com/cli/azure/role/assignment#az-role-assignment-create) to assign the `Virtual Machine Administrator Login` role to the VM for your current Azure user.
-
 ```bash
 export MY_RESOURCE_GROUP_ID=$(az group show --resource-group $MY_RESOURCE_GROUP_NAME --query id -o tsv)
-
 az role assignment create \
     --role "Virtual Machine Administrator Login" \
     --assignee $MY_AZURE_USER_ID \
     --scope $MY_RESOURCE_GROUP_ID -o JSON
 ```
-
-
 Results:
-<!-- expected_similarity=0.3
+<!-- expected_similarity=0.3 -->
 ```JSON
 {
   "condition": null,
@@ -739,13 +737,11 @@ Results:
   "updatedOn": "2023-09-04T09:29:17.237445+00:00"
 }
 ```
--->
 
-<!-- 
+
+<!--
 ## Export the SSH configuration for use with SSH clients that support OpenSSH
-
 Login to Azure Linux VMs with Azure AD supports exporting the OpenSSH certificate and configuration. That means you can use any SSH clients that support OpenSSH-based certificates to sign in through Azure AD. The following example exports the configuration for all IP addresses assigned to the VM:
-
 ```bash
 az ssh config --file ~/.ssh/azure-config --name $MY_VM_NAME --resource-group $MY_RESOURCE_GROUP_NAME
 ```
@@ -791,7 +787,7 @@ Hasil:
 
 ## Periksa dan telusuri situs web WordPress Anda
 
-[WordPress](https://www.wordpress.org) adalah sistem manajemen konten (CMS) yang digunakan lebih dari 40% oleh web untuk membuat situs web, blog, dan aplikasi lainnya. WordPress dapat dijalankan pada beberapa layanan Azure yang berbeda: [AKS](https://learn.microsoft.com/azure/mysql/flexible-server/tutorial-deploy-wordpress-on-aks), Virtual Machines, dan App Service. Untuk daftar lengkap opsi WordPress di Azure, lihat [WordPress di Marketplace Azure](https://azuremarketplace.microsoft.com/marketplace/apps?page=1&search=wordpress).
+[WordPress](https://www.wordpress.org) adalah sistem manajemen konten (CMS) yang digunakan lebih dari 40% oleh web untuk membuat situs web, blog, dan aplikasi lainnya. WordPress dapat dijalankan pada beberapa layanan Azure yang berbeda: [AKS](../../mysql/flexible-server/tutorial-deploy-wordpress-on-aks.md), Virtual Machines, dan App Service. Untuk daftar lengkap opsi WordPress di Azure, lihat [WordPress di Marketplace Azure](https://azuremarketplace.microsoft.com/marketplace/apps?page=1&search=wordpress).
 
 Penyiapan WordPress ini hanya untuk bukti konsep. Untuk menginstal WordPress terbaru dalam produksi dengan pengaturan keamanan yang direkomendasikan, lihat [Dokumentasi WordPress](https://codex.wordpress.org/Main_Page).
 
@@ -801,10 +797,10 @@ Validasi bahwa aplikasi berjalan dengan mengkurasi url aplikasi:
 runtime="5 minute";
 endtime=$(date -ud "$runtime" +%s);
 while [[ $(date -u +%s) -le $endtime ]]; do
-    if curl -I -s -f $FQDN > /dev/null ; then 
+    if curl -I -s -f $FQDN > /dev/null ; then
         curl -L -s -f $FQDN 2> /dev/null | head -n 9
         break
-    else 
+    else
         sleep 10
     fi;
 done
