@@ -1,23 +1,35 @@
 ---
-title: Tworzenie zestawu skalowania maszyn wirtualnych za pomocą usługi Application Gateway z obrazem systemu Linux
-description: 'W tym samouczku pokazano, jak utworzyć zestaw skalowania maszyn wirtualnych przy użyciu usługi Application Gateway z obrazem systemu Linux'
-author: belginceran
-ms.author: belginceran
-ms.topic: article
-ms.date: 01/05/2024
-ms.custom: innovation-engine
+title: Tworzenie maszyn wirtualnych w zestawie skalowania elastycznego przy użyciu interfejsu wiersza polecenia platformy Azure
+description: 'Dowiedz się, jak utworzyć zestaw skalowania maszyn wirtualnych w trybie elastycznej aranżacji przy użyciu interfejsu wiersza polecenia platformy Azure.'
+author: fitzgeraldsteele
+ms.author: fisteele
+ms.topic: how-to
+ms.service: virtual-machine-scale-sets
+ms.date: 3/19/2024
+ms.reviewer: jushiman
+ms.custom: 'mimckitt, devx-track-azurecli, vmss-flex, innovation-engine, linux-related-content'
 ---
 
-# Tworzenie zestawu skalowania maszyn wirtualnych za pomocą usługi Application Gateway z obrazem systemu Linux
+# Tworzenie maszyn wirtualnych w zestawie skalowania przy użyciu interfejsu wiersza polecenia platformy Azure
 
 [![Wdróż na platformie Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262759)
 
+W tym artykule przedstawiono procedurę tworzenia zestawu skalowania maszyn wirtualnych przy użyciu interfejsu wiersza polecenia platformy Azure.
+
+Upewnij się, że zainstalowano najnowszy [interfejs wiersza polecenia](/cli/azure/install-az-cli2) platformy Azure i zalogowano się do konta platformy Azure przy użyciu polecenia [az login](/cli/azure/reference-index).
+
+
+## Uruchamianie usługi Azure Cloud Shell
+
+Usługa Azure Cloud Shell to bezpłatna interaktywna powłoka, której możesz używać do wykonywania kroków opisanych w tym artykule. Udostępnia ona wstępnie zainstalowane i najczęściej używane narzędzia platformy Azure, które są skonfigurowane do użycia na koncie.
+
+Aby otworzyć usługę Cloud Shell, wybierz pozycję **Otwórz usługę Cloud Shell** w prawym górnym rogu bloku kodu. Możesz również uruchomić usługę Cloud Shell w oddzielnej karcie przeglądarki, przechodząc do strony [https://shell.azure.com/cli](https://shell.azure.com/cli). Wybierz przycisk **Kopiuj**, aby skopiować bloki kodu, wklej je do usługi Cloud Shell, a następnie naciśnij klawisz Enter, aby je uruchomić.
+
 ## Definiowanie zmiennych środowiskowych
 
-Pierwszym krokiem w tym samouczku jest zdefiniowanie zmiennych środowiskowych.
+Zdefiniuj zmienne środowiskowe w następujący sposób.
 
 ```bash
-
 export RANDOM_ID="$(openssl rand -hex 3)"
 export MY_RESOURCE_GROUP_NAME="myVMSSResourceGroup$RANDOM_ID"
 export REGION=EastUS
@@ -33,22 +45,17 @@ export MY_APPGW_SN_NAME="myAPPGWSN$RANDOM_ID"
 export MY_APPGW_SN_PREFIX="10.$NETWORK_PREFIX.1.0/24"
 export MY_APPGW_NAME="myAPPGW$RANDOM_ID"
 export MY_APPGW_PUBLIC_IP_NAME="myAPPGWPublicIP$RANDOM_ID"
-
 ```
-# Logowanie do platformy Azure przy użyciu interfejsu wiersza polecenia
 
-Aby uruchamiać polecenia na platformie Azure przy użyciu interfejsu wiersza polecenia, musisz się zalogować. Odbywa się to bardzo po prostu, choć `az login` polecenie:
+## Tworzenie grupy zasobów
 
-# Tworzenie grupy zasobów
-
-Grupa zasobów to kontener powiązanych zasobów. Wszystkie zasoby należy umieścić w grupie zasobów. Utworzymy go na potrzeby tego samouczka. Następujące polecenie tworzy grupę zasobów z wcześniej zdefiniowanymi parametrami $MY_RESOURCE_GROUP_NAME i $REGION.
+Grupa zasobów to logiczny kontener przeznaczony do wdrażania zasobów platformy Azure i zarządzania nimi. Wszystkie zasoby należy umieścić w grupie zasobów. Następujące polecenie tworzy grupę zasobów z wcześniej zdefiniowanymi parametrami $MY_RESOURCE_GROUP_NAME i $REGION.
 
 ```bash
 az group create --name $MY_RESOURCE_GROUP_NAME --location $REGION -o JSON
 ```
 
 Wyniki:
-
 <!-- expected_similarity=0.3 -->
 ```json   
 {
@@ -64,19 +71,17 @@ Wyniki:
 }
 ```
 
-# Tworzenie zasobów sieciowych 
+## Tworzenie zasobów sieciowych 
 
-Przed kontynuowaniem kroków usługi VMSS należy utworzyć zasoby sieciowe. W tym kroku utworzysz sieć wirtualną, 2 podsieci 1 dla usługi Application Gateway i 1 dla maszyn wirtualnych. Musisz również mieć publiczny adres IP, aby dołączyć usługę Application Gateway, aby móc uzyskać dostęp do aplikacji internetowej z Internetu. 
+Teraz utworzysz zasoby sieciowe. W tym kroku utworzysz sieć wirtualną, jedną podsieć 1 dla usługi Application Gateway i jedną podsieć dla maszyn wirtualnych. Musisz również mieć publiczny adres IP, aby dołączyć usługę Application Gateway, aby uzyskać dostęp do aplikacji internetowej z Internetu. 
 
-
-#### Tworzenie sieci wirtualnej i podsieci maszyn wirtualnych
+#### Tworzenie sieci wirtualnej i podsieci
 
 ```bash
 az network vnet create  --name $MY_VNET_NAME  --resource-group $MY_RESOURCE_GROUP_NAME --location $REGION  --address-prefix $MY_VNET_PREFIX  --subnet-name $MY_VM_SN_NAME --subnet-prefix $MY_VM_SN_PREFIX -o JSON
 ```
 
 Wyniki:
-
 <!-- expected_similarity=0.3 -->
 ```json   
 {
@@ -116,15 +121,13 @@ Wyniki:
 
 ### Tworzenie zasobów usługi Application Gateway
 
-aplikacja systemu Azure Gateway wymaga dedykowanej podsieci w sieci wirtualnej. Poniższe polecenie tworzy podsieć o nazwie $MY_APPGW_SN_NAME z określonym prefiksem adresu o nazwie $MY_APPGW_SN_PREFIX w sieci wirtualnej $MY_VNET_NAME 
-
+aplikacja systemu Azure Gateway wymaga dedykowanej podsieci w sieci wirtualnej. Następujące polecenie tworzy podsieć o nazwie $MY_APPGW_SN_NAME z określonym prefiksem adresu o nazwie $MY_APPGW_SN_PREFIX w sieci wirtualnej $MY_VNET_NAME.
 
 ```bash
 az network vnet subnet create  --name $MY_APPGW_SN_NAME  --resource-group $MY_RESOURCE_GROUP_NAME --vnet-name  $MY_VNET_NAME --address-prefix  $MY_APPGW_SN_PREFIX -o JSON
 ```
 
 Wyniki:
-
 <!-- expected_similarity=0.3 -->
 ```json  
 {
@@ -140,14 +143,13 @@ Wyniki:
   "type": "Microsoft.Network/virtualNetworks/subnets"
 }
 ```
-Poniższe polecenie tworzy standardowy, strefowo nadmiarowy, statyczny, publiczny protokół IPv4 w grupie zasobów.  
+Następujące polecenie tworzy standardowy, strefowo nadmiarowy, statyczny, publiczny protokół IPv4 w grupie zasobów.  
 
 ```bash
 az network public-ip create  --resource-group $MY_RESOURCE_GROUP_NAME --name $MY_APPGW_PUBLIC_IP_NAME --sku Standard   --location $REGION  --allocation-method static --version IPv4 --zone 1 2 3 -o JSON
- ```
+```
 
 Wyniki:
-
 <!-- expected_similarity=0.3 -->
 ```json  
 {
@@ -181,11 +183,11 @@ Wyniki:
 }
 ```
 
-W tym kroku utworzysz usługę Application Gateway, która zostanie zintegrowana z zestawem skalowania maszyn wirtualnych. W tym przykładzie utworzymy strefowo nadmiarową usługę Application Gateway z Standard_v2 sku i włączymy komunikację HTTP dla usługi Application Gateway. Publiczny adres IP $MY_APPGW_PUBLIC_IP_NAME utworzony w poprzednim kroku dołączonym do usługi Application Gateway. 
+W tym kroku utworzysz usługę Application Gateway, która zostanie zintegrowana z zestawem skalowania maszyn wirtualnych. W tym przykładzie utworzono strefowo nadmiarową usługę Application Gateway z Standard_v2 sku i włączono komunikację http dla usługi Application Gateway. Publiczny adres IP $MY_APPGW_PUBLIC_IP_NAME utworzony w poprzednim kroku jest dołączony do usługi Application Gateway. 
 
 ```bash
 az network application-gateway create   --name $MY_APPGW_NAME --location $REGION --resource-group $MY_RESOURCE_GROUP_NAME --vnet-name $MY_VNET_NAME --subnet $MY_APPGW_SN_NAME --capacity 2  --zones 1 2 3 --sku Standard_v2   --http-settings-cookie-based-affinity Disabled   --frontend-port 80 --http-settings-port 80   --http-settings-protocol Http --public-ip-address $MY_APPGW_PUBLIC_IP_NAME --priority 1001 -o JSON
- ```
+```
 
 <!-- expected_similarity=0.3 -->
 ```json 
@@ -375,19 +377,21 @@ az network application-gateway create   --name $MY_APPGW_NAME --location $REGION
     "urlPathMaps": []
   }
 }
- ```
+```
 
+## Tworzenie zestawu skalowania maszyn wirtualnych
 
-# Tworzenie zestawu skalowania maszyn wirtualnych 
+> [!IMPORTANT]
+>Od listopada 2023 r. zestawy skalowania maszyn wirtualnych utworzone przy użyciu programu PowerShell i interfejsu wiersza polecenia platformy Azure będą domyślnie ustawiać tryb elastycznej orkiestracji, jeśli nie określono trybu aranżacji. Aby uzyskać więcej informacji na temat tej zmiany i akcji, które należy wykonać, zobacz [Zmiana powodująca niezgodność dla klientów programu PowerShell/interfejsu wiersza polecenia usługi VMSS — Microsoft Community Hub](
+https://techcommunity.microsoft.com/t5/azure-compute-blog/breaking-change-for-vmss-powershell-cli-customers/ba-p/3818295)
 
-Poniższe polecenie tworzy strefowo nadmiarowy zestaw skalowania maszyn wirtualnych (VMSS) w grupie zasobów $MY_RESOURCE_GROUP_NAME. Integrujemy usługę Application Gateway, która została utworzona w poprzednim kroku. To polecenie tworzy 2 maszyny wirtualne jednostki SKU Standard_DS2_v2 z publicznym adresem IP w podsieci $MY_VM_SN_NAME. Klucz SSH zostanie utworzony w poniższym kroku, aby zapisać klucz, jeśli musisz zalogować się do maszyn wirtualnych za pośrednictwem protokołu SSH.
+Teraz utwórz zestaw skalowania maszyn wirtualnych za pomocą polecenia [az vmss create](/cli/azure/vmss). Poniższy przykład tworzy strefowo nadmiarowy zestaw skalowania z liczbą *wystąpień 2* z publicznym adresem IP w podsieci $MY_VM_SN_NAME w grupie zasobów $MY_RESOURCE_GROUP_NAME, integruje usługę Application Gateway i generuje klucze SSH. Pamiętaj, aby zapisać klucze SSH, jeśli musisz zalogować się do maszyn wirtualnych za pośrednictwem protokołu SSH.
 
 ```bash
 az vmss create --name $MY_VMSS_NAME --resource-group $MY_RESOURCE_GROUP_NAME --image $MY_VM_IMAGE --admin-username $MY_USERNAME --generate-ssh-keys --public-ip-per-vm --orchestration-mode Uniform --instance-count 2 --zones 1 2 3 --vnet-name $MY_VNET_NAME --subnet $MY_VM_SN_NAME --vm-sku Standard_DS2_v2 --upgrade-policy-mode Automatic --app-gateway $MY_APPGW_NAME --backend-pool-name appGatewayBackendPool -o JSON
  ```
 
 Wyniki:
-
 <!-- expected_similarity=0.3 -->
 ```json  
 {
@@ -499,17 +503,15 @@ Wyniki:
 }
 ```
 
-### Instalowanie rozwiązania ngnix przy użyciu rozszerzeń zestawu skalowania maszyn wirtualnych 
+### Instalowanie rozwiązania ngnix za pomocą rozszerzeń zestawów skalowania maszyn wirtualnych 
 
-Poniższe polecenie używa rozszerzenia VMSS do uruchamiania skryptu niestandardowego. Na potrzeby testowania zainstalujemy usługę ngnix i opublikujemy stronę zawierającą nazwę hosta maszyny wirtualnej, która napotka żądania HTTP. Ten skrypt niestandardowy jest używany dla tego repozytorium: https://raw.githubusercontent.com/Azure-Samples/compute-automation-configurations/master/automate_nginx.sh 
-
+Następujące polecenie używa rozszerzenia zestawów skalowania maszyn wirtualnych do uruchamiania niestandardowego [skryptu](https://github.com/Azure-Samples/compute-automation-configurations/blob/master/automate_nginx.sh) , który instaluje ngnix i publikuje stronę, na której jest wyświetlana nazwa hosta maszyny wirtualnej, która osiąga żądania HTTP. 
 
 ```bash
 az vmss extension set --publisher Microsoft.Azure.Extensions --version 2.0  --name CustomScript --resource-group $MY_RESOURCE_GROUP_NAME --vmss-name $MY_VMSS_NAME --settings '{ "fileUris": ["https://raw.githubusercontent.com/Azure-Samples/compute-automation-configurations/master/automate_nginx.sh"], "commandToExecute": "./automate_nginx.sh" }' -o JSON
 ```
 
 Wyniki:
-
 <!-- expected_similarity=0.3 -->
 ```json  
 {
@@ -703,19 +705,16 @@ Wyniki:
 }
 ```
 
+## Definiowanie profilu skalowania automatycznego  
 
-# Definiowanie profilu skalowania automatycznego  
-
-Aby włączyć skalowanie automatyczne na zestawie skalowania, najpierw zdefiniuj profil skalowania automatycznego. Ten profil obejmuje definiowanie domyślnej, minimalnej i maksymalnej pojemności zestawu skalowania. Dzięki tym limitom możesz kontrolować koszty, ponieważ wystąpienia maszyn wirtualnych nie są tworzone w sposób ciągły, zaś akceptowalna wydajność jest zrównoważona z minimalną liczbą wystąpień, które pozostają w zdarzeniu skalowania w pionie.
-W poniższym przykładzie ustawiono domyślną, minimalną pojemność — 2 — oraz maksymalną pojemność — 10 wystąpień maszyn wirtualnych:
+Aby włączyć skalowanie automatyczne w zestawie skalowania, najpierw zdefiniuj profil autoskalowania. Ten profil obejmuje definiowanie domyślnej, minimalnej i maksymalnej pojemności zestawu skalowania. Te limity umożliwiają kontrolowanie kosztów przez ciągłe tworzenie wystąpień maszyn wirtualnych i równoważenie akceptowalnej wydajności przy minimalnej liczbie wystąpień, które pozostają w przypadku skalowania w poziomie.
+W poniższym przykładzie ustawiono domyślną minimalną pojemność dwóch wystąpień maszyn wirtualnych i maksymalną pojemność wynoszącą 10:
 
 ```bash
 az monitor autoscale create --resource-group $MY_RESOURCE_GROUP_NAME --resource  $MY_VMSS_NAME --resource-type Microsoft.Compute/virtualMachineScaleSets --name autoscale --min-count 2 --max-count 10 --count 2
 ```
 
-
 Wyniki:
-
 <!-- expected_similarity=0.3 -->
 ```json  
 {
@@ -760,16 +759,15 @@ Wyniki:
 }
 ```
 
-# Tworzenie reguły skalowania automatycznego w poziomie
+## Tworzenie reguły skalowania automatycznego w poziomie
 
-Następujące polecenie tworzy regułę, która zwiększa liczbę wystąpień maszyn wirtualnych w zestawie skalowania, gdy średnie obciążenie procesora CPU jest większe niż 70% w okresie 5 minut. Wyzwolenie reguły powoduje zwiększenie liczby wystąpień maszyn wirtualnych o trzy.
+Następujące polecenie tworzy regułę, która zwiększa liczbę wystąpień maszyn wirtualnych w zestawie skalowania, gdy średnie obciążenie procesora CPU jest większe niż 70% w okresie 5 minut. Gdy reguła jest wyzwalana, liczba wystąpień maszyn wirtualnych zwiększa się o trzy.
 
 ```bash
 az monitor autoscale rule create --resource-group $MY_RESOURCE_GROUP_NAME --autoscale-name autoscale --condition "Percentage CPU > 70 avg 5m" --scale out 3
 ```
 
 Wyniki:
-
 <!-- expected_similarity=0.3 -->
 ```json 
 {
@@ -796,16 +794,15 @@ Wyniki:
 } 
 ```
 
-# Tworzenie reguły skalowania automatycznego w pionie
+## Tworzenie reguły skalowania automatycznego w pionie
 
-Za pomocą polecenia az monitor autoscale rule create utwórz inną regułę, która zmniejsza liczbę wystąpień maszyn wirtualnych w zestawie skalowania, jeśli w okresie 5 minut średnie obciążenie procesora CPU spadnie poniżej 30%. W poniższym przykładzie zdefiniowano regułę umożliwiającą skalowanie w pionie liczby wystąpień maszyn wirtualnych o jeden.
+Utwórz kolejną regułę, która `az monitor autoscale rule create` zmniejsza liczbę wystąpień maszyn wirtualnych w zestawie skalowania, gdy średnie obciążenie procesora CPU spadnie poniżej 30% w ciągu 5 minut. W poniższym przykładzie zdefiniowano regułę umożliwiającą skalowanie w pionie liczby wystąpień maszyn wirtualnych o jeden.
 
 ```bash
 az monitor autoscale rule create --resource-group  $MY_RESOURCE_GROUP_NAME --autoscale-name autoscale --condition "Percentage CPU < 30 avg 5m" --scale in 1
 ```
 
 Wyniki:
-
 <!-- expected_similarity=0.3 -->
 ```json 
 {
@@ -832,19 +829,19 @@ Wyniki:
 }
 ```
 
-
 ### Testowanie strony
 
-Poniższe polecenie pokazuje publiczny adres IP usługi Application Gateway. Adresy IP można wkleić do strony przeglądarki na potrzeby testowania.
+Następujące polecenie pokazuje publiczny adres IP usługi Application Gateway. Wklej adres IP do strony przeglądarki na potrzeby testowania.
 
 ```bash
 az network public-ip show --resource-group $MY_RESOURCE_GROUP_NAME --name $MY_APPGW_PUBLIC_IP_NAME --query [ipAddress]  --output tsv
 ```
 
+## Czyszczenie zasobów (opcjonalnie)
 
+Aby uniknąć opłat za platformę Azure, należy wyczyścić niepotrzebne zasoby. Jeśli zestaw skalowania i inne zasoby nie są już potrzebne, usuń grupę zasobów i wszystkie jej zasoby za pomocą polecenia [az group delete](/cli/azure/group). Parametr `--no-wait` zwraca kontrolę do wiersza polecenia bez oczekiwania na zakończenie operacji. Parametr `--yes` potwierdza, że chcesz usunąć zasoby bez innego monitu, aby to zrobić. W tym samouczku są czyszczone zasoby.
 
-# Informacje
-
-* [Dokumentacja usługi VMSS](https://learn.microsoft.com/en-us/azure/virtual-machine-scale-sets/overview)
-* [Skalowanie automatyczne w usłudze VMSS](https://learn.microsoft.com/en-us/azure/virtual-machine-scale-sets/tutorial-autoscale-cli?tabs=Ubuntu)
-
+## Następne kroki
+- [Dowiedz się, jak utworzyć zestaw skalowania w witrynie Azure Portal.](flexible-virtual-machine-scale-sets-portal.md)
+- [Dowiedz się więcej o zestawach skalowania maszyn wirtualnych.](overview.md)
+- [Automatyczne skalowanie zestawu skalowania maszyn wirtualnych przy użyciu interfejsu wiersza polecenia platformy Azure](tutorial-autoscale-cli.md)

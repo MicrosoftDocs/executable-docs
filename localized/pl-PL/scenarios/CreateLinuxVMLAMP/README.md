@@ -1,31 +1,40 @@
 ---
-title: Instalowanie stosu LEMP na platformie Azure
-description: 'W tym samouczku pokazano, jak zainstalować stos LEMP na platformie Azure.'
-author: mbifeld
-ms.author: mbifeld
-ms.topic: article
-ms.date: 11/28/2023
-ms.custom: innovation-engine
+title: Samouczek — wdrażanie stosu LEMP przy użyciu platformy WordPress na maszynie wirtualnej
+description: 'Z tego samouczka dowiesz się, jak zainstalować stos LEMP i platformę WordPress na maszynie wirtualnej z systemem Linux na platformie Azure.'
+author: chasecrum
+ms.collection: linux
+ms.service: virtual-machines
+ms.devlang: azurecli
+ms.custom: 'innovation-engine, linux-related-content, devx-track-azurecli'
+ms.topic: tutorial
+ms.date: 2/29/2024
+ms.author: chasecrum
+ms.reviewer: jushim
 ---
 
-# Instalowanie stosu LEMP na platformie Azure
+# Samouczek: instalowanie stosu LEMP na maszynie wirtualnej z systemem Linux platformy Azure
 
-[![Wdróż na platformie Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2263118)
+**Dotyczy:** :heavy_check_mark: Maszyny wirtualne z systemem Linux
 
+[![Wdróż na platformie Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#view/Microsoft_Azure_CloudNative/SubscriptionSelectionPage.ReactView/tutorialKey/CreateLinuxVMLAMP)
 
 W tym artykule przedstawiono sposób wdrażania serwera internetowego NGINX, serwera elastycznego Azure MySQL i języka PHP (stosu LEMP) na maszynie wirtualnej z systemem Ubuntu Linux na platformie Azure. Aby zobaczyć, jak działa serwer LEMP, możesz opcjonalnie zainstalować i skonfigurować witrynę WordPress. Ten samouczek zawiera informacje na temat wykonywania następujących czynności:
 
 > [!div class="checklist"]
-
-> * Tworzenie maszyny wirtualnej z systemem Linux Ubuntu
+>
+> * Tworzenie maszyny wirtualnej z systemem Ubuntu
 > * Otwieranie portów 80 i 443 dla ruchu internetowego
 > * Instalowanie i zabezpieczanie serwerów NGINX, Azure Flexible MySQL Server i PHP
 > * Weryfikowanie instalacji i konfiguracji
-> * Instalowanie platformy WordPress
+> * Zainstaluj platformę WordPress Ta konfiguracja służy do szybkich testów lub weryfikacji koncepcji. Aby uzyskać więcej informacji na temat stosu LEMP, w tym zaleceń dotyczących środowiska produkcyjnego, zobacz dokumentację [](https://help.ubuntu.com/community/ApacheMySQLPHP)systemu Ubuntu.
+
+W tym samouczku jest używany interfejs wiersza polecenia w usłudze [Azure Cloud Shell](../../cloud-shell/overview.md), który jest stale aktualizowany do najnowszej wersji. Aby otworzyć usługę Cloud Shell, wybierz pozycję **Wypróbuj** w górnej części dowolnego bloku kodu.
+
+Jeśli zdecydujesz się zainstalować interfejs wiersza polecenia i korzystać z niego lokalnie, ten samouczek będzie wymagał interfejsu wiersza polecenia platformy Azure w wersji 2.0.30 lub nowszej. Znajdź wersję, uruchamiając `az --version` polecenie . Jeśli konieczna będzie instalacja lub uaktualnienie, zobacz [Instalowanie interfejsu wiersza polecenia platformy Azure]( /cli/azure/install-azure-cli).
 
 ## Deklaracja zmiennej
 
-Najpierw zdefiniujemy kilka zmiennych, które pomogą w konfiguracji obciążenia LEMP.
+Najpierw należy zdefiniować kilka zmiennych, które ułatwiają konfigurację obciążenia LEMP.
 
 ```bash
 export NETWORK_PREFIX="$(($RANDOM % 254 + 1))"
@@ -55,13 +64,15 @@ export MY_AZURE_USER=$(az account show --query user.name --output tsv)
 export FQDN="${MY_DNS_LABEL}.${REGION}.cloudapp.azure.com"
 ```
 
-<!--```bash
+<!--
+```bash
 export MY_AZURE_USER_ID=$(az ad user list --filter "mail eq '$MY_AZURE_USER'" --query "[0].id" -o tsv)
-```-->
+```
+-->
 
 ## Tworzenie grupy zasobów
 
-Utwórz grupę zasobów za pomocą polecenia [az group create](https://learn.microsoft.com/cli/azure/group#az-group-create). Grupa zasobów platformy Azure to logiczny kontener przeznaczony do wdrażania zasobów platformy Azure i zarządzania nimi.
+Utwórz grupę zasobów za pomocą polecenia [az group create](/cli/azure/group#az-group-create). Grupa zasobów platformy Azure to logiczny kontener przeznaczony do wdrażania zasobów platformy Azure i zarządzania nimi.
 Poniższy przykład obejmuje tworzenie grupy zasobów o nazwie `$MY_RESOURCE_GROUP_NAME` w lokalizacji `eastus`.
 
 ```bash
@@ -92,7 +103,7 @@ Wyniki:
 ## Tworzenie sieci wirtualnej platformy Azure
 
 Sieć wirtualna to podstawowy blok konstrukcyjny dla sieci prywatnych na platformie Azure. Usługa Azure Virtual Network umożliwia zasobom platformy Azure, takich jak maszyny wirtualne, bezpieczne komunikowanie się ze sobą i Internetem.
-Użyj [polecenia az network vnet create](https://learn.microsoft.com/cli/azure/network/vnet#az-network-vnet-create) , aby utworzyć sieć wirtualną o nazwie `$MY_VNET_NAME` z podsiecią o nazwie `$MY_SN_NAME` w `$MY_RESOURCE_GROUP_NAME` grupie zasobów.
+Użyj [polecenia az network vnet create](/cli/azure/network/vnet#az-network-vnet-create) , aby utworzyć sieć wirtualną o nazwie `$MY_VNET_NAME` z podsiecią o nazwie `$MY_SN_NAME` w `$MY_RESOURCE_GROUP_NAME` grupie zasobów.
 
 ```bash
 az network vnet create \
@@ -142,11 +153,10 @@ Wyniki:
 
 ## Tworzenie publicznego adresu IP platformy Azure
 
-Użyj [polecenia az network public-ip create](https://learn.microsoft.com/cli/azure/network/public-ip#az-network-public-ip-create) , aby utworzyć standardowy publiczny adres IPv4 strefowo nadmiarowy o nazwie `MY_PUBLIC_IP_NAME` w systemie `$MY_RESOURCE_GROUP_NAME`.
+Użyj [polecenia az network public-ip create](/cli/azure/network/public-ip#az-network-public-ip-create) , aby utworzyć standardowy publiczny adres IPv4 strefowo nadmiarowy o nazwie `MY_PUBLIC_IP_NAME` w systemie `$MY_RESOURCE_GROUP_NAME`.
 
 >[!NOTE]
->Poniższe opcje stref są prawidłowymi wyborami tylko w regionach z [Strefy dostępności](https://learn.microsoft.com/azure/reliability/availability-zones-service-support).
-
+>Poniższe opcje stref są prawidłowymi wyborami tylko w regionach z [Strefy dostępności](../../reliability/availability-zones-service-support.md).
 ```bash
 az network public-ip create \
     --name $MY_PUBLIC_IP_NAME \
@@ -197,7 +207,7 @@ Wyniki:
 
 ## Tworzenie sieciowej grupy zabezpieczeń platformy Azure
 
-Reguły zabezpieczeń w sieciowych grupach zabezpieczeń umożliwiają filtrowanie typu ruchu sieciowego, który może wchodzić do podsieci sieci wirtualnej i interfejsów sieciowych oraz z nich wychodzić. Aby dowiedzieć się więcej o sieciowych grupach zabezpieczeń, zobacz [Omówienie](https://learn.microsoft.com/azure/virtual-network/network-security-groups-overview) sieciowej grupy zabezpieczeń.
+Reguły zabezpieczeń w sieciowych grupach zabezpieczeń umożliwiają filtrowanie typu ruchu sieciowego, który może wchodzić do podsieci sieci wirtualnej i interfejsów sieciowych oraz z nich wychodzić. Aby dowiedzieć się więcej o sieciowych grupach zabezpieczeń, zobacz [Omówienie](../../virtual-network/network-security-groups-overview.md) sieciowej grupy zabezpieczeń.
 
 ```bash
 az network nsg create \
@@ -246,7 +256,7 @@ Wyniki:
 
 ## Tworzenie reguł sieciowej grupy zabezpieczeń platformy Azure
 
-Utworzysz regułę zezwalaną na połączenia z maszyną wirtualną na porcie 22 dla protokołu SSH i portów 80, 443 dla protokołów HTTP i HTTPS. Zostanie utworzona dodatkowa reguła zezwalania na wszystkie porty dla połączeń wychodzących. Użyj [polecenia az network nsg rule create](https://learn.microsoft.com/cli/azure/network/nsg/rule#az-network-nsg-rule-create) , aby utworzyć regułę sieciowej grupy zabezpieczeń.
+Utwórz regułę zezwalania na połączenia z maszyną wirtualną na porcie 22 dla protokołu SSH i portów 80, 443 dla protokołów HTTP i HTTPS. Zostanie utworzona dodatkowa reguła zezwalania na wszystkie porty dla połączeń wychodzących. Użyj [polecenia az network nsg rule create](/cli/azure/network/nsg/rule#az-network-nsg-rule-create) , aby utworzyć regułę sieciowej grupy zabezpieczeń.
 
 ```bash
 az network nsg rule create \
@@ -293,7 +303,7 @@ Wyniki:
 
 ## Tworzenie interfejsu sieciowego platformy Azure
 
-Użyjesz polecenia [az network nic create](https://learn.microsoft.com/cli/azure/network/nic#az-network-nic-create) , aby utworzyć interfejs sieciowy dla maszyny wirtualnej. Publiczne adresy IP i utworzona wcześniej sieciowa grupa zabezpieczeń są skojarzone z kartą sieciową. Interfejs sieciowy jest dołączony do utworzonej wcześniej sieci wirtualnej.
+Użyj [polecenia az network nic create](/cli/azure/network/nic#az-network-nic-create) , aby utworzyć interfejs sieciowy dla maszyny wirtualnej. Publiczne adresy IP i utworzona wcześniej sieciowa grupa zabezpieczeń są skojarzone z kartą sieciową. Interfejs sieciowy jest dołączony do utworzonej wcześniej sieci wirtualnej.
 
 ```bash
 az network nic create \
@@ -356,14 +366,13 @@ Wyniki:
   }
 }
 ```
-
 ## Omówienie pakietu cloud-init
 
-Cloud-init to powszechnie używana metoda dostosowywania maszyny wirtualnej z systemem Linux podczas jej pierwszego rozruchu. Za pomocą pakietu cloud-init można instalować pakiety i zapisywać pliki lub konfigurować użytkowników i zabezpieczenia. Pakiet cloud-init jest uruchamiany w trakcie początkowego rozruchu, więc do zastosowania konfiguracji nie są wymagane żadne dodatkowe kroki ani agenci.
+Cloud-init to powszechnie używana metoda dostosowywania maszyny wirtualnej z systemem Linux podczas jej pierwszego rozruchu. Za pomocą pakietu cloud-init można instalować pakiety i zapisywać pliki lub konfigurować użytkowników i zabezpieczenia. Ponieważ program cloud-init jest uruchamiany podczas początkowego procesu rozruchu, nie ma żadnych innych kroków ani agentów wymaganych do zastosowania w konfiguracji.
 
 Pakiet cloud-init działa również w różnych dystrybucjach. Przykładowo nie używa się poleceń apt-get install lub yum install do zainstalowania pakietu. Zamiast tego możesz zdefiniować listę pakietów do zainstalowania. Pakiet cloud-init automatycznie używa natywnego narzędzia do zarządzania pakietami dla wybranej dystrybucji.
 
-Wraz z partnerami pracujemy nad tym, aby pakiet cloud-init był uwzględniany i uruchamiany w obrazach, których dostarczają na platformie Azure. Aby uzyskać szczegółowe informacje dotyczące obsługi pakietu cloud-init dla każdej dystrybucji, zobacz [Cloud-init support for VMs in Azure (Obsługa pakietu Cloud-init dla maszyn wirtualnych na platformie Azure](https://learn.microsoft.com/azure/virtual-machines/linux/using-cloud-init)).
+Współpracujemy z naszymi partnerami w celu dołączeniu pakietu cloud-init i pracy nad obrazami, które udostępniają platformie Azure. Aby uzyskać szczegółowe informacje dotyczące obsługi pakietu cloud-init dla każdej dystrybucji, zobacz [Cloud-init support for VMs in Azure (Obsługa pakietu Cloud-init dla maszyn wirtualnych na platformie Azure](./using-cloud-init.md)).
 
 ### Tworzenie pliku konfiguracji cloud-init
 
@@ -372,12 +381,10 @@ Aby zobaczyć działanie cloud-init, utwórz maszynę wirtualną, która instalu
 ```bash
 cat << EOF > cloud-init.txt
 #cloud-config
-
 # Install, update, and upgrade packages
 package_upgrade: true
 package_update: true
 package_reboot_if_require: true
-
 # Install packages
 packages:
   - vim
@@ -400,7 +407,6 @@ packages:
   - php-xmlrpc
   - php-zip
   - php-fpm
-
 write_files:
   - owner: www-data:www-data
     path: /etc/nginx/sites-available/default.conf
@@ -411,7 +417,6 @@ write_files:
             root /var/www/html;
             server_name $FQDN;
         }
-
 write_files:
   - owner: www-data:www-data
     path: /etc/nginx/sites-available/$FQDN.conf
@@ -422,15 +427,11 @@ write_files:
         server {
             listen 443 ssl http2;
             listen [::]:443 ssl http2;
-
             server_name $FQDN;
-
             ssl_certificate /etc/letsencrypt/live/$FQDN/fullchain.pem;
             ssl_certificate_key /etc/letsencrypt/live/$FQDN/privkey.pem;
-
             root /var/www/$FQDN;
             index index.php;
-
             location / {
                 try_files \$uri \$uri/ /index.php?\$args;
             }
@@ -448,7 +449,6 @@ write_files:
                     log_not_found off;
                     access_log off;
             }
-
             location = /robots.txt {
                     allow all;
                     log_not_found off;
@@ -461,7 +461,6 @@ write_files:
             server_name $FQDN;
             return 301 https://$FQDN\$request_uri;
         }
-
 runcmd:
   - sed -i 's/;cgi.fix_pathinfo.*/cgi.fix_pathinfo = 1/' /etc/php/8.1/fpm/php.ini
   - sed -i 's/^max_execution_time \= .*/max_execution_time \= 300/g' /etc/php/8.1/fpm/php.ini
@@ -481,7 +480,7 @@ runcmd:
   - chown -R azureadmin:www-data /var/www/$FQDN
   - sudo -u azureadmin -i -- wp core download --path=/var/www/$FQDN
   - sudo -u azureadmin -i -- wp config create --dbhost=$MY_MYSQL_DB_NAME.mysql.database.azure.com --dbname=wp001 --dbuser=$MY_MYSQL_ADMIN_USERNAME --dbpass="$MY_MYSQL_ADMIN_PW" --path=/var/www/$FQDN
-  - sudo -u azureadmin -i -- wp core install --url=$FQDN --title="Azure hosted blog" --admin_user=$MY_WP_ADMIN_USER --admin_password="$MY_WP_ADMIN_PW" --admin_email=$MY_AZURE_USER --path=/var/www/$FQDN 
+  - sudo -u azureadmin -i -- wp core install --url=$FQDN --title="Azure hosted blog" --admin_user=$MY_WP_ADMIN_USER --admin_password="$MY_WP_ADMIN_PW" --admin_email=$MY_AZURE_USER --path=/var/www/$FQDN
   - sudo -u azureadmin -i -- wp plugin update --all --path=/var/www/$FQDN
   - chmod 600 /var/www/$FQDN/wp-config.php
   - mkdir -p -m 0775 /var/www/$FQDN/wp-content/uploads
@@ -491,7 +490,7 @@ EOF
 
 ## Tworzenie strefy usługi Azure Prywatna strefa DNS dla serwera elastycznego Azure MySQL
 
-Integracja strefy usługi Azure Prywatna strefa DNS umożliwia rozpoznawanie prywatnego systemu DNS w bieżącej sieci wirtualnej lub dowolnej równorzędnej sieci wirtualnej w regionie, w której jest połączona prywatna strefa DNS. Użyjesz [polecenia az network private-dns zone create](https://learn.microsoft.com/cli/azure/network/private-dns/zone#az-network-private-dns-zone-create) , aby utworzyć prywatną strefę DNS.
+Integracja strefy usługi Azure Prywatna strefa DNS umożliwia rozpoznawanie prywatnego systemu DNS w bieżącej sieci wirtualnej lub dowolnej równorzędnej sieci wirtualnej w regionie, w której jest połączona prywatna strefa DNS. Użyj [polecenia az network private-dns zone create](/cli/azure/network/private-dns/zone#az-network-private-dns-zone-create) , aby utworzyć prywatną strefę DNS.
 
 ```bash
 az network private-dns zone create \
@@ -522,7 +521,7 @@ Wyniki:
 
 ## Tworzenie usługi Azure Database for MySQL — serwer elastyczny
 
-Azure Database for MySQL — serwer elastyczny to usługa zarządzana, której można użyć do uruchamiania serwerów MySQL o wysokiej dostępności i zarządzania nimi w chmurze. Utwórz serwer elastyczny za [pomocą polecenia az mysql flexible-server create](https://learn.microsoft.com/cli/azure/mysql/flexible-server#az-mysql-flexible-server-create) . Serwer może zawierać wiele baz danych. Następujące polecenie tworzy serwer przy użyciu wartości domyślnych usługi i zmiennych ze środowiska lokalnego interfejsu wiersza polecenia platformy Azure:
+Azure Database for MySQL — serwer elastyczny to usługa zarządzana, której można użyć do uruchamiania serwerów MySQL o wysokiej dostępności i zarządzania nimi w chmurze. Utwórz serwer elastyczny za [pomocą polecenia az mysql flexible-server create](../../mysql/flexible-server/quickstart-create-server-cli.md#create-an-azure-database-for-mysql-flexible-server) . Serwer może zawierać wiele baz danych. Następujące polecenie tworzy serwer przy użyciu wartości domyślnych usługi i zmiennych ze środowiska lokalnego interfejsu wiersza polecenia platformy Azure:
 
 ```bash
 az mysql flexible-server create \
@@ -569,14 +568,13 @@ echo "Your MySQL user $MY_MYSQL_ADMIN_USERNAME password is: $MY_WP_ADMIN_PW"
 
 Utworzony serwer ma następujące atrybuty:
 
-* Nazwa serwera, nazwa użytkownika administratora, hasło administratora, nazwa grupy zasobów, lokalizacja są już określone w lokalnym środowisku kontekstowym usługi Cloud Shell i zostaną utworzone w tej samej lokalizacji, w której znajduje się grupa zasobów i inne składniki platformy Azure.
+* Nazwa serwera, nazwa użytkownika administratora, hasło administratora, nazwa grupy zasobów, lokalizacja są już określone w lokalnym środowisku kontekstowym usługi Cloud Shell. Są one tworzone w tej samej lokalizacji co grupa zasobów i inne składniki platformy Azure.
 * Wartości domyślne usługi dla pozostałych konfiguracji serwera: warstwa obliczeniowa (z możliwością skalowania), rozmiar obliczeniowy/jednostka SKU (Standard_B2s), okres przechowywania kopii zapasowych (7 dni) i wersja programu MySQL (8.0.21)
 * Domyślną metodą łączności jest dostęp prywatny (integracja z siecią wirtualną) z połączoną siecią wirtualną i automatycznie wygenerowaną podsiecią.
 
 > [!NOTE]
-> Nie można zmienić metody łączności po utworzeniu serwera. Jeśli na przykład wybrano opcję `Private access (VNet Integration)` podczas tworzenia, nie można zmienić wartości na `Public access (allowed IP addresses)` po utworzeniu. Zdecydowanie zalecamy utworzenie serwera z dostępem prywatnym, aby bezpiecznie uzyskać dostęp do serwera przy użyciu integracji z siecią wirtualną. Dowiedz się więcej o dostępie prywatnym w [artykule](https://learn.microsoft.com/azure/mysql/flexible-server/concepts-networking-vnet) pojęcia.
-
-Jeśli chcesz zmienić ustawienia domyślne, zapoznaj się z dokumentacją[ referencyjną interfejsu wiersza polecenia platformy Azure, aby uzyskać pełną listę konfigurowalnych parametrów interfejsu wiersza polecenia](https://learn.microsoft.com/cli/azure//mysql/flexible-server).
+> Nie można zmienić metody łączności po utworzeniu serwera. Jeśli na przykład wybrano opcję `Private access (VNet Integration)` podczas tworzenia, nie można zmienić wartości na `Public access (allowed IP addresses)` po utworzeniu. Zdecydowanie zalecamy utworzenie serwera z dostępem prywatnym, aby bezpiecznie uzyskać dostęp do serwera przy użyciu integracji z siecią wirtualną. Dowiedz się więcej o dostępie prywatnym w [artykule](../../mysql/flexible-server/concepts-networking-vnet.md) pojęcia.
+Jeśli chcesz zmienić ustawienia domyślne, zapoznaj się z dokumentacją[ referencyjną interfejsu wiersza polecenia platformy Azure, aby uzyskać pełną listę konfigurowalnych parametrów interfejsu wiersza polecenia](../../mysql/flexible-server/quickstart-create-server-cli.md).
 
 ## Sprawdzanie stanu usługi Azure Database for MySQL — serwer elastyczny
 
@@ -600,11 +598,15 @@ done
 
 Konfigurację usługi Azure Database for MySQL — serwer elastyczny można zarządzać przy użyciu parametrów serwera. Parametry serwera są konfigurowane z wartością domyślną i zalecaną podczas tworzenia serwera.
 
-Pokaż szczegóły parametru serwera Aby wyświetlić szczegółowe informacje o określonym parametrze serwera, uruchom [polecenie az mysql flexible-server show](https://learn.microsoft.com/cli/azure/mysql/flexible-server/parameter) .
+Pokaż szczegóły parametru serwera:
 
-### Wyłączanie usługi Azure Database for MySQL — parametr połączenia SSL serwera elastycznego na potrzeby integracji z platformą Wordpress
+[Uruchom polecenie az mysql flexible-server parameter show](../../mysql/flexible-server/how-to-configure-server-parameters-cli.md), aby wyświetlić szczegóły dotyczące dowolnego określonego parametru serwera.
 
-Zmodyfikuj wartość parametru serwera Można również zmodyfikować wartość określonego parametru serwera, który aktualizuje podstawową wartość konfiguracji aparatu serwera MySQL. Aby zaktualizować parametr serwera, użyj [polecenia az mysql flexible-server parameter set](https://learn.microsoft.com/cli/azure/mysql/flexible-server/parameter#az-mysql-flexible-server-parameter-set) .
+## Wyłączanie usługi Azure Database for MySQL — parametr połączenia SSL serwera elastycznego na potrzeby integracji z platformą Wordpress
+
+Modyfikowanie wartości parametru serwera:
+
+Można również zmodyfikować wartość określonego parametru serwera, który aktualizuje podstawową wartość konfiguracji aparatu serwera MySQL. Aby zaktualizować parametr serwera, użyj [polecenia az mysql flexible-server parameter set](../../mysql/flexible-server/how-to-configure-server-parameters-cli.md#modify-a-server-parameter-value) .
 
 ```bash
 az mysql flexible-server parameter set \
@@ -637,10 +639,11 @@ Wyniki:
 
 ## Tworzenie maszyny wirtualnej z systemem Linux platformy Azure
 
-Następujący przykład umożliwia utworzenie maszyny wirtualnej o nazwie `$MY_VM_NAME` i kluczy SSH, jeśli jeszcze nie istnieją w domyślnej lokalizacji kluczy. Polecenie ustawia `$MY_VM_USERNAME` również jako nazwę użytkownika administratora.
-Aby zwiększyć bezpieczeństwo maszyn wirtualnych z systemem Linux na platformie Azure, można zintegrować z uwierzytelnianiem usługi Azure Active Directory. Teraz możesz użyć usługi Azure AD jako podstawowej platformy uwierzytelniania i urzędu certyfikacji do SSH na maszynie wirtualnej z systemem Linux przy użyciu uwierzytelniania opartego na certyfikatach usługi Azure AD i openSSH. Ta funkcja umożliwia organizacjom zarządzanie dostępem do maszyn wirtualnych przy użyciu kontroli dostępu opartej na rolach platformy Azure i zasad dostępu warunkowego.
+Poniższy przykład tworzy maszynę wirtualną o nazwie `$MY_VM_NAME` i tworzy klucze SSH, jeśli jeszcze nie istnieją w domyślnej lokalizacji klucza. Polecenie ustawia `$MY_VM_USERNAME` również jako nazwę użytkownika administratora.
 
-Utwórz maszynę wirtualną za pomocą polecenia [az vm create](https://learn.microsoft.com/cli/azure/vm#az-vm-create).
+Aby zwiększyć bezpieczeństwo maszyn wirtualnych z systemem Linux na platformie Azure, można zintegrować z uwierzytelnianiem usługi Azure Active Directory. Teraz możesz użyć usługi Azure AD jako podstawowej platformy uwierzytelniania. Protokół SSH można również połączyć z maszyną wirtualną z systemem Linux przy użyciu uwierzytelniania opartego na certyfikatach usługi Azure AD i protokołu OpenSSH. Ta funkcja umożliwia organizacjom zarządzanie dostępem do maszyn wirtualnych przy użyciu kontroli dostępu opartej na rolach platformy Azure i zasad dostępu warunkowego.
+
+Utwórz maszynę wirtualną za pomocą polecenia [az vm create](/cli/azure/vm#az-vm-create).
 
 ```bash
 az vm create \
@@ -686,17 +689,17 @@ Wyniki:
 
 ## Sprawdzanie stanu maszyny wirtualnej z systemem Linux platformy Azure
 
-Utworzenie maszyny wirtualnej i zasobów pomocniczych potrwa kilka minut. Wartość provisioningState powodzenia jest wyświetlana, gdy rozszerzenie zostało pomyślnie zainstalowane na maszynie wirtualnej. Aby zainstalować rozszerzenie, maszyna wirtualna musi mieć uruchomionego [agenta](https://learn.microsoft.com/azure/virtual-machines/extensions/agent-linux) maszyny wirtualnej.
+Utworzenie maszyny wirtualnej i zasobów pomocniczych potrwa kilka minut. Wartość provisioningState powodzenia jest wyświetlana, gdy rozszerzenie zostało pomyślnie zainstalowane na maszynie wirtualnej. Aby zainstalować rozszerzenie, maszyna wirtualna musi mieć uruchomionego [agenta](../extensions/agent-linux.md) maszyny wirtualnej.
 
 ```bash
 runtime="5 minute";
 endtime=$(date -ud "$runtime" +%s);
-while [[ $(date -u +%s) -le $endtime ]]; do 
-    STATUS=$(ssh -o StrictHostKeyChecking=no $MY_VM_USERNAME@$FQDN "cloud-init status --wait"); 
-    echo $STATUS; 
-    if [[ "$STATUS" == *'status: done'* ]]; then 
-        break; 
-    else 
+while [[ $(date -u +%s) -le $endtime ]]; do
+    STATUS=$(ssh -o StrictHostKeyChecking=no $MY_VM_USERNAME@$FQDN "cloud-init status --wait");
+    echo $STATUS;
+    if [[ "$STATUS" == *'status: done'* ]]; then
+        break;
+    else
         sleep 10;
     fi;
 done
@@ -704,21 +707,16 @@ done
 
 <!--
 ## Assign Azure AD RBAC for Azure AD login for Linux Virtual Machine
-
 The below command uses [az role assignment create](https://learn.microsoft.com/cli/azure/role/assignment#az-role-assignment-create) to assign the `Virtual Machine Administrator Login` role to the VM for your current Azure user.
-
 ```bash
 export MY_RESOURCE_GROUP_ID=$(az group show --resource-group $MY_RESOURCE_GROUP_NAME --query id -o tsv)
-
 az role assignment create \
     --role "Virtual Machine Administrator Login" \
     --assignee $MY_AZURE_USER_ID \
     --scope $MY_RESOURCE_GROUP_ID -o JSON
 ```
-
-
 Results:
-<!-- expected_similarity=0.3
+<!-- expected_similarity=0.3 -->
 ```JSON
 {
   "condition": null,
@@ -739,13 +737,11 @@ Results:
   "updatedOn": "2023-09-04T09:29:17.237445+00:00"
 }
 ```
--->
 
-<!-- 
+
+<!--
 ## Export the SSH configuration for use with SSH clients that support OpenSSH
-
 Login to Azure Linux VMs with Azure AD supports exporting the OpenSSH certificate and configuration. That means you can use any SSH clients that support OpenSSH-based certificates to sign in through Azure AD. The following example exports the configuration for all IP addresses assigned to the VM:
-
 ```bash
 az ssh config --file ~/.ssh/azure-config --name $MY_VM_NAME --resource-group $MY_RESOURCE_GROUP_NAME
 ```
@@ -791,7 +787,7 @@ Wyniki:
 
 ## Sprawdzanie i przeglądanie witryny internetowej WordPress
 
-[WordPress](https://www.wordpress.org) to system zarządzania zawartością typu open source (CMS) używany przez ponad 40% sieci Web do tworzenia witryn internetowych, blogów i innych aplikacji. Platformę WordPress można uruchamiać w kilku różnych usługach platformy Azure: [AKS](https://learn.microsoft.com/azure/mysql/flexible-server/tutorial-deploy-wordpress-on-aks), Virtual Machines i App Service. Aby uzyskać pełną listę opcji platformy WordPress na platformie Azure, zobacz [WordPress w witrynie Azure Marketplace](https://azuremarketplace.microsoft.com/marketplace/apps?page=1&search=wordpress).
+[WordPress](https://www.wordpress.org) to system zarządzania zawartością typu open source (CMS) używany przez ponad 40% sieci Web do tworzenia witryn internetowych, blogów i innych aplikacji. Platformę WordPress można uruchamiać w kilku różnych usługach platformy Azure: [AKS](../../mysql/flexible-server/tutorial-deploy-wordpress-on-aks.md), Virtual Machines i App Service. Aby uzyskać pełną listę opcji platformy WordPress na platformie Azure, zobacz [WordPress w witrynie Azure Marketplace](https://azuremarketplace.microsoft.com/marketplace/apps?page=1&search=wordpress).
 
 Ten instalator platformy WordPress służy wyłącznie do weryfikacji koncepcji. Aby zainstalować najnowszą platformę WordPress w produkcji z zalecanymi ustawieniami zabezpieczeń, zobacz [dokumentację platformy WordPress](https://codex.wordpress.org/Main_Page).
 
@@ -801,10 +797,10 @@ Sprawdź, czy aplikacja jest uruchomiona, konfigurując adres URL aplikacji:
 runtime="5 minute";
 endtime=$(date -ud "$runtime" +%s);
 while [[ $(date -u +%s) -le $endtime ]]; do
-    if curl -I -s -f $FQDN > /dev/null ; then 
+    if curl -I -s -f $FQDN > /dev/null ; then
         curl -L -s -f $FQDN 2> /dev/null | head -n 9
         break
-    else 
+    else
         sleep 10
     fi;
 done

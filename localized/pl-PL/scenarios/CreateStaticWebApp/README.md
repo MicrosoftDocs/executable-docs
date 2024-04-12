@@ -1,23 +1,35 @@
 ---
-title: Tworzenie witryny statycznej przy użyciu interfejsu wiersza polecenia platformy Azure
-description: 'W tym samouczku pokazano, jak utworzyć statyczną witrynę na platformie Azure.'
-author: namanparikh
-ms.author: namanparikh
-ms.topic: article
-ms.date: 02/06/2024
-ms.custom: innovation-engine
-ms.service: Azure
+title: 'Szybki start: tworzenie pierwszej statycznej witryny przy użyciu usługi Azure Static Web Apps przy użyciu interfejsu wiersza polecenia'
+description: 'Dowiedz się, jak wdrożyć statyczną witrynę w usłudze Azure Static Web Apps przy użyciu interfejsu wiersza polecenia platformy Azure.'
+services: static-web-apps
+author: craigshoemaker
+ms.service: static-web-apps
+ms.topic: quickstart
+ms.date: 03/21/2024
+ms.author: cshoe
+ms.custom: 'mode-api, devx-track-azurecli, innovation-engine, linux-related-content'
+ms.devlang: azurecli
 ---
 
-# Przewodnik Szybki start dotyczący usługi Azure Static Web Apps: tworzenie pierwszej statycznej witryny przy użyciu interfejsu wiersza polecenia platformy Azure
+# Szybki start: tworzenie pierwszej witryny statycznej przy użyciu interfejsu wiersza polecenia platformy Azure
 
 [![Wdróż na platformie Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262845)
 
-Usługa Azure Static Web Apps publikuje witryny internetowe w środowisku produkcyjnym, tworząc aplikacje z repozytorium kodu. W tym przewodniku Szybki start wdrożysz aplikację internetową w usłudze Azure Static Web Apps przy użyciu interfejsu wiersza polecenia platformy Azure.
+Usługa Azure Static Web Apps publikuje witryny internetowe w środowisku produkcyjnym, tworząc aplikacje z repozytorium kodu.
+
+W tym przewodniku Szybki start wdrożysz aplikację internetową w statycznych aplikacjach internetowych platformy Azure przy użyciu interfejsu wiersza polecenia platformy Azure.
+
+## Wymagania wstępne
+
+- [Konto usługi GitHub](https://github.com) .
+- [Konto platformy Azure](https://portal.azure.com).
+  - Jeśli nie masz subskrypcji platformy Azure, możesz utworzyć [bezpłatne konto](https://azure.microsoft.com/free) próbne.
+- [Zainstalowany interfejs wiersza polecenia](/cli/azure/install-azure-cli) platformy Azure (wersja 2.29.0 lub nowsza).
+- [Konfiguracja usługi](https://www.git-scm.com/downloads) Git. 
 
 ## Definiowanie zmiennych środowiskowych
 
-Pierwszym krokiem w tym samouczku jest zdefiniowanie zmiennych środowiskowych.
+Pierwszym krokiem w tym przewodniku Szybki start jest zdefiniowanie zmiennych środowiskowych.
 
 ```bash
 export RANDOM_ID="$(openssl rand -hex 3)"
@@ -30,16 +42,17 @@ export MY_STATIC_WEB_APP_NAME="myStaticWebApp$RANDOM_ID"
 
 (Opcjonalnie) W tym artykule użyto repozytorium szablonów usługi GitHub jako innego sposobu, aby ułatwić rozpoczęcie pracy. Szablon zawiera początkową aplikację do wdrożenia w usłudze Azure Static Web Apps.
 
-- Przejdź do następującej lokalizacji, aby utworzyć nowe repozytorium: https://github.com/staticwebdev/vanilla-basic/generate
-- Nazwij repozytorium `my-first-static-web-app`
+1. Przejdź do następującej lokalizacji, aby utworzyć nowe repozytorium: https://github.com/staticwebdev/vanilla-basic/generate.
+2. Nadaj repozytorium `my-first-static-web-app`nazwę .
 
-> **Uwaga:** usługa Azure Static Web Apps wymaga co najmniej jednego pliku HTML do utworzenia aplikacji internetowej. Repozytorium utworzone w tym kroku zawiera jeden `index.html` plik.
+> [!NOTE]
+> Usługa Azure Static Web Apps wymaga co najmniej jednego pliku HTML do utworzenia aplikacji internetowej. Repozytorium utworzone w tym kroku zawiera jeden `index.html` plik.
 
-Wybierz opcję `Create repository`.
+3. Kliknij przycisk **Create repository** (Utwórz repozytorium).
 
 ## Wdrażanie statycznej aplikacji internetowej
 
-Aplikację można wdrożyć jako statyczną aplikację internetową z poziomu interfejsu wiersza polecenia platformy Azure.
+Wdróż aplikację jako statyczną aplikację internetową z poziomu interfejsu wiersza polecenia platformy Azure.
 
 1. Utwórz grupę zasobów.
 
@@ -50,7 +63,6 @@ az group create \
 ```
 
 Wyniki:
-
 <!-- expected_similarity=0.3 -->
 ```json
 {
@@ -99,7 +111,6 @@ done
 ```
 
 Wyniki:
-
 <!-- expected_similarity=0.3 -->
 ```HTML
 <!DOCTYPE html>
@@ -117,13 +128,13 @@ Wyniki:
 echo "You can now visit your web server at https://$MY_STATIC_WEB_APP_URL"
 ```
 
-## Następne kroki
+## Korzystanie z szablonu usługi GitHub
 
-Gratulacje! Pomyślnie wdrożono statyczną aplikację internetową w usłudze Azure Static Web Apps przy użyciu interfejsu wiersza polecenia platformy Azure. Teraz, gdy masz podstawową wiedzę na temat wdrażania statycznej aplikacji internetowej, możesz zapoznać się z bardziej zaawansowanymi funkcjami i funkcjami usługi Azure Static Web Apps.
+Pomyślnie wdrożono statyczną aplikację internetową w usłudze Azure Static Web Apps przy użyciu interfejsu wiersza polecenia platformy Azure. Teraz, gdy masz podstawową wiedzę na temat wdrażania statycznej aplikacji internetowej, możesz zapoznać się z bardziej zaawansowanymi funkcjami i funkcjami usługi Azure Static Web Apps.
 
-Jeśli chcesz użyć repozytorium szablonów Usługi GitHub, wykonaj poniższe dodatkowe kroki.
+Jeśli chcesz użyć repozytorium szablonów Usługi GitHub, wykonaj następujące kroki:
 
-Przejdź do https://github.com/login/device strony i wprowadź kod użytkownika 329B-3945, aby aktywować i pobrać osobisty token dostępu usługi GitHub.
+Przejdź do https://github.com/login/device witryny i wprowadź kod uzyskany z usługi GitHub, aby aktywować i pobrać osobisty token dostępu usługi GitHub.
 
 1. Przejdź do https://github.com/login/device.
 2. Wprowadź kod użytkownika wyświetlany w komunikacie konsoli.
@@ -135,13 +146,22 @@ Przejdź do https://github.com/login/device strony i wprowadź kod użytkownika 
 1. Po otrzymaniu adresu URL repozytorium podczas uruchamiania skryptu skopiuj adres URL repozytorium i wklej go w przeglądarce.
 2. Wybierz kartę `Actions`.
 
-   Na tym etapie platforma Azure tworzy zasoby do obsługi statycznej aplikacji internetowej. Poczekaj, aż ikona obok uruchomionego przepływu pracy zmieni się w znacznik wyboru z zielonym tłem ( ). Wykonanie tej operacji może potrwać kilka minut.
+   Na tym etapie platforma Azure tworzy zasoby do obsługi statycznej aplikacji internetowej. Poczekaj, aż ikona obok uruchomionego przepływu pracy zmieni się w znacznik wyboru z zielonym tłem. Wykonanie tej operacji może potrwać kilka minut.
 
 3. Po pojawieniu się ikony powodzenia przepływ pracy zostanie ukończony i możesz wrócić do okna konsoli.
 4. Uruchom następujące polecenie, aby wykonać zapytanie dotyczące adresu URL witryny internetowej.
-
+```bash
    az staticwebapp show \
      --name $MY_STATIC_WEB_APP_NAME \
      --query "defaultHostname"
-
+```
 5. Skopiuj adres URL do przeglądarki, aby przejść do witryny internetowej.
+
+## Czyszczenie zasobów (opcjonalnie)
+
+Jeśli nie zamierzasz nadal używać tej aplikacji, usuń grupę zasobów i statyczną aplikację internetową przy użyciu [polecenia az group delete](/cli/azure/group#az-group-delete) .
+
+## Następne kroki
+
+> [!div class="nextstepaction"]
+> [Dodawanie interfejsu API](add-api.md)
