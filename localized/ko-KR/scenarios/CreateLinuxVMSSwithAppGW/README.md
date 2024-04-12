@@ -1,23 +1,35 @@
 ---
-title: Linux 이미지를 사용하여 Application Gateway를 사용하여 Virtual Machine Scale Set 만들기
-description: 이 자습서에서는 Linux 이미지를 사용하여 Application Gateway를 사용하여 Virtual Machine Scale Set을 만드는 방법을 보여 줍니다.
-author: belginceran
-ms.author: belginceran
-ms.topic: article
-ms.date: 01/05/2024
-ms.custom: innovation-engine
+title: Azure CLI를 사용하여 유연한 확장 집합에서 가상 머신 만들기
+description: Azure CLI를 사용하여 유연한 오케스트레이션 모드에서 가상 머신 확장 집합을 만드는 방법을 알아봅니다.
+author: fitzgeraldsteele
+ms.author: fisteele
+ms.topic: how-to
+ms.service: virtual-machine-scale-sets
+ms.date: 3/19/2024
+ms.reviewer: jushiman
+ms.custom: 'mimckitt, devx-track-azurecli, vmss-flex, innovation-engine, linux-related-content'
 ---
 
-# Linux 이미지를 사용하여 Application Gateway를 사용하여 Virtual Machine Scale Set 만들기
+# Azure CLI를 사용하여 확장 집합에서 가상 머신 만들기
 
 [![Azure에 배포](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262759)
 
+이 문서에서는 Azure CLI를 사용하여 가상 머신 확장 집합을 만드는 단계를 안내합니다.
+
+최신 [Azure CLI](/cli/azure/install-az-cli2)를 설치했고 [az login](/cli/azure/reference-index)을 사용하여 Azure 계정에 로그인했는지 확인합니다.
+
+
+## Azure Cloud Shell 시작
+
+Azure Cloud Shell은 이 문서의 단계를 실행하는 데 무료로 사용할 수 있는 대화형 셸입니다. 공용 Azure 도구가 사전 설치되어 계정에서 사용하도록 구성되어 있습니다.
+
+Cloud Shell을 열려면 코드 블록의 오른쪽 위 모서리에서 Cloud Shell** 열기를 선택합니다**. 또한 [https://shell.azure.com/cli](https://shell.azure.com/cli) 로 이동하여 별도의 브라우저 탭에서 Cloud Shell을 시작할 수 있습니다. **복사**를 선택하여 코드 블록을 복사하여 Cloud Shell에 붙여넣고, Enter 키를 눌러 실행합니다.
+
 ## 환경 변수 정의
 
-이 자습서의 첫 번째 단계는 환경 변수를 정의하는 것입니다.
+다음과 같이 환경 변수를 정의합니다.
 
 ```bash
-
 export RANDOM_ID="$(openssl rand -hex 3)"
 export MY_RESOURCE_GROUP_NAME="myVMSSResourceGroup$RANDOM_ID"
 export REGION=EastUS
@@ -33,22 +45,17 @@ export MY_APPGW_SN_NAME="myAPPGWSN$RANDOM_ID"
 export MY_APPGW_SN_PREFIX="10.$NETWORK_PREFIX.1.0/24"
 export MY_APPGW_NAME="myAPPGW$RANDOM_ID"
 export MY_APPGW_PUBLIC_IP_NAME="myAPPGWPublicIP$RANDOM_ID"
-
 ```
-# CLI를 사용하여 Azure에 로그인
 
-CLI를 사용하여 Azure에 대해 명령을 실행하려면 로그인해야 합니다. 이 작업은 명령을 통해 매우 간단하게 수행됩니다.`az login`
+## 리소스 그룹 만들기
 
-# 리소스 그룹 만들기
-
-리소스 그룹은 관련 리소스에 대한 컨테이너입니다. 모든 리소스는 리소스 그룹에 배치해야 합니다. 이 자습서에 대해 만들겠습니다. 다음 명령은 이전에 정의된 $MY_RESOURCE_GROUP_NAME 및 $REGION 매개 변수를 사용하여 리소스 그룹을 만듭니다.
+리소스 그룹은 Azure 리소스가 배포 및 관리되는 논리적 컨테이너입니다. 모든 리소스는 리소스 그룹에 배치되어야 합니다. 다음 명령은 이전에 정의된 $MY_RESOURCE_GROUP_NAME 및 $REGION 매개 변수를 사용하여 리소스 그룹을 만듭니다.
 
 ```bash
 az group create --name $MY_RESOURCE_GROUP_NAME --location $REGION -o JSON
 ```
 
-결과:
-
+Results:
 <!-- expected_similarity=0.3 -->
 ```json   
 {
@@ -64,19 +71,17 @@ az group create --name $MY_RESOURCE_GROUP_NAME --location $REGION -o JSON
 }
 ```
 
-# 네트워크 리소스 만들기 
+## 네트워크 리소스 만들기 
 
-VMSS 단계를 진행하기 전에 네트워크 리소스를 만들어야 합니다. 이 단계에서는 VNET, Application Gateway용 서브넷 1개, VM용 1개 등을 만듭니다. 또한 인터넷에서 웹 애플리케이션에 연결할 수 있도록 Application Gateway를 연결하려면 공용 IP가 있어야 합니다. 
+이제 네트워크 리소스를 만듭니다. 이 단계에서는 가상 네트워크, Application Gateway용 서브넷 1, VM용 서브넷 1개를 만듭니다. 인터넷에서 웹 애플리케이션에 연결하려면 Application Gateway를 연결하는 공용 IP도 있어야 합니다. 
 
-
-#### VNET(Virtual Network) 및 VM 서브넷 만들기
+#### 가상 네트워크 및 서브넷 만들기
 
 ```bash
 az network vnet create  --name $MY_VNET_NAME  --resource-group $MY_RESOURCE_GROUP_NAME --location $REGION  --address-prefix $MY_VNET_PREFIX  --subnet-name $MY_VM_SN_NAME --subnet-prefix $MY_VM_SN_PREFIX -o JSON
 ```
 
-결과:
-
+Results:
 <!-- expected_similarity=0.3 -->
 ```json   
 {
@@ -116,15 +121,13 @@ az network vnet create  --name $MY_VNET_NAME  --resource-group $MY_RESOURCE_GROU
 
 ### Application Gateway 리소스 만들기
 
-Azure 애플리케이션 게이트웨이에는 가상 네트워크 내의 전용 서브넷이 필요합니다. 아래 명령은 VNET $MY_VNET_NAME에 $MY_APPGW_SN_PREFIX라는 지정된 주소 접두사를 사용하여 $MY_APPGW_SN_NAME이라는 서브넷을 만듭니다. 
-
+Azure 애플리케이션 게이트웨이에는 가상 네트워크 내의 전용 서브넷이 필요합니다. 다음 명령은 가상 네트워크 $MY_VNET_NAME에 $MY_APPGW_SN_PREFIX라는 지정된 주소 접두사를 사용하여 $MY_APPGW_SN_NAME이라는 서브넷을 만듭니다.
 
 ```bash
 az network vnet subnet create  --name $MY_APPGW_SN_NAME  --resource-group $MY_RESOURCE_GROUP_NAME --vnet-name  $MY_VNET_NAME --address-prefix  $MY_APPGW_SN_PREFIX -o JSON
 ```
 
-결과:
-
+Results:
 <!-- expected_similarity=0.3 -->
 ```json  
 {
@@ -140,14 +143,13 @@ az network vnet subnet create  --name $MY_APPGW_SN_NAME  --resource-group $MY_RE
   "type": "Microsoft.Network/virtualNetworks/subnets"
 }
 ```
-아래 명령은 리소스 그룹에 표준 영역 중복, 정적 공용 IPv4를 만듭니다.  
+다음 명령은 리소스 그룹에 표준, 영역 중복, 정적, 공용 IPv4를 만듭니다.  
 
 ```bash
 az network public-ip create  --resource-group $MY_RESOURCE_GROUP_NAME --name $MY_APPGW_PUBLIC_IP_NAME --sku Standard   --location $REGION  --allocation-method static --version IPv4 --zone 1 2 3 -o JSON
- ```
+```
 
-결과:
-
+Results:
 <!-- expected_similarity=0.3 -->
 ```json  
 {
@@ -181,11 +183,11 @@ az network public-ip create  --resource-group $MY_RESOURCE_GROUP_NAME --name $MY
 }
 ```
 
-이 단계에서는 Virtual Machine Scale Set과 통합할 Application Gateway를 만듭니다. 이 예제에서는 Standard_v2 SKU를 사용하여 영역 중복 Application Gateway를 만들고 Application Gateway에 대해 Http 통신을 사용하도록 설정합니다. 이전 단계에서 만든 공용 IP $MY_APPGW_PUBLIC_IP_NAME은 Application Gateway에 연결되었습니다. 
+이 단계에서는 Virtual Machine Scale Set와 통합할 Application Gateway를 만듭니다. 이 예제에서는 Standard_v2 SKU를 사용하여 영역 중복 Application Gateway를 만들고 Application Gateway에 대해 Http 통신을 사용하도록 설정합니다. 이전 단계에서 만든 공용 IP $MY_APPGW_PUBLIC_IP_NAME이 Application Gateway에 연결됩니다. 
 
 ```bash
 az network application-gateway create   --name $MY_APPGW_NAME --location $REGION --resource-group $MY_RESOURCE_GROUP_NAME --vnet-name $MY_VNET_NAME --subnet $MY_APPGW_SN_NAME --capacity 2  --zones 1 2 3 --sku Standard_v2   --http-settings-cookie-based-affinity Disabled   --frontend-port 80 --http-settings-port 80   --http-settings-protocol Http --public-ip-address $MY_APPGW_PUBLIC_IP_NAME --priority 1001 -o JSON
- ```
+```
 
 <!-- expected_similarity=0.3 -->
 ```json 
@@ -375,19 +377,21 @@ az network application-gateway create   --name $MY_APPGW_NAME --location $REGION
     "urlPathMaps": []
   }
 }
- ```
+```
 
+## 가상 머신 크기 집합 만들기
 
-# Virtual Machine Scale Set 만들기 
+> [!IMPORTANT]
+>2023년 11월부터 PowerShell 및 Azure CLI를 사용하여 만들어진 VM Scale Sets는 오케스트레이션 모드가 지정되지 않은 경우 기본적으로 유연한 오케스트레이션 모드로 설정됩니다. 이 변경 내용과 수행해야 할 작업에 대한 자세한 내용은 [Breaking Change for VMSS PowerShell/CLI Customers - Microsoft Community Hub](
+https://techcommunity.microsoft.com/t5/azure-compute-blog/breaking-change-for-vmss-powershell-cli-customers/ba-p/3818295)(VMSS PowerShell/CLI 고객을 위한 호환성이 손상되는 변경 - Microsoft 커뮤니티 허브)를 참조하세요.
 
-아래 명령은 리소스 그룹 $MY_RESOURCE_GROUP_NAME 내에 영역 중복 VMSS(Virtual Machine Scale Set)를 만듭니다. 이전 단계에서 만든 Application Gateway를 통합합니다. 이 명령은 서브넷 $MY_VM_SN_NAME에 공용 IP가 있는 2개 Standard_DS2_v2 SKU Virtual Machines를 만듭니다. ssh를 통해 VM에 로그인해야 하는 경우 키를 저장할 수 있는 아래 단계에서 ssh 키가 만들어집니다.
+이제 [az vmss create](/cli/azure/vmss)를 사용하여 가상 머신 확장 집합을 만듭니다. 다음 예제에서는 리소스 그룹 $MY_RESOURCE_GROUP_NAME 내의 *서브넷 $MY_VM_SN_NAME에 공용 IP가 있는 인스턴스 수가 2* 인 영역 중복 확장 집합을 만들고 Application Gateway를 통합하고 SSH 키를 생성합니다. ssh를 통해 VM에 로그인해야 하는 경우 SSH 키를 저장해야 합니다.
 
 ```bash
 az vmss create --name $MY_VMSS_NAME --resource-group $MY_RESOURCE_GROUP_NAME --image $MY_VM_IMAGE --admin-username $MY_USERNAME --generate-ssh-keys --public-ip-per-vm --orchestration-mode Uniform --instance-count 2 --zones 1 2 3 --vnet-name $MY_VNET_NAME --subnet $MY_VM_SN_NAME --vm-sku Standard_DS2_v2 --upgrade-policy-mode Automatic --app-gateway $MY_APPGW_NAME --backend-pool-name appGatewayBackendPool -o JSON
  ```
 
-결과:
-
+Results:
 <!-- expected_similarity=0.3 -->
 ```json  
 {
@@ -499,17 +503,15 @@ az vmss create --name $MY_VMSS_NAME --resource-group $MY_RESOURCE_GROUP_NAME --i
 }
 ```
 
-### VMSS 확장을 사용하여 ngnix 설치 
+### Virtual Machine Scale Sets 확장을 사용하여 ngnix 설치 
 
-아래 명령은 VMSS 확장을 사용하여 사용자 지정 스크립트를 실행합니다. 테스트를 위해 여기서는 ngnix를 설치하고 HTTP 요청이 적중하는 Virtual Machine의 호스트 이름을 보여 주는 페이지를 게시합니다. 이 pusposes에 이 사용자 지정 스크립트를 사용합니다. https://raw.githubusercontent.com/Azure-Samples/compute-automation-configurations/master/automate_nginx.sh  
-
+다음 명령은 Virtual Machine Scale Sets 확장을 사용하여 ngnix를 설치하고 HTTP 요청이 적중하는 Virtual Machine의 호스트 이름을 보여 주는 페이지를 게시하는 사용자 지정 스크립트[를 실행](https://github.com/Azure-Samples/compute-automation-configurations/blob/master/automate_nginx.sh)합니다. 
 
 ```bash
 az vmss extension set --publisher Microsoft.Azure.Extensions --version 2.0  --name CustomScript --resource-group $MY_RESOURCE_GROUP_NAME --vmss-name $MY_VMSS_NAME --settings '{ "fileUris": ["https://raw.githubusercontent.com/Azure-Samples/compute-automation-configurations/master/automate_nginx.sh"], "commandToExecute": "./automate_nginx.sh" }' -o JSON
 ```
 
-결과:
-
+Results:
 <!-- expected_similarity=0.3 -->
 ```json  
 {
@@ -703,19 +705,16 @@ az vmss extension set --publisher Microsoft.Azure.Extensions --version 2.0  --na
 }
 ```
 
+## 자동 크기 조정 프로필 정의  
 
-# 자동 크기 조정 프로필 정의  
-
-확장 집합에서 자동 크기 조정을 활성화하려면 먼저 자동 크기 조정 프로필을 정의합니다. 이 프로필은 기본, 최소, 최대 확장 집합 용량을 정의합니다. 이러한 제한을 통해 연속적으로 VM 인스턴스를 만들지 않고 비용을 제어하고, 축소 이벤트에 유지되는 최소 인스턴스 수로 허용 가능한 성능의 균형을 유지할 수 있습니다.
-다음 예제에서는 기본 및 최소 용량으로 VM 인스턴스 2개를 설정하고 최대 용량으로 10개를 설정합니다.
+확장 집합에서 자동 크기 조정을 사용하도록 설정하려면 먼저 자동 크기 조정 프로필을 정의합니다. 이 프로필은 기본, 최소, 최대 확장 집합 용량을 정의합니다. 이러한 제한을 통해 VM 인스턴스를 지속적으로 만들지 않고 비용을 제어하고, 스케일 인 이벤트에서 다시 기본 최소 인스턴스 수로 허용 가능한 성능의 균형을 맞출 수 있습니다.
+다음 예제에서는 두 VM 인스턴스의 기본 최소 용량과 최대 용량 10을 설정합니다.
 
 ```bash
 az monitor autoscale create --resource-group $MY_RESOURCE_GROUP_NAME --resource  $MY_VMSS_NAME --resource-type Microsoft.Compute/virtualMachineScaleSets --name autoscale --min-count 2 --max-count 10 --count 2
 ```
 
-
-결과:
-
+Results:
 <!-- expected_similarity=0.3 -->
 ```json  
 {
@@ -760,16 +759,15 @@ az monitor autoscale create --resource-group $MY_RESOURCE_GROUP_NAME --resource 
 }
 ```
 
-# 자동 크기 확장 규칙 만들기
+## 자동 크기 확장 규칙 만들기
 
-다음 명령은 평균 CPU 로드가 5분 동안 70% 이상일 때 확장 집합의 VM 인스턴스 수를 늘리는 규칙을 만듭니다. 규칙이 트리거되면 VM 인스턴스 수가 3만큼 늘어납니다.
+다음 명령은 평균 CPU 로드가 5분 동안 70% 이상일 때 확장 집합의 VM 인스턴스 수를 늘리는 규칙을 만듭니다. 규칙이 트리거되면 VM 인스턴스 수가 3씩 증가합니다.
 
 ```bash
 az monitor autoscale rule create --resource-group $MY_RESOURCE_GROUP_NAME --autoscale-name autoscale --condition "Percentage CPU > 70 avg 5m" --scale out 3
 ```
 
-결과:
-
+Results:
 <!-- expected_similarity=0.3 -->
 ```json 
 {
@@ -796,16 +794,15 @@ az monitor autoscale rule create --resource-group $MY_RESOURCE_GROUP_NAME --auto
 } 
 ```
 
-# 자동 크기 축소 규칙 만들기
+## 자동 크기 축소 규칙 만들기
 
-평균 CPU 로드가 5분 동안 30% 미만일 경우 az monitor autoscale rule create를 사용하여 확장 집합의 VM 인스턴스 수를 줄이는 다른 규칙을 만듭니다. 다음 예제에서는 VM 인스턴스 수를 축소하는 규칙을 정의합니다.
+평균 CPU 로드가 5분 동안 30% 미만으로 떨어질 때 확장 집합의 VM 인스턴스 수를 줄이는 다른 규칙을 `az monitor autoscale rule create` 만듭니다. 다음 예제에서는 VM 인스턴스 수를 축소하는 규칙을 정의합니다.
 
 ```bash
 az monitor autoscale rule create --resource-group  $MY_RESOURCE_GROUP_NAME --autoscale-name autoscale --condition "Percentage CPU < 30 avg 5m" --scale in 1
 ```
 
-결과:
-
+Results:
 <!-- expected_similarity=0.3 -->
 ```json 
 {
@@ -832,19 +829,19 @@ az monitor autoscale rule create --resource-group  $MY_RESOURCE_GROUP_NAME --aut
 }
 ```
 
-
 ### 페이지 테스트
 
-아래 명령은 Application Gateway의 공용 IP를 보여 줍니다. 테스트를 위해 브라우저 페이지에 IP 주소를 붙여넣을 수 있습니다.
+다음 명령은 Application Gateway의 공용 IP를 보여 줍니다. 테스트를 위해 브라우저 페이지에 IP 주소를 붙여넣습니다.
 
 ```bash
 az network public-ip show --resource-group $MY_RESOURCE_GROUP_NAME --name $MY_APPGW_PUBLIC_IP_NAME --query [ipAddress]  --output tsv
 ```
 
+## 리소스 정리(선택 사항)
 
+Azure 요금을 방지하려면 불필요한 리소스를 정리해야 합니다. 확장 집합 및 기타 리소스가 더 이상 필요하지 않은 경우 az group delete를 사용하여 리소스 그룹 및 모든 해당 리소스를 삭제[합니다](/cli/azure/group). `--no-wait` 매개 변수는 작업이 완료될 때까지 대기하지 않고 프롬프트로 제어를 반환합니다. `--yes` 매개 변수는 작업을 수행하는 다른 프롬프트 없이 리소스를 삭제할 것인지 확인합니다. 이 자습서에서는 리소스를 클린.
 
-# 참조
-
-* [VMSS 설명서](https://learn.microsoft.com/en-us/azure/virtual-machine-scale-sets/overview)
-* [VMSS 자동 크기 조정](https://learn.microsoft.com/en-us/azure/virtual-machine-scale-sets/tutorial-autoscale-cli?tabs=Ubuntu)
-
+## 다음 단계
+- [Azure Portal에서 확장 집합을 만드는 방법을 알아봅니다.](flexible-virtual-machine-scale-sets-portal.md)
+- [Virtual Machine Scale Sets에 대해 알아봅니다.](overview.md)
+- [Azure CLI를 사용하여 Virtual Machine Scale Set의 자동 크기 조정](tutorial-autoscale-cli.md)
