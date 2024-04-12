@@ -1,23 +1,35 @@
 ---
-title: 使用 Linux 映像建立具有 應用程式閘道 的虛擬機擴展集
-description: 本教學課程示範如何使用 Linux 映像建立具有 應用程式閘道 的虛擬機擴展集
-author: belginceran
-ms.author: belginceran
-ms.topic: article
-ms.date: 01/05/2024
-ms.custom: innovation-engine
+title: 使用 Azure CLI 在彈性擴展集中建立虛擬機器
+description: 了解如何使用 Azure CLI 以彈性協調流程模式來建立虛擬機器擴展集。
+author: fitzgeraldsteele
+ms.author: fisteele
+ms.topic: how-to
+ms.service: virtual-machine-scale-sets
+ms.date: 3/19/2024
+ms.reviewer: jushiman
+ms.custom: 'mimckitt, devx-track-azurecli, vmss-flex, innovation-engine, linux-related-content'
 ---
 
-# 使用 Linux 映像建立具有 應用程式閘道 的虛擬機擴展集
+# 使用 Azure CLI 在擴展集中建立虛擬機器
 
 [![部署至 Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262759)
 
+本文將逐步解說如何使用 Azure CLI 來建立虛擬機器擴展集。
+
+請確定您已安裝最新的 [Azure CLI](/cli/azure/install-az-cli2)，並使用 [az login](/cli/azure/reference-index) 登入 Azure 帳戶。
+
+
+## 啟動 Azure Cloud Shell
+
+Azure Cloud Shell 是免費的互動式 Shell，可讓您用來執行本文中的步驟。 它具有預先安裝和設定的共用 Azure 工具，可與您的帳戶搭配使用。
+
+若要開啟 Cloud Shell，請從程式代碼區塊右上角選取 [ **開啟 Cloud Shell** ]。 您也可以移至 [https://shell.azure.com/cli](https://shell.azure.com/cli) ，從另一個瀏覽器索引標籤啟動 Cloud Shell。 選取 [複製]**** 即可複製程式碼區塊，將它貼到 Cloud Shell 中，然後按 enter 鍵加以執行。
+
 ## 定義環境變數
 
-本教學課程的第一個步驟是定義環境變數。
+定義環境變數，如下所示。
 
 ```bash
-
 export RANDOM_ID="$(openssl rand -hex 3)"
 export MY_RESOURCE_GROUP_NAME="myVMSSResourceGroup$RANDOM_ID"
 export REGION=EastUS
@@ -33,22 +45,17 @@ export MY_APPGW_SN_NAME="myAPPGWSN$RANDOM_ID"
 export MY_APPGW_SN_PREFIX="10.$NETWORK_PREFIX.1.0/24"
 export MY_APPGW_NAME="myAPPGW$RANDOM_ID"
 export MY_APPGW_PUBLIC_IP_NAME="myAPPGWPublicIP$RANDOM_ID"
-
 ```
-# 使用 CLI 登入 Azure
 
-若要使用 CLI 對 Azure 執行命令，您需要登入。 這樣做很簡單，但 `az login` 命令如下：
+## 建立資源群組
 
-# 建立資源群組
-
-資源群組是相關資源的容器。 所有資源都必須放在資源群組中。 我們將為此教學課程建立一個。 下列命令會使用先前定義的 $MY_RESOURCE_GROUP_NAME 和 $REGION 參數來建立資源群組。
+資源群組是在其中部署與管理 Azure 資源的邏輯容器。 所有資源都必須放在資源群組中。 下列命令會使用先前定義的 $MY_RESOURCE_GROUP_NAME 和 $REGION 參數來建立資源群組。
 
 ```bash
 az group create --name $MY_RESOURCE_GROUP_NAME --location $REGION -o JSON
 ```
 
 結果：
-
 <!-- expected_similarity=0.3 -->
 ```json   
 {
@@ -64,19 +71,17 @@ az group create --name $MY_RESOURCE_GROUP_NAME --location $REGION -o JSON
 }
 ```
 
-# 建立網路資源 
+## 建立網路資源 
 
-您必須先建立網路資源，才能繼續進行 VMSS 步驟。 在此步驟中，您將建立 VNET，2 個子網 1 用於 應用程式閘道，1 個用於 VM。 您也需要有公用IP來連結您的 應用程式閘道，才能從因特網連線到 Web 應用程式。 
+現在您將建立網路資源。 在此步驟中，您將建立虛擬網路、一個子網 1 用於 應用程式閘道，以及一個適用於 VM 的子網。 您也需要有公用IP來連結您的 應用程式閘道，才能從因特網連線到 Web 應用程式。 
 
-
-#### 建立 虛擬網絡 （VNET） 和 VM 子網
+#### 建立虛擬網路和子網
 
 ```bash
 az network vnet create  --name $MY_VNET_NAME  --resource-group $MY_RESOURCE_GROUP_NAME --location $REGION  --address-prefix $MY_VNET_PREFIX  --subnet-name $MY_VM_SN_NAME --subnet-prefix $MY_VM_SN_PREFIX -o JSON
 ```
 
 結果：
-
 <!-- expected_similarity=0.3 -->
 ```json   
 {
@@ -114,17 +119,15 @@ az network vnet create  --name $MY_VNET_NAME  --resource-group $MY_RESOURCE_GROU
 }
 ```
 
-### 建立 應用程式閘道資源
+### 建立應用程式閘道資源
 
-Azure 應用程式閘道 需要虛擬網路內的專用子網。 下列命令會在 VNET $MY_VNET_NAME 中，使用名為 $MY_APPGW_SN_PREFIX 的指定位址前置詞，$MY_APPGW_SN_NAME 建立名為 $MY_APPGW_SN_NAME 的子網 
-
+Azure 應用程式閘道 需要虛擬網路內的專用子網。 下列命令會在虛擬網路$MY_VNET_NAME 中，使用名為 $MY_APPGW_SN_PREFIX 的指定位址前綴，建立名為 $MY_APPGW_SN_NAME 的子網。
 
 ```bash
 az network vnet subnet create  --name $MY_APPGW_SN_NAME  --resource-group $MY_RESOURCE_GROUP_NAME --vnet-name  $MY_VNET_NAME --address-prefix  $MY_APPGW_SN_PREFIX -o JSON
 ```
 
 結果：
-
 <!-- expected_similarity=0.3 -->
 ```json  
 {
@@ -144,10 +147,9 @@ az network vnet subnet create  --name $MY_APPGW_SN_NAME  --resource-group $MY_RE
 
 ```bash
 az network public-ip create  --resource-group $MY_RESOURCE_GROUP_NAME --name $MY_APPGW_PUBLIC_IP_NAME --sku Standard   --location $REGION  --allocation-method static --version IPv4 --zone 1 2 3 -o JSON
- ```
+```
 
 結果：
-
 <!-- expected_similarity=0.3 -->
 ```json  
 {
@@ -181,11 +183,11 @@ az network public-ip create  --resource-group $MY_RESOURCE_GROUP_NAME --name $MY
 }
 ```
 
-在此步驟中，您會建立要與虛擬機擴展集整合的 應用程式閘道。 在此範例中，我們會使用 Standard_v2 SKU 建立區域備援 應用程式閘道，併為 應用程式閘道 啟用 Http 通訊。 我們在上一個步驟中建立的公用IP$MY_APPGW_PUBLIC_IP_NAME附加至 應用程式閘道。 
+在此步驟中，您會建立要與虛擬機擴展集整合的 應用程式閘道。 此範例會建立具有Standard_v2 SKU 的區域備援 應用程式閘道，並啟用 應用程式閘道 的 Http 通訊。 在上一個步驟中建立的公用IP$MY_APPGW_PUBLIC_IP_NAME 會附加至 應用程式閘道。 
 
 ```bash
 az network application-gateway create   --name $MY_APPGW_NAME --location $REGION --resource-group $MY_RESOURCE_GROUP_NAME --vnet-name $MY_VNET_NAME --subnet $MY_APPGW_SN_NAME --capacity 2  --zones 1 2 3 --sku Standard_v2   --http-settings-cookie-based-affinity Disabled   --frontend-port 80 --http-settings-port 80   --http-settings-protocol Http --public-ip-address $MY_APPGW_PUBLIC_IP_NAME --priority 1001 -o JSON
- ```
+```
 
 <!-- expected_similarity=0.3 -->
 ```json 
@@ -375,19 +377,21 @@ az network application-gateway create   --name $MY_APPGW_NAME --location $REGION
     "urlPathMaps": []
   }
 }
- ```
+```
 
+## 建立虛擬機器擴展集
 
-# 建立虛擬機器擴展集 
+> [!IMPORTANT]
+>自 2023 年 11 月起，如果未指定協調流程模式，則使用 PowerShell 和 Azure CLI 建立的 VM 擴展集會預設為彈性協調流程模式。 如需此變更的詳細資訊，以及您應該採取的動作，請移至 [針對 VMSS PowerShell/CLI 客戶的中斷性變更 - Microsoft 社群中樞](
+https://techcommunity.microsoft.com/t5/azure-compute-blog/breaking-change-for-vmss-powershell-cli-customers/ba-p/3818295) (英文)
 
-下列命令會在資源群組內建立區域備援虛擬機擴展集 （VMSS），$MY_RESOURCE_GROUP_NAME。 我們會整合我們建立上一個步驟的 應用程式閘道。 此命令會在子網 $MY_VM_SN_NAME 中建立具有公用IP的2 Standard_DS2_v2 SKU 虛擬機器。 如果您需要透過 ssh 登入 VM，您可以在下列步驟期間建立 SSH 金鑰。
+現在使用 [az vmss create](/cli/azure/vmss) 建立虛擬機器擴展集。 下列範例會建立區域備援擴展集，其實例計數*為 2*，且子網中的公用 IP $MY_VM_SN_NAME 位於資源群組內，$MY_RESOURCE_GROUP_NAME、整合 應用程式閘道，併產生 SSH 密鑰。 如果您需要透過 ssh 登入 VM，請務必儲存 SSH 金鑰。
 
 ```bash
 az vmss create --name $MY_VMSS_NAME --resource-group $MY_RESOURCE_GROUP_NAME --image $MY_VM_IMAGE --admin-username $MY_USERNAME --generate-ssh-keys --public-ip-per-vm --orchestration-mode Uniform --instance-count 2 --zones 1 2 3 --vnet-name $MY_VNET_NAME --subnet $MY_VM_SN_NAME --vm-sku Standard_DS2_v2 --upgrade-policy-mode Automatic --app-gateway $MY_APPGW_NAME --backend-pool-name appGatewayBackendPool -o JSON
  ```
 
 結果：
-
 <!-- expected_similarity=0.3 -->
 ```json  
 {
@@ -499,17 +503,15 @@ az vmss create --name $MY_VMSS_NAME --resource-group $MY_RESOURCE_GROUP_NAME --i
 }
 ```
 
-### 使用 VMSS 擴充功能安裝 ngnix 
+### 使用 虛擬機器擴展集擴充功能安裝 ngnix 
 
-下列命令會使用 VMSS 擴充功能來執行自訂腳本。 為了進行測試，我們在這裡安裝 ngnix 併發佈頁面，其中顯示 HTTP 要求叫用的虛擬機主機名。 我們會將此自訂文稿用於此 Pusposes ： https://raw.githubusercontent.com/Azure-Samples/compute-automation-configurations/master/automate_nginx.sh 
-
+下列命令會使用 虛擬機器擴展集 擴充功能來執行[自定義腳本](https://github.com/Azure-Samples/compute-automation-configurations/blob/master/automate_nginx.sh)，以安裝 ngnix 併發布頁面，以顯示 HTTP 要求叫用之虛擬機的主機名。 
 
 ```bash
 az vmss extension set --publisher Microsoft.Azure.Extensions --version 2.0  --name CustomScript --resource-group $MY_RESOURCE_GROUP_NAME --vmss-name $MY_VMSS_NAME --settings '{ "fileUris": ["https://raw.githubusercontent.com/Azure-Samples/compute-automation-configurations/master/automate_nginx.sh"], "commandToExecute": "./automate_nginx.sh" }' -o JSON
 ```
 
 結果：
-
 <!-- expected_similarity=0.3 -->
 ```json  
 {
@@ -703,19 +705,16 @@ az vmss extension set --publisher Microsoft.Azure.Extensions --version 2.0  --na
 }
 ```
 
+## 定義自動調整設定檔  
 
-# 定義自動調整設定檔  
-
-若要在擴展集上啟用自動調整，您必須先定義自動調整配置檔。 此配置檔會定義預設、最小和最大擴展集容量。 這些限制可讓您控制成本，方法是不持續建立 VM 實例，並將可接受的效能與維持在相應縮小事件中的實例數目下限進行平衡。
-下列範例會設定 2 個 VM 實例的預設值和最小值，以及最多 10 個：
+若要在擴展集上啟用自動調整，請先定義自動調整配置檔。 此設定檔會定義預設、最小和最大擴展集容量。 這些限制可讓您控制成本，方法是不持續建立 VM 實例，並將可接受的效能與維持在相應縮小事件中的最少實例數目進行平衡。
+下列範例會設定預設值、兩個 VM 實例的最小容量，以及最大容量 10：
 
 ```bash
 az monitor autoscale create --resource-group $MY_RESOURCE_GROUP_NAME --resource  $MY_VMSS_NAME --resource-type Microsoft.Compute/virtualMachineScaleSets --name autoscale --min-count 2 --max-count 10 --count 2
 ```
 
-
 結果：
-
 <!-- expected_similarity=0.3 -->
 ```json  
 {
@@ -760,16 +759,15 @@ az monitor autoscale create --resource-group $MY_RESOURCE_GROUP_NAME --resource 
 }
 ```
 
-# 建立自動擴增的規則
+## 建立自動擴增的規則
 
-下列命令會建立一個規則，以在平均CPU負載在5分鐘期間內大於70%時，增加擴展集中的VM實例數目。 當此規則觸發時，VM 執行個體數目會增加三個。
+下列命令會建立一個規則，以在平均CPU負載在5分鐘期間內大於70%時，增加擴展集中的VM實例數目。 當規則觸發時，VM 實例的數目會增加三個。
 
 ```bash
 az monitor autoscale rule create --resource-group $MY_RESOURCE_GROUP_NAME --autoscale-name autoscale --condition "Percentage CPU > 70 avg 5m" --scale out 3
 ```
 
 結果：
-
 <!-- expected_similarity=0.3 -->
 ```json 
 {
@@ -796,16 +794,15 @@ az monitor autoscale rule create --resource-group $MY_RESOURCE_GROUP_NAME --auto
 } 
 ```
 
-# 建立自動縮減的規則
+## 建立自動縮減的規則
 
-使用 az monitor autoscale rule create 建立另一個規則，以在平均 CPU 負載在 5 分鐘的期間內低於 30% 時，減少擴展集中的 VM 實例數目。 下列範例會定義要依一個 VM 實例數目進行調整的規則。
+建立另一個規則， `az monitor autoscale rule create` 其會在平均CPU負載在5分鐘的期間內低於30%時，減少擴展集中的VM實例數目。 下列範例定義以 1 為單位縮減 VM 執行個體數目的規則。
 
 ```bash
 az monitor autoscale rule create --resource-group  $MY_RESOURCE_GROUP_NAME --autoscale-name autoscale --condition "Percentage CPU < 30 avg 5m" --scale in 1
 ```
 
 結果：
-
 <!-- expected_similarity=0.3 -->
 ```json 
 {
@@ -832,19 +829,19 @@ az monitor autoscale rule create --resource-group  $MY_RESOURCE_GROUP_NAME --aut
 }
 ```
 
-
 ### 測試頁面
 
-下列命令會顯示 應用程式閘道 的公用IP。 您可以將 IP adress 貼到瀏覽器頁面進行測試。
+下列命令會顯示 應用程式閘道 的公用IP。 將IP位址貼入瀏覽器頁面以進行測試。
 
 ```bash
 az network public-ip show --resource-group $MY_RESOURCE_GROUP_NAME --name $MY_APPGW_PUBLIC_IP_NAME --query [ipAddress]  --output tsv
 ```
 
+## 清除資源 （選擇性）
 
+若要避免 Azure 費用，您應該清除不需要的資源。 當您不再需要擴展集和其他資源時，請使用 az group delete[ 刪除資源群組及其所有資源](/cli/azure/group)。 `--no-wait` 參數不會等待作業完成，就會將控制項傳回給提示字元。 `--yes` 參數能確認您想要刪除資源，而不需再透過另一個提示確認。 本教學課程會為您清除資源。
 
-# 參考資料
-
-* [VMSS 檔](https://learn.microsoft.com/en-us/azure/virtual-machine-scale-sets/overview)
-* [VMSS 自動調整](https://learn.microsoft.com/en-us/azure/virtual-machine-scale-sets/tutorial-autoscale-cli?tabs=Ubuntu)
-
+## 下一步
+- [了解如何在Azure 入口網站中建立擴展集。](flexible-virtual-machine-scale-sets-portal.md)
+- [瞭解 虛擬機器擴展集。](overview.md)
+- [使用 Azure CLI 自動調整虛擬機擴展集](tutorial-autoscale-cli.md)

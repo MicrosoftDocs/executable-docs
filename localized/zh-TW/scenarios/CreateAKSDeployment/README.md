@@ -1,51 +1,61 @@
 ---
-title: 使用 Azure CLI 部署可調整且安全的 Azure Kubernetes Service 叢集
-description: 本教學課程將逐步帶您建立透過 HTTPs 保護的 Azure Kubernetes Web 應用程式。
-author: mbifeld
-ms.author: mbifeld
-ms.topic: article
-ms.date: 11/28/2023
-ms.custom: innovation-engine
+title: 快速入門：使用 Azure CLI 部署 Azure Kubernetes Service (AKS) 叢集
+description: 了解如何使用 Azure CLI 在 Azure Kubernetes Service (AKS) 中快速部署 Kube 叢集並部署應用程式。
+ms.topic: quickstart
+ms.date: 04/09/2024
+author: tamram
+ms.author: tamram
+ms.custom: 'H1Hack27Feb2017, mvc, devcenter, devx-track-azurecli, mode-api, innovation-engine, linux-related-content'
 ---
 
-# 快速入門：使用 Azure CLI 部署可調整且安全的 Azure Kubernetes Service 叢集
+# 快速入門：使用 Azure CLI 部署 Azure Kubernetes Service (AKS) 叢集
 
 [![部署至 Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262758)
 
-歡迎使用本教學課程，我們將逐步逐步建立透過 HTTPs 保護的 Azure Kubernetes Web 應用程式。 本教學課程假設您已登入 Azure CLI，並已選取要搭配 CLI 使用的訂用帳戶。 它也假設您已安裝 Helm （[指示可以在這裡](https://helm.sh/docs/intro/install/)找到）。
+Azure Kubernetes Service (AKS) 是受控 Kubernetes 服務，可讓您快速部署及管理叢集。 在此快速入門中，您可了解如何：
+
+- 使用 Azure 入口網站部署 Azure CLI。
+- 使用一組微服務和 Web 前端模擬零售情節，執行多容器應用程式範例。
+
+> [!NOTE]
+> 若要開始快速佈建 AKS 叢集，本文包含僅針對評估目的部署具有預設設定值之叢集的步驟。 在部署生產就緒叢集之前，建議您先熟悉我們的[基準參考架構][baseline-reference-architecture]，考慮其如何符合您的業務需求。
+
+## 開始之前
+
+本快速入門假設您已有 Kubernetes 概念的基本知識。 如需詳細資訊，請參閱 [Azure Kubernetes Services (AKS) 的 Kubernetes 核心概念][kubernetes-concepts]。
+
+- [!INCLUDE [quickstarts-free-trial-note](../../../includes/quickstarts-free-trial-note.md)]
+
+[!INCLUDE [azure-cli-prepare-your-environment-no-header.md](~/reusable-content/azure-cli/azure-cli-prepare-your-environment-no-header.md)]
+
+- 本文需要 2.0.64 版或更新版本的 Azure CLI。 若您使用的是 Azure Cloud Shell，即已安裝最新版本。
+- 請確保您用來建立叢集的身分識別擁有適當的最低權限。 如需 AKS 存取和身分識別的詳細資訊，請參閱 [Azure Kubernetes Service (AKS) 的存取與身分識別選項](../concepts-identity.md)。
+- 如果您有多個 Azure 訂用帳戶，請使用 [az account set](/cli/azure/account#az-account-set) 命令來選取應對資源計費的適當訂用帳戶識別碼。
 
 ## 定義環境變數
 
-本教學課程的第一個步驟是定義環境變數。
+定義下列環境變數，以用於本快速入門：
 
-```bash
+```azurecli-interactive
 export RANDOM_ID="$(openssl rand -hex 3)"
-export NETWORK_PREFIX="$(($RANDOM % 254 + 1))"
-export SSL_EMAIL_ADDRESS="$(az account show --query user.name --output tsv)"
 export MY_RESOURCE_GROUP_NAME="myAKSResourceGroup$RANDOM_ID"
 export REGION="westeurope"
 export MY_AKS_CLUSTER_NAME="myAKSCluster$RANDOM_ID"
-export MY_PUBLIC_IP_NAME="myPublicIP$RANDOM_ID"
 export MY_DNS_LABEL="mydnslabel$RANDOM_ID"
-export MY_VNET_NAME="myVNet$RANDOM_ID"
-export MY_VNET_PREFIX="10.$NETWORK_PREFIX.0.0/16"
-export MY_SN_NAME="mySN$RANDOM_ID"
-export MY_SN_PREFIX="10.$NETWORK_PREFIX.0.0/22"
-export FQDN="${MY_DNS_LABEL}.${REGION}.cloudapp.azure.com"
 ```
 
 ## 建立資源群組
 
-資源群組是相關資源的容器。 所有資源都必須放在資源群組中。 我們將為此教學課程建立一個。 下列命令會使用先前定義的 $MY_RESOURCE_GROUP_NAME 和 $REGION 參數來建立資源群組。
+[Azure 資源群組][azure-resource-group]是部署及管理 Azure 資源所在的邏輯群組。 建立資源群組時，系統提示您指定位置。 此位置是儲存資源群組中繼資料的位置，如果您未在資源建立期間指定另一個區域，此位置也會是您在 Azure 中執行資源的位置。
 
-```bash
+使用 [`az group create`][az-group-create] 命令建立資源群組。
+
+```azurecli-interactive
 az group create --name $MY_RESOURCE_GROUP_NAME --location $REGION
 ```
 
 結果：
-
 <!-- expected_similarity=0.3 -->
-
 ```JSON
 {
   "id": "/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/myAKSResourceGroupxxxxxx",
@@ -60,343 +70,373 @@ az group create --name $MY_RESOURCE_GROUP_NAME --location $REGION
 }
 ```
 
-## 建立虛擬網路和子網路
-
-虛擬網路是 Azure 中私人網路的基礎建置區塊。 Azure 虛擬網路可讓 Azure 資源 (例如 VM) 彼此安全地通訊，以及與網際網路安全地通訊。
-
-```bash
-az network vnet create \
-    --resource-group $MY_RESOURCE_GROUP_NAME \
-    --location $REGION \
-    --name $MY_VNET_NAME \
-    --address-prefix $MY_VNET_PREFIX \
-    --subnet-name $MY_SN_NAME \
-    --subnet-prefixes $MY_SN_PREFIX
-```
-
-結果：
-
-<!-- expected_similarity=0.3 -->
-
-```JSON
-{
-  "newVNet": {
-    "addressSpace": {
-      "addressPrefixes": [
-        "10.xxx.0.0/16"
-      ]
-    },
-    "enableDdosProtection": false,
-    "id": "/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/myAKSResourceGroupxxxxxx/providers/Microsoft.Network/virtualNetworks/myVNetxxx",
-    "location": "eastus",
-    "name": "myVNetxxx",
-    "provisioningState": "Succeeded",
-    "resourceGroup": "myAKSResourceGroupxxxxxx",
-    "subnets": [
-      {
-        "addressPrefix": "10.xxx.0.0/22",
-        "delegations": [],
-        "id": "/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/myAKSResourceGroupxxxxxx/providers/Microsoft.Network/virtualNetworks/myVNetxxx/subnets/mySNxxx",
-        "name": "mySNxxx",
-        "privateEndpointNetworkPolicies": "Disabled",
-        "privateLinkServiceNetworkPolicies": "Enabled",
-        "provisioningState": "Succeeded",
-        "resourceGroup": "myAKSResourceGroupxxxxxx",
-        "type": "Microsoft.Network/virtualNetworks/subnets"
-      }
-    ],
-    "type": "Microsoft.Network/virtualNetworks",
-    "virtualNetworkPeerings": []
-  }
-}
-```
-
-## 向 AKS Azure 資源提供者註冊
-
-確認您的訂用帳戶上已註冊 Microsoft.OperationsManagement 和 Microsoft.OperationalInsights 提供者。 這些是支援 [容器深入解析](https://docs.microsoft.com/azure/azure-monitor/containers/container-insights-overview)所需的 Azure 資源提供者。 若要檢查註冊狀態，請執行下列命令
-
-```bash
-az provider register --namespace Microsoft.Insights
-az provider register --namespace Microsoft.OperationsManagement
-az provider register --namespace Microsoft.OperationalInsights
-```
-
 ## 建立 AKS 叢集
 
-使用 az aks create 命令搭配 --enable-addons 監視參數來建立 AKS 叢集，以啟用容器深入解析。 下列範例會建立已啟用自動調整的可用性區域叢集。
+使用 [`az aks create`][az-aks-create] 命令建立 AKS 叢集。 下列範例會建立具有一個節點的叢集，並啟用系統指派的受控識別。
 
-這需要幾分鐘的時間。
-
-```bash
-export MY_SN_ID=$(az network vnet subnet list --resource-group $MY_RESOURCE_GROUP_NAME --vnet-name $MY_VNET_NAME --query "[0].id" --output tsv)
-az aks create \
-  --resource-group $MY_RESOURCE_GROUP_NAME \
-  --name $MY_AKS_CLUSTER_NAME \
-  --auto-upgrade-channel stable \
-  --enable-cluster-autoscaler \
-  --enable-addons monitoring \
-  --location $REGION \
-  --node-count 1 \
-  --min-count 1 \
-  --max-count 3 \
-  --network-plugin azure \
-  --network-policy azure \
-  --vnet-subnet-id $MY_SN_ID \
-  --no-ssh-key \
-  --node-vm-size Standard_DS2_v2 \
-  --zones 1 2 3
+```azurecli-interactive
+az aks create --resource-group $MY_RESOURCE_GROUP_NAME --name $MY_AKS_CLUSTER_NAME --enable-managed-identity --node-count 1 --generate-ssh-keys
 ```
+
+> [!NOTE]
+> 建立新叢集時，AKS 會自動建立第二個資源群組來儲存 AKS 資源。 如需詳細資訊，請參閱[為何會使用 AKS 建立兩個資源群組？](../faq.md#why-are-two-resource-groups-created-with-aks)
 
 ## 連線至叢集
 
-若要管理 Kubernetes 叢集，請使用 Kubernetes 命令列用戶端 kubectl。 如果您使用 Azure Cloud Shell，則已安裝 kubectl。
+若要管理 Kubernetes 叢集，請使用 Kubernetes 命令列用戶端 [kubectl][kubectl]。 如果您使用 Azure Cloud Shell，則 `kubectl` 已安裝。 若要在本機安裝 `kubectl` ，請使用 [`az aks install-cli`][az-aks-install-cli] 命令。
 
-1. 使用 az aks install-cli 命令在本機安裝 az aks CLI
+1. 使用 [az aks get-credentials][az-aks-get-credentials] 命令，設定 `kubectl` 連線到 Kubernetes 叢集。 此命令會下載憑證並設定 Kubernetes CLI 以供使用。
 
-   ```bash
-   if ! [ -x "$(command -v kubectl)" ]; then az aks install-cli; fi
-   ```
+    ```azurecli-interactive
+    az aks get-credentials --resource-group $MY_RESOURCE_GROUP_NAME --name $MY_AKS_CLUSTER_NAME
+    ```
 
-2. 將 kubectl 設定為使用 az aks get-credentials 命令連線到 Kubernetes 叢集。 下列命令：
+1. 使用 [kubectl get nodes][kubectl-get] 命令來確認與叢集的連線。 此命令會傳回叢集節點的清單。
 
-   - 下載憑證並設定 Kubernetes CLI 以供使用。
-   - 使用 ~/.kube/config，這是 Kubernetes 組態檔的預設位置。 使用 --file 引數，為您的 Kubernetes 組態檔指定不同的位置。
-
-   > [!WARNING]
-   > 這會以相同的專案覆寫任何現有的認證
-
-   ```bash
-   az aks get-credentials --resource-group $MY_RESOURCE_GROUP_NAME --name $MY_AKS_CLUSTER_NAME --overwrite-existing
-   ```
-
-3. 使用 kubectl get nodes 命令來確認與叢集的連線。 此命令會傳回叢集節點的清單。
-
-   ```bash
-   kubectl get nodes
-   ```
-
-## 安裝 NGINX 輸入控制器
-
-```bash
-export MY_STATIC_IP=$(az network public-ip create --resource-group MC_${MY_RESOURCE_GROUP_NAME}_${MY_AKS_CLUSTER_NAME}_${REGION} --location ${REGION} --name ${MY_PUBLIC_IP_NAME} --dns-name ${MY_DNS_LABEL} --sku Standard --allocation-method static --version IPv4 --zone 1 2 3 --query publicIp.ipAddress -o tsv)
-helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
-helm repo update
-helm upgrade --install ingress-nginx ingress-nginx/ingress-nginx \
-  --namespace ingress-nginx \
-  --create-namespace \
-  --set controller.service.annotations."service\.beta\.kubernetes\.io/azure-dns-label-name"=$MY_DNS_LABEL \
-  --set controller.service.loadBalancerIP=$MY_STATIC_IP \
-  --set controller.service.annotations."service\.beta\.kubernetes\.io/azure-load-balancer-health-probe-request-path"=/healthz \
-  --wait
-```
+    ```azurecli-interactive
+    kubectl get nodes
+    ```
 
 ## 部署應用程式
 
-Kubernetes 資訊清單檔會定義叢集所需的狀態，例如要執行哪些容器映像。
+若要部署應用程式，您可以使用資訊清單檔來建立執行 [AKS 市集應用程式](https://github.com/Azure-Samples/aks-store-demo)所需的所有物件。 [Kubernetes 資訊清單檔][kubernetes-deployment]會定義叢集所需的狀態，例如要執行哪些容器映像。 資訊清單包含下列 Kubernetes 部署和服務：
 
-在本快速入門中，您將使用指令清單來建立執行 Azure 投票應用程式所需的所有物件。 此指令清單包含兩個 Kubernetes 部署：
+:::image type="content" source="media/quick-kubernetes-deploy-portal/aks-store-architecture.png" alt-text="Azure 市集範例架構的螢幕快照。" lightbox="media/quick-kubernetes-deploy-portal/aks-store-architecture.png":::
 
-- 範例 Azure 投票 Python 應用程式。
-- Redis 實例。
+- **市集前端**：供客戶檢視產品和下單的 Web 應用程式。
+- **產品服務**：顯示產品資訊。
+- **訂單服務**：下單。
+- **Rabbit MQ**：訂單佇列的訊息佇列。
 
-也會建立兩個 Kubernetes Services：
+> [!NOTE]
+> 除非是針對生產環境的永續性儲存，否則不建議執行具狀態容器，例如 Rabbit MQ。 這裡使用具狀態容器是為了簡單起見，但我們建議使用受管理的服務，例如 Azure CosmosDB 或 Azure 服務匯流排。
 
-- Redis 實例的內部服務。
-- 從因特網存取 Azure Vote 應用程式的外部服務。
+1. 建立名為 `aks-store-quickstart.yaml` 的檔案，然後將下列資訊清單複製進來：
 
-最後，會建立輸入資源，以將流量路由傳送至 Azure 投票應用程式。
+    ```yaml
+    apiVersion: apps/v1
+    kind: Deployment
+    metadata:
+      name: rabbitmq
+    spec:
+      replicas: 1
+      selector:
+        matchLabels:
+          app: rabbitmq
+      template:
+        metadata:
+          labels:
+            app: rabbitmq
+        spec:
+          nodeSelector:
+            "kubernetes.io/os": linux
+          containers:
+          - name: rabbitmq
+            image: mcr.microsoft.com/mirror/docker/library/rabbitmq:3.10-management-alpine
+            ports:
+            - containerPort: 5672
+              name: rabbitmq-amqp
+            - containerPort: 15672
+              name: rabbitmq-http
+            env:
+            - name: RABBITMQ_DEFAULT_USER
+              value: "username"
+            - name: RABBITMQ_DEFAULT_PASS
+              value: "password"
+            resources:
+              requests:
+                cpu: 10m
+                memory: 128Mi
+              limits:
+                cpu: 250m
+                memory: 256Mi
+            volumeMounts:
+            - name: rabbitmq-enabled-plugins
+              mountPath: /etc/rabbitmq/enabled_plugins
+              subPath: enabled_plugins
+          volumes:
+          - name: rabbitmq-enabled-plugins
+            configMap:
+              name: rabbitmq-enabled-plugins
+              items:
+              - key: rabbitmq_enabled_plugins
+                path: enabled_plugins
+    ---
+    apiVersion: v1
+    data:
+      rabbitmq_enabled_plugins: |
+        [rabbitmq_management,rabbitmq_prometheus,rabbitmq_amqp1_0].
+    kind: ConfigMap
+    metadata:
+      name: rabbitmq-enabled-plugins
+    ---
+    apiVersion: v1
+    kind: Service
+    metadata:
+      name: rabbitmq
+    spec:
+      selector:
+        app: rabbitmq
+      ports:
+        - name: rabbitmq-amqp
+          port: 5672
+          targetPort: 5672
+        - name: rabbitmq-http
+          port: 15672
+          targetPort: 15672
+      type: ClusterIP
+    ---
+    apiVersion: apps/v1
+    kind: Deployment
+    metadata:
+      name: order-service
+    spec:
+      replicas: 1
+      selector:
+        matchLabels:
+          app: order-service
+      template:
+        metadata:
+          labels:
+            app: order-service
+        spec:
+          nodeSelector:
+            "kubernetes.io/os": linux
+          containers:
+          - name: order-service
+            image: ghcr.io/azure-samples/aks-store-demo/order-service:latest
+            ports:
+            - containerPort: 3000
+            env:
+            - name: ORDER_QUEUE_HOSTNAME
+              value: "rabbitmq"
+            - name: ORDER_QUEUE_PORT
+              value: "5672"
+            - name: ORDER_QUEUE_USERNAME
+              value: "username"
+            - name: ORDER_QUEUE_PASSWORD
+              value: "password"
+            - name: ORDER_QUEUE_NAME
+              value: "orders"
+            - name: FASTIFY_ADDRESS
+              value: "0.0.0.0"
+            resources:
+              requests:
+                cpu: 1m
+                memory: 50Mi
+              limits:
+                cpu: 75m
+                memory: 128Mi
+          initContainers:
+          - name: wait-for-rabbitmq
+            image: busybox
+            command: ['sh', '-c', 'until nc -zv rabbitmq 5672; do echo waiting for rabbitmq; sleep 2; done;']
+            resources:
+              requests:
+                cpu: 1m
+                memory: 50Mi
+              limits:
+                cpu: 75m
+                memory: 128Mi
+    ---
+    apiVersion: v1
+    kind: Service
+    metadata:
+      name: order-service
+    spec:
+      type: ClusterIP
+      ports:
+      - name: http
+        port: 3000
+        targetPort: 3000
+      selector:
+        app: order-service
+    ---
+    apiVersion: apps/v1
+    kind: Deployment
+    metadata:
+      name: product-service
+    spec:
+      replicas: 1
+      selector:
+        matchLabels:
+          app: product-service
+      template:
+        metadata:
+          labels:
+            app: product-service
+        spec:
+          nodeSelector:
+            "kubernetes.io/os": linux
+          containers:
+          - name: product-service
+            image: ghcr.io/azure-samples/aks-store-demo/product-service:latest
+            ports:
+            - containerPort: 3002
+            resources:
+              requests:
+                cpu: 1m
+                memory: 1Mi
+              limits:
+                cpu: 1m
+                memory: 7Mi
+    ---
+    apiVersion: v1
+    kind: Service
+    metadata:
+      name: product-service
+    spec:
+      type: ClusterIP
+      ports:
+      - name: http
+        port: 3002
+        targetPort: 3002
+      selector:
+        app: product-service
+    ---
+    apiVersion: apps/v1
+    kind: Deployment
+    metadata:
+      name: store-front
+    spec:
+      replicas: 1
+      selector:
+        matchLabels:
+          app: store-front
+      template:
+        metadata:
+          labels:
+            app: store-front
+        spec:
+          nodeSelector:
+            "kubernetes.io/os": linux
+          containers:
+          - name: store-front
+            image: ghcr.io/azure-samples/aks-store-demo/store-front:latest
+            ports:
+            - containerPort: 8080
+              name: store-front
+            env:
+            - name: VUE_APP_ORDER_SERVICE_URL
+              value: "http://order-service:3000/"
+            - name: VUE_APP_PRODUCT_SERVICE_URL
+              value: "http://product-service:3002/"
+            resources:
+              requests:
+                cpu: 1m
+                memory: 200Mi
+              limits:
+                cpu: 1000m
+                memory: 512Mi
+    ---
+    apiVersion: v1
+    kind: Service
+    metadata:
+      name: store-front
+    spec:
+      ports:
+      - port: 80
+        targetPort: 8080
+      selector:
+        app: store-front
+      type: LoadBalancer
+    ```
 
-測試投票應用程式 YML 檔案已備妥。 若要部署此應用程式，請執行下列命令
+    如需 YAML 資訊清單檔案的詳細資訊，請參閱[部署和 YAML 資訊清單](../concepts-clusters-workloads.md#deployments-and-yaml-manifests)。
 
-```bash
-kubectl apply -f azure-vote-start.yml
-```
+    如果您在本地建立並儲存 YAML 檔案，則可以選取 [上傳/下載檔案]**** 按鈕，然後從本地文件系統選取檔案，將資訊清單檔上傳至 CloudShell 裡的預設目錄。
+
+1. 使用 [`kubectl apply`][kubectl-apply] 命令來部署應用程式，並指定 YAML 資訊清單的名稱。
+
+    ```azurecli-interactive
+    kubectl apply -f aks-store-quickstart.yaml
+    ```
 
 ## 測試應用程式
 
-造訪公用IP或應用程式URL來驗證應用程式是否正在執行。 您可以執行下列命令來找到應用程式 URL：
+您可以造訪公用IP位址或應用程式URL來驗證應用程式是否正在執行。
 
-> [!Note]
-> 建立POD通常需要2-3分鐘的時間，且網站可透過 HTTP 連線
+使用下列指令取得應用程式 URL：
 
-```bash
-runtime="5 minute";
-endtime=$(date -ud "$runtime" +%s);
-while [[ $(date -u +%s) -le $endtime ]]; do
-   STATUS=$(kubectl get pods -l app=azure-vote-front -o 'jsonpath={..status.conditions[?(@.type=="Ready")].status}'); echo $STATUS;
-   if [ "$STATUS" == 'True' ]; then
-      break;
+```azurecli-interactive
+runtime="5 minute"
+endtime=$(date -ud "$runtime" +%s)
+while [[ $(date -u +%s) -le $endtime ]]
+do
+   STATUS=$(kubectl get pods -l app=store-front -o 'jsonpath={..status.conditions[?(@.type=="Ready")].status}')
+   echo $STATUS
+   if [ "$STATUS" == 'True' ]
+   then
+      export IP_ADDRESS=$(kubectl get service store-front --output 'jsonpath={..status.loadBalancer.ingress[0].ip}')
+      echo "Service IP Address: $IP_ADDRESS"
+      break
    else
-      sleep 10;
-   fi;
+      sleep 10
+   fi
 done
 ```
 
-```bash
-curl "http://$FQDN"
+```azurecli-interactive
+curl $IP_ADDRESS
 ```
 
 結果：
-
 <!-- expected_similarity=0.3 -->
-
-```HTML
-<!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-    <link rel="stylesheet" type="text/css" href="/static/default.css">
-    <title>Azure Voting App</title>
-
-    <script language="JavaScript">
-        function send(form){
-        }
-    </script>
-
-</head>
-<body>
-    <div id="container">
-        <form id="form" name="form" action="/"" method="post"><center>
-        <div id="logo">Azure Voting App</div>
-        <div id="space"></div>
-        <div id="form">
-        <button name="vote" value="Cats" onclick="send()" class="button button1">Cats</button>
-        <button name="vote" value="Dogs" onclick="send()" class="button button2">Dogs</button>
-        <button name="vote" value="reset" onclick="send()" class="button button3">Reset</button>
-        <div id="space"></div>
-        <div id="space"></div>
-        <div id="results"> Cats - 0 | Dogs - 0 </div>
-        </form>
-        </div>
-    </div>
-</body>
+```JSON
+<!doctype html>
+<html lang="">
+   <head>
+      <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      <link rel="icon" href="/favicon.ico">
+      <title>store-front</title>
+      <script defer="defer" src="/js/chunk-vendors.df69ae47.js"></script>
+      <script defer="defer" src="/js/app.7e8cfbb2.js"></script>
+      <link href="/css/app.a5dc49f6.css" rel="stylesheet">
+   </head>
+   <body>
+      <div id="app"></div>
+   </body>
 </html>
 ```
 
-## 將 HTTPS 終止新增至自訂網域
-
-在本教學課程中，您有一個 AKS Web 應用程式搭配 NGINX 作為輸入控制器，以及可用來存取應用程式的自定義網域。 下一個步驟是將SSL憑證新增至網域，讓使用者可以透過 HTTPS 安全地連線到您的應用程式。
-
-## 設定 Cert Manager
-
-為了新增 HTTPS，我們將使用 Cert Manager。 Cert Manager 是一種 開放原始碼 工具，可用來取得和管理 Kubernetes 部署的 SSL 憑證。 憑證管理員會從各種簽發者取得憑證，包括熱門的公用簽發者以及私人簽發者，並確保憑證有效且最新，而且會在到期前嘗試在設定的某個時間更新憑證。
-
-1. 若要安裝 cert-manager，我們必須先建立命名空間來執行它。 本教學課程會將 cert-manager 安裝到 cert-manager 命名空間。 您可以在不同的命名空間中執行 cert-manager，不過您必須對部署指令清單進行修改。
-
-   ```bash
-   kubectl create namespace cert-manager
-   ```
-
-2. 我們現在可以安裝 cert-manager。 所有資源都包含在單一 YAML 指令清單檔案中。 您可以執行下列命令來安裝：
-
-   ```bash
-   kubectl apply -f https://github.com/jetstack/cert-manager/releases/download/v1.7.0/cert-manager.crds.yaml
-   ```
-
-3. 執行下列命令，將 certmanager.k8s.io/disable-validation：“true” 標籤新增至 cert-manager 命名空間。 這可讓憑證管理員在自己的命名空間中建立啟動 TLS 所需的系統資源。
-
-   ```bash
-   kubectl label namespace cert-manager certmanager.k8s.io/disable-validation=true
-   ```
-
-## 透過 Helm 圖表取得憑證
-
-Helm 是 Kubernetes 部署工具，可將應用程式和服務的建立、封裝、組態和部署自動化至 Kubernetes 叢集。
-
-Cert-manager 提供 Helm 圖表作為 Kubernetes 上安裝的一流方法。
-
-1. 新增 Jetstack Helm 存放庫
-
-   此存放庫是唯一支援的憑證管理員圖表來源。 因特網上有一些其他鏡像和複本，但這些鏡像是完全非官方的，而且可能會造成安全性風險。
-
-   ```bash
-   helm repo add jetstack https://charts.jetstack.io
-   ```
-
-2. 更新本機 Helm Chart 存放庫快取
-
-   ```bash
-   helm repo update
-   ```
-
-3. 執行下列命令，透過 helm 安裝 Cert-Manager 附加元件：
-
-   ```bash
-   helm install cert-manager jetstack/cert-manager --namespace cert-manager --version v1.7.0
-   ```
-
-4. 套用憑證簽發者 YAML 檔案
-
-   ClusterIssuers 是 Kubernetes 資源，代表能夠藉由接受憑證簽署要求來產生已簽署憑證的證書頒發機構單位 （CA）。 所有憑證管理員憑證都需要處於就緒條件的參考簽發者，才能嘗試接受要求。
-   我們所使用的簽發者可以在 中找到 `cluster-issuer-prod.yml file`
-
-   ```bash
-   cluster_issuer_variables=$(<cluster-issuer-prod.yml)
-   echo "${cluster_issuer_variables//\$SSL_EMAIL_ADDRESS/$SSL_EMAIL_ADDRESS}" | kubectl apply -f -
-   ```
-
-5. 更新投票應用程式應用程式，以使用 Cert-Manager 取得 SSL 憑證。
-
-   您可以在 中找到完整的 YAML 檔案 `azure-vote-nginx-ssl.yml`
-
-   ```bash
-   azure_vote_nginx_ssl_variables=$(<azure-vote-nginx-ssl.yml)
-   echo "${azure_vote_nginx_ssl_variables//\$FQDN/$FQDN}" | kubectl apply -f -
-   ```
-
-<!--## Validate application is working
-
-Wait for the SSL certificate to issue. The following command will query the 
-status of the SSL certificate for 3 minutes. In rare occasions it may take up to 
-15 minutes for Lets Encrypt to issue a successful challenge and 
-the ready state to be 'True'
-
-```bash
-runtime="10 minute"; endtime=$(date -ud "$runtime" +%s); while [[ $(date -u +%s) -le $endtime ]]; do STATUS=$(kubectl get certificate --output jsonpath={..status.conditions[0].status}); echo $STATUS; if [ "$STATUS" = 'True' ]; then break; else sleep 10; fi; done
+```JSON
+echo "You can now visit your web server at $IP_ADDRESS"
 ```
 
-Validate SSL certificate is True by running the follow command:
+:::image type="content" source="media/quick-kubernetes-deploy-cli/aks-store-application.png" alt-text="AKS 市集範例應用程式的螢幕快照。" lightbox="media/quick-kubernetes-deploy-cli/aks-store-application.png":::
 
-```bash
-kubectl get certificate --output jsonpath={..status.conditions[0].status}
-```
+## 選取叢集
 
-Results:
+如果您不打算進行後續的 [AKS 教學課程][aks-tutorial]，請清除不必要資源以避免 Azure 費用。 您可以使用 命令來移除資源群組、容器服務和所有相關資源 [`az group delete`][az-group-delete] 。
 
-<!-- expected_similarity=0.3 -->
-<!--
-```ASCII
-True
-```
--->
+> [!NOTE]
+> 在本快速入門中，是以系統指派的受控識別 (預設身分識別選項) 來建立 AKS 叢集。 平台會管理這個身分識別，您不需要手動移除它。
 
-## 瀏覽透過 HTTPS 保護的 AKS 部署
+## 下一步
 
-執行下列命令以取得應用程式的 HTTPS 端點：
+在本快速入門中，您已部署 Kubernetes 叢集，接著將簡單多容器應用程式部署到此叢集。 這個範例應用程式僅供示範之用，並不代表 Kube 應用程式的全部最佳做法。 如需針對生產使用 AKS 建立完整解決方案的指引，請參閱 [AKS 解決方案指引][aks-solution-guidance]。
 
-> [!Note]
-> SSL 憑證通常會需要 2-3 分鐘的時間，才能透過 HTTPS 來傳播和網站。
+若要深入了解 AKS，並逐步完成部署範例的完整程式碼，請繼續 Kube 叢集教學課程。
 
-```bash
-runtime="5 minute";
-endtime=$(date -ud "$runtime" +%s);
-while [[ $(date -u +%s) -le $endtime ]]; do
-   STATUS=$(kubectl get svc --namespace=ingress-nginx ingress-nginx-controller -o jsonpath='{.status.loadBalancer.ingress[0].ip}');
-   echo $STATUS;
-   if [ "$STATUS" == "$MY_STATIC_IP" ]; then
-      break;
-   else
-      sleep 10;
-   fi;
-done
-```
+> [!div class="nextstepaction"]
+> [AKS 教學課程][aks-tutorial]
 
-```bash
-echo "You can now visit your web server at https://$FQDN"
-```
+<!-- LINKS - external -->
+[kubectl]: https://kubernetes.io/docs/reference/kubectl/
+[kubectl-apply]: https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands#apply
+[kubectl-get]: https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands#get
 
-## 後續步驟
-
-- [Azure Kubernetes Service 文件](https://learn.microsoft.com/azure/aks/)
-- [建立 Azure Container Registry](https://learn.microsoft.com/azure/aks/tutorial-kubernetes-prepare-acr?tabs=azure-cli)
-- [在 AKS 中調整 Applciation](https://learn.microsoft.com/azure/aks/tutorial-kubernetes-scale?tabs=azure-cli)
-- [在 AKS 中更新您的應用程式](https://learn.microsoft.com/azure/aks/tutorial-kubernetes-app-update?tabs=azure-cli)
+<!-- LINKS - internal -->
+[kubernetes-concepts]: ../concepts-clusters-workloads.md
+[aks-tutorial]: ../tutorial-kubernetes-prepare-app.md
+[azure-resource-group]: ../../azure-resource-manager/management/overview.md
+[az-aks-create]: /cli/azure/aks#az-aks-create
+[az-aks-get-credentials]: /cli/azure/aks#az-aks-get-credentials
+[az-aks-install-cli]: /cli/azure/aks#az-aks-install-cli
+[az-group-create]: /cli/azure/group#az-group-create
+[az-group-delete]: /cli/azure/group#az-group-delete
+[kubernetes-deployment]: ../concepts-clusters-workloads.md#deployments-and-yaml-manifests
+[aks-solution-guidance]: /azure/architecture/reference-architectures/containers/aks-start-here?toc=/azure/aks/toc.json&bc=/azure/aks/breadcrumb/toc.json
+[baseline-reference-architecture]: /azure/architecture/reference-architectures/containers/aks/baseline-aks?toc=/azure/aks/toc.json&bc=/azure/aks/breadcrumb/toc.json
