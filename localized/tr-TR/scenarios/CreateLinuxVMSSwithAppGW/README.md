@@ -1,23 +1,35 @@
 ---
-title: Linux görüntüsüyle Application Gateway ile Sanal Makine Ölçek Kümesi oluşturma
-description: Bu öğreticide Linux görüntüsüyle Application Gateway ile Sanal Makine Ölçek Kümesi oluşturma işlemi gösterilmektedir
-author: belginceran
-ms.author: belginceran
-ms.topic: article
-ms.date: 01/05/2024
-ms.custom: innovation-engine
+title: Azure CLI kullanarak Esnek ölçek kümesinde sanal makineler oluşturma
+description: Azure CLI kullanarak Esnek düzenleme modunda Sanal Makine Ölçek Kümesi oluşturmayı öğrenin.
+author: fitzgeraldsteele
+ms.author: fisteele
+ms.topic: how-to
+ms.service: virtual-machine-scale-sets
+ms.date: 3/19/2024
+ms.reviewer: jushiman
+ms.custom: 'mimckitt, devx-track-azurecli, vmss-flex, innovation-engine, linux-related-content'
 ---
 
-# Linux görüntüsüyle Application Gateway ile Sanal Makine Ölçek Kümesi oluşturma
+# Azure CLI kullanarak ölçek kümesinde sanal makineler oluşturma
 
 [![Azure’a dağıtın](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262759)
 
-## Ortam Değişkenlerini Tanımlama
+Bu makale, Sanal Makine Ölçek Kümesi oluşturmak için Azure CLI'yi kullanma adımlarını gösterir.
 
-Bu öğreticinin ilk adımı ortam değişkenlerini tanımlamaktır.
+En son [Azure CLI'yi](/cli/azure/install-az-cli2) yüklediğinizden ve az login[ ile ](/cli/azure/reference-index)bir Azure hesabında oturum açtığınızdan emin olun.
+
+
+## Azure Cloud Shell'i başlatma
+
+Azure Cloud Shell, bu makaledeki adımları çalıştırmak için kullanabileceğiniz ücretsiz bir etkileşimli kabuktur. Yaygın Azure araçları, kabuğa önceden yüklenmiştir ve kabuk, hesabınızla birlikte kullanılacak şekilde yapılandırılmıştır.
+
+Cloud Shell'i açmak için kod bloğunun sağ üst köşesinden Cloud Shell'i** Aç'ı seçin**. İsterseniz [https://shell.azure.com/cli](https://shell.azure.com/cli) adresine giderek Cloud Shell'i ayrı bir tarayıcı sekmesinde de başlatabilirsiniz. **Kopyala**’yı seçerek kod bloğunu kopyalayın, Cloud Shell’e yapıştırın ve Enter tuşuna basarak çalıştırın.
+
+## Ortam değişkenlerini tanımlama
+
+Ortam değişkenlerini aşağıdaki gibi tanımlayın.
 
 ```bash
-
 export RANDOM_ID="$(openssl rand -hex 3)"
 export MY_RESOURCE_GROUP_NAME="myVMSSResourceGroup$RANDOM_ID"
 export REGION=EastUS
@@ -33,22 +45,17 @@ export MY_APPGW_SN_NAME="myAPPGWSN$RANDOM_ID"
 export MY_APPGW_SN_PREFIX="10.$NETWORK_PREFIX.1.0/24"
 export MY_APPGW_NAME="myAPPGW$RANDOM_ID"
 export MY_APPGW_PUBLIC_IP_NAME="myAPPGWPublicIP$RANDOM_ID"
-
 ```
-# CLI kullanarak Azure'da oturum açma
 
-CLI kullanarak Azure'da komut çalıştırmak için oturum açmanız gerekir. Bu çok basit bir şekilde yapılır, ancak `az login` komut:
+## Kaynak grubu oluşturma
 
-# Kaynak grubu oluşturma
-
-Kaynak grubu, ilgili kaynaklar için bir kapsayıcıdır. Tüm kaynaklar bir kaynak grubuna yerleştirilmelidir. Bu öğretici için bir tane oluşturacağız. Aşağıdaki komut, önceden tanımlanmış $MY_RESOURCE_GROUP_NAME ve $REGION parametreleriyle bir kaynak grubu oluşturur.
+Kaynak grubu, Azure kaynaklarının dağıtıldığı ve yönetildiği bir mantıksal kapsayıcıdır. Tüm kaynaklar bir kaynak grubuna yerleştirilmelidir. Aşağıdaki komut, önceden tanımlanmış $MY_RESOURCE_GROUP_NAME ve $REGION parametreleriyle bir kaynak grubu oluşturur.
 
 ```bash
 az group create --name $MY_RESOURCE_GROUP_NAME --location $REGION -o JSON
 ```
 
 Sonuçlar:
-
 <!-- expected_similarity=0.3 -->
 ```json   
 {
@@ -64,19 +71,17 @@ Sonuçlar:
 }
 ```
 
-# Ağ Kaynakları Oluşturma 
+## Ağ kaynakları oluşturma 
 
-VMSS adımlarına devam etmeden önce ağ kaynakları oluşturmanız gerekir. Bu adımda bir sanal ağ, Application Gateway için 1 alt ağ ve VM'ler için 1 alt ağ oluşturacaksınız. Web uygulamanıza İnternet'ten ulaşabilmek için Application Gateway'inizi eklemek için de genel bir IP'ye sahip olmanız gerekir. 
+Şimdi ağ kaynakları oluşturacaksınız. Bu adımda bir sanal ağ, Application Gateway için bir alt ağ 1 ve VM'ler için bir alt ağ oluşturacaksınız. Web uygulamanıza İnternet'ten ulaşmak için Application Gateway'inizi eklemek için de genel bir IP'ye sahip olmanız gerekir. 
 
-
-#### Sanal Ağ (VNET) ve VM Alt Ağı oluşturma
+#### Sanal ağ ve alt ağ oluşturma
 
 ```bash
 az network vnet create  --name $MY_VNET_NAME  --resource-group $MY_RESOURCE_GROUP_NAME --location $REGION  --address-prefix $MY_VNET_PREFIX  --subnet-name $MY_VM_SN_NAME --subnet-prefix $MY_VM_SN_PREFIX -o JSON
 ```
 
 Sonuçlar:
-
 <!-- expected_similarity=0.3 -->
 ```json   
 {
@@ -114,17 +119,15 @@ Sonuçlar:
 }
 ```
 
-### Application Gateway Kaynakları Oluşturma
+### Application Gateway kaynakları oluşturma
 
-Azure Uygulaması lication Gateway, sanal ağınızda ayrılmış bir alt ağ gerektirir. Aşağıdaki komut, VNET $MY_VNET_NAME içinde belirtilen adres ön eki $MY_APPGW_SN_PREFIX olan $MY_APPGW_SN_NAME adlı bir alt ağ oluşturur 
-
+Azure Uygulaması lication Gateway, sanal ağınızda ayrılmış bir alt ağ gerektirir. Aşağıdaki komut, $MY_VNET_NAME sanal ağınızda $MY_APPGW_SN_PREFIX adlı belirtilen adres ön ekiyle $MY_APPGW_SN_NAME adlı bir alt ağ oluşturur.
 
 ```bash
 az network vnet subnet create  --name $MY_APPGW_SN_NAME  --resource-group $MY_RESOURCE_GROUP_NAME --vnet-name  $MY_VNET_NAME --address-prefix  $MY_APPGW_SN_PREFIX -o JSON
 ```
 
 Sonuçlar:
-
 <!-- expected_similarity=0.3 -->
 ```json  
 {
@@ -144,10 +147,9 @@ Aşağıdaki komut, kaynak grubunuzda standart, alanlar arası yedekli, statik, 
 
 ```bash
 az network public-ip create  --resource-group $MY_RESOURCE_GROUP_NAME --name $MY_APPGW_PUBLIC_IP_NAME --sku Standard   --location $REGION  --allocation-method static --version IPv4 --zone 1 2 3 -o JSON
- ```
+```
 
 Sonuçlar:
-
 <!-- expected_similarity=0.3 -->
 ```json  
 {
@@ -181,11 +183,11 @@ Sonuçlar:
 }
 ```
 
-Bu adımda, Sanal Makine Ölçek Kümenizle tümleştirdiğiniz bir Application Gateway oluşturursunuz. Bu örnekte, Standard_v2 SKU ile alanlar arası yedekli bir Application Gateway oluşturacak ve Application Gateway için Http iletişimini etkinleştireceğiz. Application Gateway'e eklenmiş önceki adımda oluşturduğumuz genel IP $MY_APPGW_PUBLIC_IP_NAME. 
+Bu adımda, Sanal Makine Ölçek Kümenizle tümleştirdiğiniz bir Application Gateway oluşturursunuz. Bu örnek, Standard_v2 SKU ile alanlar arası yedekli bir Application Gateway oluşturur ve Application Gateway için Http iletişimini etkinleştirir. Önceki adımda oluşturulan genel IP $MY_APPGW_PUBLIC_IP_NAME, Application Gateway'e eklenir. 
 
 ```bash
 az network application-gateway create   --name $MY_APPGW_NAME --location $REGION --resource-group $MY_RESOURCE_GROUP_NAME --vnet-name $MY_VNET_NAME --subnet $MY_APPGW_SN_NAME --capacity 2  --zones 1 2 3 --sku Standard_v2   --http-settings-cookie-based-affinity Disabled   --frontend-port 80 --http-settings-port 80   --http-settings-protocol Http --public-ip-address $MY_APPGW_PUBLIC_IP_NAME --priority 1001 -o JSON
- ```
+```
 
 <!-- expected_similarity=0.3 -->
 ```json 
@@ -375,19 +377,21 @@ az network application-gateway create   --name $MY_APPGW_NAME --location $REGION
     "urlPathMaps": []
   }
 }
- ```
+```
 
+## Sanal Makine Ölçek Kümesi oluşturma
 
-# Sanal Makine Ölçek Kümesi Oluşturma 
+> [!IMPORTANT]
+>Kasım 2023'den itibaren, düzenleme modu belirtilmezse PowerShell ve Azure CLI kullanılarak oluşturulan VM ölçek kümeleri varsayılan olarak Esnek Düzenleme Modu olarak ayarlanır. Bu değişiklik ve gerçekleştirmeniz gereken [eylemler hakkında daha fazla bilgi için BKZ. VMSS PowerShell/CLI Müşterileri için Yeni Değişiklik - Microsoft Community Hub](
+https://techcommunity.microsoft.com/t5/azure-compute-blog/breaking-change-for-vmss-powershell-cli-customers/ba-p/3818295)
 
-Aşağıdaki komut, $MY_RESOURCE_GROUP_NAME kaynak grubunuzda alanlar arası yedekli bir Sanal Makine Ölçek Kümesi (VMSS) oluşturur. Önceki adımda oluşturduğumuz Application Gateway'i tümleştiririz. Bu komut, $MY_VM_SN_NAME alt akında genel IP ile 2 Standard_DS2_v2 SKU Sanal Makineler oluşturur. Aşağıdaki adım sırasında bir ssh anahtarı oluşturulur. Vm'lerinizde ssh aracılığıyla oturum açmanız gerekiyorsa anahtarı kaydetmek isteyebilirsiniz.
+Şimdi az vmss create ile [bir Sanal Makine Ölçek Kümesi oluşturun](/cli/azure/vmss). Aşağıdaki örnek, $MY_RESOURCE_GROUP_NAME kaynak grubunuz içinde $MY_VM_SN_NAME alt ağında genel IP ile 2* örnek sayısına *sahip bir alanlar arası yedekli ölçek kümesi oluşturur, Application Gateway'i tümleştirir ve SSH anahtarları oluşturur. SSH aracılığıyla VM'lerinizde oturum açmanız gerekiyorsa SSH anahtarlarını kaydettiğinizden emin olun.
 
 ```bash
 az vmss create --name $MY_VMSS_NAME --resource-group $MY_RESOURCE_GROUP_NAME --image $MY_VM_IMAGE --admin-username $MY_USERNAME --generate-ssh-keys --public-ip-per-vm --orchestration-mode Uniform --instance-count 2 --zones 1 2 3 --vnet-name $MY_VNET_NAME --subnet $MY_VM_SN_NAME --vm-sku Standard_DS2_v2 --upgrade-policy-mode Automatic --app-gateway $MY_APPGW_NAME --backend-pool-name appGatewayBackendPool -o JSON
  ```
 
 Sonuçlar:
-
 <!-- expected_similarity=0.3 -->
 ```json  
 {
@@ -499,17 +503,15 @@ Sonuçlar:
 }
 ```
 
-### VMSS uzantılarıyla ngnix yükleme 
+### Sanal Makine Ölçek Kümeleri uzantılarıyla ngnix yükleme 
 
-Aşağıdaki komut, özel betiği çalıştırmak için VMSS uzantısını kullanır. Test amacıyla burada ngnix'i yüklüyoruz ve HTTP isteklerinizin isabet eden Sanal Makinenin ana bilgisayar adını gösteren bir sayfa yayımlıyoruz. Bu pusposes için bu özel betiği kullanırız: https://raw.githubusercontent.com/Azure-Samples/compute-automation-configurations/master/automate_nginx.sh 
-
+Aşağıdaki komut Sanal Makine Ölçek Kümeleri uzantısını kullanarak ngnix yükleyen ve HTTP isteğinizin isabet yaptığı Sanal Makinenin ana bilgisayar adını gösteren bir sayfa yayımlayan özel bir betik[ çalıştırır](https://github.com/Azure-Samples/compute-automation-configurations/blob/master/automate_nginx.sh). 
 
 ```bash
 az vmss extension set --publisher Microsoft.Azure.Extensions --version 2.0  --name CustomScript --resource-group $MY_RESOURCE_GROUP_NAME --vmss-name $MY_VMSS_NAME --settings '{ "fileUris": ["https://raw.githubusercontent.com/Azure-Samples/compute-automation-configurations/master/automate_nginx.sh"], "commandToExecute": "./automate_nginx.sh" }' -o JSON
 ```
 
 Sonuçlar:
-
 <!-- expected_similarity=0.3 -->
 ```json  
 {
@@ -703,19 +705,16 @@ Sonuçlar:
 }
 ```
 
+## Otomatik ölçeklendirme profilini tanımlama  
 
-# Otomatik ölçeklendirme profilini tanımlama  
-
-Bir ölçek kümesinde otomatik ölçeklendirmeyi etkinleştirmek için ilk olarak bir otomatik ölçeklendirme profili tanımlamanız gerekir. Bu profil varsayılan, en düşük ve en yüksek ölçek kümesi kapasitesini tanımlar. Bu sınırlar sürekli VM örnekleri oluşturmayarak maliyeti denetlemenize ve kabul edilebilir performansı bir ölçekleme olayında kalan en az sayıda örnekle dengelemenize olanak tanır.
-Aşağıdaki örnekte, varsayılan ve en düşük sanal makine örneği kapasitesi 2 ve en yüksek kapasite de 10 olarak ayarlanır:
+Ölçek kümesinde otomatik ölçeklendirmeyi etkinleştirmek için önce bir otomatik ölçeklendirme profili tanımlayın. Bu profil varsayılan, en düşük ve en yüksek ölçek kümesi kapasitesini tanımlar. Bu sınırlar sürekli VM örnekleri oluşturmayarak maliyeti denetlemenize ve kabul edilebilir performansı bir ölçekleme olayında kalan minimum örnek sayısıyla dengelemenize olanak tanır.
+Aşağıdaki örnek, iki VM örneğinin varsayılan, en düşük kapasitesini ve en fazla 10 kapasiteyi ayarlar:
 
 ```bash
 az monitor autoscale create --resource-group $MY_RESOURCE_GROUP_NAME --resource  $MY_VMSS_NAME --resource-type Microsoft.Compute/virtualMachineScaleSets --name autoscale --min-count 2 --max-count 10 --count 2
 ```
 
-
 Sonuçlar:
-
 <!-- expected_similarity=0.3 -->
 ```json  
 {
@@ -760,16 +759,15 @@ Sonuçlar:
 }
 ```
 
-# Otomatik ölçeklendirme ölçeğini genişletmek için kural oluşturma
+## Otomatik ölçeklendirme ölçeğini genişletmek için kural oluşturma
 
-Aşağıdaki komut, ortalama CPU yükü 5 dakikalık bir süre boyunca %70'in üzerinde olduğunda ölçek kümesindeki VM örneklerinin sayısını artıran bir kural oluşturur. Kural tetiklendiğinde, sanal makine örneği sayısı üç artırılır.
+Aşağıdaki komut, ortalama CPU yükü 5 dakikalık bir süre boyunca %70'in üzerinde olduğunda ölçek kümesindeki VM örneklerinin sayısını artıran bir kural oluşturur. Kural tetiklendiğinde, VM örneklerinin sayısı üç artar.
 
 ```bash
 az monitor autoscale rule create --resource-group $MY_RESOURCE_GROUP_NAME --autoscale-name autoscale --condition "Percentage CPU > 70 avg 5m" --scale out 3
 ```
 
 Sonuçlar:
-
 <!-- expected_similarity=0.3 -->
 ```json 
 {
@@ -796,16 +794,15 @@ Sonuçlar:
 } 
 ```
 
-# Otomatik ölçeklendirme ölçeğini daraltmak için kural oluşturma
+## Otomatik ölçeklendirme ölçeğini daraltmak için kural oluşturma
 
-az monitor autoscale rule create komutu ile, ortalama CPU yükü 5 dakika boyunca %30’un altına indiğinde bir ölçek kümesindeki sanal makine örneği sayısını azaltan başka bir kural oluşturun. Aşağıdaki örnek, sanal makine örneği sayısını bir artırmak için kuralı tanımlar.
+Ortalama CPU yükü 5 dakikalık bir süre boyunca %30'un altına düştüğünde ölçek kümesindeki VM örneği sayısını azaltan başka bir kural `az monitor autoscale rule create` oluşturun. Aşağıdaki örnek, sanal makine örneği sayısını bir artırmak için kuralı tanımlar.
 
 ```bash
 az monitor autoscale rule create --resource-group  $MY_RESOURCE_GROUP_NAME --autoscale-name autoscale --condition "Percentage CPU < 30 avg 5m" --scale in 1
 ```
 
 Sonuçlar:
-
 <!-- expected_similarity=0.3 -->
 ```json 
 {
@@ -832,19 +829,19 @@ Sonuçlar:
 }
 ```
 
-
 ### Sayfayı test etme
 
-Aşağıdaki komut, Application Gateway'inizin genel IP'sini gösterir. IP adreslerini test etmek üzere bir tarayıcı sayfasına yapıştırabilirsiniz.
+Aşağıdaki komut, Application Gateway'inizin genel IP'sini gösterir. IP adresini test için bir tarayıcı sayfasına yapıştırın.
 
 ```bash
 az network public-ip show --resource-group $MY_RESOURCE_GROUP_NAME --name $MY_APPGW_PUBLIC_IP_NAME --query [ipAddress]  --output tsv
 ```
 
+## Kaynakları temizleme (isteğe bağlı)
 
+Azure ücretlerinden kaçınmak için gereksiz kaynakları temizlemeniz gerekir. Ölçek kümenize ve diğer kaynaklara artık ihtiyacınız kalmadığında az group delete komutuyla [kaynak grubunu ve tüm kaynaklarını silin](/cli/azure/group). `--no-wait` parametresi işlemin tamamlanmasını beklemeden denetimi komut istemine döndürür. `--yes` parametresi, başka bir istem olmadan kaynakları silmek istediğinizi onaylar. Bu öğretici, kaynakları sizin için temizler.
 
-# Başvurular
-
-* [VMSS Belgeleri](https://learn.microsoft.com/en-us/azure/virtual-machine-scale-sets/overview)
-* [VMSS Otomatik Ölçeklendirme](https://learn.microsoft.com/en-us/azure/virtual-machine-scale-sets/tutorial-autoscale-cli?tabs=Ubuntu)
-
+## Sonraki adımlar
+- [Azure portalında ölçek kümesi oluşturmayı öğrenin.](flexible-virtual-machine-scale-sets-portal.md)
+- [Sanal Makine Ölçek Kümeleri hakkında bilgi edinin.](overview.md)
+- [Azure CLI ile sanal makine ölçek kümesini otomatik olarak ölçeklendirme](tutorial-autoscale-cli.md)

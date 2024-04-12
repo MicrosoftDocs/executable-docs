@@ -1,21 +1,36 @@
 ---
-title: Azure'da Linux VM ve SSH oluşturma
-description: 'Bu öğreticide, Azure''da Linux VM ve SSH oluşturma adımları gösterilmektedir.'
-author: mbifeld
-ms.author: mbifeld
-ms.topic: article
-ms.date: 11/28/2023
-ms.custom: innovation-engine
+title: 'Hızlı Başlangıç: Linux Sanal Makinesi oluşturmak için Azure CLI''yi kullanma'
+description: Bu hızlı başlangıçta Azure CLI’yi kullanarak Linux sanal makinesi oluşturmayı öğrenirsiniz
+author: ju-shim
+ms.service: virtual-machines
+ms.collection: linux
+ms.topic: quickstart
+ms.date: 03/11/2024
+ms.author: jushiman
+ms.custom: 'mvc, devx-track-azurecli, mode-api, innovation-engine, linux-related-content'
 ---
 
-# Azure'da Linux VM ve SSH oluşturma
+# Hızlı Başlangıç: Azure'da Azure CLI ile Linux sanal makinesi oluşturma
+
+**Şunlar için geçerlidir:** :heavy_check_mark: Linux VM'leri
 
 [![Azure’a dağıtın](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262692)
 
+Bu hızlı başlangıçta Azure CLI kullanarak Azure’da bir Linux sanal makinesinin (VM) nasıl dağıtılacağı gösterilir. Azure CLI, komut satırı veya betikler aracılığıyla Azure kaynakları oluşturmak ve yönetmek için kullanılır.
 
-## Ortam Değişkenlerini Tanımlama
+Azure aboneliğiniz yoksa başlamadan önce [ücretsiz bir hesap](https://azure.microsoft.com/free/?WT.mc_id=A261C142F) oluşturun.
 
-Bu öğreticinin ilk adımı ortam değişkenlerini tanımlamaktır.
+## Azure Cloud Shell'i başlatma
+
+Azure Cloud Shell, bu makaledeki adımları çalıştırmak için kullanabileceğiniz ücretsiz bir etkileşimli kabuktur. Yaygın Azure araçları, kabuğa önceden yüklenmiştir ve kabuk, hesabınızla birlikte kullanılacak şekilde yapılandırılmıştır. 
+
+Cloud Shell'i açmak için kod bloğunun sağ üst köşesinden **Deneyin**'i seçmeniz yeterlidir. Cloud Shell'i adresine giderek [https://shell.azure.com/bash](https://shell.azure.com/bash)ayrı bir tarayıcı sekmesinde de açabilirsiniz. Kod bloklarını kopyalamak için Kopyala'yı** seçin**, Cloud Shell'e yapıştırın ve çalıştırmak için Enter tuşuna** basın**.
+
+CLI'yi yerel olarak yükleyip kullanmayı tercih ediyorsanız bu hızlı başlangıç için Azure CLI 2.0.30 veya sonraki bir sürümü gerekir. Sürümü bulmak için `az --version` komutunu çalıştırın. Yüklemeniz veya yükseltmeniz gerekirse, bkz. [Azure CLI yükleme]( /cli/azure/install-azure-cli).
+
+## Ortam değişkenlerini tanımlama
+
+İlk adım, ortam değişkenlerini tanımlamaktır. Ortam değişkenleri, sistemin tutarlılığını ve sürdürülebilirliğini geliştirmek üzere yapılandırma verilerini merkezileştirmek için Linux'ta yaygın olarak kullanılır. Bu öğreticinin ilerleyen bölümlerinde oluşturduğunuz kaynakların adlarını belirtmek için aşağıdaki ortam değişkenlerini oluşturun:
 
 ```bash
 export RANDOM_ID="$(openssl rand -hex 3)"
@@ -26,13 +41,13 @@ export MY_USERNAME=azureuser
 export MY_VM_IMAGE="Canonical:0001-com-ubuntu-minimal-jammy:minimal-22_04-lts-gen2:latest"
 ```
 
-# CLI kullanarak Azure'da oturum açma
+## CLI kullanarak Azure'da oturum açma
 
-CLI kullanarak Azure'da komut çalıştırmak için oturum açmanız gerekir. Bu çok basit bir şekilde yapılır, ancak `az login` komut:
+CLI kullanarak Azure'da komutları çalıştırmak için önce oturum açmanız gerekir. komutunu kullanarak `az login` oturum açın.
 
-# Kaynak grubu oluşturma
+## Kaynak grubu oluşturma
 
-Kaynak grubu, ilgili kaynaklar için bir kapsayıcıdır. Tüm kaynaklar bir kaynak grubuna yerleştirilmelidir. Bu öğretici için bir tane oluşturacağız. Aşağıdaki komut, önceden tanımlanmış $MY_RESOURCE_GROUP_NAME ve $REGION parametreleriyle bir kaynak grubu oluşturur.
+Kaynak grubu, ilgili kaynaklar için bir kapsayıcıdır. Tüm kaynaklar bir kaynak grubuna yerleştirilmelidir. [az group create](/cli/azure/group) komutu, önceden tanımlanmış $MY_RESOURCE_GROUP_NAME ve $REGION parametreleriyle bir kaynak grubu oluşturur.
 
 ```bash
 az group create --name $MY_RESOURCE_GROUP_NAME --location $REGION
@@ -41,7 +56,7 @@ az group create --name $MY_RESOURCE_GROUP_NAME --location $REGION
 Sonuçlar:
 
 <!-- expected_similarity=0.3 -->
-```json   
+```json
 {
   "id": "/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/myVMResourceGroup",
   "location": "eastus",
@@ -55,9 +70,11 @@ Sonuçlar:
 }
 ```
 
-## Sanal Makine Oluşturma
+## Sanal makineyi oluşturma
 
-Bu kaynak grubunda bir VM oluşturmak için basit bir komut çalıştırmamız gerekiyor, burada bayrağını `--generate-ssh-keys` sağladık, bu, CLI'nın içinde bir avialable ssh anahtarı `~/.ssh`aramasına neden olur, eğer biri bulunursa kullanılır, aksi takdirde biri oluşturulur ve içinde `~/.ssh`depolanır. Ayrıca, makinenin genel IP üzerinden erişilebilir olduğundan emin olmak için bayrağını da sağlarız `--public-ip-sku Standard` . Son olarak en son `Ubuntu 22.04` görüntüyü dağıtıyoruz. 
+Bu kaynak grubunda vm oluşturmak için komutunu kullanın `vm create` . 
+
+Aşağıdaki örnek bir VM oluşturur ve bir kullanıcı hesabı ekler. parametresi, `--generate-ssh-keys` CLI'nın içinde `~/.ssh`kullanılabilir bir ssh anahtarı aramasına neden olur. Bir anahtar bulunursa, bu anahtar kullanılır. Değilse, bir tane oluşturulur ve içinde `~/.ssh`depolanır. parametresi, `--public-ip-sku Standard` makinenin genel IP adresi üzerinden erişilebilir olmasını sağlar. Son olarak en son `Ubuntu 22.04` görüntüyü dağıtacağız.
 
 Diğer tüm değerler ortam değişkenleri kullanılarak yapılandırılır.
 
@@ -72,8 +89,9 @@ az vm create \
     --public-ip-sku Standard
 ```
 
-Sonuçlar:
+VM’yi ve destekleyici kaynakları oluşturmak birkaç dakika sürer. Aşağıdaki örnekte VM oluşturma işleminin başarılı olduğu gösterilmektedir.
 
+Sonuçlar:
 <!-- expected_similarity=0.3 -->
 ```json
 {
@@ -89,9 +107,9 @@ Sonuçlar:
 }
 ```
 
-### Azure'da Linux Sanal Makinesi için Azure AD oturum açma özelliğini etkinleştirme
+## Azure'da Linux sanal makinesi için Azure AD Oturum Açma özelliğini etkinleştirme
 
-Aşağıdaki örnekte bir Linux VM dağıtılır ve ardından Bir Linux VM için Azure AD oturum açma özelliğini etkinleştirmek üzere uzantı yüklenir. VM uzantıları, Azure sanal makinelerinde dağıtım sonrası yapılandırma ve otomasyon görevleri sağlayan küçük uygulamalardır.
+Aşağıdaki kod örneği bir Linux VM dağıtır ve ardından bir Linux VM için Azure AD Oturum Açma özelliğini etkinleştirmek üzere uzantıyı yükler. VM uzantıları, Azure sanal makinelerinde dağıtım sonrası yapılandırma ve otomasyon görevleri sağlayan küçük uygulamalardır.
 
 ```bash
 az vm extension set \
@@ -101,17 +119,18 @@ az vm extension set \
     --vm-name $MY_VM_NAME
 ```
 
-# SSH için VM'nin IP Adresini depolama
-VM'nin IP Adresini almak ve bir ortam değişkeni olarak depolamak için aşağıdaki komutu çalıştırın
+## SSH için VM'nin IP adresini depolama
+
+VM'nin IP adresini ortam değişkeni olarak depolamak için aşağıdaki komutu çalıştırın:
 
 ```bash
 export IP_ADDRESS=$(az vm show --show-details --resource-group $MY_RESOURCE_GROUP_NAME --name $MY_VM_NAME --query publicIps --output tsv)
 ```
 
-# VM'ye SSH
+## VM'de SSH
 
 <!--## Export the SSH configuration for use with SSH clients that support OpenSSH & SSH into the VM.
-Login to Azure Linux VMs with Azure AD supports exporting the OpenSSH certificate and configuration. That means you can use any SSH clients that support OpenSSH-based certificates to sign in through Azure AD. The following example exports the configuration for all IP addresses assigned to the VM:-->
+Log in to Azure Linux VMs with Azure AD supports exporting the OpenSSH certificate and configuration. That means you can use any SSH clients that support OpenSSH-based certificates to sign in through Azure AD. The following example exports the configuration for all IP addresses assigned to the VM:-->
 
 <!--
 ```bash
@@ -119,15 +138,15 @@ yes | az ssh config --file ~/.ssh/config --name $MY_VM_NAME --resource-group $MY
 ```
 -->
 
-Artık SSH istemcinizde aşağıdaki komutun çıkışını çalıştırarak VM'de SSH yapabilirsiniz
+Artık SSH istemcinizde aşağıdaki komutun çıkışını çalıştırarak VM'de SSH yapabilirsiniz:
 
 ```bash
 ssh -o StrictHostKeyChecking=no $MY_USERNAME@$IP_ADDRESS
 ```
 
-# Sonraki Adımlar
+## Sonraki Adımlar
 
-* [VM Belgeleri](https://learn.microsoft.com/azure/virtual-machines/)
-* [Cloud-Init kullanarak ilk önyüklemede Bir Linux VM başlatma](https://learn.microsoft.com/azure/virtual-machines/linux/tutorial-automate-vm-deployment)
-* [Özel VM görüntüleri oluşturma](https://learn.microsoft.com/azure/virtual-machines/linux/tutorial-custom-images)
-* [Vm'lerde Yük Dengeleme](https://learn.microsoft.com/azure/load-balancer/quickstart-load-balancer-standard-public-cli)
+* [Sanal makineler hakkında bilgi edinin](../index.yml)
+* [Cloud-Init kullanarak ilk önyüklemede Bir Linux VM başlatma](tutorial-automate-vm-deployment.md)
+* [Özel VM görüntüleri oluşturma](tutorial-custom-images.md)
+* [Vm'lerde Yük Dengeleme](../../load-balancer/quickstart-load-balancer-standard-public-cli.md)

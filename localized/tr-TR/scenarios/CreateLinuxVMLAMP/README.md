@@ -1,31 +1,40 @@
 ---
-title: Azure'da LEMP yığını yükleme
-description: 'Bu öğreticide, Azure''da BIR LEMP yığınının nasıl yükleneceği gösterilmektedir.'
-author: mbifeld
-ms.author: mbifeld
-ms.topic: article
-ms.date: 11/28/2023
-ms.custom: innovation-engine
+title: Öğretici - VM'de WordPress kullanarak LEMP yığını dağıtma
+description: 'Bu öğreticide, Azure''da bir Linux sanal makinesine LEMP yığınını ve WordPress''i yüklemeyi öğreneceksiniz.'
+author: chasecrum
+ms.collection: linux
+ms.service: virtual-machines
+ms.devlang: azurecli
+ms.custom: 'innovation-engine, linux-related-content, devx-track-azurecli'
+ms.topic: tutorial
+ms.date: 2/29/2024
+ms.author: chasecrum
+ms.reviewer: jushim
 ---
 
-# Azure'da LEMP yığını yükleme
+# Öğretici: Azure Linux VM'sinde LEMP yığını yükleme
 
-[![Azure’a dağıtın](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2263118)
+**Şunlar için geçerlidir:** :heavy_check_mark: Linux VM'leri
 
+[![Azure’a dağıtın](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#view/Microsoft_Azure_CloudNative/SubscriptionSelectionPage.ReactView/tutorialKey/CreateLinuxVMLAMP)
 
 Bu makalede, Azure'da Ubuntu Linux VM'sinde NGINX web sunucusu, Azure MySQL Esnek Sunucusu ve PHP (LEMP yığını) dağıtma adımları anlatılmaktadır. LEMP sunucusunu çalışır halde görmek için, isteğe bağlı olarak bir WordPress sitesi yükleyip yapılandırabilirsiniz. Bu öğreticide şunların nasıl yapıldığını öğrenirsiniz:
 
 > [!div class="checklist"]
-
-> * Linux Ubuntu VM oluşturma
+>
+> * Ubuntu sanal makinesi oluşturma
 > * Web trafiği için 80 ve 443 bağlantı noktalarını açma
 > * NGINX, Azure Esnek MySQL Sunucusu ve PHP Yükleme ve Güvenliğini Sağlama
 > * Yükleme ve yapılandırmayı doğrulama
-> * WordPress yükleme
+> * WordPress'i yükleme Bu kurulum hızlı testler veya kavram kanıtı içindir. Bir üretim ortamına yönelik öneriler de dahil olmak üzere LEMP yığını hakkında daha fazla bilgi için Ubuntu belgelerine [bakın](https://help.ubuntu.com/community/ApacheMySQLPHP).
+
+Bu öğreticide Azure Cloud Shell[ içindeki ](../../cloud-shell/overview.md)CLI sürekli olarak en son sürüme güncelleştirilmektedir. Cloud Shell'i açmak için herhangi bir kod bloğunun üst kısmından Deneyin'i** seçin**.
+
+CLI'yi yerel olarak yükleyip kullanmayı seçerseniz, bu öğretici için Azure CLI 2.0.30 veya sonraki bir sürümünü kullanmanız gerekir. komutunu çalıştırarak `az --version` sürümü bulun. Yüklemeniz veya yükseltmeniz gerekirse, bkz. [Azure CLI yükleme]( /cli/azure/install-azure-cli).
 
 ## Değişken bildirimi
 
-İlk olarak, LEMP iş yükünün yapılandırmasına yardımcı olacak birkaç değişken tanımlayacağız.
+öncelikle LEMP iş yükünün yapılandırmasına yardımcı olacak birkaç değişken tanımlamamız gerekir.
 
 ```bash
 export NETWORK_PREFIX="$(($RANDOM % 254 + 1))"
@@ -55,13 +64,15 @@ export MY_AZURE_USER=$(az account show --query user.name --output tsv)
 export FQDN="${MY_DNS_LABEL}.${REGION}.cloudapp.azure.com"
 ```
 
-<!--```bash
+<!--
+```bash
 export MY_AZURE_USER_ID=$(az ad user list --filter "mail eq '$MY_AZURE_USER'" --query "[0].id" -o tsv)
-```-->
+```
+-->
 
-## RG Oluşturma
+## Kaynak grubu oluşturma
 
-[az group create](https://learn.microsoft.com/cli/azure/group#az-group-create) komutuyla bir kaynak grubu oluşturun. Azure kaynak grubu, Azure kaynaklarının dağıtıldığı ve yönetildiği bir mantıksal kapsayıcıdır.
+[az group create](/cli/azure/group#az-group-create) komutuyla bir kaynak grubu oluşturun. Azure kaynak grubu, Azure kaynaklarının dağıtıldığı ve yönetildiği bir mantıksal kapsayıcıdır.
 Aşağıdaki örnek `eastus` konumunda `$MY_RESOURCE_GROUP_NAME` adlı bir kaynak grubu oluşturur.
 
 ```bash
@@ -92,7 +103,7 @@ Sonuçlar:
 ## Azure Sanal Ağı oluşturun
 
 Sanal ağ, Azure'daki özel ağlar için temel yapı taşıdır. Azure Sanal Ağ, VM'ler gibi Azure kaynaklarının birbirleriyle ve İnternet ile güvenli bir şekilde iletişim kurmasını sağlar.
-Kaynak grubunda adlı `$MY_SN_NAME` `$MY_RESOURCE_GROUP_NAME` alt ağ ile adlı `$MY_VNET_NAME` bir sanal ağ oluşturmak için az network vnet create[ komutunu kullanın](https://learn.microsoft.com/cli/azure/network/vnet#az-network-vnet-create).
+Kaynak grubunda adlı `$MY_SN_NAME` `$MY_RESOURCE_GROUP_NAME` alt ağ ile adlı `$MY_VNET_NAME` bir sanal ağ oluşturmak için az network vnet create[ komutunu kullanın](/cli/azure/network/vnet#az-network-vnet-create).
 
 ```bash
 az network vnet create \
@@ -142,11 +153,10 @@ Sonuçlar:
 
 ## Azure Genel IP'si oluşturma
 
-içinde adlı `$MY_RESOURCE_GROUP_NAME``MY_PUBLIC_IP_NAME` standart bir alanlar arası yedekli genel IPv4 adresi oluşturmak için az network public-ip create[ komutunu kullanın](https://learn.microsoft.com/cli/azure/network/public-ip#az-network-public-ip-create).
+içinde adlı `$MY_RESOURCE_GROUP_NAME``MY_PUBLIC_IP_NAME` standart bir alanlar arası yedekli genel IPv4 adresi oluşturmak için az network public-ip create[ komutunu kullanın](/cli/azure/network/public-ip#az-network-public-ip-create).
 
 >[!NOTE]
->Bölgeler için aşağıdaki seçenekler yalnızca Kullanılabilirlik Alanları[ olan ](https://learn.microsoft.com/azure/reliability/availability-zones-service-support)bölgelerde geçerli seçimlerdir.
-
+>Bölgeler için aşağıdaki seçenekler yalnızca Kullanılabilirlik Alanları[ olan ](../../reliability/availability-zones-service-support.md)bölgelerde geçerli seçimlerdir.
 ```bash
 az network public-ip create \
     --name $MY_PUBLIC_IP_NAME \
@@ -197,7 +207,7 @@ Sonuçlar:
 
 ## Azure Ağ Güvenlik Grubu oluşturma
 
-Ağ güvenlik gruplarındaki güvenlik kuralları, sanal ağ alt ağlarında ve ağ arabirimlerinde içeri ve dışarı akabilecek ağ trafiği türünü filtrelemenize olanak tanır. Ağ güvenlik grupları hakkında daha fazla bilgi edinmek için bkz [. Ağ güvenlik grubuna genel bakış](https://learn.microsoft.com/azure/virtual-network/network-security-groups-overview).
+Ağ güvenlik gruplarındaki güvenlik kuralları, sanal ağ alt ağlarında ve ağ arabirimlerinde içeri ve dışarı akabilecek ağ trafiği türünü filtrelemenize olanak tanır. Ağ güvenlik grupları hakkında daha fazla bilgi edinmek için bkz [. Ağ güvenlik grubuna genel bakış](../../virtual-network/network-security-groups-overview.md).
 
 ```bash
 az network nsg create \
@@ -246,7 +256,7 @@ Sonuçlar:
 
 ## Azure Ağ Güvenlik Grubu kuralları oluşturma
 
-SSH için 22 numaralı bağlantı noktasında ve HTTP ve HTTPS için 80, 443 numaralı bağlantı noktalarında sanal makineye bağlantılara izin veren bir kural oluşturacaksınız. Giden bağlantılar için tüm bağlantı noktalarına izin vermek için ek bir kural oluşturulur. Ağ güvenlik grubu kuralı oluşturmak için az network nsg rule create[ komutunu kullanın](https://learn.microsoft.com/cli/azure/network/nsg/rule#az-network-nsg-rule-create).
+SSH için 22 numaralı bağlantı noktasında ve HTTP ve HTTPS için 80, 443 numaralı bağlantı noktalarında sanal makineye bağlantılara izin veren bir kural oluşturun. Giden bağlantılar için tüm bağlantı noktalarına izin vermek için ek bir kural oluşturulur. Ağ güvenlik grubu kuralı oluşturmak için az network nsg rule create[ komutunu kullanın](/cli/azure/network/nsg/rule#az-network-nsg-rule-create).
 
 ```bash
 az network nsg rule create \
@@ -293,7 +303,7 @@ Sonuçlar:
 
 ## Azure Ağ Arabirimi oluşturma
 
-Az network nic create[ komutunu kullanarak ](https://learn.microsoft.com/cli/azure/network/nic#az-network-nic-create)sanal makine için ağ arabirimi oluşturacaksınız. Genel IP adresleri ve daha önce oluşturulan NSG, NIC ile ilişkilendirilir. Ağ arabirimi, daha önce oluşturduğunuz sanal ağa eklenir.
+[Az network nic create](/cli/azure/network/nic#az-network-nic-create) komutunu kullanarak sanal makine için ağ arabirimi oluşturun. Genel IP adresleri ve daha önce oluşturulan NSG, NIC ile ilişkilendirilir. Ağ arabirimi, daha önce oluşturduğunuz sanal ağa eklenir.
 
 ```bash
 az network nic create \
@@ -356,14 +366,13 @@ Sonuçlar:
   }
 }
 ```
-
 ## Cloud-init genel bakış
 
-Cloud-init, Linux VM’sini ilk kez önyüklendiğinde özelleştirmeyi sağlayan, sık kullanılan bir yaklaşımdır. cloud-init’i paket yükleme, dosyalara yazma ve kullanıcılar ile güvenliği yapılandırma işlemleri için kullanabilirsiniz. cloud-init önyükleme işlemi sırasında çalışırken, yapılandırmanıza uygulayabileceğiniz ek adım veya gerekli aracı yoktur.
+Cloud-init, Linux VM’sini ilk kez önyüklendiğinde özelleştirmeyi sağlayan, sık kullanılan bir yaklaşımdır. cloud-init’i paket yükleme, dosyalara yazma ve kullanıcılar ile güvenliği yapılandırma işlemleri için kullanabilirsiniz. Cloud-init ilk önyükleme işlemi sırasında çalıştırıldığından, yapılandırmanıza uygulamak için başka bir adım veya gerekli aracı yoktur.
 
 Cloud-init, dağıtımlar arasında da çalışır. Örneğin, bir paket yüklemek için apt-get install veya yum install kullanmazsınız. Bunun yerine, yüklenecek paketlerin listesini tanımlayabilirsiniz. Cloud-init, seçtiğiniz dağıtım için yerel paket yönetim aracını otomatik olarak kullanır.
 
-Azure’a sağladıkları görüntülere cloud-init’in dahil edilmesini ve bu görüntülerde çalışmasını sağlamak için iş ortaklarımızla çalışıyoruz. Her dağıtım için cloud-init desteği hakkında ayrıntılı bilgi için bkz [. Azure'da](https://learn.microsoft.com/azure/virtual-machines/linux/using-cloud-init) VM'ler için cloud-init desteği.
+İş ortaklarımızla birlikte çalışarak cloud-init'i dahil ediyoruz ve Azure'a sundukları görüntülerde çalışıyoruz. Her dağıtım için cloud-init desteği hakkında ayrıntılı bilgi için bkz [. Azure'da](./using-cloud-init.md) VM'ler için cloud-init desteği.
 
 ### cloud-init yapılandırma dosyası oluşturma
 
@@ -372,12 +381,10 @@ Cloud-init'i çalışırken görmek için, BIR LEMP yığını yükleyen ve SSL 
 ```bash
 cat << EOF > cloud-init.txt
 #cloud-config
-
 # Install, update, and upgrade packages
 package_upgrade: true
 package_update: true
 package_reboot_if_require: true
-
 # Install packages
 packages:
   - vim
@@ -400,7 +407,6 @@ packages:
   - php-xmlrpc
   - php-zip
   - php-fpm
-
 write_files:
   - owner: www-data:www-data
     path: /etc/nginx/sites-available/default.conf
@@ -411,7 +417,6 @@ write_files:
             root /var/www/html;
             server_name $FQDN;
         }
-
 write_files:
   - owner: www-data:www-data
     path: /etc/nginx/sites-available/$FQDN.conf
@@ -422,15 +427,11 @@ write_files:
         server {
             listen 443 ssl http2;
             listen [::]:443 ssl http2;
-
             server_name $FQDN;
-
             ssl_certificate /etc/letsencrypt/live/$FQDN/fullchain.pem;
             ssl_certificate_key /etc/letsencrypt/live/$FQDN/privkey.pem;
-
             root /var/www/$FQDN;
             index index.php;
-
             location / {
                 try_files \$uri \$uri/ /index.php?\$args;
             }
@@ -448,7 +449,6 @@ write_files:
                     log_not_found off;
                     access_log off;
             }
-
             location = /robots.txt {
                     allow all;
                     log_not_found off;
@@ -461,7 +461,6 @@ write_files:
             server_name $FQDN;
             return 301 https://$FQDN\$request_uri;
         }
-
 runcmd:
   - sed -i 's/;cgi.fix_pathinfo.*/cgi.fix_pathinfo = 1/' /etc/php/8.1/fpm/php.ini
   - sed -i 's/^max_execution_time \= .*/max_execution_time \= 300/g' /etc/php/8.1/fpm/php.ini
@@ -481,7 +480,7 @@ runcmd:
   - chown -R azureadmin:www-data /var/www/$FQDN
   - sudo -u azureadmin -i -- wp core download --path=/var/www/$FQDN
   - sudo -u azureadmin -i -- wp config create --dbhost=$MY_MYSQL_DB_NAME.mysql.database.azure.com --dbname=wp001 --dbuser=$MY_MYSQL_ADMIN_USERNAME --dbpass="$MY_MYSQL_ADMIN_PW" --path=/var/www/$FQDN
-  - sudo -u azureadmin -i -- wp core install --url=$FQDN --title="Azure hosted blog" --admin_user=$MY_WP_ADMIN_USER --admin_password="$MY_WP_ADMIN_PW" --admin_email=$MY_AZURE_USER --path=/var/www/$FQDN 
+  - sudo -u azureadmin -i -- wp core install --url=$FQDN --title="Azure hosted blog" --admin_user=$MY_WP_ADMIN_USER --admin_password="$MY_WP_ADMIN_PW" --admin_email=$MY_AZURE_USER --path=/var/www/$FQDN
   - sudo -u azureadmin -i -- wp plugin update --all --path=/var/www/$FQDN
   - chmod 600 /var/www/$FQDN/wp-config.php
   - mkdir -p -m 0775 /var/www/$FQDN/wp-content/uploads
@@ -491,7 +490,7 @@ EOF
 
 ## Azure MySQL Esnek Sunucusu için Azure Özel DNS Bölgesi oluşturma
 
-Azure Özel DNS Bölgesi tümleştirmesi, geçerli sanal ağ içindeki özel DNS'yi veya özel DNS Bölgesinin bağlı olduğu bölge içinde eşlenmiş herhangi bir sanal ağı çözümlemenize olanak tanır. Özel DNS bölgesini oluşturmak için az network private-dns zone create[ kullanacaksınız](https://learn.microsoft.com/cli/azure/network/private-dns/zone#az-network-private-dns-zone-create).
+Azure Özel DNS Bölgesi tümleştirmesi, geçerli sanal ağ içindeki özel DNS'yi veya özel DNS Bölgesinin bağlı olduğu bölge içinde eşlenmiş herhangi bir sanal ağı çözümlemenize olanak tanır. Özel DNS bölgesini oluşturmak için az network private-dns zone create[ komutunu kullanın](/cli/azure/network/private-dns/zone#az-network-private-dns-zone-create).
 
 ```bash
 az network private-dns zone create \
@@ -522,7 +521,7 @@ Sonuçlar:
 
 ## MySQL için Azure Veritabanı Oluşturma - Esnek Sunucu
 
-MySQL için Azure Veritabanı - Esnek Sunucu, bulutta yüksek oranda kullanılabilir MySQL sunucularını çalıştırmak, yönetmek ve ölçeklendirmek için kullanabileceğiniz bir yönetilen hizmettir. az mysql flexible-server create komutuyla [esnek bir sunucu oluşturun](https://learn.microsoft.com/cli/azure/mysql/flexible-server#az-mysql-flexible-server-create) . Bir sunucu birden çok veritabanı içerebilir. Aşağıdaki komut, Azure CLI'nızın yerel ortamındaki hizmet varsayılanlarını ve değişken değerlerini kullanarak bir sunucu oluşturur:
+MySQL için Azure Veritabanı - Esnek Sunucu, bulutta yüksek oranda kullanılabilir MySQL sunucularını çalıştırmak, yönetmek ve ölçeklendirmek için kullanabileceğiniz bir yönetilen hizmettir. az mysql flexible-server create komutuyla [esnek bir sunucu oluşturun](../../mysql/flexible-server/quickstart-create-server-cli.md#create-an-azure-database-for-mysql-flexible-server) . Bir sunucu birden çok veritabanı içerebilir. Aşağıdaki komut, Azure CLI'nızın yerel ortamındaki hizmet varsayılanlarını ve değişken değerlerini kullanarak bir sunucu oluşturur:
 
 ```bash
 az mysql flexible-server create \
@@ -569,14 +568,13 @@ echo "Your MySQL user $MY_MYSQL_ADMIN_USERNAME password is: $MY_WP_ADMIN_PW"
 
 Oluşturulan sunucu aşağıdaki özniteliklere sahiptir:
 
-* Sunucu adı, yönetici kullanıcı adı, yönetici parolası, kaynak grubu adı, konum bulut kabuğunun yerel bağlam ortamında zaten belirtilmiştir ve kaynak grubu ve diğer Azure bileşenleriyle aynı konumda oluşturulur.
+* Sunucu adı, yönetici kullanıcı adı, yönetici parolası, kaynak grubu adı, konum, bulut kabuğunun yerel bağlam ortamında zaten belirtilmiştir. Bunlar, kaynak grubunuzla ve diğer Azure bileşenleriyle aynı konumda oluşturulur.
 * Kalan sunucu yapılandırmaları için hizmet varsayılanları: işlem katmanı (Serileştirilebilir), işlem boyutu/SKU (Standard_B2s), yedekleme saklama süresi (7 gün) ve MySQL sürümü (8.0.21)
-* Varsayılan bağlantı yöntemi, bağlı bir sanal ağ ve otomatik olarak oluşturulan bir alt ağ ile Özel erişimdir (VNet Tümleştirmesi).
+* Varsayılan bağlantı yöntemi, bağlı bir sanal ağ ve otomatik olarak oluşturulan bir alt ağ ile Özel erişim (VNet Tümleştirmesi) yöntemidir.
 
 > [!NOTE]
-> Sunucu oluşturulduktan sonra bağlantı yöntemi değiştirilemez. Örneğin, oluşturma sırasında seçtiyseniz `Private access (VNet Integration)` , oluşturma sonrasında olarak `Public access (allowed IP addresses)` değiştiremezsiniz. Sanal Ağ Tümleştirmesi'ni kullanarak sunucunuza güvenli bir şekilde erişmek için Özel erişimli bir sunucu oluşturmanızı kesinlikle öneririz. Kavramlar makalesinde [](https://learn.microsoft.com/azure/mysql/flexible-server/concepts-networking-vnet)Özel erişim hakkında daha fazla bilgi edinin.
-
-Varsayılan değerleri değiştirmek isterseniz yapılandırılabilir CLI parametrelerinin tam listesi için lütfen Azure CLI [başvuru belgelerine bakın](https://learn.microsoft.com/cli/azure//mysql/flexible-server) .
+> Sunucu oluşturulduktan sonra bağlantı yöntemi değiştirilemez. Örneğin, oluşturma sırasında seçtiyseniz `Private access (VNet Integration)` , oluşturma sonrasında olarak `Public access (allowed IP addresses)` değiştiremezsiniz. Sanal Ağ Tümleştirmesi'ni kullanarak sunucunuza güvenli bir şekilde erişmek için Özel erişimli bir sunucu oluşturmanızı kesinlikle öneririz. Kavramlar makalesinde [](../../mysql/flexible-server/concepts-networking-vnet.md)Özel erişim hakkında daha fazla bilgi edinin.
+Varsayılan değerleri değiştirmek isterseniz, yapılandırılabilir CLI parametrelerinin tam listesi için Azure CLI [başvuru belgelerine bakın](../../mysql/flexible-server/quickstart-create-server-cli.md) .
 
 ## MySQL için Azure Veritabanı - Esnek Sunucu durumunu denetleyin
 
@@ -600,11 +598,15 @@ done
 
 Sunucu parametrelerini kullanarak MySQL için Azure Veritabanı - Esnek Sunucu yapılandırmasını yönetebilirsiniz. Sunucu parametreleri, sunucuyu oluşturduğunuzda varsayılan ve önerilen değerle yapılandırılır.
 
-Sunucu parametresi ayrıntılarını göster Sunucunun [belirli bir parametresi hakkındaki ayrıntıları göstermek için az mysql flexible-server parameter show](https://learn.microsoft.com/cli/azure/mysql/flexible-server/parameter) komutunu çalıştırın.
+Sunucu parametresi ayrıntılarını göster:
 
-### wordpress tümleştirmesi için MySQL için Azure Veritabanı - Esnek Sunucu SSL bağlantı parametresini devre dışı bırakma
+Sunucunun [belirli bir parametresi hakkındaki ayrıntıları göstermek için az mysql flexible-server parameter show](../../mysql/flexible-server/how-to-configure-server-parameters-cli.md) komutunu çalıştırın.
 
-Sunucu parametre değerini değiştirme MySQL sunucu altyapısı için temel yapılandırma değerini güncelleştiren belirli bir sunucu parametresinin değerini de değiştirebilirsiniz. Sunucu parametresini güncelleştirmek için az mysql flexible-server parameter set[ komutunu kullanın](https://learn.microsoft.com/cli/azure/mysql/flexible-server/parameter#az-mysql-flexible-server-parameter-set).
+## wordpress tümleştirmesi için MySQL için Azure Veritabanı - Esnek Sunucu SSL bağlantı parametresini devre dışı bırakma
+
+Sunucu parametresi değerini değiştirme:
+
+Ayrıca, MySQL sunucu altyapısı için temel yapılandırma değerini güncelleştiren belirli bir sunucu parametresinin değerini de değiştirebilirsiniz. Sunucu parametresini güncelleştirmek için az mysql flexible-server parameter set[ komutunu kullanın](../../mysql/flexible-server/how-to-configure-server-parameters-cli.md#modify-a-server-parameter-value).
 
 ```bash
 az mysql flexible-server parameter set \
@@ -637,10 +639,11 @@ Sonuçlar:
 
 ## Azure Linux Sanal Makinesi oluşturma
 
-Aşağıdaki örnekte `$MY_VM_NAME` adlı bir VM oluşturulur ve varsayılan anahtar konumunda henüz yoksa SSH anahtarları oluşturulur. Komut, yönetici kullanıcı adı olarak da ayarlanır `$MY_VM_USERNAME` .
-Azure'da Linux sanal makinelerinin güvenliğini geliştirmek için Azure Active Directory kimlik doğrulamasıyla tümleştirebilirsiniz. Artık Azure AD ve OpenSSH sertifika tabanlı kimlik doğrulamasını kullanarak Azure AD'yi bir Linux VM'ye SSH için çekirdek kimlik doğrulama platformu ve sertifika yetkilisi olarak kullanabilirsiniz. Bu işlevsellik, kuruluşların Azure rol tabanlı erişim denetimi ve Koşullu Erişim ilkeleriyle VM'lere erişimi yönetmesine olanak tanır.
+Aşağıdaki örnek adlı `$MY_VM_NAME` bir VM oluşturur ve varsayılan anahtar konumunda yoksa SSH anahtarları oluşturur. Komut, yönetici kullanıcı adı olarak da ayarlanır `$MY_VM_USERNAME` .
 
-[az vm create](https://learn.microsoft.com/cli/azure/vm#az-vm-create) komutuyla bir sanal makine oluşturun.
+Azure'da Linux sanal makinelerinin güvenliğini geliştirmek için Azure Active Directory kimlik doğrulamasıyla tümleştirebilirsiniz. Artık Azure AD'i çekirdek kimlik doğrulama platformu olarak kullanabilirsiniz. Ayrıca Azure AD ve OpenSSH sertifika tabanlı kimlik doğrulamasını kullanarak Linux VM'ye SSH de ekleyebilirsiniz. Bu işlevsellik, kuruluşların Azure rol tabanlı erişim denetimi ve Koşullu Erişim ilkeleriyle VM'lere erişimi yönetmesine olanak tanır.
+
+[az vm create](/cli/azure/vm#az-vm-create) komutuyla bir sanal makine oluşturun.
 
 ```bash
 az vm create \
@@ -686,17 +689,17 @@ Sonuçlar:
 
 ## Azure Linux Sanal Makinesi durumunu denetleme
 
-VM’yi ve destekleyici kaynakları oluşturmak birkaç dakika sürer. Uzantı VM'ye başarıyla yüklendiğinde Succeeded değerinin provisioningState değeri görüntülenir. Uzantıyı yüklemek için VM'nin çalışan [bir VM aracısı](https://learn.microsoft.com/azure/virtual-machines/extensions/agent-linux) olmalıdır.
+VM’yi ve destekleyici kaynakları oluşturmak birkaç dakika sürer. Uzantı VM'ye başarıyla yüklendiğinde Succeeded değerinin provisioningState değeri görüntülenir. Uzantıyı yüklemek için VM'nin çalışan [bir VM aracısı](../extensions/agent-linux.md) olmalıdır.
 
 ```bash
 runtime="5 minute";
 endtime=$(date -ud "$runtime" +%s);
-while [[ $(date -u +%s) -le $endtime ]]; do 
-    STATUS=$(ssh -o StrictHostKeyChecking=no $MY_VM_USERNAME@$FQDN "cloud-init status --wait"); 
-    echo $STATUS; 
-    if [[ "$STATUS" == *'status: done'* ]]; then 
-        break; 
-    else 
+while [[ $(date -u +%s) -le $endtime ]]; do
+    STATUS=$(ssh -o StrictHostKeyChecking=no $MY_VM_USERNAME@$FQDN "cloud-init status --wait");
+    echo $STATUS;
+    if [[ "$STATUS" == *'status: done'* ]]; then
+        break;
+    else
         sleep 10;
     fi;
 done
@@ -704,21 +707,16 @@ done
 
 <!--
 ## Assign Azure AD RBAC for Azure AD login for Linux Virtual Machine
-
 The below command uses [az role assignment create](https://learn.microsoft.com/cli/azure/role/assignment#az-role-assignment-create) to assign the `Virtual Machine Administrator Login` role to the VM for your current Azure user.
-
 ```bash
 export MY_RESOURCE_GROUP_ID=$(az group show --resource-group $MY_RESOURCE_GROUP_NAME --query id -o tsv)
-
 az role assignment create \
     --role "Virtual Machine Administrator Login" \
     --assignee $MY_AZURE_USER_ID \
     --scope $MY_RESOURCE_GROUP_ID -o JSON
 ```
-
-
 Results:
-<!-- expected_similarity=0.3
+<!-- expected_similarity=0.3 -->
 ```JSON
 {
   "condition": null,
@@ -739,13 +737,11 @@ Results:
   "updatedOn": "2023-09-04T09:29:17.237445+00:00"
 }
 ```
--->
 
-<!-- 
+
+<!--
 ## Export the SSH configuration for use with SSH clients that support OpenSSH
-
 Login to Azure Linux VMs with Azure AD supports exporting the OpenSSH certificate and configuration. That means you can use any SSH clients that support OpenSSH-based certificates to sign in through Azure AD. The following example exports the configuration for all IP addresses assigned to the VM:
-
 ```bash
 az ssh config --file ~/.ssh/azure-config --name $MY_VM_NAME --resource-group $MY_RESOURCE_GROUP_NAME
 ```
@@ -791,7 +787,7 @@ Sonuçlar:
 
 ## WordPress web sitenizi kontrol edin ve göz atın
 
-[WordPress](https://www.wordpress.org), web sitelerinin, blogların ve diğer uygulamaların oluşturulması için web'in %40'ının üzerinde kullanılan bir açık kaynak içerik yönetim sistemidir (CMS). WordPress birkaç farklı Azure hizmetinde çalıştırılabilir: [AKS](https://learn.microsoft.com/azure/mysql/flexible-server/tutorial-deploy-wordpress-on-aks), Sanal Makineler ve App Service. Azure'da WordPress seçeneklerinin tam listesi için bkz[. Azure Market](https://azuremarketplace.microsoft.com/marketplace/apps?page=1&search=wordpress) üzerinde WordPress.
+[WordPress](https://www.wordpress.org), web sitelerinin, blogların ve diğer uygulamaların oluşturulması için web'in %40'ının üzerinde kullanılan bir açık kaynak içerik yönetim sistemidir (CMS). WordPress birkaç farklı Azure hizmetinde çalıştırılabilir: [AKS](../../mysql/flexible-server/tutorial-deploy-wordpress-on-aks.md), Sanal Makineler ve App Service. Azure'da WordPress seçeneklerinin tam listesi için bkz[. Azure Market](https://azuremarketplace.microsoft.com/marketplace/apps?page=1&search=wordpress) üzerinde WordPress.
 
 Bu WordPress kurulumu yalnızca kavram kanıtı amaçlıdır. En güncel WordPress sürümünü önerilen güvenlik ayarlarıyla üretim ortamına yüklemek için bkz. [WordPress belgeleri](https://codex.wordpress.org/Main_Page).
 
@@ -801,10 +797,10 @@ Uygulama URL'sini kıvrarak uygulamanın çalıştığını doğrulayın:
 runtime="5 minute";
 endtime=$(date -ud "$runtime" +%s);
 while [[ $(date -u +%s) -le $endtime ]]; do
-    if curl -I -s -f $FQDN > /dev/null ; then 
+    if curl -I -s -f $FQDN > /dev/null ; then
         curl -L -s -f $FQDN 2> /dev/null | head -n 9
         break
-    else 
+    else
         sleep 10
     fi;
 done

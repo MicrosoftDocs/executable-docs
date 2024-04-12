@@ -1,23 +1,35 @@
 ---
-title: Azure CLI Kullanarak Statik Site Oluşturma
-description: Bu öğreticide Azure'da Statik Site oluşturma adımları gösterilmektedir.
-author: namanparikh
-ms.author: namanparikh
-ms.topic: article
-ms.date: 02/06/2024
-ms.custom: innovation-engine
-ms.service: Azure
+title: 'Hızlı Başlangıç: CLI kullanarak Azure Static Web Apps ile ilk statik sitenizi oluşturma'
+description: Azure CLI ile Azure Static Web Apps'e statik site dağıtmayı öğrenin.
+services: static-web-apps
+author: craigshoemaker
+ms.service: static-web-apps
+ms.topic: quickstart
+ms.date: 03/21/2024
+ms.author: cshoe
+ms.custom: 'mode-api, devx-track-azurecli, innovation-engine, linux-related-content'
+ms.devlang: azurecli
 ---
 
-# Azure Static Web Apps Hızlı Başlangıcı: Azure CLI Kullanarak İlk Statik Sitenizi Oluşturma
+# Hızlı Başlangıç: Azure CLI kullanarak ilk statik sitenizi oluşturma
 
 [![Azure’a dağıtın](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262845)
 
-Azure Static Web Apps, bir kod deposundan uygulama oluşturarak web sitelerini üretim ortamında yayımlar. Bu hızlı başlangıçta, Azure CLI kullanarak Azure Static Web Apps'e bir web uygulaması dağıtacaksınız.
+Azure Static Web Apps, bir kod deposundan uygulama oluşturarak web sitelerini üretim ortamında yayımlar.
 
-## Ortam Değişkenlerini Tanımlama
+Bu hızlı başlangıçta, Azure CLI kullanarak Azure Statik Web uygulamalarına bir web uygulaması dağıtacaksınız.
 
-Bu öğreticinin ilk adımı ortam değişkenlerini tanımlamaktır.
+## Önkoşullar
+
+- [GitHub](https://github.com) hesabı.
+- [Azure hesabı](https://portal.azure.com).
+  - Azure aboneliğiniz yoksa ücretsiz deneme hesabı[ oluşturabilirsiniz](https://azure.microsoft.com/free).
+- [Azure CLI](/cli/azure/install-azure-cli) yüklü (sürüm 2.29.0 veya üzeri).
+- [Git kurulumu](https://www.git-scm.com/downloads). 
+
+## Ortam değişkenlerini tanımlama
+
+Bu hızlı başlangıcın ilk adımı ortam değişkenlerini tanımlamaktır.
 
 ```bash
 export RANDOM_ID="$(openssl rand -hex 3)"
@@ -30,16 +42,17 @@ export MY_STATIC_WEB_APP_NAME="myStaticWebApp$RANDOM_ID"
 
 (İsteğe bağlı) Bu makalede, kullanmaya başlamanızı kolaylaştırmak için başka bir yol olarak GitHub şablon deposu kullanılmaktadır. Şablonda Azure Static Web Apps'e dağıtılacak bir başlangıç uygulaması bulunur.
 
-- Yeni bir depo oluşturmak için aşağıdaki konuma gidin: https://github.com/staticwebdev/vanilla-basic/generate
-- Deponuzu adlandır `my-first-static-web-app`
+1. Yeni bir depo oluşturmak için aşağıdaki konuma gidin: https://github.com/staticwebdev/vanilla-basic/generate.
+2. Deponuza adını verin `my-first-static-web-app`.
 
-> **Not:** Azure Static Web Apps web uygulaması oluşturmak için en az bir HTML dosyası gerektirir. Bu adımda oluşturduğunuz depo tek `index.html` bir dosya içerir.
+> [!NOTE]
+> Azure Static Web Apps web uygulaması oluşturmak için en az bir HTML dosyası gerektirir. Bu adımda oluşturduğunuz depo tek `index.html` bir dosya içerir.
 
-`Create repository` öğesini seçin.
+3. **Create repository** (Depo oluştur) öğesine tıklayın.
 
 ## Statik Web Uygulaması Dağıtma
 
-Uygulamayı Azure CLI'dan statik bir web uygulaması olarak dağıtabilirsiniz.
+Uygulamayı Azure CLI'dan statik bir web uygulaması olarak dağıtın.
 
 1. Kaynak grubu oluşturun.
 
@@ -50,7 +63,6 @@ az group create \
 ```
 
 Sonuçlar:
-
 <!-- expected_similarity=0.3 -->
 ```json
 {
@@ -99,7 +111,6 @@ done
 ```
 
 Sonuçlar:
-
 <!-- expected_similarity=0.3 -->
 ```HTML
 <!DOCTYPE html>
@@ -117,13 +128,13 @@ Sonuçlar:
 echo "You can now visit your web server at https://$MY_STATIC_WEB_APP_URL"
 ```
 
-## Sonraki Adımlar
+## GitHub şablonu kullanma
 
-Tebrikler! Azure CLI kullanarak Azure Static Web Apps'e başarıyla statik bir web uygulaması dağıttınız. Artık statik web uygulamasının nasıl dağıtılacağı hakkında temel bilgilere sahip olduğunuz için, Azure Static Web Apps'in daha gelişmiş özelliklerini ve işlevselliğini keşfedebilirsiniz.
+Azure CLI kullanarak Azure Static Web Apps'e başarıyla statik bir web uygulaması dağıttınız. Artık statik web uygulamasının nasıl dağıtılacağı hakkında temel bilgilere sahip olduğunuz için, Azure Static Web Apps'in daha gelişmiş özelliklerini ve işlevselliğini keşfedebilirsiniz.
 
-GitHub şablon deposunu kullanmak istiyorsanız aşağıdaki ek adımları izleyin.
+GitHub şablon deposunu kullanmak istiyorsanız şu adımları izleyin:
 
-https://github.com/login/device GitHub kişisel erişim belirtecinizi etkinleştirmek ve almak için adresine gidin ve 329B-3945 kullanıcı kodunu girin.
+https://github.com/login/device GitHub kişisel erişim belirtecinizi etkinleştirmek ve almak için GitHub'dan aldığınız kodu girin.
 
 1. Şuraya git: https://github.com/login/device.
 2. Konsolunuzun iletisinin görüntülendiği kullanıcı kodunu girin.
@@ -135,13 +146,22 @@ https://github.com/login/device GitHub kişisel erişim belirtecinizi etkinleşt
 1. Betiği çalıştırırken depo URL'sini aldığınızda, depo URL'sini kopyalayın ve tarayıcınıza yapıştırın.
 2. `Actions` sekmesini seçin.
 
-   Bu noktada Azure, statik web uygulamanızı desteklemek için kaynaklar oluşturmuştur. Çalışan iş akışının yanındaki simge yeşil arka plan ( ) ile onay işaretine dönüşene kadar bekleyin. Bu işlemin yürütülmesi birkaç dakika sürebilir.
+   Bu noktada Azure, statik web uygulamanızı desteklemek için kaynaklar oluşturmuştur. Çalışan iş akışının yanındaki simge yeşil arka planlı bir onay işaretine dönüşene kadar bekleyin. Bu işlemin yürütülmesi birkaç dakika sürebilir.
 
 3. Başarı simgesi görüntülendiğinde iş akışı tamamlanır ve konsol pencerenize geri dönebilirsiniz.
 4. Web sitenizin URL'sini sorgulamak için aşağıdaki komutu çalıştırın.
-
+```bash
    az staticwebapp show \
      --name $MY_STATIC_WEB_APP_NAME \
      --query "defaultHostname"
-
+```
 5. Web sitenize gitmek için URL'yi tarayıcınıza kopyalayın.
+
+## Kaynakları temizleme (isteğe bağlı)
+
+Bu uygulamayı kullanmaya devam etmeyecekseniz az group delete komutunu kullanarak [kaynak grubunu ve statik web uygulamasını silin](/cli/azure/group#az-group-delete) .
+
+## Sonraki adımlar
+
+> [!div class="nextstepaction"]
+> [API ekleme](add-api.md)
