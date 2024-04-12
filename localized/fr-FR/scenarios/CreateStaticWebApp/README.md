@@ -1,23 +1,35 @@
 ---
-title: Créer un site statique avec Azure CLI
-description: Ce tutoriel montre comment créer un site statique sur Azure.
-author: namanparikh
-ms.author: namanparikh
-ms.topic: article
-ms.date: 02/06/2024
-ms.custom: innovation-engine
-ms.service: Azure
+title: "Démarrage rapide\_: Création de votre premier site statique avec le service Azure Static Web Apps à l’aide de l’interface CLI"
+description: Apprenez à déployer un site statique sur Azure Static Web Apps avec l’interface Azure CLI.
+services: static-web-apps
+author: craigshoemaker
+ms.service: static-web-apps
+ms.topic: quickstart
+ms.date: 03/21/2024
+ms.author: cshoe
+ms.custom: 'mode-api, devx-track-azurecli, innovation-engine, linux-related-content'
+ms.devlang: azurecli
 ---
 
-# Démarrage rapide d’Azure Static Web Apps : création de votre premier site statique avec Azure CLI
+# Démarrage rapide : Création de votre premier site statique à l’aide de l’interface Azure CLI
 
 [![Déployer dans Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262845)
 
-Azure Static Web Apps publie des sites web de production en créant des applications à partir d'un référentiel de code. Dans ce guide de démarrage rapide, vous allez déployer une application web dans Azure Static Web Apps avec l’interface Azure CLI.
+Azure Static Web Apps publie des sites web de production en créant des applications à partir d'un référentiel de code.
+
+Dans ce guide de démarrage rapide, vous déployez une application web dans Azure Static Web Apps à l’aide de l’interface Azure CLI.
+
+## Prérequis
+
+- Compte [GitHub](https://github.com).
+- Compte [Azure](https://portal.azure.com).
+  - Si vous n’avez pas d’abonnement Azure, vous pouvez [créer un compte Azure gratuit](https://azure.microsoft.com/free).
+- [Azure CLI](/cli/azure/install-azure-cli) version 2.29.0 ou ultérieure installée.
+- [Une configuration Git](https://www.git-scm.com/downloads). 
 
 ## Définissez des variables d’environnement
 
-La première étape de ce tutoriel définit des variables d’environnement.
+La première étape de ce guide de démarrage rapide consiste à définir des variables d’environnement.
 
 ```bash
 export RANDOM_ID="$(openssl rand -hex 3)"
@@ -30,16 +42,17 @@ export MY_STATIC_WEB_APP_NAME="myStaticWebApp$RANDOM_ID"
 
 (Facultatif) cet article utilise un référentiel de modèles GitHub comme autre moyen de faciliter la prise en main. Le modèle comprend une application de démarrage déployée sur Azure Static Web Apps.
 
-- Accédez à l’emplacement suivant pour créer un nouveau référentiel : https://github.com/staticwebdev/vanilla-basic/generate
-- Nommez votre référentiel `my-first-static-web-app`
+1. Accédez à l’emplacement suivant pour créer un nouveau référentiel : https://github.com/staticwebdev/vanilla-basic/generate.
+2. Nommez votre dépôt `my-first-static-web-app`.
 
-> **Remarque :** Azure Static Web Apps nécessite au moins un fichier HTML pour pouvoir créer une application web. Le référentiel que vous créez lors de cette étape comprend un seul fichier `index.html`.
+> [!NOTE]
+> Azure Static Web Apps nécessite au moins un fichier HTML pour pouvoir créer une application web. Le référentiel que vous créez lors de cette étape comprend un seul fichier `index.html`.
 
-Sélectionnez `Create repository`.
+3. Cliquez sur **Create repository** (Créer le dépôt).
 
 ## Déployer une application web statique
 
-Vous pouvez déployer l’application en tant qu’application web statique depuis Azure CLI.
+Déployez l’application en tant qu’application web statique depuis Azure CLI.
 
 1. Créez un groupe de ressources.
 
@@ -50,7 +63,6 @@ az group create \
 ```
 
 Résultats :
-
 <!-- expected_similarity=0.3 -->
 ```json
 {
@@ -99,7 +111,6 @@ done
 ```
 
 Résultats :
-
 <!-- expected_similarity=0.3 -->
 ```HTML
 <!DOCTYPE html>
@@ -117,13 +128,13 @@ Résultats :
 echo "You can now visit your web server at https://$MY_STATIC_WEB_APP_URL"
 ```
 
-## Étapes suivantes
+## Utilisez un modèle GitHub
 
-Félicitations ! Vous avez déployé une application web statique sur Azure Static Web Apps avec Azure CLI. Maintenant que vous avez une compréhension de base de la façon de déployer une application web statique, vous pouvez explorer des fonctionnalités et des fonctionnalités plus avancées d’Azure Static Web Apps.
+Vous avez réussi à déployer une application web statique sur Azure Static Web Apps avec Azure CLI. Maintenant que vous avez une compréhension de base de la façon de déployer une application web statique, vous pouvez explorer des fonctionnalités et des fonctionnalités plus avancées d’Azure Static Web Apps.
 
-Si vous souhaitez utiliser le référentiel de modèles GitHub, suivez les étapes supplémentaires ci-dessous.
+Si vous souhaitez utiliser le référentiel de modèles GitHub, suivez ces étapes :
 
-Accédez à https://github.com/login/device et entrez le code utilisateur 329B-3945 pour activer et récupérer votre jeton d’accès personnel GitHub.
+Accédez à https://github.com/login/device et entrez le code que vous obtenez sur GitHub pour activer et récupérer votre jeton d’accès personnel GitHub.
 
 1. Accédez à https://github.com/login/device.
 2. Entrez le code utilisateur tel qu’il est affiché dans le message de votre console.
@@ -135,13 +146,22 @@ Accédez à https://github.com/login/device et entrez le code utilisateur 329B-3
 1. Lorsque vous obtenez l’URL du référentiel lors de l’exécution du script, copiez l’URL du référentiel et collez-la dans votre navigateur.
 2. Sélectionnez l'onglet `Actions`.
 
-   À ce stade, Azure crée les ressources pour prendre en charge votre application Web statique. Attendez que l’icône en regard du flux de travail en cours d’exécution devienne une coche avec un arrière-plan vert (). L’opération peut prendre quelques minutes.
+   À ce stade, Azure crée les ressources pour prendre en charge votre application Web statique. Attendez que l’icône en regard du flux de travail en cours d’exécution devienne une coche avec un arrière-plan vert. L’opération peut prendre quelques minutes.
 
 3. Une fois l’icône de réussite affichée, le flux de travail est terminé et vous pouvez revenir à la fenêtre de console.
 4. Exécutez la commande suivante pour interroger l’URL de votre site Web.
-
-   afficher az staticwebapp \
+```bash
+   az staticwebapp show \
      --name $MY_STATIC_WEB_APP_NAME \
-     --query « defaultHostname »
-
+     --query "defaultHostname"
+```
 5. Copiez l’URL dans votre navigateur pour accéder à votre site web.
+
+## Nettoyez les ressources (facultatif)
+
+Si vous ne comptez pas continuer à utiliser cette application, supprimez le groupe de ressources et l’application Web statique en exécutant la commande [az group delete](/cli/azure/group#az-group-delete).
+
+## Étapes suivantes
+
+> [!div class="nextstepaction"]
+> [Ajouter une API](add-api.md)
