@@ -1,51 +1,61 @@
 ---
-title: Развертывание масштабируемого кластера и безопасного Служба Azure Kubernetes с помощью Azure CLI
-description: 'В этом руководстве мы пошаговые инструкции по созданию веб-приложения Azure Kubernetes, защищенного через https.'
-author: mbifeld
-ms.author: mbifeld
-ms.topic: article
-ms.date: 11/28/2023
-ms.custom: innovation-engine
+title: Краткое руководство. Развертывание кластера Служба Azure Kubernetes (AKS) с помощью Azure CLI
+description: 'Узнайте, как быстро развернуть кластер Kubernetes и развернуть приложение в Служба Azure Kubernetes (AKS) с помощью Azure CLI.'
+ms.topic: quickstart
+ms.date: 04/09/2024
+author: tamram
+ms.author: tamram
+ms.custom: 'H1Hack27Feb2017, mvc, devcenter, devx-track-azurecli, mode-api, innovation-engine, linux-related-content'
 ---
 
-# Краткое руководство. Развертывание масштабируемого и безопасного кластера Служба Azure Kubernetes с помощью Azure CLI
+# Краткое руководство. Развертывание кластера Служба Azure Kubernetes (AKS) с помощью Azure CLI
 
 [![Развертывание в Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262758)
 
-Добро пожаловать в это руководство, где мы пошаговые инструкции по созданию веб-приложения Azure Kubernetes, защищенного через https. В этом руководстве предполагается, что вы уже вошли в Azure CLI и выбрали подписку для использования с интерфейсом командной строки. Кроме того, предполагается, что установлен Helm ([инструкции можно найти здесь](https://helm.sh/docs/intro/install/)).
+Служба Azure Kubernetes (AKS) — это управляемая служба Kubernetes, которая позволяет быстро развертывать кластеры и управлять ими. Из этого краткого руководства вы узнаете, как выполнять следующие задачи:
+
+- Развертывание кластера AKS с помощью Azure CLI.
+- Запустите пример мультиконтейнерного приложения с группой микрослужб и веб-интерфейсов с имитацией сценария розничной торговли.
+
+> [!NOTE]
+> Чтобы приступить к быстрой подготовке кластера AKS, в этой статье содержатся действия по развертыванию кластера с параметрами по умолчанию только для оценки. Прежде чем развертывать готовый к работе кластер, рекомендуется ознакомиться с базовой [эталонной архитектурой][baseline-reference-architecture] , чтобы понять, как она соответствует вашим бизнес-требованиям.
+
+## Подготовка к работе
+
+В этом руководстве предполагается, что у вас есть некоторое представление о функциях Kubernetes. Дополнительные сведения см. в статье [Ключевые концепции Kubernetes для службы Azure Kubernetes (AKS)][kubernetes-concepts].
+
+- [!INCLUDE [quickstarts-free-trial-note](../../../includes/quickstarts-free-trial-note.md)]
+
+[!INCLUDE [azure-cli-prepare-your-environment-no-header.md](~/reusable-content/azure-cli/azure-cli-prepare-your-environment-no-header.md)]
+
+- Для работы с этой статьей требуется Azure CLI версии 2.0.64 или более поздней. Если вы используете Azure Cloud Shell, последняя версия уже установлена там.
+- Убедитесь, что удостоверение, которое вы используете для создания кластера, имеет соответствующие минимальные разрешения. Дополнительные сведения о доступе и удостоверении для AKS см. в статье [Возможности контроля доступа и идентификации в Службе Azure Kubernetes (AKS)](../concepts-identity.md).
+- Если у вас несколько подписок Azure, выберите соответствующий идентификатор подписки, в котором необходимо выставлять счета за ресурсы с помощью [команды az account set](/cli/azure/account#az-account-set) .
 
 ## Определение переменных среды
 
-Первым шагом в этом руководстве является определение переменных среды.
+Определите следующие переменные среды для использования в этом кратком руководстве.
 
-```bash
+```azurecli-interactive
 export RANDOM_ID="$(openssl rand -hex 3)"
-export NETWORK_PREFIX="$(($RANDOM % 254 + 1))"
-export SSL_EMAIL_ADDRESS="$(az account show --query user.name --output tsv)"
 export MY_RESOURCE_GROUP_NAME="myAKSResourceGroup$RANDOM_ID"
 export REGION="westeurope"
 export MY_AKS_CLUSTER_NAME="myAKSCluster$RANDOM_ID"
-export MY_PUBLIC_IP_NAME="myPublicIP$RANDOM_ID"
 export MY_DNS_LABEL="mydnslabel$RANDOM_ID"
-export MY_VNET_NAME="myVNet$RANDOM_ID"
-export MY_VNET_PREFIX="10.$NETWORK_PREFIX.0.0/16"
-export MY_SN_NAME="mySN$RANDOM_ID"
-export MY_SN_PREFIX="10.$NETWORK_PREFIX.0.0/22"
-export FQDN="${MY_DNS_LABEL}.${REGION}.cloudapp.azure.com"
 ```
 
 ## Создание или изменение группы ресурсов
 
-Группа ресурсов — это контейнер для связанных ресурсов. Все ресурсы должны быть помещены в группу ресурсов. Мы создадим его для этого руководства. Следующая команда создает группу ресурсов с ранее определенными параметрами $MY_RESOURCE_GROUP_NAME и $REGION.
+[Группа ресурсов Azure][azure-resource-group] — это логическая группа, в которой развертываются и управляются ресурсы Azure. При создании группы ресурсов вам будет предложено указать расположение. Это расположение хранилища метаданных группы ресурсов и место, где ресурсы выполняются в Azure, если вы не указываете другой регион во время создания ресурса.
 
-```bash
+Создайте группу ресурсов с помощью [`az group create`][az-group-create] команды.
+
+```azurecli-interactive
 az group create --name $MY_RESOURCE_GROUP_NAME --location $REGION
 ```
 
 Результаты.
-
 <!-- expected_similarity=0.3 -->
-
 ```JSON
 {
   "id": "/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/myAKSResourceGroupxxxxxx",
@@ -60,343 +70,373 @@ az group create --name $MY_RESOURCE_GROUP_NAME --location $REGION
 }
 ```
 
-## Создание виртуальной сети и подсети
-
-Виртуальная сеть — это базовый стандартный блок для частных сетей в Azure. Azure виртуальная сеть позволяет ресурсам Azure, таким как виртуальные машины, безопасно взаимодействовать друг с другом и Интернетом.
-
-```bash
-az network vnet create \
-    --resource-group $MY_RESOURCE_GROUP_NAME \
-    --location $REGION \
-    --name $MY_VNET_NAME \
-    --address-prefix $MY_VNET_PREFIX \
-    --subnet-name $MY_SN_NAME \
-    --subnet-prefixes $MY_SN_PREFIX
-```
-
-Результаты.
-
-<!-- expected_similarity=0.3 -->
-
-```JSON
-{
-  "newVNet": {
-    "addressSpace": {
-      "addressPrefixes": [
-        "10.xxx.0.0/16"
-      ]
-    },
-    "enableDdosProtection": false,
-    "id": "/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/myAKSResourceGroupxxxxxx/providers/Microsoft.Network/virtualNetworks/myVNetxxx",
-    "location": "eastus",
-    "name": "myVNetxxx",
-    "provisioningState": "Succeeded",
-    "resourceGroup": "myAKSResourceGroupxxxxxx",
-    "subnets": [
-      {
-        "addressPrefix": "10.xxx.0.0/22",
-        "delegations": [],
-        "id": "/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/myAKSResourceGroupxxxxxx/providers/Microsoft.Network/virtualNetworks/myVNetxxx/subnets/mySNxxx",
-        "name": "mySNxxx",
-        "privateEndpointNetworkPolicies": "Disabled",
-        "privateLinkServiceNetworkPolicies": "Enabled",
-        "provisioningState": "Succeeded",
-        "resourceGroup": "myAKSResourceGroupxxxxxx",
-        "type": "Microsoft.Network/virtualNetworks/subnets"
-      }
-    ],
-    "type": "Microsoft.Network/virtualNetworks",
-    "virtualNetworkPeerings": []
-  }
-}
-```
-
-## Регистрация в поставщиках ресурсов Azure AKS
-
-Убедитесь, что в подписке зарегистрированы поставщики Microsoft.OperationsManagement и Microsoft.OperationalInsights. Эти поставщики ресурсов Azure требуются для поддержки [Аналитики контейнеров](https://docs.microsoft.com/azure/azure-monitor/containers/container-insights-overview). Чтобы проверка состояние регистрации, выполните следующие команды.
-
-```bash
-az provider register --namespace Microsoft.Insights
-az provider register --namespace Microsoft.OperationsManagement
-az provider register --namespace Microsoft.OperationalInsights
-```
-
 ## Создание кластера AKS
 
-Создайте кластер AKS с помощью команды az aks create, задав для нее параметр --enable-addons monitoring, чтобы включить аналитику для контейнеров. В следующем примере создается кластер с поддержкой автомасштабирования, зоны доступности.
+Создайте кластер AKS с помощью [`az aks create`][az-aks-create] команды. В следующем примере создается кластер с одним узлом и включается управляемое удостоверение, назначаемое системой.
 
-Это займет несколько минут.
-
-```bash
-export MY_SN_ID=$(az network vnet subnet list --resource-group $MY_RESOURCE_GROUP_NAME --vnet-name $MY_VNET_NAME --query "[0].id" --output tsv)
-az aks create \
-  --resource-group $MY_RESOURCE_GROUP_NAME \
-  --name $MY_AKS_CLUSTER_NAME \
-  --auto-upgrade-channel stable \
-  --enable-cluster-autoscaler \
-  --enable-addons monitoring \
-  --location $REGION \
-  --node-count 1 \
-  --min-count 1 \
-  --max-count 3 \
-  --network-plugin azure \
-  --network-policy azure \
-  --vnet-subnet-id $MY_SN_ID \
-  --no-ssh-key \
-  --node-vm-size Standard_DS2_v2 \
-  --zones 1 2 3
+```azurecli-interactive
+az aks create --resource-group $MY_RESOURCE_GROUP_NAME --name $MY_AKS_CLUSTER_NAME --enable-managed-identity --node-count 1 --generate-ssh-keys
 ```
+
+> [!NOTE]
+> При создании нового кластера AKS автоматически создает вторую группу ресурсов для хранения ресурсов AKS. Дополнительные сведения см. в разделе [Почему с AKS создаются две группы ресурсов?](../faq.md#why-are-two-resource-groups-created-with-aks)
 
 ## Подключение к кластеру
 
-Кластером Kubernetes можно управлять при помощи kubectl клиента командной строки Kubernetes. Kubectl уже установлен, если вы используете Azure Cloud Shell.
+Кластером Kubernetes можно управлять при помощи [kubectl][kubectl] клиента командной строки Kubernetes. Если вы используете Azure Cloud Shell, `kubectl` уже установлен. Чтобы установить `kubectl` локально, используйте [`az aks install-cli`][az-aks-install-cli] команду.
 
-1. Установите az aks CLI локально с помощью команды az aks install-cli
+1. Настройте в `kubectl` подключение к кластеру Kubernetes, выполнив команду [az aks get-credentials][az-aks-get-credentials]. Эта команда скачивает учетные данные и настраивает интерфейс командной строки Kubernetes для их использования.
 
-   ```bash
-   if ! [ -x "$(command -v kubectl)" ]; then az aks install-cli; fi
-   ```
+    ```azurecli-interactive
+    az aks get-credentials --resource-group $MY_RESOURCE_GROUP_NAME --name $MY_AKS_CLUSTER_NAME
+    ```
 
-2. Настройте kubectl для подключения к кластеру Kubernetes с помощью команды az aks get-credentials. Приведенная ниже команда:
+1. Проверьте подключение к кластеру, выполнив команду [kubectl get][kubectl-get]. Эта команда возвращает список узлов кластера.
 
-   - скачивает учетные данные и настраивает интерфейс командной строки Kubernetes для их использования;
-   - Использует ~/.kube/config, расположение по умолчанию для файла конфигурации Kubernetes. Чтобы указать другое расположение файла конфигурации Kubernetes, используйте аргумент --file.
-
-   > [!WARNING]
-   > При этом будут перезаписаны все существующие учетные данные с той же записью.
-
-   ```bash
-   az aks get-credentials --resource-group $MY_RESOURCE_GROUP_NAME --name $MY_AKS_CLUSTER_NAME --overwrite-existing
-   ```
-
-3. Проверьте подключение к кластеру, выполнив команду kubectl get. Эта команда возвращает список узлов кластера.
-
-   ```bash
-   kubectl get nodes
-   ```
-
-## Установка контроллера входящего трафика NGINX
-
-```bash
-export MY_STATIC_IP=$(az network public-ip create --resource-group MC_${MY_RESOURCE_GROUP_NAME}_${MY_AKS_CLUSTER_NAME}_${REGION} --location ${REGION} --name ${MY_PUBLIC_IP_NAME} --dns-name ${MY_DNS_LABEL} --sku Standard --allocation-method static --version IPv4 --zone 1 2 3 --query publicIp.ipAddress -o tsv)
-helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
-helm repo update
-helm upgrade --install ingress-nginx ingress-nginx/ingress-nginx \
-  --namespace ingress-nginx \
-  --create-namespace \
-  --set controller.service.annotations."service\.beta\.kubernetes\.io/azure-dns-label-name"=$MY_DNS_LABEL \
-  --set controller.service.loadBalancerIP=$MY_STATIC_IP \
-  --set controller.service.annotations."service\.beta\.kubernetes\.io/azure-load-balancer-health-probe-request-path"=/healthz \
-  --wait
-```
+    ```azurecli-interactive
+    kubectl get nodes
+    ```
 
 ## Развертывание приложения
 
-Файл манифеста Kubernetes используется для определения требуемого состояния кластера, например выполняемых в нем образов контейнеров.
+Чтобы развернуть приложение, используйте файл манифеста для создания всех объектов, необходимых для запуска [приложения](https://github.com/Azure-Samples/aks-store-demo) AKS Store. [Файл манифеста Kubernetes][kubernetes-deployment] используется для определения требуемого состояния кластера, например выполняемых в нем образов контейнеров. Манифест включает следующие развертывания и службы Kubernetes:
 
-В этом кратком руководстве вы примените манифест для создания всех объектов, необходимых для запуска приложения Azure для голосования. Этот манифест содержит два развертывания Kubernetes:
+:::image type="content" source="media/quick-kubernetes-deploy-portal/aks-store-architecture.png" alt-text="Снимок экрана: пример архитектуры Магазина Azure." lightbox="media/quick-kubernetes-deploy-portal/aks-store-architecture.png":::
 
-- пример приложения Azure для голосования на языке Python;
-- экземпляр Redis.
+- **Интерфейс** магазина: веб-приложение для пользователей для просмотра продуктов и размещения заказов.
+- **Служба** продуктов: отображает сведения о продукте.
+- **Служба** заказов: помещает заказы.
+- **Rabbit MQ**: очередь сообщений для очереди заказов.
 
-Кроме того, создаются две Службы Kubernetes:
+> [!NOTE]
+> Не рекомендуется запускать контейнеры с отслеживанием состояния, такие как Rabbit MQ, без постоянного хранения для рабочей среды. Они используются здесь для простоты, но мы рекомендуем использовать управляемые службы, такие как Azure CosmosDB или Служебная шина Azure.
 
-- внутренняя служба для экземпляра Redis;
-- внешняя служба для доступа к приложению Azure для голосования из Интернета.
+1. Создайте файл с именем `aks-store-quickstart.yaml` и скопируйте его в следующем манифесте:
 
-Наконец, создается ресурс входящего трафика для маршрутизации трафика в приложение Azure Vote.
+    ```yaml
+    apiVersion: apps/v1
+    kind: Deployment
+    metadata:
+      name: rabbitmq
+    spec:
+      replicas: 1
+      selector:
+        matchLabels:
+          app: rabbitmq
+      template:
+        metadata:
+          labels:
+            app: rabbitmq
+        spec:
+          nodeSelector:
+            "kubernetes.io/os": linux
+          containers:
+          - name: rabbitmq
+            image: mcr.microsoft.com/mirror/docker/library/rabbitmq:3.10-management-alpine
+            ports:
+            - containerPort: 5672
+              name: rabbitmq-amqp
+            - containerPort: 15672
+              name: rabbitmq-http
+            env:
+            - name: RABBITMQ_DEFAULT_USER
+              value: "username"
+            - name: RABBITMQ_DEFAULT_PASS
+              value: "password"
+            resources:
+              requests:
+                cpu: 10m
+                memory: 128Mi
+              limits:
+                cpu: 250m
+                memory: 256Mi
+            volumeMounts:
+            - name: rabbitmq-enabled-plugins
+              mountPath: /etc/rabbitmq/enabled_plugins
+              subPath: enabled_plugins
+          volumes:
+          - name: rabbitmq-enabled-plugins
+            configMap:
+              name: rabbitmq-enabled-plugins
+              items:
+              - key: rabbitmq_enabled_plugins
+                path: enabled_plugins
+    ---
+    apiVersion: v1
+    data:
+      rabbitmq_enabled_plugins: |
+        [rabbitmq_management,rabbitmq_prometheus,rabbitmq_amqp1_0].
+    kind: ConfigMap
+    metadata:
+      name: rabbitmq-enabled-plugins
+    ---
+    apiVersion: v1
+    kind: Service
+    metadata:
+      name: rabbitmq
+    spec:
+      selector:
+        app: rabbitmq
+      ports:
+        - name: rabbitmq-amqp
+          port: 5672
+          targetPort: 5672
+        - name: rabbitmq-http
+          port: 15672
+          targetPort: 15672
+      type: ClusterIP
+    ---
+    apiVersion: apps/v1
+    kind: Deployment
+    metadata:
+      name: order-service
+    spec:
+      replicas: 1
+      selector:
+        matchLabels:
+          app: order-service
+      template:
+        metadata:
+          labels:
+            app: order-service
+        spec:
+          nodeSelector:
+            "kubernetes.io/os": linux
+          containers:
+          - name: order-service
+            image: ghcr.io/azure-samples/aks-store-demo/order-service:latest
+            ports:
+            - containerPort: 3000
+            env:
+            - name: ORDER_QUEUE_HOSTNAME
+              value: "rabbitmq"
+            - name: ORDER_QUEUE_PORT
+              value: "5672"
+            - name: ORDER_QUEUE_USERNAME
+              value: "username"
+            - name: ORDER_QUEUE_PASSWORD
+              value: "password"
+            - name: ORDER_QUEUE_NAME
+              value: "orders"
+            - name: FASTIFY_ADDRESS
+              value: "0.0.0.0"
+            resources:
+              requests:
+                cpu: 1m
+                memory: 50Mi
+              limits:
+                cpu: 75m
+                memory: 128Mi
+          initContainers:
+          - name: wait-for-rabbitmq
+            image: busybox
+            command: ['sh', '-c', 'until nc -zv rabbitmq 5672; do echo waiting for rabbitmq; sleep 2; done;']
+            resources:
+              requests:
+                cpu: 1m
+                memory: 50Mi
+              limits:
+                cpu: 75m
+                memory: 128Mi
+    ---
+    apiVersion: v1
+    kind: Service
+    metadata:
+      name: order-service
+    spec:
+      type: ClusterIP
+      ports:
+      - name: http
+        port: 3000
+        targetPort: 3000
+      selector:
+        app: order-service
+    ---
+    apiVersion: apps/v1
+    kind: Deployment
+    metadata:
+      name: product-service
+    spec:
+      replicas: 1
+      selector:
+        matchLabels:
+          app: product-service
+      template:
+        metadata:
+          labels:
+            app: product-service
+        spec:
+          nodeSelector:
+            "kubernetes.io/os": linux
+          containers:
+          - name: product-service
+            image: ghcr.io/azure-samples/aks-store-demo/product-service:latest
+            ports:
+            - containerPort: 3002
+            resources:
+              requests:
+                cpu: 1m
+                memory: 1Mi
+              limits:
+                cpu: 1m
+                memory: 7Mi
+    ---
+    apiVersion: v1
+    kind: Service
+    metadata:
+      name: product-service
+    spec:
+      type: ClusterIP
+      ports:
+      - name: http
+        port: 3002
+        targetPort: 3002
+      selector:
+        app: product-service
+    ---
+    apiVersion: apps/v1
+    kind: Deployment
+    metadata:
+      name: store-front
+    spec:
+      replicas: 1
+      selector:
+        matchLabels:
+          app: store-front
+      template:
+        metadata:
+          labels:
+            app: store-front
+        spec:
+          nodeSelector:
+            "kubernetes.io/os": linux
+          containers:
+          - name: store-front
+            image: ghcr.io/azure-samples/aks-store-demo/store-front:latest
+            ports:
+            - containerPort: 8080
+              name: store-front
+            env:
+            - name: VUE_APP_ORDER_SERVICE_URL
+              value: "http://order-service:3000/"
+            - name: VUE_APP_PRODUCT_SERVICE_URL
+              value: "http://product-service:3002/"
+            resources:
+              requests:
+                cpu: 1m
+                memory: 200Mi
+              limits:
+                cpu: 1000m
+                memory: 512Mi
+    ---
+    apiVersion: v1
+    kind: Service
+    metadata:
+      name: store-front
+    spec:
+      ports:
+      - port: 80
+        targetPort: 8080
+      selector:
+        app: store-front
+      type: LoadBalancer
+    ```
 
-Тестовый файл YML приложения для голосования уже подготовлен. Чтобы развернуть это приложение, выполните следующую команду.
+    Сведения о разбивке файлов манифеста YAML см. в разделе ["Развертывания" и "Манифесты](../concepts-clusters-workloads.md#deployments-and-yaml-manifests) YAML".
 
-```bash
-kubectl apply -f azure-vote-start.yml
-```
+    Если вы создаете и сохраняете файл YAML локально, вы можете отправить файл манифеста в каталог по умолчанию в CloudShell, нажав **кнопку "Отправить и скачать файлы** " и выбрав файл из локальной файловой системы.
+
+1. Разверните приложение с помощью [`kubectl apply`][kubectl-apply] команды и укажите имя манифеста YAML.
+
+    ```azurecli-interactive
+    kubectl apply -f aks-store-quickstart.yaml
+    ```
 
 ## Тестирование приложения
 
-Убедитесь, что приложение запущено путем посещения общедоступного IP-адреса или URL-адреса приложения. URL-адрес приложения можно найти, выполнив следующую команду:
+Чтобы убедиться, что приложение запущено, посетите общедоступный IP-адрес или URL-адрес приложения.
 
-> [!Note]
-> Часто требуется 2–3 минуты для создания POD и доступ к сайту через HTTP
+Получите URL-адрес приложения с помощью следующих команд:
 
-```bash
-runtime="5 minute";
-endtime=$(date -ud "$runtime" +%s);
-while [[ $(date -u +%s) -le $endtime ]]; do
-   STATUS=$(kubectl get pods -l app=azure-vote-front -o 'jsonpath={..status.conditions[?(@.type=="Ready")].status}'); echo $STATUS;
-   if [ "$STATUS" == 'True' ]; then
-      break;
+```azurecli-interactive
+runtime="5 minute"
+endtime=$(date -ud "$runtime" +%s)
+while [[ $(date -u +%s) -le $endtime ]]
+do
+   STATUS=$(kubectl get pods -l app=store-front -o 'jsonpath={..status.conditions[?(@.type=="Ready")].status}')
+   echo $STATUS
+   if [ "$STATUS" == 'True' ]
+   then
+      export IP_ADDRESS=$(kubectl get service store-front --output 'jsonpath={..status.loadBalancer.ingress[0].ip}')
+      echo "Service IP Address: $IP_ADDRESS"
+      break
    else
-      sleep 10;
-   fi;
+      sleep 10
+   fi
 done
 ```
 
-```bash
-curl "http://$FQDN"
+```azurecli-interactive
+curl $IP_ADDRESS
 ```
 
 Результаты.
-
 <!-- expected_similarity=0.3 -->
-
-```HTML
-<!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-    <link rel="stylesheet" type="text/css" href="/static/default.css">
-    <title>Azure Voting App</title>
-
-    <script language="JavaScript">
-        function send(form){
-        }
-    </script>
-
-</head>
-<body>
-    <div id="container">
-        <form id="form" name="form" action="/"" method="post"><center>
-        <div id="logo">Azure Voting App</div>
-        <div id="space"></div>
-        <div id="form">
-        <button name="vote" value="Cats" onclick="send()" class="button button1">Cats</button>
-        <button name="vote" value="Dogs" onclick="send()" class="button button2">Dogs</button>
-        <button name="vote" value="reset" onclick="send()" class="button button3">Reset</button>
-        <div id="space"></div>
-        <div id="space"></div>
-        <div id="results"> Cats - 0 | Dogs - 0 </div>
-        </form>
-        </div>
-    </div>
-</body>
+```JSON
+<!doctype html>
+<html lang="">
+   <head>
+      <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      <link rel="icon" href="/favicon.ico">
+      <title>store-front</title>
+      <script defer="defer" src="/js/chunk-vendors.df69ae47.js"></script>
+      <script defer="defer" src="/js/app.7e8cfbb2.js"></script>
+      <link href="/css/app.a5dc49f6.css" rel="stylesheet">
+   </head>
+   <body>
+      <div id="app"></div>
+   </body>
 </html>
 ```
 
-## Добавление завершения HTTPS в личный домен
-
-На этом этапе руководства у вас есть веб-приложение AKS с NGINX в качестве контроллера входящего трафика и личного домена, который можно использовать для доступа к приложению. Следующий шаг — добавить SSL-сертификат в домен, чтобы пользователи могли безопасно связаться с приложением через HTTPS.
-
-## Настройка диспетчера сертификатов
-
-Чтобы добавить HTTPS, мы будем использовать диспетчер сертификатов. Cert Manager — это средство открытый код, используемое для получения SSL-сертификата и управления ими для развертываний Kubernetes. Диспетчер сертификатов получит сертификаты от различных издателей, как популярных общедоступных издателей, так и частных издателей, и гарантирует, что сертификаты действительны и актуальны, и попытаются обновить сертификаты в настроенное время до истечения срока действия.
-
-1. Чтобы установить cert-manager, сначала необходимо создать пространство имен для его запуска. В этом руководстве показано, как установить cert-manager в пространство имен cert-manager. Можно запустить диспетчер сертификатов в другом пространстве имен, хотя вам потребуется внести изменения в манифесты развертывания.
-
-   ```bash
-   kubectl create namespace cert-manager
-   ```
-
-2. Теперь можно установить cert-manager. Все ресурсы включены в один файл манифеста YAML. Это можно установить, выполнив следующие действия:
-
-   ```bash
-   kubectl apply -f https://github.com/jetstack/cert-manager/releases/download/v1.7.0/cert-manager.crds.yaml
-   ```
-
-3. Добавьте certmanager.k8s.io/disable-validation метку true в пространство имен cert-manager, выполнив следующую команду. Это позволит системным ресурсам, которым диспетчер сертификатов требуется создать TLS начальной загрузки в собственном пространстве имен.
-
-   ```bash
-   kubectl label namespace cert-manager certmanager.k8s.io/disable-validation=true
-   ```
-
-## Получение сертификата с помощью диаграмм Helm
-
-Helm — это средство развертывания Kubernetes для автоматизации создания, упаковки, настройки и развертывания приложений и служб в кластерах Kubernetes.
-
-Cert-manager предоставляет диаграммы Helm в качестве первого класса метода установки в Kubernetes.
-
-1. Добавление репозитория Jetstack Helm
-
-   Этот репозиторий является единственным поддерживаемым источником диаграмм cert-manager. Есть некоторые другие зеркало и копии через Интернет, но они полностью неофициальны и могут представлять угрозу безопасности.
-
-   ```bash
-   helm repo add jetstack https://charts.jetstack.io
-   ```
-
-2. Обновление локальной диаграммы Helm кэш репозитория
-
-   ```bash
-   helm repo update
-   ```
-
-3. Установите надстройку Cert-Manager через helm, выполнив следующую команду:
-
-   ```bash
-   helm install cert-manager jetstack/cert-manager --namespace cert-manager --version v1.7.0
-   ```
-
-4. Применение YAML-файла издателя сертификатов
-
-   ClusterIssuers — это ресурсы Kubernetes, представляющие центры сертификации (ЦС), которые могут создавать подписанные сертификаты, выполняя запросы на подписывание сертификатов. Для всех сертификатов диспетчера сертификатов требуется указанный издатель, который находится в состоянии готовности, чтобы попытаться выполнить запрос.
-   Издатель, который мы используем, можно найти в . `cluster-issuer-prod.yml file`
-
-   ```bash
-   cluster_issuer_variables=$(<cluster-issuer-prod.yml)
-   echo "${cluster_issuer_variables//\$SSL_EMAIL_ADDRESS/$SSL_EMAIL_ADDRESS}" | kubectl apply -f -
-   ```
-
-5. Upate Voting App Application to use Cert-Manager to get a SSL Certificate.
-
-   Полный файл YAML можно найти в `azure-vote-nginx-ssl.yml`
-
-   ```bash
-   azure_vote_nginx_ssl_variables=$(<azure-vote-nginx-ssl.yml)
-   echo "${azure_vote_nginx_ssl_variables//\$FQDN/$FQDN}" | kubectl apply -f -
-   ```
-
-<!--## Validate application is working
-
-Wait for the SSL certificate to issue. The following command will query the 
-status of the SSL certificate for 3 minutes. In rare occasions it may take up to 
-15 minutes for Lets Encrypt to issue a successful challenge and 
-the ready state to be 'True'
-
-```bash
-runtime="10 minute"; endtime=$(date -ud "$runtime" +%s); while [[ $(date -u +%s) -le $endtime ]]; do STATUS=$(kubectl get certificate --output jsonpath={..status.conditions[0].status}); echo $STATUS; if [ "$STATUS" = 'True' ]; then break; else sleep 10; fi; done
+```JSON
+echo "You can now visit your web server at $IP_ADDRESS"
 ```
 
-Validate SSL certificate is True by running the follow command:
+:::image type="content" source="media/quick-kubernetes-deploy-cli/aks-store-application.png" alt-text="Снимок экрана: пример приложения AKS Store." lightbox="media/quick-kubernetes-deploy-cli/aks-store-application.png":::
 
-```bash
-kubectl get certificate --output jsonpath={..status.conditions[0].status}
-```
+## Удаление кластера
 
-Results:
+Если вы не планируете использовать [учебник][aks-tutorial] AKS, очистите ненужные ресурсы, чтобы избежать расходов Azure. Вы можете удалить группу ресурсов, службу контейнеров и все связанные ресурсы с помощью [`az group delete`][az-group-delete] команды.
 
-<!-- expected_similarity=0.3 -->
-<!--
-```ASCII
-True
-```
--->
+> [!NOTE]
+> Кластер AKS был создан с управляемым удостоверением, назначенным системой, который является параметром удостоверения по умолчанию, используемым в этом кратком руководстве. Платформа управляет этим удостоверением, чтобы удалить его вручную не нужно.
 
-## Обзор развертывания AKS, защищенного через HTTPS
+## Следующие шаги
 
-Выполните следующую команду, чтобы получить конечную точку HTTPS для приложения:
+С помощью этого краткого руководства вы развернули кластер Kubernetes и простое многоконтейнерное приложение в нем. Этот пример приложения предназначен только для демонстрационных целей и не представляет все рекомендации для приложений Kubernetes. Рекомендации по созданию полных решений с помощью AKS для рабочей среды см [. в руководстве по][aks-solution-guidance] решению AKS.
 
-> [!Note]
-> Часто требуется 2–3 минуты, чтобы ssl-сертификат пропогател и сайт был доступен через HTTPS.
+Чтобы узнать больше об AKS и ознакомиться с полным примером кода к развертыванию, перейдите к руководству по кластеру Kubernetes.
 
-```bash
-runtime="5 minute";
-endtime=$(date -ud "$runtime" +%s);
-while [[ $(date -u +%s) -le $endtime ]]; do
-   STATUS=$(kubectl get svc --namespace=ingress-nginx ingress-nginx-controller -o jsonpath='{.status.loadBalancer.ingress[0].ip}');
-   echo $STATUS;
-   if [ "$STATUS" == "$MY_STATIC_IP" ]; then
-      break;
-   else
-      sleep 10;
-   fi;
-done
-```
+> [!div class="nextstepaction"]
+> [Руководство по AKS][aks-tutorial]
 
-```bash
-echo "You can now visit your web server at https://$FQDN"
-```
+<!-- LINKS - external -->
+[kubectl]: https://kubernetes.io/docs/reference/kubectl/
+[kubectl-apply]: https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands#apply
+[kubectl-get]: https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands#get
 
-## Next Steps
-
-- [Документация по Службе Azure Kubernetes](https://learn.microsoft.com/azure/aks/)
-- [Создание Реестр контейнеров Azure](https://learn.microsoft.com/azure/aks/tutorial-kubernetes-prepare-acr?tabs=azure-cli)
-- [Масштабирование applciation в AKS](https://learn.microsoft.com/azure/aks/tutorial-kubernetes-scale?tabs=azure-cli)
-- [Обновление приложения в AKS](https://learn.microsoft.com/azure/aks/tutorial-kubernetes-app-update?tabs=azure-cli)
+<!-- LINKS - internal -->
+[kubernetes-concepts]: ../concepts-clusters-workloads.md
+[aks-tutorial]: ../tutorial-kubernetes-prepare-app.md
+[azure-resource-group]: ../../azure-resource-manager/management/overview.md
+[az-aks-create]: /cli/azure/aks#az-aks-create
+[az-aks-get-credentials]: /cli/azure/aks#az-aks-get-credentials
+[az-aks-install-cli]: /cli/azure/aks#az-aks-install-cli
+[az-group-create]: /cli/azure/group#az-group-create
+[az-group-delete]: /cli/azure/group#az-group-delete
+[kubernetes-deployment]: ../concepts-clusters-workloads.md#deployments-and-yaml-manifests
+[aks-solution-guidance]: /azure/architecture/reference-architectures/containers/aks-start-here?toc=/azure/aks/toc.json&bc=/azure/aks/breadcrumb/toc.json
+[baseline-reference-architecture]: /azure/architecture/reference-architectures/containers/aks/baseline-aks?toc=/azure/aks/toc.json&bc=/azure/aks/breadcrumb/toc.json

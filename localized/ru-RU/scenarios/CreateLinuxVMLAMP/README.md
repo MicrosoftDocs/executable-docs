@@ -1,31 +1,40 @@
 ---
-title: Установка стека LEMP в Azure
-description: 'В этом руководстве показано, как установить стек LEMP в Azure.'
-author: mbifeld
-ms.author: mbifeld
-ms.topic: article
-ms.date: 11/28/2023
-ms.custom: innovation-engine
+title: Руководство. Развертывание стека LEMP с помощью WordPress на виртуальной машине
+description: 'В этом руководстве описано, как установить стек LEMP и WordPress на виртуальной машине Linux в Azure.'
+author: chasecrum
+ms.collection: linux
+ms.service: virtual-machines
+ms.devlang: azurecli
+ms.custom: 'innovation-engine, linux-related-content, devx-track-azurecli'
+ms.topic: tutorial
+ms.date: 2/29/2024
+ms.author: chasecrum
+ms.reviewer: jushim
 ---
 
-# Установка стека LEMP в Azure
+# Руководство по установке стека LEMP на виртуальной машине Linux Azure
 
-[![Развертывание в Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2263118)
+**Применимо к:** :heavy_check_mark: виртуальным машинам Linux
 
+[![Развертывание в Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#view/Microsoft_Azure_CloudNative/SubscriptionSelectionPage.ReactView/tutorialKey/CreateLinuxVMLAMP)
 
 В этой статье описывается, как развернуть веб-сервер NGINX, гибкий сервер Azure MySQL и PHP (стек LEMP) на виртуальной машине Ubuntu Linux в Azure. Чтобы оценить работу сервера LEMP в действии, вы можете установить и настроить сайт WordPress. Из этого руководства вы узнаете, как выполнить следующие задачи:
 
 > [!div class="checklist"]
-
-> * Создание виртуальной машины Ubuntu для Linux
+>
+> * Создание виртуальной машины Ubuntu.
 > * Открытие портов 80 и 443 для веб-трафика
 > * Установка и защита NGINX, гибкого сервера MySQL Azure и PHP
 > * Проверка установки и настройки
-> * Установка WordPress
+> * Установка WordPress Эта программа установки предназначена для быстрых тестов или подтверждения концепции. Дополнительные сведения о стеке LEMP, включая рекомендации по рабочей среде, см. в [документации](https://help.ubuntu.com/community/ApacheMySQLPHP) по Ubuntu.
+
+При работе с этим руководством используется интерфейс командной строки (CLI) в [Azure Cloud Shell](../../cloud-shell/overview.md), который всегда обновлен до последней версии. Чтобы открыть Cloud Shell, выберите **Попробовать** в верхнем углу любого блока кода.
+
+Если вы решили установить и использовать интерфейс командной строки локально, в этом руководстве требуется, чтобы вы работали с Azure CLI версии 2.0.30 или более поздней. Найдите версию, выполнив `az --version` команду. Если вам необходимо выполнить установку или обновление, см. статью [Установка Azure CLI 2.0]( /cli/azure/install-azure-cli).
 
 ## Объявление переменной
 
-Сначала мы определим несколько переменных, которые помогут в настройке рабочей нагрузки LEMP.
+Сначала необходимо определить несколько переменных, которые помогают в настройке рабочей нагрузки LEMP.
 
 ```bash
 export NETWORK_PREFIX="$(($RANDOM % 254 + 1))"
@@ -55,13 +64,15 @@ export MY_AZURE_USER=$(az account show --query user.name --output tsv)
 export FQDN="${MY_DNS_LABEL}.${REGION}.cloudapp.azure.com"
 ```
 
-<!--```bash
+<!--
+```bash
 export MY_AZURE_USER_ID=$(az ad user list --filter "mail eq '$MY_AZURE_USER'" --query "[0].id" -o tsv)
-```-->
+```
+-->
 
-## Создание RG
+## Создание или изменение группы ресурсов
 
-Создайте группу ресурсов с помощью команды [az group create](https://learn.microsoft.com/cli/azure/group#az-group-create). Группа ресурсов Azure является логическим контейнером, в котором происходит развертывание ресурсов Azure и управление ими.
+Создайте группу ресурсов с помощью команды [az group create](/cli/azure/group#az-group-create). Группа ресурсов Azure является логическим контейнером, в котором происходит развертывание ресурсов Azure и управление ими.
 В следующем примере создается группа ресурсов с именем `$MY_RESOURCE_GROUP_NAME` в расположении именем `eastus`.
 
 ```bash
@@ -92,7 +103,7 @@ az group create \
 ## Создание виртуальной сети Microsoft Azure
 
 Виртуальная сеть — это базовый стандартный блок для частных сетей в Azure. Azure виртуальная сеть позволяет ресурсам Azure, таким как виртуальные машины, безопасно взаимодействовать друг с другом и Интернетом.
-Используйте [az network vnet create](https://learn.microsoft.com/cli/azure/network/vnet#az-network-vnet-create) для создания виртуальной сети `$MY_VNET_NAME` с именем подсети с именем `$MY_SN_NAME` в `$MY_RESOURCE_GROUP_NAME` группе ресурсов.
+Используйте [az network vnet create](/cli/azure/network/vnet#az-network-vnet-create) для создания виртуальной сети `$MY_VNET_NAME` с именем подсети с именем `$MY_SN_NAME` в `$MY_RESOURCE_GROUP_NAME` группе ресурсов.
 
 ```bash
 az network vnet create \
@@ -142,11 +153,10 @@ az network vnet create \
 
 ## Создание общедоступного IP-адреса Azure
 
-Используйте [az network public-ip create](https://learn.microsoft.com/cli/azure/network/public-ip#az-network-public-ip-create) , чтобы создать общедоступный IPv4-адрес `MY_PUBLIC_IP_NAME` , избыточный в `$MY_RESOURCE_GROUP_NAME`стандартной зоне.
+Используйте [az network public-ip create](/cli/azure/network/public-ip#az-network-public-ip-create) , чтобы создать общедоступный IPv4-адрес `MY_PUBLIC_IP_NAME` , избыточный в `$MY_RESOURCE_GROUP_NAME`стандартной зоне.
 
 >[!NOTE]
->Приведенные ниже параметры для зон являются допустимыми выборками только в регионах с [Зоны доступности](https://learn.microsoft.com/azure/reliability/availability-zones-service-support).
-
+>Приведенные ниже параметры для зон являются допустимыми выборками только в регионах с [Зоны доступности](../../reliability/availability-zones-service-support.md).
 ```bash
 az network public-ip create \
     --name $MY_PUBLIC_IP_NAME \
@@ -197,7 +207,7 @@ az network public-ip create \
 
 ## Создание группы безопасности сети Azure
 
-Правила безопасности в группах безопасности сети позволяют фильтровать различный сетевой трафик, который может проходить из подсетей виртуальной сети и сетевых интерфейсов или в них. Дополнительные сведения о группах безопасности сети см. [в этой статье](https://learn.microsoft.com/azure/virtual-network/network-security-groups-overview).
+Правила безопасности в группах безопасности сети позволяют фильтровать различный сетевой трафик, который может проходить из подсетей виртуальной сети и сетевых интерфейсов или в них. Дополнительные сведения о группах безопасности сети см. [в этой статье](../../virtual-network/network-security-groups-overview.md).
 
 ```bash
 az network nsg create \
@@ -246,7 +256,7 @@ az network nsg create \
 
 ## Создание правил группы безопасности сети Azure
 
-Вы создадите правило, чтобы разрешить подключения к виртуальной машине через порт 22 для SSH и портов 80, 443 для HTTP и HTTPS. Создается дополнительное правило, разрешающее всем портам исходящие подключения. Используйте [az network nsg rule create](https://learn.microsoft.com/cli/azure/network/nsg/rule#az-network-nsg-rule-create) для создания правила группы безопасности сети.
+Создайте правило, чтобы разрешить подключения к виртуальной машине через порт 22 для SSH и портов 80, 443 для HTTP и HTTPS. Создается дополнительное правило, разрешающее всем портам исходящие подключения. Используйте [az network nsg rule create](/cli/azure/network/nsg/rule#az-network-nsg-rule-create) для создания правила группы безопасности сети.
 
 ```bash
 az network nsg rule create \
@@ -293,7 +303,7 @@ az network nsg rule create \
 
 ## Создание сетевого интерфейса Azure
 
-Для создания сетевого интерфейса для виртуальной машины используйте команду [az network nic create](https://learn.microsoft.com/cli/azure/network/nic#az-network-nic-create). Общедоступные IP-адреса и созданные ранее адреса группы безопасности сети (NSG) связаны с сетевой картой (NIC). Сетевой интерфейс подключен к виртуальной сети, созданной ранее.
+Используйте [az network nic create](/cli/azure/network/nic#az-network-nic-create) , чтобы создать сетевой интерфейс для виртуальной машины. Общедоступные IP-адреса и созданные ранее адреса группы безопасности сети (NSG) связаны с сетевой картой (NIC). Сетевой интерфейс подключен к виртуальной сети, созданной ранее.
 
 ```bash
 az network nic create \
@@ -356,14 +366,13 @@ az network nic create \
   }
 }
 ```
-
 ## Обзор cloud-Init
 
-Cloud-init — широко используемое средство для настройки виртуальной машины Linux при ее первой загрузке. Вы можете использовать cloud-init для установки пакетов, записи файлов или настройки пользователей и параметров безопасности. Так как cloud-init выполняется при начальной загрузке, для применения вашей конфигурации не требуются какие-либо дополнительные действия или обязательные агенты.
+Cloud-init — широко используемое средство для настройки виртуальной машины Linux при ее первой загрузке. Вы можете использовать cloud-init для установки пакетов, записи файлов или настройки пользователей и параметров безопасности. При запуске cloud-init во время начального процесса загрузки нет других шагов или необходимых агентов для применения к конфигурации.
 
 Кроме того, cloud-init работает с разными дистрибутивами. Например, для установки пакета не используется apt-get install или yum install. Вместо этого можно определить список пакетов для установки. Файл cloud-init автоматически использует собственный инструмент управления пакетами из выбранного дистрибутива.
 
-Мы и наши партнеры работаем над тем, чтобы сценарии cloud-init были добавлены в образы, предоставляемые для Azure. Подробные сведения о поддержке cloud-init для каждого дистрибутива см. в статье [Поддержка cloud-init для виртуальных машин в Azure](https://learn.microsoft.com/azure/virtual-machines/linux/using-cloud-init).
+Мы работаем с нашими партнерами, чтобы получить облачную инициализацию и работать в образах, которые они предоставляют в Azure. Подробные сведения о поддержке cloud-init для каждого дистрибутива см. в статье [Поддержка cloud-init для виртуальных машин в Azure](./using-cloud-init.md).
 
 ### Создание файла конфигурации cloud-init
 
@@ -372,12 +381,10 @@ Cloud-init — широко используемое средство для н
 ```bash
 cat << EOF > cloud-init.txt
 #cloud-config
-
 # Install, update, and upgrade packages
 package_upgrade: true
 package_update: true
 package_reboot_if_require: true
-
 # Install packages
 packages:
   - vim
@@ -400,7 +407,6 @@ packages:
   - php-xmlrpc
   - php-zip
   - php-fpm
-
 write_files:
   - owner: www-data:www-data
     path: /etc/nginx/sites-available/default.conf
@@ -411,7 +417,6 @@ write_files:
             root /var/www/html;
             server_name $FQDN;
         }
-
 write_files:
   - owner: www-data:www-data
     path: /etc/nginx/sites-available/$FQDN.conf
@@ -422,15 +427,11 @@ write_files:
         server {
             listen 443 ssl http2;
             listen [::]:443 ssl http2;
-
             server_name $FQDN;
-
             ssl_certificate /etc/letsencrypt/live/$FQDN/fullchain.pem;
             ssl_certificate_key /etc/letsencrypt/live/$FQDN/privkey.pem;
-
             root /var/www/$FQDN;
             index index.php;
-
             location / {
                 try_files \$uri \$uri/ /index.php?\$args;
             }
@@ -448,7 +449,6 @@ write_files:
                     log_not_found off;
                     access_log off;
             }
-
             location = /robots.txt {
                     allow all;
                     log_not_found off;
@@ -461,7 +461,6 @@ write_files:
             server_name $FQDN;
             return 301 https://$FQDN\$request_uri;
         }
-
 runcmd:
   - sed -i 's/;cgi.fix_pathinfo.*/cgi.fix_pathinfo = 1/' /etc/php/8.1/fpm/php.ini
   - sed -i 's/^max_execution_time \= .*/max_execution_time \= 300/g' /etc/php/8.1/fpm/php.ini
@@ -481,7 +480,7 @@ runcmd:
   - chown -R azureadmin:www-data /var/www/$FQDN
   - sudo -u azureadmin -i -- wp core download --path=/var/www/$FQDN
   - sudo -u azureadmin -i -- wp config create --dbhost=$MY_MYSQL_DB_NAME.mysql.database.azure.com --dbname=wp001 --dbuser=$MY_MYSQL_ADMIN_USERNAME --dbpass="$MY_MYSQL_ADMIN_PW" --path=/var/www/$FQDN
-  - sudo -u azureadmin -i -- wp core install --url=$FQDN --title="Azure hosted blog" --admin_user=$MY_WP_ADMIN_USER --admin_password="$MY_WP_ADMIN_PW" --admin_email=$MY_AZURE_USER --path=/var/www/$FQDN 
+  - sudo -u azureadmin -i -- wp core install --url=$FQDN --title="Azure hosted blog" --admin_user=$MY_WP_ADMIN_USER --admin_password="$MY_WP_ADMIN_PW" --admin_email=$MY_AZURE_USER --path=/var/www/$FQDN
   - sudo -u azureadmin -i -- wp plugin update --all --path=/var/www/$FQDN
   - chmod 600 /var/www/$FQDN/wp-config.php
   - mkdir -p -m 0775 /var/www/$FQDN/wp-content/uploads
@@ -491,7 +490,7 @@ EOF
 
 ## Создание зоны Частная зона DNS Azure для гибкого сервера Azure MySQL
 
-Интеграция между зонами azure Частная зона DNS позволяет разрешать частные DNS в текущей виртуальной сети или любой одноранговой виртуальной сети в регионе, где связана частная зона DNS. Вы будете использовать [az network private-dns zone create](https://learn.microsoft.com/cli/azure/network/private-dns/zone#az-network-private-dns-zone-create) для создания частной зоны DNS.
+Интеграция между зонами azure Частная зона DNS позволяет разрешать частные DNS в текущей виртуальной сети или любой одноранговой виртуальной сети в регионе, где связана частная зона DNS. Используйте [az network private-dns zone create](/cli/azure/network/private-dns/zone#az-network-private-dns-zone-create) для создания частной зоны DNS.
 
 ```bash
 az network private-dns zone create \
@@ -522,7 +521,7 @@ az network private-dns zone create \
 
 ## Создание Гибкого сервера Базы данных Azure для MySQL
 
-База данных Azure для MySQL . Гибкий сервер — это управляемая служба, которую можно использовать для запуска, управления и масштабирования серверов MySQL с высоким уровнем доступности в облаке. Создайте гибкий сервер с помощью команды [az mysql flexible-server create](https://learn.microsoft.com/cli/azure/mysql/flexible-server#az-mysql-flexible-server-create). Сервер может управлять несколькими базами данных. Следующая команда создает сервер с помощью значений по умолчанию службы и переменных из локальной среды Azure CLI:
+База данных Azure для MySQL . Гибкий сервер — это управляемая служба, которую можно использовать для запуска, управления и масштабирования серверов MySQL с высоким уровнем доступности в облаке. Создайте гибкий сервер с помощью команды [az mysql flexible-server create](../../mysql/flexible-server/quickstart-create-server-cli.md#create-an-azure-database-for-mysql-flexible-server). Сервер может управлять несколькими базами данных. Следующая команда создает сервер с помощью значений по умолчанию службы и переменных из локальной среды Azure CLI:
 
 ```bash
 az mysql flexible-server create \
@@ -569,14 +568,13 @@ echo "Your MySQL user $MY_MYSQL_ADMIN_USERNAME password is: $MY_WP_ADMIN_PW"
 
 Сервер создается со следующими атрибутами:
 
-* Имя сервера, имя администратора, пароль администратора, имя группы ресурсов, расположение уже указано в локальной контекстной среде cloud shell и будет создано в том же расположении, что и группа ресурсов и другие компоненты Azure.
+* Имя сервера, имя администратора, пароль администратора, имя группы ресурсов, расположение уже указано в локальной контекстной среде cloud shell. Они создаются в том же расположении, что и группа ресурсов и другие компоненты Azure.
 * По умолчанию службы для оставшихся конфигураций сервера: уровень вычислений (с возможностью ускорения), размер вычислительных ресурсов и номер SKU (Standard_B2s), период хранения резервных копий (7 дней) и MySQL (8.0.21)
-* Метод подключения по умолчанию — это частный доступ (интеграция виртуальной сети) с связанной виртуальной сетью и автоматически созданной подсетью.
+* Метод подключения по умолчанию — это частный доступ (интеграция с виртуальной сетью) с связанной виртуальной сетью и автоматически созданной подсетью.
 
 > [!NOTE]
-> После создания сервера нельзя изменить метод подключения. Например, если вы выбрали `Private access (VNet Integration)` во время создания, вы не можете изменить его `Public access (allowed IP addresses)` после создания. Мы настоятельно рекомендуем создать сервер с закрытым доступом, чтобы безопасно обращаться к нему через интеграцию с виртуальной сетью. Дополнительные сведения о закрытом доступе см. в статье с [основными понятиями](https://learn.microsoft.com/azure/mysql/flexible-server/concepts-networking-vnet).
-
-Если вы хотите изменить значения по умолчанию, воспользуйтесь [справочной документацией](https://learn.microsoft.com/cli/azure//mysql/flexible-server) по Azure CLI, где описаны все настраиваемые параметры интерфейса командной строки.
+> После создания сервера нельзя изменить метод подключения. Например, если вы выбрали `Private access (VNet Integration)` во время создания, вы не можете изменить его `Public access (allowed IP addresses)` после создания. Мы настоятельно рекомендуем создать сервер с закрытым доступом, чтобы безопасно обращаться к нему через интеграцию с виртуальной сетью. Дополнительные сведения о закрытом доступе см. в статье с [основными понятиями](../../mysql/flexible-server/concepts-networking-vnet.md).
+Если вы хотите изменить значения по умолчанию, ознакомьтесь со справочной документацией[ по Azure CLI для полного списка настраиваемых параметров CLI](../../mysql/flexible-server/quickstart-create-server-cli.md).
 
 ## Проверка состояния База данных Azure для MySQL — гибкий сервер
 
@@ -600,11 +598,15 @@ done
 
 Вы можете управлять База данных Azure для MySQL — гибкой конфигурацией сервера с помощью параметров сервера. При создании сервера для параметров сервера устанавливаются используемые по умолчанию и рекомендуемые значения.
 
-Отображение сведений о параметрах сервера для отображения сведений о конкретном параметре для сервера выполните [команду az mysql flexible-server](https://learn.microsoft.com/cli/azure/mysql/flexible-server/parameter) .
+Отображение сведений о параметрах сервера:
 
-### Отключение База данных Azure для MySQL — параметр SSL-подключения гибкого сервера для интеграции Wordpress
+[Запустите команду az mysql flexible-server,](../../mysql/flexible-server/how-to-configure-server-parameters-cli.md) чтобы отобразить сведения о любом конкретном параметре для сервера.
 
-Изменение значения параметра сервера можно также изменить значение определенного параметра сервера, которое обновляет базовое значение конфигурации для ядра сервера MySQL. Чтобы обновить параметр сервера, используйте команду [az mysql flexible-server parameter set](https://learn.microsoft.com/cli/azure/mysql/flexible-server/parameter#az-mysql-flexible-server-parameter-set).
+## Отключение База данных Azure для MySQL — параметр SSL-подключения гибкого сервера для интеграции Wordpress
+
+Измените значение параметра сервера:
+
+Кроме того, вы можете изменить значение определенного параметра сервера. При этом обновляется базовое значение конфигурации для ядра СУБД сервера MySQL. Чтобы обновить параметр сервера, используйте команду [az mysql flexible-server parameter set](../../mysql/flexible-server/how-to-configure-server-parameters-cli.md#modify-a-server-parameter-value).
 
 ```bash
 az mysql flexible-server parameter set \
@@ -637,10 +639,11 @@ az mysql flexible-server parameter set \
 
 ## Создание виртуальной машины Azure Linux
 
-В следующем примере создаются виртуальная машина `$MY_VM_NAME` и ключи SSH, если они не существуют в расположении ключей по умолчанию. Команда также задает `$MY_VM_USERNAME` имя пользователя администратора.
-Чтобы повысить безопасность виртуальных машин Linux в Azure, можно интегрировать с проверкой подлинности Azure Active Directory. Теперь вы можете использовать Azure AD в качестве основной платформы проверки подлинности и центра сертификации для SSH на виртуальной машине Linux с AD и проверкой подлинности на основе сертификата OpenSSH. Эта функция позволяет организациям управлять доступом к виртуальным машинам с помощью политик управления доступом на основе ролей и условного доступа.
+В следующем примере создается виртуальная машина с именем `$MY_VM_NAME` и создаются ключи SSH, если они еще не существуют в расположении ключа по умолчанию. Команда также задает `$MY_VM_USERNAME` имя пользователя администратора.
 
-Создайте виртуальную машину с помощью команды [az vm create](https://learn.microsoft.com/cli/azure/vm#az-vm-create).
+Чтобы повысить безопасность виртуальных машин Linux в Azure, можно интегрировать с проверкой подлинности Azure Active Directory. Теперь вы можете использовать Azure AD в качестве основной платформы проверки подлинности. Вы также можете использовать SSH на виртуальной машине Linux с помощью проверки подлинности на основе сертификатов Azure AD и OpenSSH. Эта функция позволяет организациям управлять доступом к виртуальным машинам с помощью политик управления доступом на основе ролей и условного доступа.
+
+Создайте виртуальную машину с помощью команды [az vm create](/cli/azure/vm#az-vm-create).
 
 ```bash
 az vm create \
@@ -686,17 +689,17 @@ az vm create \
 
 ## Проверка состояния виртуальной машины Linux в Azure
 
-Создание виртуальной машины и вспомогательных ресурсов занимает несколько минут. Значение provisioningState успешно выполнено, когда расширение успешно установлено на виртуальной машине. Для установки расширения на виртуальной машине должен работать [агент виртуальных машин](https://learn.microsoft.com/azure/virtual-machines/extensions/agent-linux).
+Создание виртуальной машины и вспомогательных ресурсов занимает несколько минут. Значение provisioningState успешно выполнено, когда расширение успешно установлено на виртуальной машине. Для установки расширения на виртуальной машине должен работать [агент виртуальных машин](../extensions/agent-linux.md).
 
 ```bash
 runtime="5 minute";
 endtime=$(date -ud "$runtime" +%s);
-while [[ $(date -u +%s) -le $endtime ]]; do 
-    STATUS=$(ssh -o StrictHostKeyChecking=no $MY_VM_USERNAME@$FQDN "cloud-init status --wait"); 
-    echo $STATUS; 
-    if [[ "$STATUS" == *'status: done'* ]]; then 
-        break; 
-    else 
+while [[ $(date -u +%s) -le $endtime ]]; do
+    STATUS=$(ssh -o StrictHostKeyChecking=no $MY_VM_USERNAME@$FQDN "cloud-init status --wait");
+    echo $STATUS;
+    if [[ "$STATUS" == *'status: done'* ]]; then
+        break;
+    else
         sleep 10;
     fi;
 done
@@ -704,21 +707,16 @@ done
 
 <!--
 ## Assign Azure AD RBAC for Azure AD login for Linux Virtual Machine
-
 The below command uses [az role assignment create](https://learn.microsoft.com/cli/azure/role/assignment#az-role-assignment-create) to assign the `Virtual Machine Administrator Login` role to the VM for your current Azure user.
-
 ```bash
 export MY_RESOURCE_GROUP_ID=$(az group show --resource-group $MY_RESOURCE_GROUP_NAME --query id -o tsv)
-
 az role assignment create \
     --role "Virtual Machine Administrator Login" \
     --assignee $MY_AZURE_USER_ID \
     --scope $MY_RESOURCE_GROUP_ID -o JSON
 ```
-
-
 Results:
-<!-- expected_similarity=0.3
+<!-- expected_similarity=0.3 -->
 ```JSON
 {
   "condition": null,
@@ -739,13 +737,11 @@ Results:
   "updatedOn": "2023-09-04T09:29:17.237445+00:00"
 }
 ```
--->
 
-<!-- 
+
+<!--
 ## Export the SSH configuration for use with SSH clients that support OpenSSH
-
 Login to Azure Linux VMs with Azure AD supports exporting the OpenSSH certificate and configuration. That means you can use any SSH clients that support OpenSSH-based certificates to sign in through Azure AD. The following example exports the configuration for all IP addresses assigned to the VM:
-
 ```bash
 az ssh config --file ~/.ssh/azure-config --name $MY_VM_NAME --resource-group $MY_RESOURCE_GROUP_NAME
 ```
@@ -791,7 +787,7 @@ az vm extension set \
 
 ## Проверка и просмотр веб-сайта WordPress
 
-[WordPress](https://www.wordpress.org) — это система управления содержимым (CMS) с открытым кодом, которую используется в более 40 % случаев при создании веб-сайтов, блогов и других приложений. WordPress можно запускать в нескольких различных службах Azure: [AKS](https://learn.microsoft.com/azure/mysql/flexible-server/tutorial-deploy-wordpress-on-aks), Виртуальные машины и Служба приложений. Полный список вариантов WordPress в Azure см. на [странице WordPress в Azure Marketplace](https://azuremarketplace.microsoft.com/marketplace/apps?page=1&search=wordpress).
+[WordPress](https://www.wordpress.org) — это система управления содержимым (CMS) с открытым кодом, которую используется в более 40 % случаев при создании веб-сайтов, блогов и других приложений. WordPress можно запускать в нескольких различных службах Azure: [AKS](../../mysql/flexible-server/tutorial-deploy-wordpress-on-aks.md), Виртуальные машины и Служба приложений. Полный список вариантов WordPress в Azure см. на [странице WordPress в Azure Marketplace](https://azuremarketplace.microsoft.com/marketplace/apps?page=1&search=wordpress).
 
 Эта конфигурация WordPress предназначена только для подтверждения концепции. Чтобы установить последнюю версию WordPress в рабочей среде с рекомендуемыми параметрами безопасности, ознакомьтесь с [документацией по WordPress](https://codex.wordpress.org/Main_Page).
 
@@ -801,10 +797,10 @@ az vm extension set \
 runtime="5 minute";
 endtime=$(date -ud "$runtime" +%s);
 while [[ $(date -u +%s) -le $endtime ]]; do
-    if curl -I -s -f $FQDN > /dev/null ; then 
+    if curl -I -s -f $FQDN > /dev/null ; then
         curl -L -s -f $FQDN 2> /dev/null | head -n 9
         break
-    else 
+    else
         sleep 10
     fi;
 done

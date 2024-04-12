@@ -1,23 +1,35 @@
 ---
-title: Создание масштабируемого набора виртуальных машин с Шлюз приложений с помощью образа Linux
-description: 'В этом руководстве показано, как создать масштабируемый набор виртуальных машин с Шлюз приложений с помощью образа Linux'
-author: belginceran
-ms.author: belginceran
-ms.topic: article
-ms.date: 01/05/2024
-ms.custom: innovation-engine
+title: Создание виртуальных машин в гибком масштабируемом наборе с помощью Azure CLI
+description: 'Узнайте, как создать масштабируемый набор виртуальных машин в гибком режиме оркестрации с помощью Azure CLI.'
+author: fitzgeraldsteele
+ms.author: fisteele
+ms.topic: how-to
+ms.service: virtual-machine-scale-sets
+ms.date: 3/19/2024
+ms.reviewer: jushiman
+ms.custom: 'mimckitt, devx-track-azurecli, vmss-flex, innovation-engine, linux-related-content'
 ---
 
-# Создание масштабируемого набора виртуальных машин с Шлюз приложений с помощью образа Linux
+# Создание виртуальных машин в масштабируемом наборе с помощью Azure CLI
 
 [![Развертывание в Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262759)
 
+В этой статье описано, как создать масштабируемый набор виртуальных машин с помощью Azure CLI.
+
+Обязательно установите последнюю версию [Azure CLI](/cli/azure/install-az-cli2) и войдите в учетную запись Azure с помощью команды [az login](/cli/azure/reference-index).
+
+
+## Запуск Azure Cloud Shell
+
+Azure Cloud Shell — это бесплатная интерактивная оболочка, с помощью которой можно выполнять действия, описанные в этой статье. Она включает предварительно установленные общие инструменты Azure и настроена для использования с вашей учетной записью.
+
+Чтобы открыть Cloud Shell, выберите **Open Cloud Shell** в правом верхнем углу блока кода. Cloud Shell можно также запустить в отдельной вкладке браузера, перейдя на страницу [https://shell.azure.com/cli](https://shell.azure.com/cli). Нажмите кнопку **Копировать**, чтобы скопировать блоки кода. Вставьте код в Cloud Shell и нажмите клавишу "ВВОД", чтобы выполнить его.
+
 ## Определение переменных среды
 
-Первым шагом в этом руководстве является определение переменных среды.
+Определите переменные среды следующим образом.
 
 ```bash
-
 export RANDOM_ID="$(openssl rand -hex 3)"
 export MY_RESOURCE_GROUP_NAME="myVMSSResourceGroup$RANDOM_ID"
 export REGION=EastUS
@@ -33,22 +45,17 @@ export MY_APPGW_SN_NAME="myAPPGWSN$RANDOM_ID"
 export MY_APPGW_SN_PREFIX="10.$NETWORK_PREFIX.1.0/24"
 export MY_APPGW_NAME="myAPPGW$RANDOM_ID"
 export MY_APPGW_PUBLIC_IP_NAME="myAPPGWPublicIP$RANDOM_ID"
-
 ```
-# Вход в Azure с помощью интерфейса командной строки
 
-Чтобы выполнить команды в Azure с помощью интерфейса командной строки, необходимо войти в систему. Это делается, очень просто, хотя `az login` команда:
+## Создание или изменение группы ресурсов
 
-# Создание или изменение группы ресурсов
-
-Группа ресурсов — это контейнер для связанных ресурсов. Все ресурсы должны быть помещены в группу ресурсов. Мы создадим его для этого руководства. Следующая команда создает группу ресурсов с ранее определенными параметрами $MY_RESOURCE_GROUP_NAME и $REGION.
+Группа ресурсов — это логический контейнер, в котором происходит развертывание ресурсов Azure и управление ими. Все ресурсы должны быть помещены в группу ресурсов. Следующая команда создает группу ресурсов с ранее определенными параметрами $MY_RESOURCE_GROUP_NAME и $REGION.
 
 ```bash
 az group create --name $MY_RESOURCE_GROUP_NAME --location $REGION -o JSON
 ```
 
 Результаты.
-
 <!-- expected_similarity=0.3 -->
 ```json   
 {
@@ -64,19 +71,17 @@ az group create --name $MY_RESOURCE_GROUP_NAME --location $REGION -o JSON
 }
 ```
 
-# Создание сетевых ресурсов 
+## Создание сетевых ресурсов 
 
-Перед выполнением шагов VMSS необходимо создать сетевые ресурсы. На этом шаге вы создадите виртуальную сеть, 2 подсети 1 для Шлюз приложений и 1 для виртуальных машин. Кроме того, необходимо подключить общедоступный IP-адрес для подключения Шлюз приложений, чтобы получить доступ к веб-приложению из Интернета. 
+Теперь вы создадите сетевые ресурсы. На этом шаге вы создадите виртуальную сеть, одну подсеть 1 для Шлюз приложений и одну подсеть для виртуальных машин. Кроме того, необходимо подключить общедоступный IP-адрес для подключения Шлюз приложений для доступа к веб-приложению из Интернета. 
 
-
-#### Создание виртуальная сеть (виртуальной сети) и подсети виртуальной машины
+#### Создание виртуальной сети и подсети
 
 ```bash
 az network vnet create  --name $MY_VNET_NAME  --resource-group $MY_RESOURCE_GROUP_NAME --location $REGION  --address-prefix $MY_VNET_PREFIX  --subnet-name $MY_VM_SN_NAME --subnet-prefix $MY_VM_SN_PREFIX -o JSON
 ```
 
 Результаты.
-
 <!-- expected_similarity=0.3 -->
 ```json   
 {
@@ -114,17 +119,15 @@ az network vnet create  --name $MY_VNET_NAME  --resource-group $MY_RESOURCE_GROU
 }
 ```
 
-### Создание ресурсов Шлюз приложений
+### Создание ресурсов шлюза приложений
 
-Шлюз приложений Azure требуется выделенная подсеть в виртуальной сети. Следующая команда создает подсеть с именем $MY_APPGW_SN_NAME с указанным префиксом адреса с именем $MY_APPGW_SN_PREFIX в виртуальной сети $MY_VNET_NAME 
-
+Шлюз приложений Azure требуется выделенная подсеть в виртуальной сети. Следующая команда создает подсеть с именем $MY_APPGW_SN_NAME с указанным префиксом адреса с именем $MY_APPGW_SN_PREFIX в виртуальной сети $MY_VNET_NAME.
 
 ```bash
 az network vnet subnet create  --name $MY_APPGW_SN_NAME  --resource-group $MY_RESOURCE_GROUP_NAME --vnet-name  $MY_VNET_NAME --address-prefix  $MY_APPGW_SN_PREFIX -o JSON
 ```
 
 Результаты.
-
 <!-- expected_similarity=0.3 -->
 ```json  
 {
@@ -144,10 +147,9 @@ az network vnet subnet create  --name $MY_APPGW_SN_NAME  --resource-group $MY_RE
 
 ```bash
 az network public-ip create  --resource-group $MY_RESOURCE_GROUP_NAME --name $MY_APPGW_PUBLIC_IP_NAME --sku Standard   --location $REGION  --allocation-method static --version IPv4 --zone 1 2 3 -o JSON
- ```
+```
 
 Результаты.
-
 <!-- expected_similarity=0.3 -->
 ```json  
 {
@@ -181,11 +183,11 @@ az network public-ip create  --resource-group $MY_RESOURCE_GROUP_NAME --name $MY
 }
 ```
 
-На этом шаге вы создадите Шлюз приложений, которые вы собираетесь интегрировать с масштабируемым набором виртуальных машин. В этом примере мы создадим избыточные между зонами Шлюз приложений с номером SKU Standard_v2 и включите обмен данными http для Шлюз приложений. Общедоступный IP-адрес $MY_APPGW_PUBLIC_IP_NAME, созданный на предыдущем шаге, присоединенном к Шлюз приложений. 
+На этом шаге вы создадите Шлюз приложений, которые вы собираетесь интегрировать с масштабируемым набором виртуальных машин. В этом примере создается избыточный между зонами Шлюз приложений с номером SKU Standard_v2 и включен обмен данными http для Шлюз приложений. Общедоступный IP-адрес $MY_APPGW_PUBLIC_IP_NAME, созданный на предыдущем шаге, присоединен к Шлюз приложений. 
 
 ```bash
 az network application-gateway create   --name $MY_APPGW_NAME --location $REGION --resource-group $MY_RESOURCE_GROUP_NAME --vnet-name $MY_VNET_NAME --subnet $MY_APPGW_SN_NAME --capacity 2  --zones 1 2 3 --sku Standard_v2   --http-settings-cookie-based-affinity Disabled   --frontend-port 80 --http-settings-port 80   --http-settings-protocol Http --public-ip-address $MY_APPGW_PUBLIC_IP_NAME --priority 1001 -o JSON
- ```
+```
 
 <!-- expected_similarity=0.3 -->
 ```json 
@@ -375,19 +377,21 @@ az network application-gateway create   --name $MY_APPGW_NAME --location $REGION
     "urlPathMaps": []
   }
 }
- ```
+```
 
+## Создание масштабируемого набора виртуальных машин
 
-# Создание масштабируемого набора виртуальных машин 
+> [!IMPORTANT]
+>Начиная с ноября 2023 года масштабируемые наборы виртуальных машин, созданные с помощью PowerShell и Azure CLI, по умолчанию будут использоваться в режиме гибкой оркестрации, если режим оркестрации не указан. Дополнительные сведения об этом изменении и о действиях, которые необходимо предпринять, см. в руководстве [по критическим изменениям для клиентов VmSS PowerShell/CLI — Microsoft Community Hub](
+https://techcommunity.microsoft.com/t5/azure-compute-blog/breaking-change-for-vmss-powershell-cli-customers/ba-p/3818295)
 
-Следующая команда создает избыточный между зонами масштабируемый набор виртуальных машин (VMSS) в группе ресурсов $MY_RESOURCE_GROUP_NAME. Мы интегрируем Шлюз приложений, которую мы создали на предыдущем шаге. Эта команда создает 2 Standard_DS2_v2 SKU Виртуальные машины с общедоступным IP-адресом в подсети $MY_VM_SN_NAME. Ключ ssh будет создан на приведенном ниже шаге, чтобы сохранить ключ, если требуется войти в систему виртуальных машин через SSH.
+Теперь создайте масштабируемый набор виртуальных машин с [помощью az vmss create](/cli/azure/vmss). В следующем примере создается избыточный между зонами масштабируемый набор с числом *экземпляров 2* с общедоступным IP-адресом в подсети $MY_VM_SN_NAME в группе ресурсов $MY_RESOURCE_GROUP_NAME, интегрирует Шлюз приложений и создает ключи SSH. Сохраните ключи SSH, если вам нужно войти в виртуальные машины через SSH.
 
 ```bash
 az vmss create --name $MY_VMSS_NAME --resource-group $MY_RESOURCE_GROUP_NAME --image $MY_VM_IMAGE --admin-username $MY_USERNAME --generate-ssh-keys --public-ip-per-vm --orchestration-mode Uniform --instance-count 2 --zones 1 2 3 --vnet-name $MY_VNET_NAME --subnet $MY_VM_SN_NAME --vm-sku Standard_DS2_v2 --upgrade-policy-mode Automatic --app-gateway $MY_APPGW_NAME --backend-pool-name appGatewayBackendPool -o JSON
  ```
 
 Результаты.
-
 <!-- expected_similarity=0.3 -->
 ```json  
 {
@@ -499,17 +503,15 @@ az vmss create --name $MY_VMSS_NAME --resource-group $MY_RESOURCE_GROUP_NAME --i
 }
 ```
 
-### Установка ngnix с расширениями VMSS 
+### Установка ngnix с расширениями Масштабируемые наборы виртуальных машин 
 
-Следующая команда использует расширение VMSS для запуска пользовательского скрипта. В целях тестирования мы устанавливаем ngnix и публикуем страницу, показывающую имя узла виртуальной машины, с помощью которых выполняется http-запросы. Мы используем этот настраиваемый скрипт для этого pusposes: https://raw.githubusercontent.com/Azure-Samples/compute-automation-configurations/master/automate_nginx.sh 
-
+Следующая команда использует расширение Масштабируемые наборы виртуальных машин для запуска [пользовательского скрипта](https://github.com/Azure-Samples/compute-automation-configurations/blob/master/automate_nginx.sh), который устанавливает ngnix и публикует страницу, отображающую имя узла виртуальной машины, на которую вы попадаете HTTP-запросы. 
 
 ```bash
 az vmss extension set --publisher Microsoft.Azure.Extensions --version 2.0  --name CustomScript --resource-group $MY_RESOURCE_GROUP_NAME --vmss-name $MY_VMSS_NAME --settings '{ "fileUris": ["https://raw.githubusercontent.com/Azure-Samples/compute-automation-configurations/master/automate_nginx.sh"], "commandToExecute": "./automate_nginx.sh" }' -o JSON
 ```
 
 Результаты.
-
 <!-- expected_similarity=0.3 -->
 ```json  
 {
@@ -703,19 +705,16 @@ az vmss extension set --publisher Microsoft.Azure.Extensions --version 2.0  --na
 }
 ```
 
+## Определение профиля автомасштабирования  
 
-# Определение профиля автомасштабирования  
-
-Чтобы включить автомасштабирование в масштабируемом наборе, сначала необходимо определить профиль автомасштабирования. Этот профиль определяет используемую по умолчанию, минимальную и максимальную емкости масштабируемого набора. Эти ограничения позволяют контролировать затраты за счет того, что экземпляры виртуальных машин не создаются непрерывно, и сбалансировать приемлемую производительность с минимальным числом экземпляров, которые остаются в масштабируемом событии.
-В примере ниже задаются минимальная и максимальная емкости (2 и 10), а также емкость по умолчанию экземпляров виртуальной машины.
+Чтобы включить автомасштабирование в масштабируемом наборе, сначала определите профиль автомасштабирования. Этот профиль определяет используемую по умолчанию, минимальную и максимальную емкости масштабируемого набора. Эти ограничения позволяют управлять затратами, не создавая экземпляры виртуальных машин и балансируйте допустимую производительность с минимальным количеством экземпляров, оставшихся в событии масштабирования.
+В следующем примере устанавливается минимальная емкость двух экземпляров виртуальных машин по умолчанию и максимальная емкость 10:
 
 ```bash
 az monitor autoscale create --resource-group $MY_RESOURCE_GROUP_NAME --resource  $MY_VMSS_NAME --resource-type Microsoft.Compute/virtualMachineScaleSets --name autoscale --min-count 2 --max-count 10 --count 2
 ```
 
-
 Результаты.
-
 <!-- expected_similarity=0.3 -->
 ```json  
 {
@@ -760,16 +759,15 @@ az monitor autoscale create --resource-group $MY_RESOURCE_GROUP_NAME --resource 
 }
 ```
 
-# Создание правила для автоматического горизонтального увеличения масштаба
+## Создание правила для автоматического горизонтального увеличения масштаба
 
-Следующая команда создает правило, которое увеличивает количество экземпляров виртуальных машин в масштабируемом наборе, если средняя загрузка ЦП превышает 70 % за 5 минут. При активации правила количество экземпляров виртуальных машин увеличивается до трех.
+Следующая команда создает правило, которое увеличивает количество экземпляров виртуальных машин в масштабируемом наборе, если средняя загрузка ЦП превышает 70 % за 5 минут. При активации правила число экземпляров виртуальной машины увеличивается на три.
 
 ```bash
 az monitor autoscale rule create --resource-group $MY_RESOURCE_GROUP_NAME --autoscale-name autoscale --condition "Percentage CPU > 70 avg 5m" --scale out 3
 ```
 
 Результаты.
-
 <!-- expected_similarity=0.3 -->
 ```json 
 {
@@ -796,16 +794,15 @@ az monitor autoscale rule create --resource-group $MY_RESOURCE_GROUP_NAME --auto
 } 
 ```
 
-# Создание правила для автоматического горизонтального уменьшения масштаба
+## Создание правила для автоматического горизонтального уменьшения масштаба
 
-Используя команду az monitor autoscale rule create, создайте другое правило, в соответствии с которым количество экземпляров виртуальной машины в масштабируемом наборе уменьшается, когда средняя загрузка ЦП не превышает 30 % в течение 5 минут. В следующем примере определяется правило горизонтального уменьшения масштаба для уменьшения количества экземпляров виртуальных машин на один экземпляр.
+Создайте другое правило, которое `az monitor autoscale rule create` уменьшает количество экземпляров виртуальных машин в масштабируемом наборе, когда средняя загрузка ЦП снижается ниже 30 % за 5 минут. В следующем примере определяется правило горизонтального уменьшения масштаба для уменьшения количества экземпляров виртуальных машин на один экземпляр.
 
 ```bash
 az monitor autoscale rule create --resource-group  $MY_RESOURCE_GROUP_NAME --autoscale-name autoscale --condition "Percentage CPU < 30 avg 5m" --scale in 1
 ```
 
 Результаты.
-
 <!-- expected_similarity=0.3 -->
 ```json 
 {
@@ -832,19 +829,19 @@ az monitor autoscale rule create --resource-group  $MY_RESOURCE_GROUP_NAME --aut
 }
 ```
 
-
 ### Тестирование страницы
 
-В приведенной ниже команде показан общедоступный IP-адрес Шлюз приложений. Вы можете вставить IP-адреса на страницу браузера для тестирования.
+Следующая команда показывает общедоступный IP-адрес Шлюз приложений. Вставьте IP-адрес на страницу браузера для тестирования.
 
 ```bash
 az network public-ip show --resource-group $MY_RESOURCE_GROUP_NAME --name $MY_APPGW_PUBLIC_IP_NAME --query [ipAddress]  --output tsv
 ```
 
+## Очистка ресурсов (необязательно)
 
+Чтобы избежать расходов за использование Azure, необходимо удалить ненужные ресурсы. Если вам больше не нужен масштабируемый набор и другие ресурсы, удалите группу ресурсов и все его ресурсы с [помощью az group delete](/cli/azure/group). При использовании параметра `--no-wait` управление возвращается в командную строку без ожидания завершения операции. Параметр `--yes` подтверждает, что вы хотите удалить ресурсы без другого запроса. В этом руководстве вы можете очистить ресурсы.
 
-# Ссылки
-
-* [Документация по VMSS](https://learn.microsoft.com/en-us/azure/virtual-machine-scale-sets/overview)
-* [Автомасштабирование VMSS](https://learn.microsoft.com/en-us/azure/virtual-machine-scale-sets/tutorial-autoscale-cli?tabs=Ubuntu)
-
+## Следующие шаги
+- [Узнайте, как создать масштабируемый набор на портале Azure.](flexible-virtual-machine-scale-sets-portal.md)
+- [Узнайте о Масштабируемые наборы виртуальных машин.](overview.md)
+- [Автоматическое масштабирование масштабируемого набора виртуальных машин с помощью Azure CLI](tutorial-autoscale-cli.md)
