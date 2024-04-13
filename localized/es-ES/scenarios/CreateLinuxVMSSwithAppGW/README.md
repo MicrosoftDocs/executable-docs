@@ -1,23 +1,35 @@
 ---
-title: Crear un conjunto de escalado de máquinas virtuales con la imagen de Application Gateway con Linux
-description: En este tutorial se muestra cómo crear un conjunto de escalado de máquinas virtuales con la imagen de Application Gateway con Linux
-author: belginceran
-ms.author: belginceran
-ms.topic: article
-ms.date: 01/05/2024
-ms.custom: innovation-engine
+title: Creación de máquinas virtuales en un conjunto de escalado flexible con la CLI de Azure
+description: Aprenda a crear conjuntos de escalado de máquinas virtuales en modo de orquestación flexible mediante la CLI de Azure.
+author: fitzgeraldsteele
+ms.author: fisteele
+ms.topic: how-to
+ms.service: virtual-machine-scale-sets
+ms.date: 3/19/2024
+ms.reviewer: jushiman
+ms.custom: 'mimckitt, devx-track-azurecli, vmss-flex, innovation-engine, linux-related-content'
 ---
 
-# Crear un conjunto de escalado de máquinas virtuales con la imagen de Application Gateway con Linux
+# Creación de máquinas virtuales en un conjunto de escalado mediante la CLI de Azure
 
 [![Implementación en Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262759)
 
+En este artículo se describe el uso de la CLI de Azure para crear conjuntos de escalado de máquinas virtuales.
+
+Asegúrese de haber instalado la versión más reciente de la [CLI de Azure](/cli/azure/install-az-cli2) y de haber iniciado sesión en una cuenta de Azure con [az login](/cli/azure/reference-index).
+
+
+## Inicio de Azure Cloud Shell
+
+Azure Cloud Shell es un shell interactivo gratuito que puede usar para ejecutar los pasos de este artículo. Tiene las herramientas comunes de Azure preinstaladas y configuradas para usarlas en la cuenta.
+
+Para abrir Cloud Shell, seleccione **Abrir Cloud Shell** en la esquina superior derecha de un bloque de código. También puede ir a [https://shell.azure.com/cli](https://shell.azure.com/cli) para iniciar Cloud Shell en una pestaña independiente del explorador. Seleccione **Copiar** para copiar los bloques de código, péguelos en Cloud Shell y, luego, presione Entrar para ejecutarlos.
+
 ## Definición de las variables de entorno
 
-El primer paso de este tutorial es definir las variables de entorno.
+Defina las variables de entorno como se indica a continuación.
 
 ```bash
-
 export RANDOM_ID="$(openssl rand -hex 3)"
 export MY_RESOURCE_GROUP_NAME="myVMSSResourceGroup$RANDOM_ID"
 export REGION=EastUS
@@ -33,22 +45,17 @@ export MY_APPGW_SN_NAME="myAPPGWSN$RANDOM_ID"
 export MY_APPGW_SN_PREFIX="10.$NETWORK_PREFIX.1.0/24"
 export MY_APPGW_NAME="myAPPGW$RANDOM_ID"
 export MY_APPGW_PUBLIC_IP_NAME="myAPPGWPublicIP$RANDOM_ID"
-
 ```
-# Iniciar sesión en Azure mediante la CLI
 
-Para ejecutar comandos en Azure mediante la CLI, debe iniciar sesión. Esto se hace, muy simplemente, a través del comando `az login`:
+## Crear un grupo de recursos
 
-# Crear un grupo de recursos
-
-Un grupo de recursos es un contenedor para los recursos relacionados. Todos los recursos se deben colocar en un grupo de recursos. Vamos a crear uno para este tutorial. El comando siguiente crea un grupo de recursos con los parámetros $MY_RESOURCE_GROUP_NAME y $REGION definidos anteriormente.
+Un grupo de recursos es un contenedor lógico en el que se implementan y se administran los recursos de Azure. Todos los recursos se deben colocar en un grupo de recursos. El comando siguiente crea un grupo de recursos con los parámetros $MY_RESOURCE_GROUP_NAME y $REGION definidos anteriormente.
 
 ```bash
 az group create --name $MY_RESOURCE_GROUP_NAME --location $REGION -o JSON
 ```
 
 Resultados:
-
 <!-- expected_similarity=0.3 -->
 ```json   
 {
@@ -64,19 +71,17 @@ Resultados:
 }
 ```
 
-# Crear recursos de red 
+## Crear recursos de red 
 
-Debe crear recursos de red antes de continuar con los pasos de VMSS. En este paso va a crear una red virtual, 2 subredes: 1 para Application Gateway y 1 para máquinas virtuales. También debe tener una IP pública para adjuntar la instancia de Application Gateway para poder acceder a la aplicación web desde Internet. 
+Ahora creará recursos de red. En este paso va a crear una red virtual, una subred 1 para Application Gateway y una subred para máquinas virtuales. También debe tener una dirección IP pública para adjuntar Application Gateway para acceder a la aplicación web desde Internet. 
 
-
-#### Crear una red virtual (VNET) y una subred de máquina virtual
+#### Creación de una red virtual y una subred
 
 ```bash
 az network vnet create  --name $MY_VNET_NAME  --resource-group $MY_RESOURCE_GROUP_NAME --location $REGION  --address-prefix $MY_VNET_PREFIX  --subnet-name $MY_VM_SN_NAME --subnet-prefix $MY_VM_SN_PREFIX -o JSON
 ```
 
 Resultados:
-
 <!-- expected_similarity=0.3 -->
 ```json   
 {
@@ -114,17 +119,15 @@ Resultados:
 }
 ```
 
-### Crear recursos de Application Gateway
+### Creación de recursos de Application Gateway
 
-Azure Application Gateway requiere una subred dedicada dentro de la red virtual. El comando siguiente crea una subred denominada $MY_APPGW_SN_NAME con el prefijo de dirección especificado denominado $MY_APPGW_SN_PREFIX en la red virtual $MY_VNET_NAME 
-
+Azure Application Gateway requiere una subred dedicada dentro de la red virtual. El comando siguiente crea una subred denominada $MY_APPGW_SN_NAME con un prefijo de dirección especificado denominado $MY_APPGW_SN_PREFIX en la red virtual $MY_VNET_NAME.
 
 ```bash
 az network vnet subnet create  --name $MY_APPGW_SN_NAME  --resource-group $MY_RESOURCE_GROUP_NAME --vnet-name  $MY_VNET_NAME --address-prefix  $MY_APPGW_SN_PREFIX -o JSON
 ```
 
 Resultados:
-
 <!-- expected_similarity=0.3 -->
 ```json  
 {
@@ -140,14 +143,13 @@ Resultados:
   "type": "Microsoft.Network/virtualNetworks/subnets"
 }
 ```
-El comando siguiente crea una IPv4 estándar, con redundancia de zona, estática y pública en el grupo de recursos.  
+El comando siguiente crea un IPv4 estándar, con redundancia de zona, estática y pública en el grupo de recursos.  
 
 ```bash
 az network public-ip create  --resource-group $MY_RESOURCE_GROUP_NAME --name $MY_APPGW_PUBLIC_IP_NAME --sku Standard   --location $REGION  --allocation-method static --version IPv4 --zone 1 2 3 -o JSON
- ```
+```
 
 Resultados:
-
 <!-- expected_similarity=0.3 -->
 ```json  
 {
@@ -181,11 +183,11 @@ Resultados:
 }
 ```
 
-En este paso, creará una instancia de Application Gateway que va a integrar con el conjunto de escalado de máquinas virtuales. En este ejemplo se crea una instancia de Application Gateway con redundancia de zona con la SKU Standard_v2 y se habilita la comunicación HTTP para Application Gateway. La IP pública $MY_APPGW_PUBLIC_IP_NAME que creamos en el paso anterior adjunta a Application Gateway. 
+En este paso, creará una instancia de Application Gateway que va a integrar con el conjunto de escalado de máquinas virtuales. En este ejemplo se crea una instancia de Application Gateway con redundancia de zona con Standard_v2 SKU y se habilita la comunicación Http para Application Gateway. La dirección IP pública $MY_APPGW_PUBLIC_IP_NAME creada en el paso anterior se adjunta a Application Gateway. 
 
 ```bash
 az network application-gateway create   --name $MY_APPGW_NAME --location $REGION --resource-group $MY_RESOURCE_GROUP_NAME --vnet-name $MY_VNET_NAME --subnet $MY_APPGW_SN_NAME --capacity 2  --zones 1 2 3 --sku Standard_v2   --http-settings-cookie-based-affinity Disabled   --frontend-port 80 --http-settings-port 80   --http-settings-protocol Http --public-ip-address $MY_APPGW_PUBLIC_IP_NAME --priority 1001 -o JSON
- ```
+```
 
 <!-- expected_similarity=0.3 -->
 ```json 
@@ -375,19 +377,21 @@ az network application-gateway create   --name $MY_APPGW_NAME --location $REGION
     "urlPathMaps": []
   }
 }
- ```
+```
 
+## Creación de un conjunto de escalado de máquinas virtuales
 
-# Creación de un conjunto de escalado de máquinas virtuales 
+> [!IMPORTANT]
+>A partir de noviembre de 2023, los conjuntos de escalado de máquinas virtuales creados con PowerShell y la CLI de Azure tendrán como valor predeterminado el modo de orquestación flexible si no se especifica ningún modo de orquestación. Para obtener más información sobre este cambio y las acciones que debe realizar, vaya a [Cambio importante para clientes de PowerShell/CLI de VMSS: Centro de comunidad de Microsoft](
+https://techcommunity.microsoft.com/t5/azure-compute-blog/breaking-change-for-vmss-powershell-cli-customers/ba-p/3818295)
 
-El comando siguiente crea un conjunto de escalado de máquinas virtuales (VMSS) con redundancia de zona dentro del grupo de recursos $MY_RESOURCE_GROUP_NAME. Integramos la instancia de Application Gateway que creamos en el paso anterior. Este comando crea 2 máquinas virtuales de SKU Standard_DS2_v2 con IP pública en la subred $MY_VM_SN_NAME. Se creará una clave ssh durante el paso siguiente, es posible que desee guardar la clave si necesita iniciar sesión en las máquinas virtuales a través de ssh.
+Ahora, cree un conjunto de escalado de máquinas virtuales con [az vmss create](/cli/azure/vmss). En el ejemplo siguiente se crea un conjunto de escalado con redundancia de zona con un recuento de instancias de *2* con dirección IP pública en la subred $MY_VM_SN_NAME dentro del grupo de recursos $MY_RESOURCE_GROUP_NAME, se integra Application Gateway y se generan claves SSH. Asegúrese de guardar las claves SSH si necesita iniciar sesión en las máquinas virtuales a través de ssh.
 
 ```bash
 az vmss create --name $MY_VMSS_NAME --resource-group $MY_RESOURCE_GROUP_NAME --image $MY_VM_IMAGE --admin-username $MY_USERNAME --generate-ssh-keys --public-ip-per-vm --orchestration-mode Uniform --instance-count 2 --zones 1 2 3 --vnet-name $MY_VNET_NAME --subnet $MY_VM_SN_NAME --vm-sku Standard_DS2_v2 --upgrade-policy-mode Automatic --app-gateway $MY_APPGW_NAME --backend-pool-name appGatewayBackendPool -o JSON
  ```
 
 Resultados:
-
 <!-- expected_similarity=0.3 -->
 ```json  
 {
@@ -499,17 +503,15 @@ Resultados:
 }
 ```
 
-### Instalar ngnix con extensiones de VMSS 
+### Instalación de ngnix con extensiones de Virtual Machine Scale Sets 
 
-El siguiente comando usa la extensión VMSS para ejecutar un script personalizado. Con fines de prueba, aquí instalamos ngnix y publicamos una página que muestra el nombre de host de la máquina virtual a la que llegan las solicitudes HTTP. Usamos este script personalizado para este propósito: https://raw.githubusercontent.com/Azure-Samples/compute-automation-configurations/master/automate_nginx.sh 
-
+El siguiente comando usa la extensión Virtual Machine Scale Sets para ejecutar un [script personalizado](https://github.com/Azure-Samples/compute-automation-configurations/blob/master/automate_nginx.sh) que instala ngnix y publica una página que muestra el nombre de host de la máquina virtual a la que aciertos las solicitudes HTTP. 
 
 ```bash
 az vmss extension set --publisher Microsoft.Azure.Extensions --version 2.0  --name CustomScript --resource-group $MY_RESOURCE_GROUP_NAME --vmss-name $MY_VMSS_NAME --settings '{ "fileUris": ["https://raw.githubusercontent.com/Azure-Samples/compute-automation-configurations/master/automate_nginx.sh"], "commandToExecute": "./automate_nginx.sh" }' -o JSON
 ```
 
 Resultados:
-
 <!-- expected_similarity=0.3 -->
 ```json  
 {
@@ -703,19 +705,16 @@ Resultados:
 }
 ```
 
+## Definición de un perfil de escalado automático  
 
-# Definición de un perfil de escalado automático  
-
-Para habilitar el escalado automático en un conjunto de escalado, primero debe definir un perfil de escalado automático. Este perfil define la capacidad predeterminada, mínima y máxima del conjunto de escalado. Estos límites le permiten controlar el costo al no crear continuamente instancias de máquina virtual, y equilibrar un rendimiento aceptable con un número mínimo de instancias que permanecen en un evento de reducción horizontal.
-En el ejemplo siguiente se establece la capacidad predeterminada y la mínima para 2 instancias de máquina virtual y un máximo de 10:
+Para habilitar el escalado automático en un conjunto de escalado, defina primero un perfil de escalado automático. Este perfil define la capacidad predeterminada, mínima y máxima del conjunto de escalado. Estos límites permiten controlar el costo sin crear continuamente instancias de máquina virtual y equilibrar el rendimiento aceptable con un número mínimo de instancias que permanecen en un evento de escalado horizontal.
+En el ejemplo siguiente se establece la capacidad predeterminada, la capacidad mínima de dos instancias de máquina virtual y una capacidad máxima de 10:
 
 ```bash
 az monitor autoscale create --resource-group $MY_RESOURCE_GROUP_NAME --resource  $MY_VMSS_NAME --resource-type Microsoft.Compute/virtualMachineScaleSets --name autoscale --min-count 2 --max-count 10 --count 2
 ```
 
-
 Resultados:
-
 <!-- expected_similarity=0.3 -->
 ```json  
 {
@@ -760,16 +759,15 @@ Resultados:
 }
 ```
 
-# Creación de una regla de escalado automático horizontal
+## Creación de una regla de escalado automático horizontal
 
-El comando Siguiente crea una regla que aumente el número de instancias de máquina virtual de un conjunto de escalado cuando la carga promedio de la CPU sea superior al 70 % durante un período de más de 5 minutos. Cuando se desencadena la regla, aumenta el número de instancias de máquina virtual en tres.
+El comando siguiente crea una regla que aumenta el número de instancias de máquina virtual en un conjunto de escalado cuando la carga media de CPU es superior al 70 % durante un período de 5 minutos. Cuando se desencadena la regla, el número de instancias de máquina virtual aumenta en tres.
 
 ```bash
 az monitor autoscale rule create --resource-group $MY_RESOURCE_GROUP_NAME --autoscale-name autoscale --condition "Percentage CPU > 70 avg 5m" --scale out 3
 ```
 
 Resultados:
-
 <!-- expected_similarity=0.3 -->
 ```json 
 {
@@ -796,16 +794,15 @@ Resultados:
 } 
 ```
 
-# Creación de una regla de escalado automático horizontal de reducción
+## Creación de una regla de escalado automático horizontal de reducción
 
-Cree otra regla con az monitor autoscale rule create que reduzca el número de instancias de máquina virtual de un conjunto de escalado cuando la carga media de la CPU descienda por debajo del 30 % durante un período de más de 5 minutos. En el ejemplo siguiente se define la regla para reducir horizontalmente el número de instancias de máquina virtual en una unidad.
+Cree otra regla con `az monitor autoscale rule create` que disminuya el número de instancias de máquina virtual en un conjunto de escalado cuando la carga media de CPU baje por debajo del 30 % durante un período de 5 minutos. En el ejemplo siguiente se define la regla para reducir horizontalmente el número de instancias de máquina virtual en una unidad.
 
 ```bash
 az monitor autoscale rule create --resource-group  $MY_RESOURCE_GROUP_NAME --autoscale-name autoscale --condition "Percentage CPU < 30 avg 5m" --scale in 1
 ```
 
 Resultados:
-
 <!-- expected_similarity=0.3 -->
 ```json 
 {
@@ -832,19 +829,19 @@ Resultados:
 }
 ```
 
-
 ### Prueba de la página
 
-El siguiente comando muestra la IP pública de Application Gateway. Puede pegar la dirección IP en una página del explorador para realizar pruebas.
+El comando siguiente muestra la dirección IP pública de Application Gateway. Pegue la dirección IP en una página del explorador para realizar pruebas.
 
 ```bash
 az network public-ip show --resource-group $MY_RESOURCE_GROUP_NAME --name $MY_APPGW_PUBLIC_IP_NAME --query [ipAddress]  --output tsv
 ```
 
+## Limpieza de recursos (opcional)
 
+Para evitar los cargos de Azure, se recomienda limpiar los recursos que no sean necesarios. Cuando ya no necesite el conjunto de escalado y otros recursos, elimine el grupo de recursos y todos sus recursos con [az group delete](/cli/azure/group). El parámetro `--no-wait` devuelve el control a la petición de confirmación sin esperar a que finalice la operación. El parámetro `--yes` confirma que quiere eliminar los recursos sin pedir otra confirmación. En este tutorial se limpian los recursos.
 
-# Referencias
-
-* [Documentación de VMSS](https://learn.microsoft.com/en-us/azure/virtual-machine-scale-sets/overview)
-* [Escalabilidad automática de VMSS](https://learn.microsoft.com/en-us/azure/virtual-machine-scale-sets/tutorial-autoscale-cli?tabs=Ubuntu)
-
+## Pasos siguientes
+- [Obtenga información sobre cómo crear un conjunto de escalado en Azure Portal.](flexible-virtual-machine-scale-sets-portal.md)
+- [Más información sobre los conjuntos de escalado de máquinas virtuales.](overview.md)
+- [Escalar automáticamente un conjunto de escalado de máquinas virtuales con la CLI de Azure](tutorial-autoscale-cli.md)
