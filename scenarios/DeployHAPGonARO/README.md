@@ -4,7 +4,7 @@ description: This tutorial shows how to create a Highly Available PostgreSQL clu
 author: russd2357
 ms.author: rdepina
 ms.topic: article
-ms.date: 04/02/2024
+ms.date: 04/12/2024
 ms.custom: innovation-engine, linux-related content
 ---
 
@@ -16,7 +16,7 @@ In order to run commands against Azure using the CLI you need to login. This is 
 
 ## Check for Prerequisites
 
-Next, check for prerequisites. This section checks for the following prerequisites: RedHat OpenShift and kubectl.
+Next, check for prerequisites. This section checks for the following prerequisites: RedHat OpenShift, kubectl, and Openshift Client.
 
 ### RedHat OpenShift
 
@@ -181,8 +181,9 @@ In this section, you'll be deploying an Azure Red Hat OpenShift (ARO) cluster. T
 
 ```bash
 export ARO_CLUSTER_NAME="aro-${LOCAL_NAME}-${SUFFIX}"
+export ARO_PULL_SECRET=$(az keyvault secret show --name AROPullSecret --vault-name AROKeyVault --query value -o tsv)
 echo "This will take about 30 minutes to complete..." 
-az aro create -g $RG_NAME -n $ARO_CLUSTER_NAME --vnet $VNET_NAME --master-subnet $SUBNET1_NAME --worker-subnet $SUBNET2_NAME --tags $RGTAGS --client-id ${SP_ID} --client-secret ${SP_SECRET}
+az aro create -g $RG_NAME -n $ARO_CLUSTER_NAME --vnet $VNET_NAME --master-subnet $SUBNET1_NAME --worker-subnet $SUBNET2_NAME --tags $RGTAGS --client-id ${SP_ID} --client-secret ${SP_SECRET} --pull-secret ${ARO_PULL_SECRET}
 ```
 
 Results:
