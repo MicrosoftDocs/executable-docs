@@ -1,23 +1,35 @@
 ---
-title: Linux イメージを使って Application Gateway を含む仮想マシン スケール セットを作成する
-description: このチュートリアルでは、Linux イメージを使って Application Gateway を含む仮想マシン スケール セットを作成する方法を示します。
-author: belginceran
-ms.author: belginceran
-ms.topic: article
-ms.date: 01/05/2024
-ms.custom: innovation-engine
+title: Azure CLI を使用してフレキシブルなスケール セットに仮想マシンを作成する
+description: Azure CLI を使用して、フレキシブル オーケストレーション モードで仮想マシン スケール セットを作成する方法について説明します。
+author: fitzgeraldsteele
+ms.author: fisteele
+ms.topic: how-to
+ms.service: virtual-machine-scale-sets
+ms.date: 3/19/2024
+ms.reviewer: jushiman
+ms.custom: 'mimckitt, devx-track-azurecli, vmss-flex, innovation-engine, linux-related-content'
 ---
 
-# Linux イメージを使って Application Gateway を含む仮想マシン スケール セットを作成する
+# Azure CLI を使用してスケール セットに仮想マシンを作成する
 
 [![Azure に配置する](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262759)
 
+この記事では、Azure CLI を使用して仮想マシン スケール セットを作成する方法について説明します。
+
+[Azure CLI](/cli/azure/install-az-cli2) の最新版がインストールされていること、および [az login](/cli/azure/reference-index) で Azure アカウントにログインしていることを確認します。
+
+
+## Azure Cloud Shell を起動する
+
+Azure Cloud Shell は無料のインタラクティブ シェルです。この記事の手順は、Azure Cloud Shell を使って実行することができます。 一般的な Azure ツールが事前にインストールされており、アカウントで使用できるように構成されています。
+
+Cloud Shell を開くには、コード ブロックの右上隅にある **[Cloud Shell を開く]** を選択します。 [https://shell.azure.com/cli](https://shell.azure.com/cli) に移動して、別のブラウザー タブで Cloud Shell を起動することもできます。 **[コピー]** を選択してコードのブロックをコピーし、Cloud Shell に貼り付けてから、Enter キーを押して実行します。
+
 ## 環境変数を定義する
 
-このチュートリアルの最初の手順は、環境変数を定義することです。
+次のように環境変数を定義します。
 
 ```bash
-
 export RANDOM_ID="$(openssl rand -hex 3)"
 export MY_RESOURCE_GROUP_NAME="myVMSSResourceGroup$RANDOM_ID"
 export REGION=EastUS
@@ -33,22 +45,17 @@ export MY_APPGW_SN_NAME="myAPPGWSN$RANDOM_ID"
 export MY_APPGW_SN_PREFIX="10.$NETWORK_PREFIX.1.0/24"
 export MY_APPGW_NAME="myAPPGW$RANDOM_ID"
 export MY_APPGW_PUBLIC_IP_NAME="myAPPGWPublicIP$RANDOM_ID"
-
 ```
-# CLI を使用して Azure にログインします
 
-CLI を使用して Azure に対してコマンドを実行するには、ログインする必要があります。 これを実行するには、`az login` コマンドを使用するだけです。
+## リソース グループを作成する
 
-# リソース グループの作成
-
-リソース グループとは、関連リソース用のコンテナーです。 すべてのリソースをリソース グループに配置する必要があります。 このチュートリアルに必要なものを作成します。 次のコマンドは、事前定義済みの $MY_RESOURCE_GROUP_NAME パラメーターと $REGION パラメーターを使用してリソース グループを作成します。
+リソース グループとは、Azure リソースのデプロイと管理に使用する論理コンテナーです。 すべてのリソースをリソース グループに配置する必要があります。 次のコマンドは、事前定義済みの $MY_RESOURCE_GROUP_NAME パラメーターと $REGION パラメーターを使用してリソース グループを作成します。
 
 ```bash
 az group create --name $MY_RESOURCE_GROUP_NAME --location $REGION -o JSON
 ```
 
 結果:
-
 <!-- expected_similarity=0.3 -->
 ```json   
 {
@@ -64,19 +71,17 @@ az group create --name $MY_RESOURCE_GROUP_NAME --location $REGION -o JSON
 }
 ```
 
-# ネットワーク リソースを作成する 
+## ネットワーク リソースを作成する 
 
-VMSS の手順を進める前に、ネットワーク リソースを作成する必要があります。 この手順では、1 つの VNET、2 つのサブネット (Application Gateway 用に 1 つと VM 用に 1 つ) を作成します。 また、インターネットから Web アプリケーションにアクセスできるように、アプリケーション ゲートウェイをアタッチするパブリック IP も必要です。 
+次に、ネットワーク リソースを作成します。 この手順では、仮想ネットワーク、Application Gateway 用の 1 つのサブネット 1 と VM 用の 1 つのサブネットを作成します。 インターネットから Web アプリケーションにアクセスするには、Application Gateway を接続するためのパブリック IP も必要です。 
 
-
-#### 仮想ネットワーク (VNET) と VM サブネットを作成する
+#### 仮想ネットワークとサブネットを作成する
 
 ```bash
 az network vnet create  --name $MY_VNET_NAME  --resource-group $MY_RESOURCE_GROUP_NAME --location $REGION  --address-prefix $MY_VNET_PREFIX  --subnet-name $MY_VM_SN_NAME --subnet-prefix $MY_VM_SN_PREFIX -o JSON
 ```
 
 結果:
-
 <!-- expected_similarity=0.3 -->
 ```json   
 {
@@ -114,17 +119,15 @@ az network vnet create  --name $MY_VNET_NAME  --resource-group $MY_RESOURCE_GROU
 }
 ```
 
-### アプリケーション ゲートウェイ リソースを作成する
+### Application Gateway のリソースを作成する
 
-Azure Application Gateway を使うには、仮想ネットワーク内に専用のサブネットが必要です。 次のコマンドを使うと、VNET $MY_VNET_NAME に $MY_APPGW_SN_PREFIX というアドレス プレフィックスを指定した $MY_APPGW_SN_NAME というサブネットを作成できます。 
-
+Azure Application Gateway を使うには、仮想ネットワーク内に専用のサブネットが必要です。 次のコマンドは、名前が $MY_APPGW_SN_NAME で、指定されたアドレス プレフィックス $MY_APPGW_SN_PREFIX を持つサブネットを仮想ネットワーク $MY_VNET_NAME 内に作成します。
 
 ```bash
 az network vnet subnet create  --name $MY_APPGW_SN_NAME  --resource-group $MY_RESOURCE_GROUP_NAME --vnet-name  $MY_VNET_NAME --address-prefix  $MY_APPGW_SN_PREFIX -o JSON
 ```
 
 結果:
-
 <!-- expected_similarity=0.3 -->
 ```json  
 {
@@ -140,14 +143,13 @@ az network vnet subnet create  --name $MY_APPGW_SN_NAME  --resource-group $MY_RE
   "type": "Microsoft.Network/virtualNetworks/subnets"
 }
 ```
-次のコマンドを使うと、リソース グループ内に標準のゾーン冗長の静的パブリック IPv4 を作成できます。  
+次のコマンドは、リソース グループ内に標準のゾーン冗長な静的パブリック IPv4 を作成します。  
 
 ```bash
 az network public-ip create  --resource-group $MY_RESOURCE_GROUP_NAME --name $MY_APPGW_PUBLIC_IP_NAME --sku Standard   --location $REGION  --allocation-method static --version IPv4 --zone 1 2 3 -o JSON
- ```
+```
 
 結果:
-
 <!-- expected_similarity=0.3 -->
 ```json  
 {
@@ -181,11 +183,11 @@ az network public-ip create  --resource-group $MY_RESOURCE_GROUP_NAME --name $MY
 }
 ```
 
-この手順では、仮想マシン スケール セットと統合するアプリケーション ゲートウェイを作成します。 この例では、Standard_v2 SKU を使ってゾーン冗長アプリケーション ゲートウェイを作成し、アプリケーション ゲートウェイの Http 通信を有効にします。 前の手順で作成したパブリック IP $MY_APPGW_PUBLIC_IP_NAME がアプリケーション ゲートウェイにアタッチされています。 
+この手順では、仮想マシン スケール セットに統合する Application Gateway を作成します。 この例では、Standard_v2 SKU を使用してゾーン冗長 Application Gateway を作成し、Application Gateway の HTTP 通信を有効にします。 前の手順で作成したパブリック IP $MY_APPGW_PUBLIC_IP_NAME が Application Gateway に接続されます。 
 
 ```bash
 az network application-gateway create   --name $MY_APPGW_NAME --location $REGION --resource-group $MY_RESOURCE_GROUP_NAME --vnet-name $MY_VNET_NAME --subnet $MY_APPGW_SN_NAME --capacity 2  --zones 1 2 3 --sku Standard_v2   --http-settings-cookie-based-affinity Disabled   --frontend-port 80 --http-settings-port 80   --http-settings-protocol Http --public-ip-address $MY_APPGW_PUBLIC_IP_NAME --priority 1001 -o JSON
- ```
+```
 
 <!-- expected_similarity=0.3 -->
 ```json 
@@ -375,19 +377,21 @@ az network application-gateway create   --name $MY_APPGW_NAME --location $REGION
     "urlPathMaps": []
   }
 }
- ```
+```
 
+## 仮想マシン スケール セットの作成
 
-# Virtual Machine Scale Sets を作成する 
+> [!IMPORTANT]
+>2023 年 11 月以降、PowerShell と Azure CLI を使用して作成された VM スケール セットは、オーケストレーション モードが指定されていない場合、既定でフレキシブル オーケストレーション モードになります。 この変更の詳細と実行する必要があるアクションについては、「[VMSS PowerShell/CLI のお客様向けの重大な変更 - Microsoft Community Hub](
+https://techcommunity.microsoft.com/t5/azure-compute-blog/breaking-change-for-vmss-powershell-cli-customers/ba-p/3818295)」を参照してください
 
-次のコマンドを使うと、リソース グループ $MY_RESOURCE_GROUP_NAME 内にゾーン冗長仮想マシン スケール セット (VMSS) を作成できます。 前の手順で作成したアプリケーション ゲートウェイを統合します。 このコマンドを使うと、パブリック IP を持つ 2 つの Standard_DS2_v2 SKU 仮想マシンをサブネット $MY_VM_SN_NAME に作成できます。 ssh キーは以下の手順で作成されます。ssh 経由で VM にログインする必要がある場合は、キーを保存することをお勧めします。
+ここでは、[az vmss create](/cli/azure/vmss) を使用して仮想マシン スケール セットを作成します。 次の例では、リソース グループ $MY_RESOURCE_GROUP_NAME 内のサブネット $MY_VM_SN_NAME にパブリック IP を持ち、インスタンス数が *2* のゾーン冗長スケール セットを作成し、Application Gateway を統合して、SSH キーを生成します。 SSH 経由で VM にログインする必要がある場合は、必ず SSH キーを保存してください。
 
 ```bash
 az vmss create --name $MY_VMSS_NAME --resource-group $MY_RESOURCE_GROUP_NAME --image $MY_VM_IMAGE --admin-username $MY_USERNAME --generate-ssh-keys --public-ip-per-vm --orchestration-mode Uniform --instance-count 2 --zones 1 2 3 --vnet-name $MY_VNET_NAME --subnet $MY_VM_SN_NAME --vm-sku Standard_DS2_v2 --upgrade-policy-mode Automatic --app-gateway $MY_APPGW_NAME --backend-pool-name appGatewayBackendPool -o JSON
  ```
 
 結果:
-
 <!-- expected_similarity=0.3 -->
 ```json  
 {
@@ -499,17 +503,15 @@ az vmss create --name $MY_VMSS_NAME --resource-group $MY_RESOURCE_GROUP_NAME --i
 }
 ```
 
-### VMSS 拡張機能を使って ngnix をインストールする 
+### 仮想マシン スケール セット拡張機能をインストールする 
 
-次のコマンドでは、VMSS 拡張機能を使ってカスタム スクリプトを実行します。 テスト目的で、ここでは ngnix をインストールし、HTTP 要求がヒットした仮想マシンのホスト名を表示するページを公開します。 この目的のために次のカスタム スクリプトを使います: https://raw.githubusercontent.com/Azure-Samples/compute-automation-configurations/master/automate_nginx.sh 
-
+次のコマンドは、仮想マシン スケール セット拡張機能を使用して[カスタム スクリプト](https://github.com/Azure-Samples/compute-automation-configurations/blob/master/automate_nginx.sh)を実行します。このスクリプトは、ngnix をインストールし、HTTP 要求がヒットする仮想マシンのホスト名を表示するページを公開します。 
 
 ```bash
 az vmss extension set --publisher Microsoft.Azure.Extensions --version 2.0  --name CustomScript --resource-group $MY_RESOURCE_GROUP_NAME --vmss-name $MY_VMSS_NAME --settings '{ "fileUris": ["https://raw.githubusercontent.com/Azure-Samples/compute-automation-configurations/master/automate_nginx.sh"], "commandToExecute": "./automate_nginx.sh" }' -o JSON
 ```
 
 結果:
-
 <!-- expected_similarity=0.3 -->
 ```json  
 {
@@ -703,19 +705,16 @@ az vmss extension set --publisher Microsoft.Azure.Extensions --version 2.0  --na
 }
 ```
 
+## 自動スケール プロファイルの定義  
 
-# 自動スケール プロファイルの定義  
-
-スケール セットで自動スケールを有効にするには、最初に自動スケール プロファイルを定義します。 このプロファイルでは、スケール セット容量の既定値、最小値、および最大値が定義されます。 これらの制限により、VM インスタンスが継続的に作成されないようにしてコストを制御し、許容されるパフォーマンスと、スケールイン イベントに残るインスタンスの最小数のバランスをとることができます。
-次の例では、既定および最小の容量として 2 つの VM インスタンスを設定し、最大の容量として 10 を定義しています。
+スケール セットで自動スケールを有効にするには、まず自動スケール プロファイルを定義します。 このプロファイルでは、スケール セット容量の既定値、最小値、および最大値が定義されます。 これらの制限により、VM インスタンスが継続的に作成されないようにしてコストを制御し、許容されるパフォーマンスと、スケールイン イベントに残るインスタンスの最小数とのバランスを取ることができます。
+次の例では、既定の最小容量を 2 つの VM インスタンスに設定し、最大容量を 10 に設定します。
 
 ```bash
 az monitor autoscale create --resource-group $MY_RESOURCE_GROUP_NAME --resource  $MY_VMSS_NAME --resource-type Microsoft.Compute/virtualMachineScaleSets --name autoscale --min-count 2 --max-count 10 --count 2
 ```
 
-
 結果:
-
 <!-- expected_similarity=0.3 -->
 ```json  
 {
@@ -760,16 +759,15 @@ az monitor autoscale create --resource-group $MY_RESOURCE_GROUP_NAME --resource 
 }
 ```
 
-# 自動スケールアウト ルールの作成
+## 自動スケールアウト ルールの作成
 
-次のコマンドを使うと、CPU に対する負荷の平均が 5 分間に 70% を上回った場合にスケール セット内の VM インスタンスの数を増やすルールを作成できます。 ルールがトリガーされると、VM インスタンスの数が 3 つ増えます。
+次のコマンドは、5 分間の平均 CPU 負荷が 70% を超えた場合にスケール セット内の VM インスタンスの数を増やすルールを作成します。 ルールがトリガーされると、VM インスタンスの数が 3 つ増加します。
 
 ```bash
 az monitor autoscale rule create --resource-group $MY_RESOURCE_GROUP_NAME --autoscale-name autoscale --condition "Percentage CPU > 70 avg 5m" --scale out 3
 ```
 
 結果:
-
 <!-- expected_similarity=0.3 -->
 ```json 
 {
@@ -796,16 +794,15 @@ az monitor autoscale rule create --resource-group $MY_RESOURCE_GROUP_NAME --auto
 } 
 ```
 
-# 自動スケールイン ルールの作成
+## 自動スケールイン ルールの作成
 
-CPU に対する負荷の平均が 5 分間にわたって 30% を下回った場合に、スケールセット内の VM インスタンスの数を減らす別のルールを az monitor autoscale rule create を使用して作成します。 次の例では、VM インスタンスの数を 1 つスケールインするルールを定義します。
+`az monitor autoscale rule create` を使用して、5 分間の平均 CPU 負荷が 30% を下回った場合にスケール セット内の VM インスタンスの数を減らす別のルールを作成します。 次の例では、VM インスタンスの数を 1 つスケールインするルールを定義します。
 
 ```bash
 az monitor autoscale rule create --resource-group  $MY_RESOURCE_GROUP_NAME --autoscale-name autoscale --condition "Percentage CPU < 30 avg 5m" --scale in 1
 ```
 
 結果:
-
 <!-- expected_similarity=0.3 -->
 ```json 
 {
@@ -832,19 +829,19 @@ az monitor autoscale rule create --resource-group  $MY_RESOURCE_GROUP_NAME --aut
 }
 ```
 
-
 ### ページをテストする
 
-次のコマンドを使うと、アプリケーション ゲートウェイのパブリック IP を表示できます。 テストのために IP アドレスをブラウザー ページに貼り付けることができます。
+次のコマンドは、Application Gateway のパブリック IP を表示します。 テストのためにブラウザー ページに IP アドレスを貼り付けます。
 
 ```bash
 az network public-ip show --resource-group $MY_RESOURCE_GROUP_NAME --name $MY_APPGW_PUBLIC_IP_NAME --query [ipAddress]  --output tsv
 ```
 
+## リソースをクリーンアップする (省略可能)
 
+Azure の課金を回避するには、不要なリソースをクリーンアップする必要があります。 スケール セットやその他のリソースが必要なくなったら、[az group delete](/cli/azure/group) を使用して、リソース グループとそのすべてのリソースを削除します。 `--no-wait` パラメーターは、操作の完了を待たずにプロンプトに制御を戻します。 `--yes` パラメーターは、別のプロンプトを表示せずにリソースの削除を確定します。 このチュートリアルでは、リソースをクリーンアップします。
 
-# リファレンス
-
-* [VMSS のドキュメント](https://learn.microsoft.com/en-us/azure/virtual-machine-scale-sets/overview)
-* [VMSS の自動スケーリング](https://learn.microsoft.com/en-us/azure/virtual-machine-scale-sets/tutorial-autoscale-cli?tabs=Ubuntu)
-
+## 次のステップ
+- [Azure portal でスケール セットを作成する方法について学習する。](flexible-virtual-machine-scale-sets-portal.md)
+- [仮想マシン スケール セットについて説明します。](overview.md)
+- [Azure CLI を使用して仮想マシン スケール セットを自動的にスケーリングする](tutorial-autoscale-cli.md)
