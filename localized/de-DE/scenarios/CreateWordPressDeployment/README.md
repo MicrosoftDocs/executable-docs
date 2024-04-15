@@ -1,18 +1,35 @@
 ---
-title: Bereitstellen einer skalierbaren und sicheren WordPress-Instanz auf AKS
-description: 'In diesem Tutorial wird gezeigt, wie Sie eine skalierbare und sichere WordPress-Instanz auf AKS über CLI bereitstellen'
-author: adrian.joian
-ms.author: adrian.joian
-ms.topic: article
-ms.date: 12/06/2023
-ms.custom: innovation-engine
+title: "Tutorial: Bereitstellen von WordPress in einem AKS-Cluster unter Verwendung der Azure\_CLI"
+description: "Hier erfahren Sie, wie Sie WordPress in AKS mit Azure Database for MySQL\_– Flexible Server schnell erstellen und bereitstellen."
+ms.service: mysql
+ms.subservice: flexible-server
+author: mksuni
+ms.author: sumuth
+ms.topic: tutorial
+ms.date: 3/20/2024
+ms.custom: 'vc, devx-track-azurecli, innovation-engine, linux-related-content'
 ---
 
-# Schnellstart: Bereitstellen einer skalierbaren und sicheren WordPress-Instanz auf AKS
+# Tutorial: Bereitstellen einer WordPress-App in AKS mit Azure Database for MySQL – Flexible Server
+
+[!INCLUDE[applies-to-mysql-flexible-server](../includes/applies-to-mysql-flexible-server.md)]
 
 [![Bereitstellung in Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262843)
 
-Willkommen bei diesem Tutorial, in dem wir Sie Schritt für Schritt durch das Erstellen einer Azure Kubernetes-Webanwendung führen, die über HTTPS geschützt ist. In diesem Tutorial wird davon ausgegangen, dass Sie bereits bei der Azure CLI angemeldet sind und ein Abonnement ausgewählt haben, das mit der CLI verwendet werden soll. Es wird auch davon ausgegangen, dass Sie Helm installiert haben (entsprechende Anweisungen finden Sie [hier](https://helm.sh/docs/intro/install/)).
+In diesem Tutorial stellen Sie eine skalierbare WordPress-Anwendung bereit, die über HTTPS auf einem Azure Kubernetes Service (AKS)-Cluster mit Azure Database for MySQL – Flexible Server mithilfe der Azure CLI gesichert ist.
+**[AKS](../../aks/intro-kubernetes.md)** ist ein verwalteter Kubernetes-Dienst, mit dem Sie Cluster schnell bereitstellen und verwalten können. **[Azure Database for MySQL – Flexible Server](overview.md)** ist ein vollständig verwalteter Datenbankdienst, der eine differenziertere Steuerung und mehr Flexibilität bei den Verwaltungsfunktionen und Konfigurationseinstellungen der Datenbank bietet.
+
+> [!NOTE]
+> In diesem Tutorial werden grundlegende Kenntnisse von Kubernetes-Konzepten, WordPress und MySQL vorausgesetzt.
+
+[!INCLUDE [flexible-server-free-trial-note](../includes/flexible-server-free-trial-note.md)]
+
+## Voraussetzungen 
+
+Bevor Sie beginnen, stellen Sie sicher, dass Sie bei der Azure CLI angemeldet sind und ein Abonnement ausgewählt haben, das mit der CLI verwendet werden soll. Stellen Sie sicher, dass [Helm installiert ist](https://helm.sh/docs/intro/install/).
+
+> [!NOTE]
+> Wenn Sie die Befehle in diesem Tutorial lokal anstatt in Azure Cloud Shell ausführen, stellen Sie sicher, dass Sie sie als Administrator ausführen.
 
 ## Umgebungsvariablen definieren
 
@@ -43,7 +60,7 @@ export FQDN="${MY_DNS_LABEL}.${REGION}.cloudapp.azure.com"
 
 ## Erstellen einer Ressourcengruppe
 
-Eine Ressourcengruppe ist ein Container für zugehörige Ressourcen. Alle Ressourcen müssen in einer Ressourcengruppe platziert werden. In diesem Tutorial erstellen wir eine Ressourcengruppe. Mit dem folgenden Befehl wird eine Ressourcengruppe mit den zuvor definierten Parametern $MY_RESOURCE_GROUP_NAME und $REGION erstellt.
+Eine Azure-Ressourcengruppe ist eine logische Gruppe, in der Azure-Ressourcen bereitgestellt und verwaltet werden. Alle Ressourcen müssen in einer Ressourcengruppe platziert werden. Mit dem folgenden Befehl wird eine Ressourcengruppe mit den zuvor definierten `$MY_RESOURCE_GROUP_NAME`- und `$REGION`-Parametern erstellt.
 
 ```bash
 az group create \
@@ -52,7 +69,6 @@ az group create \
 ```
 
 Ergebnisse:
-
 <!-- expected_similarity=0.3 -->
 ```json
 {
@@ -67,6 +83,9 @@ Ergebnisse:
   "type": "Microsoft.Resources/resourceGroups"
 }
 ```
+
+> [!NOTE]
+> Der Standort für die Ressourcengruppe ist der Ort, an dem die Metadaten der Ressourcengruppen gespeichert werden. Darüber hinaus werden dort Ihre Ressourcen in Azure ausgeführt, sofern Sie im Rahmen der Ressourcenerstellung keine andere Region angeben.
 
 ## Erstellen eines virtuellen Netzwerks und des Subnetzes
 
@@ -83,7 +102,6 @@ az network vnet create \
 ```
 
 Ergebnisse:
-
 <!-- expected_similarity=0.3 -->
 ```json
 {
@@ -118,9 +136,9 @@ Ergebnisse:
 }
 ```
 
-## Erstellen einer Instanz von Azure Database for MySQL – Flexible Server
+## Erstellen einer Azure Database for MySQL Flexible Server-Instanz
 
-Azure Database for MySQL – Flexible Server ist ein verwalteter Dienst, mit dem Sie hochverfügbare MySQL-Serverinstanzen in der Cloud ausführen, verwalten und skalieren können. Erstellen Sie mithilfe des Befehls [az mysql flexible-server create](https://learn.microsoft.com/cli/azure/mysql/flexible-server#az-mysql-flexible-server-create) einen flexiblen Server. Ein Server kann mehrere Datenbanken enthalten. Mit dem folgenden Befehl wird ein Server mit Dienststandards und Variablenwerten aus der lokalen Umgebung Ihrer Azure CLI erstellt:
+Azure Database for MySQL Flexible Server ist ein verwalteter Dienst, mit dem Sie hochverfügbare MySQL-Serverinstanzen in der Cloud ausführen, verwalten und skalieren können. Erstellen Sie mithilfe des Befehls [az mysql flexible-server create](/cli/azure/mysql/flexible-server) eine Instanz von Azure Database for MySQL – Flexible Server. Ein Server kann mehrere Datenbanken enthalten. Mit dem folgenden Befehl wird ein Server mit Dienststandardwerten und Variablenwerten aus dem lokalen Kontext Ihrer Azure CLI erstellt:
 
 ```bash
 echo "Your MySQL user $MY_MYSQL_ADMIN_USERNAME password is: $MY_WP_ADMIN_PW" 
@@ -149,7 +167,6 @@ az mysql flexible-server create \
 ```
 
 Ergebnisse:
-
 <!-- expected_similarity=0.3 -->
 ```json
 {
@@ -167,14 +184,15 @@ Ergebnisse:
 
 Der erstellte Server weist die folgenden Attribute auf:
 
+- Bei der erstmaligen Bereitstellung des Servers wird eine neue leere Datenbank erstellt.
 - Der Servername, der Administratorbenutzername, das Administratorkennwort, der Name der Ressourcengruppe und der Standort sind bereits in der lokalen Kontextumgebung der Cloudshell angegeben und werden an demselben Speicherort wie die Ressourcengruppe und die anderen Azure-Komponenten erstellt.
-- Die Dienststandardwerte für verbleibende Serverkonfigurationen lauten wie folgt: Computetarif (Burstfähig), Computegröße/SKU (Standard_B2s), Aufbewahrungszeitraum für Sicherungen (7 Tage) und MySQL-Version (8.0.21).
-- Die Standardkonnektivitätsmethode ist der private Zugriff (VNET-Integration) mit einem verknüpften virtuellen Netzwerk und einem automatisch generierten Subnetz.
+- Die Dienststandardwerte für die verbleibenden Serverkonfigurationen lauten wie folgt: Computeebene (Burstfähig), Computegröße/SKU (Standard_B2s), Aufbewahrungszeitraum für Sicherungen (sieben Tage) und MySQL-Version (8.0.21).
+- Die Standardkonnektivitätsmethode ist der private Zugriff (VNet-Integration) mit einem verknüpften virtuellen Netzwerk und einem automatisch generierten Subnetz.
 
 > [!NOTE]
-> Die Konnektivitätsmethode kann nicht geändert werden, nachdem der Server erstellt wurde. Wenn Sie z. B. `Private access (VNet Integration)` während der Erstellung ausgewählt haben, können Sie nach dem Erstellen nicht zu `Public access (allowed IP addresses)` wechseln. Es wird dringend empfohlen, einen Server mit privatem Zugriff zu erstellen, um mithilfe der VNET-Integration sicher auf den Server zugreifen zu können. Weitere Informationen zum privaten Zugriff finden Sie im Artikel zu [Konzepten](https://learn.microsoft.com/azure/mysql/flexible-server/concepts-networking-vnet).
+> Die Konnektivitätsmethode kann nicht geändert werden, nachdem der Server erstellt wurde. Wenn Sie z. B. `Private access (VNet Integration)` während der Erstellung ausgewählt haben, können Sie nach dem Erstellen nicht zu `Public access (allowed IP addresses)` wechseln. Es wird dringend empfohlen, einen Server mit privatem Zugriff zu erstellen, um mithilfe der VNET-Integration sicher auf den Server zugreifen zu können. Weitere Informationen zum privaten Zugriff finden Sie im Artikel zu [Konzepten](./concepts-networking-vnet.md).
 
-Wenn Sie irgendwelche Standardwerte ändern möchten, finden Sie in der [Referenzdokumentation](https://learn.microsoft.com/cli/azure//mysql/flexible-server) zur Azure CLI die komplette Liste der konfigurierbaren CLI-Parameter.
+Wenn Sie irgendwelche Standardwerte ändern möchten, finden Sie in der [Referenzdokumentation](/cli/azure//mysql/flexible-server) zur Azure CLI die komplette Liste der konfigurierbaren CLI-Parameter.
 
 ## Überprüfen des Status von „Azure Database for MySQL – Flexibler Server“
 
@@ -188,11 +206,11 @@ runtime="10 minute"; endtime=$(date -ud "$runtime" +%s); while [[ $(date -u +%s)
 
 Sie können die Konfiguration von Azure Database for MySQL – Flexible Server über Serverparameter verwalten. Die Serverparameter werden beim Erstellen des Servers mit einem Standardwert und einem empfohlenen Wert konfiguriert.
 
-Anzeigen von Serverparameterdetails: Um Details zu einem bestimmten Parameter für einen Server anzuzeigen, führen Sie den Befehl [az mysql flexible-server parameter show](https://learn.microsoft.com/cli/azure/mysql/flexible-server/parameter) aus.
+Um Details zu einem bestimmten Parameter für einen Server anzuzeigen, führen Sie den Befehl [az mysql flexible-server parameter show](/cli/azure/mysql/flexible-server/parameter) aus.
 
 ### Deaktivieren des SSL-Verbindungsparameter für „Azure Database for MySQL – Flexible Server“ für die WordPress-Integration
 
-Sie können auch den Wert eines bestimmten Serverparameters ändern und dadurch den zugrunde liegenden Konfigurationswert für die MySQL-Server-Engine aktualisieren. Um den Serverparameter zu aktualisieren, verwenden Sie den Befehl [az mysql flexible-server parameter set](https://learn.microsoft.com/cli/azure/mysql/flexible-server/parameter#az-mysql-flexible-server-parameter-set).
+Sie können auch den Wert eines bestimmten Serverparameters ändern und dadurch den zugrunde liegenden Konfigurationswert für die MySQL-Server-Engine aktualisieren. Um den Serverparameter zu aktualisieren, verwenden Sie den Befehl [az mysql flexible-server parameter set](/cli/azure/mysql/flexible-server/parameter#az-mysql-flexible-server-parameter-set).
 
 ```bash
 az mysql flexible-server parameter set \
@@ -202,7 +220,6 @@ az mysql flexible-server parameter set \
 ```
 
 Ergebnisse:
-
 <!-- expected_similarity=0.3 -->
 ```json
 {
@@ -223,11 +240,11 @@ Ergebnisse:
 }
 ```
 
-## Create AKS Cluster
+## Erstellen eines ACS-Clusters
 
-Erstellen Sie mit dem Befehl az aks create mit dem Parameter --enable-addons monitoring einen AKS-Cluster, um Container Insights zu aktivieren. Im folgenden Beispiel wird ein Cluster mit automatischer Skalierung und aktivierter Verfügbarkeitszone namens „myAKSCluster“ erstellt:
+Um einen AKS-Cluster mit Container Insights zu erstellen, verwenden Sie den Befehl[az aks create](/cli/azure/aks#az-aks-create) mit dem Überwachungsparameter **--enable-addons**. Im folgenden Beispiel wird ein Cluster mit automatischer Skalierung und aktivierter Verfügbarkeitszone namens **myAKSCluster** erstellt:
 
-Dieser Vorgang nimmt einige Minuten in Anspruch
+Dieser Vorgang dauert einige Minuten.
 
 ```bash
 export MY_SN_ID=$(az network vnet subnet list --resource-group $MY_RESOURCE_GROUP_NAME --vnet-name $MY_VNET_NAME --query "[0].id" --output tsv)
@@ -251,62 +268,46 @@ az aks create \
     --dns-service-ip 10.255.0.10 \
     --zones 1 2 3
 ```
+> [!NOTE]
+> Beim Erstellen eines AKS-Clusters wird automatisch eine zweite Ressourcengruppe erstellt, um die AKS-Ressourcen zu speichern. Weitere Informationen finden Sie unter [Warum werden zwei Ressourcengruppen mit AKS erstellt?](../../aks/faq.md#why-are-two-resource-groups-created-with-aks).
 
 ## Herstellen einer Verbindung mit dem Cluster
 
-Verwenden Sie zum Verwalten eines Kubernetes-Clusters den Kubernetes-Befehlszeilenclient kubectl. Bei Verwendung von Azure Cloud Shell ist kubectl bereits installiert.
+Verwenden Sie zum Verwalten eines Kubernetes-Clusters den Kubernetes-Befehlszeilenclient [kubectl](https://kubernetes.io/docs/reference/kubectl/overview/). Bei Verwendung von Azure Cloud Shell ist `kubectl` bereits installiert. Im folgenden Beispiel wird `kubectl` lokal mithilfe des Befehls [az aks install-cli](/cli/azure/aks#az-aks-install-cli) installiert. 
 
-1. Verwenden Sie für die lokale Installation von „az aks CLI“ den Befehl „az aks install-cli“.
-
-    ```bash
+ ```bash
     if ! [ -x "$(command -v kubectl)" ]; then az aks install-cli; fi
-    ```
+```
 
-2. Konfigurieren Sie kubectl mit dem Befehl „az aks get-credentials“, um eine Verbindung mit Ihrem Kubernetes-Cluster herzustellen. Der unten angegebene Befehl bewirkt Folgendes:
+Konfigurieren Sie als Nächstes `kubectl`, um eine Verbindung mit Ihrem Kubernetes-Cluster mithilfe des Befehls [az aks get-credentials](/cli/azure/aks#az-aks-get-credentials) herzustellen. Mit diesem Befehl werden die Anmeldeinformationen heruntergeladen und die Kubernetes-CLI für ihre Verwendung konfiguriert. Der Befehl verwendet `~/.kube/config`, den Standardspeicherort für die [Kubernetes-Konfigurationsdatei](https://kubernetes.io/docs/concepts/configuration/organize-cluster-access-kubeconfig/). Sie können mit dem Argument **--file** einen anderen Speicherort für Ihre Kubernetes-Konfigurationsdatei angeben.
 
-    - Herunterladen von Anmeldeinformationen und Konfigurieren der Kubernetes-Befehlszeilenschnittstelle für ihre Verwendung
-    - Verwenden von „~/.kube/config“ (Standardspeicherort für die Kubernetes-Konfigurationsdatei). Geben Sie mit dem --file-Argument einen anderen Speicherort für Ihre Kubernetes-Konfigurationsdatei an.
+> [!WARNING]
+> Mit diesem Befehl werden alle vorhandenen Anmeldeinformationen mit demselben Eintrag überschrieben.
 
-    > [!WARNING]
-    > Dadurch werden alle vorhandenen Anmeldeinformationen mit demselben Eintrag überschrieben.
+```bash
+az aks get-credentials --resource-group $MY_RESOURCE_GROUP_NAME --name $MY_AKS_CLUSTER_NAME --overwrite-existing
+```
 
-    ```bash
-    az aks get-credentials --resource-group $MY_RESOURCE_GROUP_NAME --name $MY_AKS_CLUSTER_NAME --overwrite-existing
-    ```
+Überprüfen Sie die Verbindung mit Ihrem Cluster mithilfe des Befehls [kubectl get]( https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands#get), um eine Liste der Clusterknoten zurückzugeben.
 
-3. Überprüfen Sie die Verbindung mit dem Cluster mithilfe des Befehls kubectl get. Dieser Befehl gibt eine Liste der Clusterknoten zurück.
-
-    ```bash
-    kubectl get nodes
-    ```
+```bash
+kubectl get nodes
+```
 
 ## Installieren des NGINX-Eingangsdatencontrollers
 
 Sie können Ihren Eingangsdatencontroller mit einer statischen öffentlichen IP-Adresse konfigurieren. Die statische öffentliche IP-Adresse wird beibehalten, wenn der Eingangsdatencontroller gelöscht wird. Die IP-Adresse bleibt nicht erhalten, wenn Sie Ihren AKS-Cluster löschen.
-Wenn Sie Ihren Eingangsdatencontroller aktualisieren, müssen Sie einen Parameter an den Helm-Release übergeben. So können Sie sicherstellen, dass der Dienst des Eingangsdatencontrollers auf den Lastenausgleich aufmerksam gemacht wird, der ihm zugeordnet wird. Damit die HTTPS-Zertifikate ordnungsgemäß funktionieren, wird eine DNS-Bezeichnung verwendet, um einen vollqualifizierten Domänennamen (FQDN) für die IP-Adresse des Eingangsdatencontrollers zu konfigurieren.
-Ihr FQDN sollte diesem Formular folgen: $MY_DNS_LABEL. AZURE_REGION_NAME.cloudapp.azure.com.
+Wenn Sie Ihren Eingangsdatencontroller aktualisieren, müssen Sie einen Parameter an den Helm-Release übergeben. So können Sie sicherstellen, dass der Dienst des Eingangsdatencontrollers auf den Lastenausgleich aufmerksam gemacht wird, der ihm zugeordnet wird. Damit die HTTPS-Zertifikate ordnungsgemäß funktionieren, wird eine DNS-Bezeichnung verwendet, um einen vollqualifizierten Domänennamen (FQDN) für die IP-Adresse des Eingangsdatencontrollers zu konfigurieren. Ihr FQDN sollte diesem Formular folgen: $MY_DNS_LABEL. AZURE_REGION_NAME.cloudapp.azure.com.
 
 ```bash
 export MY_STATIC_IP=$(az network public-ip create --resource-group MC_${MY_RESOURCE_GROUP_NAME}_${MY_AKS_CLUSTER_NAME}_${REGION} --location ${REGION} --name ${MY_PUBLIC_IP_NAME} --dns-name ${MY_DNS_LABEL} --sku Standard --allocation-method static --version IPv4 --zone 1 2 3 --query publicIp.ipAddress -o tsv)
 ```
 
-Fügen Sie den Parameter --set controller.service.annotations."service\.beta\.kubernetes\.io/azure-dns-label-name"="<DNS_LABEL>" hinzu. Die DNS-Bezeichnung kann festgelegt werden, wenn der Eingangsdatencontroller zum ersten Mal bereitgestellt wird, oder sie kann später konfiguriert werden. Fügen Sie den Parameter --set controller.service.loadBalancerIP="STATIC_IP" hinzu. Geben Sie Ihre eigene öffentliche IP-Adresse an, die im vorherigen Schritt erstellt wurde.
+Als Nächstes fügen Sie das Helm-Repository „ingress-nginx“ hinzu, aktualisieren den lokalen Repositorycache für Helm-Diagramme und installieren das Addon „ingress-nginx“ über Helm. Sie können die DNS-Bezeichnung mit dem Parameter **--set controller.service.annotations festlegen." service\.beta\.kubernetes\.io/azure-dns-label-name"="<DNS_LABEL>"** entweder bei der erstmaligen Bereitstellung des Eingangsdatencontrollers oder zu einem späteren Zeitpunkt festlegen. In diesem Beispiel geben Sie Ihre eigene öffentliche IP-Adresse an, die Sie im vorherigen Schritt mit dem Parameter **--set controller.service.loadBalancerIP="<STATIC_IP>" ** erstellt haben.
 
-1. Hinzufügen des Repositorys „ingress-nginx Helm“
-
-    ```bash
+```bash
     helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
-    ```
-
-2. Aktualisieren des lokalen Repositorycache für das Helm-Diagramm
-
-    ```bash
     helm repo update
-    ```
-
-3. Installieren Sie das Ingress-nginx-Addon über Helm, indem Sie Folgendes ausführen:
-
-    ```bash
     helm upgrade --install --cleanup-on-fail --atomic ingress-nginx ingress-nginx/ingress-nginx \
         --namespace ingress-nginx \
         --create-namespace \
@@ -314,15 +315,15 @@ Fügen Sie den Parameter --set controller.service.annotations."service\.beta\.ku
         --set controller.service.loadBalancerIP=$MY_STATIC_IP \
         --set controller.service.annotations."service\.beta\.kubernetes\.io/azure-load-balancer-health-probe-request-path"=/healthz \
         --wait --timeout 10m0s
-    ```
+```
 
 ## Hinzufügen von HTTPS-Beendigung zu einer benutzerdefinierten Domäne
 
 An diesem Punkt im Tutorial verfügen Sie über eine AKS-Web-App mit NGINX als Eingangsdatencontroller und einer benutzerdefinierten Domäne, die Sie für den Zugriff auf Ihre Anwendung verwenden können. Der nächste Schritt besteht darin, der Domäne ein SSL-Zertifikat hinzuzufügen, damit Benutzer*innen Ihre Anwendung sicher über HTTPS erreichen können.
 
-## Einrichten von Cert Manager
+### Einrichten von Cert Manager
 
-Wir verwenden Cert Manager zum Hinzufügen von HTTPS. Cert Manager ist ein Open Source-Tool zum Abrufen und Verwalten von SSL-Zertifikaten für Kubernetes-Bereitstellungen. Cert Manager erhält Zertifikate von verschiedenen Zertifikatausstellern (sowohl von beliebten öffentlichen Zertifikatausstellern als auch von privaten Zertifikataussteller), stellt sicher, dass die Zertifikate gültig und auf dem neuesten Stand sind, und versucht, Zertifikate zu einem konfigurierten Zeitpunkt vor Ablauf zu verlängern.
+Wir verwenden Cert Manager zum Hinzufügen von HTTPS. Cert Manager ist ein Open Source-Tool zum Abrufen und Verwalten von SSL-Zertifikaten für Kubernetes-Bereitstellungen. Cert Manager erhält Zertifikate von beliebten öffentlichen und privaten Zertifikatausstellern, stellt sicher, dass die Zertifikate gültig und auf dem neuesten Stand sind, und versucht, Zertifikate zu einem konfigurierten Zeitpunkt vor Ablauf zu verlängern.
 
 1. Zum Installieren von Cert Manager müssen Sie zuerst einen Namespace für die Ausführung erstellen. In diesem Tutorial wird Cert Manager im Cert Manager-Namespace installiert. Es ist möglich, Cert Manager in einem anderen Namespace auszuführen. Dann müssen Sie jedoch Änderungen an den Bereitstellungsmanifesten vornehmen.
 
@@ -330,13 +331,13 @@ Wir verwenden Cert Manager zum Hinzufügen von HTTPS. Cert Manager ist ein Open 
     kubectl create namespace cert-manager
     ```
 
-2. Sie können nun Cert Manager installieren. Alle Ressourcen sind in einer einzigen YAML-Manifestdatei enthalten. Diese kann mithilfe der folgenden Befehle installiert werden:
+2. Sie können nun Cert Manager installieren. Alle Ressourcen sind in einer einzigen YAML-Manifestdatei enthalten. Installieren Sie die Manifestdatei mit dem folgenden Befehl:
 
     ```bash
     kubectl apply -f https://github.com/jetstack/cert-manager/releases/download/v1.7.0/cert-manager.crds.yaml
     ```
 
-3. Fügen Sie die Bezeichnung „certmanager.k8s.io/disable-validation: "true"“ zum Cert-Manager-Namespace hinzu, indem Sie Folgendes ausführen. Dadurch können die Systemressourcen, die von Cert Manager für das Bootstrapping von TLs benötigt werden, in einem eigenen Namespace erstellt werden.
+3. Fügen Sie dem Cert Manager-Namespace die Bezeichnung `certmanager.k8s.io/disable-validation: "true"` hinzu, indem Sie den folgenden Befehl ausführen. Dadurch können die Systemressourcen, die von Cert Manager für das Bootstrapping von TLS benötigt werden, in einem eigenen Namespace erstellt werden.
 
     ```bash
     kubectl label namespace cert-manager certmanager.k8s.io/disable-validation=true
@@ -344,25 +345,23 @@ Wir verwenden Cert Manager zum Hinzufügen von HTTPS. Cert Manager ist ein Open 
 
 ## Abrufen von Zertifikaten über Helm-Diagramme
 
-Helm ist ein Kubernetes-Bereitstellungstool zum Automatisieren von Erstellen, Packen, Konfigurieren und Bereitstellen von Anwendungen und Diensten für Kubernetes-Cluster.
+Helm ist ein Kubernetes-Bereitstellungstool zur Automatisierung von Erstellen, Packen, Konfigurieren und Bereitstellen von Anwendungen und Diensten für Kubernetes-Cluster.
 
 Cert Manager stellt Helm-Diagramme als erstklassige Methode zur Installation in Kubernetes bereit.
 
-1. Hinzufügen des Jetstack-Helm-Repositorys
-
-    Dieses Repository ist die einzige unterstützte Quelle von Cert Manager-Diagrammen. Es gibt einige andere Spiegelungen und Kopien im Internet, aber diese sind völlig inoffiziell und könnten ein Sicherheitsrisiko darstellen.
+1. Fügen Sie das Jetstack Helm-Repository hinzu. Dieses Repository ist die einzige unterstützte Quelle von Cert Manager-Diagrammen. Es gibt einige andere Spiegelungen und Kopien im Internet, aber diese sind völlig inoffiziell und könnten ein Sicherheitsrisiko darstellen.
 
     ```bash
     helm repo add jetstack https://charts.jetstack.io
     ```
 
-2. Aktualisieren des lokalen Repositorycache für das Helm-Diagramm
+2. Aktualisieren Sie den lokalen Repositorycache für Helm-Diagramme.
 
     ```bash
     helm repo update
     ```
 
-3. Installieren Sie das Cert Manager-Add-On über Helm, indem Sie Folgendes ausführen:
+3. Installieren Sie das Cert Manager-Addon über Helm.
 
     ```bash
     helm upgrade --install --cleanup-on-fail --atomic \
@@ -372,10 +371,7 @@ Cert Manager stellt Helm-Diagramme als erstklassige Methode zur Installation in 
         cert-manager jetstack/cert-manager
     ```
 
-4. Anwenden der YAML-Datei des Zertifikatausstellers
-
-    ClusterIssuers sind Kubernetes-Ressourcen, die Zertifizierungsstellen darstellen, die signierte Zertifikate generieren können, indem Zertifikatsignaturanforderungen berücksichtigt werden. Alle Cert Manager-Zertifikate erfordern einen referenzierten Zertifikataussteller, der in der Lage ist, die Anforderung zu berücksichtigen.
-    Den von uns verwendeten Zertifikataussteller finden Sie in der Datei `cluster-issuer-prod.yml file`.
+4. Wenden Sie die YAML-Datei des Zertifikatausstellers an. ClusterIssuers sind Kubernetes-Ressourcen, die Zertifizierungsstellen darstellen, die signierte Zertifikate generieren können, indem Zertifikatsignaturanforderungen berücksichtigt werden. Alle Cert Manager-Zertifikate erfordern einen referenzierten Zertifikataussteller, der in der Lage ist, die Anforderung zu berücksichtigen. Sie finden den Aussteller in `cluster-issuer-prod.yaml file`.
 
     ```bash
     cluster_issuer_variables=$(<cluster-issuer-prod.yaml)
@@ -385,7 +381,7 @@ Cert Manager stellt Helm-Diagramme als erstklassige Methode zur Installation in 
 ## Erstellen einer benutzerdefinierten Speicherklasse
 
 Die Standardspeicherklassen eignen sich für die gängigsten Szenarien, aber nicht für alle. In einigen Fällen möchten Sie möglicherweise Ihre eigene Speicherklasse mit eigenen Parametern anpassen. Verwenden Sie beispielsweise das folgende Manifest, um die mountOptions der Dateifreigabe zu konfigurieren.
-Der Standardwert für „fileMode“ und „dirMode“ lautet 0755 für bereitgestellte Kubernetes-Dateifreigaben. Sie können die verschiedenen Einbindungsoptionen im Speicherklassenobjekt angeben.
+Der Standardwert für **fileMode** und **dirMode** lautet **0755** für in Kubernetes eingebundene Dateifreigaben. Sie können die verschiedenen Einbindungsoptionen im Speicherklassenobjekt angeben.
 
 ```bash
 kubectl apply -f wp-azurefiles-sc.yaml
@@ -393,21 +389,21 @@ kubectl apply -f wp-azurefiles-sc.yaml
 
 ## Bereitstellen von WordPress im AKS-Cluster
 
-Für dieses Dokument verwenden wir ein vorhandenes Helm-Diagramm für WordPress, das von Bitnami erstellt wurde. Das Bitnami Helm-Diagramm verwendet beispielsweise lokale MariaDB als Datenbank, und wir müssen diese Werte außer Kraft setzen, um die App mit Azure Database für MySQL zu verwenden. Alle Werte, die Sie außer Kraft setzen können, und die benutzerdefinierten Einstellungen finden Sie in der Datei `helm-wp-aks-values.yaml`
+Für dieses Tutorial verwenden wir ein vorhandenes Helm-Diagramm für WordPress, das von Bitnami erstellt wurde. Das Bitnami Helm-Diagramm verwendet eine lokale MariaDB-Datenbank, und wir müssen diese Werte außer Kraft setzen, um die App mit Azure Database for MySQL zu verwenden. Sie können die Werte und die benutzerdefinierten Einstellungen der `helm-wp-aks-values.yaml`-Datei außer Kraft setzen.
 
-1. Hinzufügen des Wordpress Bitnami Helm-Repositorys
+1. Hinzufügen des Wordpress Bitnami Helm-Repositorys.
 
     ```bash
     helm repo add bitnami https://charts.bitnami.com/bitnami
     ```
 
-2. Aktualisieren des lokalen Repositorycache für das Helm-Diagramm
+2. Aktualisieren Sie den lokalen Repositorycache für Helm-Diagramme.
 
     ```bash
     helm repo update
     ```
 
-3. Installieren Sie den Wordpress-Workload über Helm, indem Sie Folgendes ausführen:
+3. Installieren Sie die Wordpress-Workload über Helm.
 
     ```bash
     helm upgrade --install --cleanup-on-fail \
@@ -426,7 +422,6 @@ Für dieses Dokument verwenden wir ein vorhandenes Helm-Diagramm für WordPress,
     ```
 
 Ergebnisse:
-
 <!-- expected_similarity=0.3 -->
 ```text
 Release "wordpress" does not exist. Installing it now.
@@ -471,7 +466,7 @@ To access your WordPress site from outside the cluster follow the steps below:
 Führen Sie den folgenden Befehl aus, um den HTTPS-Endpunkt für Ihre Anwendung abzurufen:
 
 > [!NOTE]
-> Es dauert oft 2-3 Minuten, bis das SSL-Zertifikat übertragen ist, und etwa 5 Minuten, bis alle WordPress POD-Replikate bereit sind und die Website vollständig über https erreichbar ist.
+> Es dauert oft 2-3 Minuten, bis das SSL-Zertifikat übertragen ist, und etwa 5 Minuten, bis alle WordPress POD-Replikate bereit sind und die Website vollständig über HTTPS erreichbar ist.
 
 ```bash
 runtime="5 minute"
@@ -487,7 +482,7 @@ while [[ $(date -u +%s) -le $endtime ]]; do
 done
 ```
 
-Überprüfen, ob WordPress-Inhalte korrekt übermittelt werden.
+Überprüfen Sie mit dem folgenden Befehl, ob WordPress-Inhalte ordnungsgemäß übermittelt werden:
 
 ```bash
 if curl -I -s -f https://$FQDN > /dev/null ; then 
@@ -498,7 +493,6 @@ fi;
 ```
 
 Ergebnisse:
-
 <!-- expected_similarity=0.3 -->
 ```HTML
 {
@@ -514,8 +508,22 @@ Ergebnisse:
 }
 ```
 
-Die Website kann unter folgender URL besucht werden:
+Besuchen Sie die Website über die folgende URL:
 
 ```bash
 echo "You can now visit your web server at https://$FQDN"
 ```
+
+## Bereinigen von Ressourcen (optional)
+
+Zum Vermeiden von Azure-Gebühren sollten Sie nicht benötigte Ressourcen bereinigen. Wenn der Cluster nicht mehr benötigt wird, entfernen Sie mit dem Befehl [az group delete](/cli/azure/group#az-group-delete) die Ressourcengruppe, den Containerdienst und alle zugehörigen Ressourcen. 
+
+> [!NOTE]
+> Wenn Sie den Cluster löschen, wird der vom AKS-Cluster verwendete Microsoft Entra-Dienstprinzipal nicht entfernt. Schritte zum Entfernen des Dienstprinzipals finden Sie unter den [Überlegungen zum AKS-Dienstprinzipal und dessen Löschung](../../aks/kubernetes-service-principal.md#other-considerations). Wenn Sie eine verwaltete Identität verwendet haben, wird die Identität von der Plattform verwaltet und muss nicht entfernt werden.
+
+## Nächste Schritte
+
+- Informieren Sie sich, wie Sie [auf das Kubernetes-Webdashboard für Ihren AKS-Cluster zugreifen](../../aks/kubernetes-dashboard.md).
+- Machen Sie sich mit der Vorgehensweise zum [Skalieren Ihres Clusters](../../aks/tutorial-kubernetes-scale.md) vertraut.
+- Informieren Sie sich über die Verwaltung Ihrer [Instanz von Azure Database for MySQL – Flexible Server](./quickstart-create-server-cli.md).
+- Informieren Sie sich über das [Konfigurieren von Serverparametern](./how-to-configure-server-parameters-cli.md) für Ihren Datenbankserver

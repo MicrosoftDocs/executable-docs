@@ -1,23 +1,35 @@
 ---
-title: Erstellen einer VM-Skalierungsgruppe mit Application Gateway mit einem Linux-Image
-description: 'In diesem Tutorial erfahren Sie, wie Sie eine VM-Skalierungsgruppe mit Application Gateway mit einem Linux-Image erstellen.'
-author: belginceran
-ms.author: belginceran
-ms.topic: article
-ms.date: 01/05/2024
-ms.custom: innovation-engine
+title: Erstellen von VMs in einer flexiblen Skalierungsgruppe mit Azure CLI
+description: 'Erfahren Sie, wie Sie im Orchestrierungsmodus „Flexibel“ eine VM-Skalierungsgruppe im Azure-CLI erstellen.'
+author: fitzgeraldsteele
+ms.author: fisteele
+ms.topic: how-to
+ms.service: virtual-machine-scale-sets
+ms.date: 3/19/2024
+ms.reviewer: jushiman
+ms.custom: 'mimckitt, devx-track-azurecli, vmss-flex, innovation-engine, linux-related-content'
 ---
 
-# Erstellen einer VM-Skalierungsgruppe mit Application Gateway mit einem Linux-Image
+# Erstellen von VMs in einer Skalierungsgruppe mit der Azure CLI
 
 [![Bereitstellung in Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262759)
 
-## Umgebungsvariablen definieren
+In diesem Artikel wird beschrieben, wie Sie mithilfe der Azure CLI eine VM-Skalierungsgruppe erstellen.
 
-Der erste Schritt in diesem Tutorial besteht darin, Umgebungsvariablen zu definieren.
+Achten Sie darauf, dass Sie die aktuelle Version der [Azure CLI](/cli/azure/install-az-cli2) installiert haben und mit [az login](/cli/azure/reference-index) bei einem Azure-Konto angemeldet sind.
+
+
+## Starten von Azure Cloud Shell
+
+Azure Cloud Shell ist eine kostenlose interaktive Shell, mit der Sie die Schritte in diesem Artikel durchführen können. Sie verfügt über allgemeine vorinstallierte Tools und ist für die Verwendung mit Ihrem Konto konfiguriert.
+
+Wählen Sie zum Öffnen von Cloud Shell oben rechts in einem Codeblock einfach die Option **Cloud Shell öffnen** aus. Sie können Cloud Shell auch auf einem separaten Browsertab starten, indem Sie zu [https://shell.azure.com/cli](https://shell.azure.com/cli) navigieren. Wählen Sie **Kopieren**, um die Blöcke mit dem Code zu kopieren. Fügen Sie ihn anschließend in Cloud Shell ein, und drücken Sie die EINGABETASTE, um ihn auszuführen.
+
+## Definieren von Umgebungsvariablen
+
+Definieren Sie Umgebungsvariablen wie folgt.
 
 ```bash
-
 export RANDOM_ID="$(openssl rand -hex 3)"
 export MY_RESOURCE_GROUP_NAME="myVMSSResourceGroup$RANDOM_ID"
 export REGION=EastUS
@@ -33,22 +45,17 @@ export MY_APPGW_SN_NAME="myAPPGWSN$RANDOM_ID"
 export MY_APPGW_SN_PREFIX="10.$NETWORK_PREFIX.1.0/24"
 export MY_APPGW_NAME="myAPPGW$RANDOM_ID"
 export MY_APPGW_PUBLIC_IP_NAME="myAPPGWPublicIP$RANDOM_ID"
-
 ```
-# Anmelden bei Azure mit der CLI
 
-Um Befehle für Azure mithilfe der CLI auszuführen, müssen Sie sich anmelden. Dies geschieht ganz einfach mit dem Befehl `az login`:
+## Erstellen einer Ressourcengruppe
 
-# Erstellen einer Ressourcengruppe
-
-Eine Ressourcengruppe ist ein Container für zugehörige Ressourcen. Alle Ressourcen müssen in einer Ressourcengruppe platziert werden. In diesem Tutorial erstellen wir eine Ressourcengruppe. Mit dem folgenden Befehl wird eine Ressourcengruppe mit den zuvor definierten Parametern $MY_RESOURCE_GROUP_NAME und $REGION erstellt.
+Eine Ressourcengruppe ist ein logischer Container, in dem Azure-Ressourcen bereitgestellt und verwaltet werden. Alle Ressourcen müssen in einer Ressourcengruppe platziert werden. Mit dem folgenden Befehl wird eine Ressourcengruppe mit den zuvor definierten Parametern $MY_RESOURCE_GROUP_NAME und $REGION erstellt.
 
 ```bash
 az group create --name $MY_RESOURCE_GROUP_NAME --location $REGION -o JSON
 ```
 
 Ergebnisse:
-
 <!-- expected_similarity=0.3 -->
 ```json   
 {
@@ -64,19 +71,17 @@ Ergebnisse:
 }
 ```
 
-# Erstellen von Netzwerkressourcen 
+## Erstellen von Netzwerkressourcen 
 
-Sie müssen Netzwerkressourcen erstellen, bevor Sie die Schritte für eine VM-Skalierungsgruppe (VMSS) ausführen können. In diesem Schritt erstellen Sie ein VNET und je ein Subnetz für Application Gateway und für VMs. Sie benötigen außerdem eine öffentliche IP-Adresse, an die sie Ihr Application Gateway anfügen können, um Ihre Webanwendung über das Internet zu erreichen. 
+Jetzt erstellen Sie Netzwerkressourcen. In diesem Schritt erstellen Sie ein virtuelles Netzwerk, ein Subnetz für Anwendungsgateway und ein Subnetz für VMs. Sie benötigen außerdem eine öffentliche IP-Adresse, an die sie Ihr Application Gateway anfügen können, um Ihre Webanwendung über das Internet zu erreichen. 
 
-
-#### Erstellen des virtuellen Netzwerks (VNET) und des VM-Subnetzes
+#### Erstellen eines virtuellen Netzwerks und Subnetzes
 
 ```bash
 az network vnet create  --name $MY_VNET_NAME  --resource-group $MY_RESOURCE_GROUP_NAME --location $REGION  --address-prefix $MY_VNET_PREFIX  --subnet-name $MY_VM_SN_NAME --subnet-prefix $MY_VM_SN_PREFIX -o JSON
 ```
 
 Ergebnisse:
-
 <!-- expected_similarity=0.3 -->
 ```json   
 {
@@ -116,15 +121,13 @@ Ergebnisse:
 
 ### Erstellen von Application Gateway-Ressourcen
 
-Azure Application Gateway benötigt innerhalb Ihres virtuellen Netzwerks ein dediziertes Subnetz. Der folgende Befehl erstellt ein Subnetz namens „$MY_APPGW_SN_NAME“ mit dem angegebenen Adresspräfix „$MY_APPGW_SN_PREFIX“ in Ihrem VNET „$MY_VNET_NAME“: 
-
+Azure Application Gateway benötigt innerhalb Ihres virtuellen Netzwerks ein dediziertes Subnetz. Der folgende Befehl erstellt ein Subnetz namens „$MY_APPGW_SN_NAME“ mit einem angegebenen Adresspräfix „$MY_APPGW_SN_PREFIX“ in Ihrem virtuellen Netzwerk „$MY_VNET_NAME“.
 
 ```bash
 az network vnet subnet create  --name $MY_APPGW_SN_NAME  --resource-group $MY_RESOURCE_GROUP_NAME --vnet-name  $MY_VNET_NAME --address-prefix  $MY_APPGW_SN_PREFIX -o JSON
 ```
 
 Ergebnisse:
-
 <!-- expected_similarity=0.3 -->
 ```json  
 {
@@ -144,10 +147,9 @@ Mit dem folgenden Befehl wird eine standardmäßige, zonenredundante, statische,
 
 ```bash
 az network public-ip create  --resource-group $MY_RESOURCE_GROUP_NAME --name $MY_APPGW_PUBLIC_IP_NAME --sku Standard   --location $REGION  --allocation-method static --version IPv4 --zone 1 2 3 -o JSON
- ```
+```
 
 Ergebnisse:
-
 <!-- expected_similarity=0.3 -->
 ```json  
 {
@@ -181,11 +183,11 @@ Ergebnisse:
 }
 ```
 
-In diesem Schritt erstellen Sie ein Application Gateway, das Sie in Ihre VM-Skalierungsgruppe integrieren werden. In diesem Beispiel erstellen wir ein zonenredundantes Application Gateway mit einer Standard_v2-SKU und aktivieren die HTTP-Kommunikation für das Application Gateway. Die öffentliche IP-Adresse „$MY_APPGW_PUBLIC_IP_NAME“, die wir im vorherigen Schritt erstellt haben, die an das Application Gateway angefügt wurde. 
+In diesem Schritt erstellen Sie ein Application Gateway, das Sie in Ihre VM-Skalierungsgruppe integrieren werden. In diesem Beispiel wird ein zonenredundantes Application Gateway mit einer Standard_v2-SKU erstellt und die HTTP-Kommunikation für das Application Gateway aktiviert. Die öffentliche IP-Adresse „$MY_APPGW_PUBLIC_IP_NAME“, die im vorherigen Schritt erstellt wurde, wird an das Application Gateway angefügt. 
 
 ```bash
 az network application-gateway create   --name $MY_APPGW_NAME --location $REGION --resource-group $MY_RESOURCE_GROUP_NAME --vnet-name $MY_VNET_NAME --subnet $MY_APPGW_SN_NAME --capacity 2  --zones 1 2 3 --sku Standard_v2   --http-settings-cookie-based-affinity Disabled   --frontend-port 80 --http-settings-port 80   --http-settings-protocol Http --public-ip-address $MY_APPGW_PUBLIC_IP_NAME --priority 1001 -o JSON
- ```
+```
 
 <!-- expected_similarity=0.3 -->
 ```json 
@@ -375,19 +377,21 @@ az network application-gateway create   --name $MY_APPGW_NAME --location $REGION
     "urlPathMaps": []
   }
 }
- ```
+```
 
+## Erstellen einer VM-Skalierungsgruppe
 
-# Erstellen einer VM-Skalierungsgruppe 
+> [!IMPORTANT]
+>Ab November 2023 werden VM-Skalierungsgruppen, die mit PowerShell und der Azure CLI erstellt wurden, standardmäßig auf den flexiblen Orchestrierungsmodus festgelegt, wenn kein Orchestrierungsmodus angegeben wird. Weitere Informationen zu dieser Änderung und zu den Maßnahmen, die Sie ergreifen sollten, finden Sie unter [Breaking Change für PowerShell-/CLI-Kunden mit VMSS – Microsoft Community Hub](
+https://techcommunity.microsoft.com/t5/azure-compute-blog/breaking-change-for-vmss-powershell-cli-customers/ba-p/3818295).
 
-Der folgende Befehl erstellt eine zonenredundante VM-Skalierungsgruppe (VMSS) in Ihrer Ressourcengruppe „$MY_RESOURCE_GROUP_NAME“. Wir integrieren das Application Gateway, das wir im vorherigen Schritt erstellt haben. Mit diesem Befehl werden zwei Standard_DS2_v2-SKU-VMs mit öffentlicher IP-Adresse im Subnetz „$MY_VM_SN_NAME“ erstellt. Im folgenden Schritt wird ein SSH-Schlüssel erstellt, den Sie speichern sollten, sofern Sie Ihre VMs über SSH anmelden müssen.
+Erstellen Sie dann mit [az vmss create](/cli/azure/vmss) eine VM-Skalierungsgruppe. Im folgenden Beispiel wird ein zonenredundanter Skalierungssatz mit einer Instanzanzahl von *2* mit öffentlicher IP in Subnetz-$MY_VM_SN_NAME in Ihrer Ressourcengruppe $MY_RESOURCE_GROUP_NAME erstellt, das Anwendungsgateway integriert und SSH-Schlüssel generiert. Achten Sie darauf, die SSH-Schlüssel zu speichern, wenn Sie sich über SSH bei Ihren virtuellen Computern anmelden müssen.
 
 ```bash
 az vmss create --name $MY_VMSS_NAME --resource-group $MY_RESOURCE_GROUP_NAME --image $MY_VM_IMAGE --admin-username $MY_USERNAME --generate-ssh-keys --public-ip-per-vm --orchestration-mode Uniform --instance-count 2 --zones 1 2 3 --vnet-name $MY_VNET_NAME --subnet $MY_VM_SN_NAME --vm-sku Standard_DS2_v2 --upgrade-policy-mode Automatic --app-gateway $MY_APPGW_NAME --backend-pool-name appGatewayBackendPool -o JSON
  ```
 
 Ergebnisse:
-
 <!-- expected_similarity=0.3 -->
 ```json  
 {
@@ -499,17 +503,15 @@ Ergebnisse:
 }
 ```
 
-### Installieren von ngnix mit VMSS-Erweiterungen 
+### Installieren von ngnix mit Erweiterungen für Virtual Machine Scale Sets 
 
-Der folgende Befehl verwendet die VMSS-Erweiterung, um ein benutzerdefiniertes Skript auszuführen. Zu Testzwecken installieren wir hier ngnix und veröffentlichen eine Seite, die den Hostnamen der VM anzeigt, auf den Ihre HTTP-Anforderungen zutrefft. Zu diesem Zweck verwenden wir das folgende benutzerdefinierte Skript: https://raw.githubusercontent.com/Azure-Samples/compute-automation-configurations/master/automate_nginx.sh 
-
+Der folgende Befehl verwendet die Erweiterung für Virtual Machine Scale Sets zum Ausführen eines [benutzerdefinierten Skripts](https://github.com/Azure-Samples/compute-automation-configurations/blob/master/automate_nginx.sh), das ngnix installiert und eine Seite veröffentlicht, die den Hostnamen der VM anzeigt, auf den Ihre HTTP-Anforderungen zugeht. 
 
 ```bash
 az vmss extension set --publisher Microsoft.Azure.Extensions --version 2.0  --name CustomScript --resource-group $MY_RESOURCE_GROUP_NAME --vmss-name $MY_VMSS_NAME --settings '{ "fileUris": ["https://raw.githubusercontent.com/Azure-Samples/compute-automation-configurations/master/automate_nginx.sh"], "commandToExecute": "./automate_nginx.sh" }' -o JSON
 ```
 
 Ergebnisse:
-
 <!-- expected_similarity=0.3 -->
 ```json  
 {
@@ -703,19 +705,16 @@ Ergebnisse:
 }
 ```
 
-
-# Definieren eines Profils für die automatische Skalierung  
+## Definieren eines Profils für die automatische Skalierung  
 
 Zum Aktivieren der automatischen Skalierung für eine Skalierungsgruppe legen Sie zuerst ein Profil für die automatische Skalierung fest. Dieses Profil definiert die standardmäßige, minimale und maximale Kapazität der Skalierungsgruppe. Diese Grenzwerte sind hilfreich bei der Kostenkontrolle und sorgen nicht nur dafür, dass nicht fortlaufend VM-Instanzen erstellt werden, sondern gewährleisten auch ein ausgewogenes Verhältnis zwischen angemessener Leistung und einer minimalen Anzahl von Instanzen, die beim horizontalen Herunterskalieren erhalten bleiben.
-Im folgenden Beispiel werden als Standard- und Minimalwert 2 und als Maximalwert 10 VM-Instanzen festgelegt:
+Im folgenden Beispiel werden die Standardkapazität, die Mindestkapazität von zwei VM-Instanzen und eine maximale Kapazität von 10 festgelegt:
 
 ```bash
 az monitor autoscale create --resource-group $MY_RESOURCE_GROUP_NAME --resource  $MY_VMSS_NAME --resource-type Microsoft.Compute/virtualMachineScaleSets --name autoscale --min-count 2 --max-count 10 --count 2
 ```
 
-
 Ergebnisse:
-
 <!-- expected_similarity=0.3 -->
 ```json  
 {
@@ -760,16 +759,15 @@ Ergebnisse:
 }
 ```
 
-# Erstellen einer Regel zum automatischen Aufskalieren
+## Erstellen einer Regel zum automatischen Aufskalieren
 
-Der folgende Befehl erstellt eine Regel, die die Anzahl von VM-Instanzen in einer Skalierungsgruppe erhöht, wenn die durchschnittliche CPU-Last fünf Minuten lang über 70 % liegt. Wenn die Regel ausgelöst wird, wird die Anzahl von VM-Instanzen um 3 erhöht.
+Der folgende Befehl erstellt eine Regel, welche die Anzahl von VM-Instanzen in einer Skalierungsgruppe erhöht, wenn die durchschnittliche CPU-Last fünf Minuten lang über 70 % liegt. Wenn die Regel ausgelöst wird, wird die Anzahl von VM-Instanzen um 3 erhöht.
 
 ```bash
 az monitor autoscale rule create --resource-group $MY_RESOURCE_GROUP_NAME --autoscale-name autoscale --condition "Percentage CPU > 70 avg 5m" --scale out 3
 ```
 
 Ergebnisse:
-
 <!-- expected_similarity=0.3 -->
 ```json 
 {
@@ -796,16 +794,15 @@ Ergebnisse:
 } 
 ```
 
-# Erstellen einer Regel zum automatischen Abskalieren
+## Erstellen einer Regel zum automatischen Abskalieren
 
-Erstellen Sie mit az monitor autoscale rule create eine weitere Regel, mit der die Anzahl von VM-Instanzen in einer Skalierungsgruppe verringert wird, wenn die durchschnittliche CPU-Last für einen Zeitraum von 5 Minuten unter 30 Prozent liegt. Im folgenden Beispiel wird die Regel zum horizontalen Herunterskalieren der Anzahl von VM-Instanzen um 1 definiert.
+Erstellen Sie eine weitere Regel mit `az monitor autoscale rule create`, mit der die Anzahl von VM-Instanzen in einer Skalierungsgruppe verringert wird, wenn die durchschnittliche CPU-Last fünf Minuten lang unter 30% fällt. Im folgenden Beispiel wird die Regel zum horizontalen Herunterskalieren der Anzahl von VM-Instanzen um 1 definiert.
 
 ```bash
 az monitor autoscale rule create --resource-group  $MY_RESOURCE_GROUP_NAME --autoscale-name autoscale --condition "Percentage CPU < 30 avg 5m" --scale in 1
 ```
 
 Ergebnisse:
-
 <!-- expected_similarity=0.3 -->
 ```json 
 {
@@ -832,19 +829,19 @@ Ergebnisse:
 }
 ```
 
-
 ### Testen der Seite
 
-Der folgende Befehl zeigt die öffentliche IP-Adresse Ihres Application Gateways. Sie können die IP-Adresse zu Testzwecken in eine Browserseite einfügen.
+Der folgende Befehl zeigt die öffentliche IP-Adresse Ihres Application Gateways. Fügen Sie die IP-Adresse zu Testzwecken in eine Browserseite ein.
 
 ```bash
 az network public-ip show --resource-group $MY_RESOURCE_GROUP_NAME --name $MY_APPGW_PUBLIC_IP_NAME --query [ipAddress]  --output tsv
 ```
 
+## Bereinigen von Ressourcen (optional)
 
+Zum Vermeiden von Azure-Gebühren sollten Sie nicht benötigte Ressourcen bereinigen. Wenn Sie ihren Skalierungssatz und andere Ressourcen nicht mehr benötigen, löschen Sie die Ressourcengruppe und alle zugehörigen Ressourcen mit [az group delete](/cli/azure/group). Der Parameter `--no-wait` gibt die Steuerung an die Eingabeaufforderung zurück, ohne zu warten, bis der Vorgang abgeschlossen ist. Der Parameter `--yes` bestätigt, dass Sie die Ressourcen ohne weitere Aufforderung löschen möchten. In diesem Tutorial werden Ressourcen für Sie bereinigt.
 
-# References
-
-* [VMSS-Dokumentation](https://learn.microsoft.com/en-us/azure/virtual-machine-scale-sets/overview)
-* [VMSS-Autoskalierung](https://learn.microsoft.com/en-us/azure/virtual-machine-scale-sets/tutorial-autoscale-cli?tabs=Ubuntu)
-
+## Nächste Schritte
+- [Erfahren Sie, wie Sie eine Skalierungsgruppe im Azure-Portal erstellen.](flexible-virtual-machine-scale-sets-portal.md)
+- [Informationen zu Virtual Machine Scale Sets.](overview.md)
+- [Automatisches Skalieren einer VM-Skalierungsgruppe mit Azure CLI](tutorial-autoscale-cli.md)
