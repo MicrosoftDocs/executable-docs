@@ -12,10 +12,10 @@ jobs:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     steps:
-    - name: Checkout MicrosoftDocs/executable-docs
+    - name: Checkout executable-docs
       uses: actions/checkout@v2
       with:
-        repository: 'executable-docs'
+        repository: 'MicrosoftDocs/executable-docs'
 
     - name: Setup Node.js environment
       uses: actions/setup-node@v2
