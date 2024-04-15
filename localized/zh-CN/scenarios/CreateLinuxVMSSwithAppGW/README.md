@@ -1,23 +1,35 @@
 ---
-title: 使用 Linux 映像通过 Azure 应用程序网关创建虚拟机规模集
-description: 本教程演示如何使用 Linux 映像通过 Azure 应用程序网关创建虚拟机规模集
-author: belginceran
-ms.author: belginceran
-ms.topic: article
-ms.date: 01/05/2024
-ms.custom: innovation-engine
+title: 使用 Azure CLI 在灵活规模集中创建虚拟机
+description: 了解如何使用 Azure CLI 在灵活业务流程模式下创建虚拟机规模集。
+author: fitzgeraldsteele
+ms.author: fisteele
+ms.topic: how-to
+ms.service: virtual-machine-scale-sets
+ms.date: 3/19/2024
+ms.reviewer: jushiman
+ms.custom: 'mimckitt, devx-track-azurecli, vmss-flex, innovation-engine, linux-related-content'
 ---
 
-# 使用 Linux 映像通过 Azure 应用程序网关创建虚拟机规模集
+# 使用 Azure 门户创建虚拟机规模集
 
 [![部署到 Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262759)
 
+本文将详细介绍如何使用 Azure CLI 创建虚拟机规模集。
+
+确保已安装最新的 [Azure CLI](/cli/azure/install-az-cli2)，并且已使用 [az login](/cli/azure/reference-index) 登录到 Azure 帐户。
+
+
+## 启动 Azure Cloud Shell
+
+Azure Cloud Shell 是免费的交互式 shell，可以使用它运行本文中的步骤。 它预安装有常用 Azure 工具并将其配置与帐户一起使用。
+
+若要打开 Cloud Shell，请从代码块的右上角选择“打开 Cloud Shell”。**** 也可以通过转到 [https://shell.azure.com/cli](https://shell.azure.com/cli) 在单独的浏览器标签页中启动 Cloud Shell。 选择“复制”以复制代码块，将其粘贴到 Cloud Shell 中，然后按 Enter 来运行它。
+
 ## 定义环境变量
 
-本教程的第一步是定义环境变量。
+如下所示定义环境变量。
 
 ```bash
-
 export RANDOM_ID="$(openssl rand -hex 3)"
 export MY_RESOURCE_GROUP_NAME="myVMSSResourceGroup$RANDOM_ID"
 export REGION=EastUS
@@ -33,22 +45,17 @@ export MY_APPGW_SN_NAME="myAPPGWSN$RANDOM_ID"
 export MY_APPGW_SN_PREFIX="10.$NETWORK_PREFIX.1.0/24"
 export MY_APPGW_NAME="myAPPGW$RANDOM_ID"
 export MY_APPGW_PUBLIC_IP_NAME="myAPPGWPublicIP$RANDOM_ID"
-
 ```
-# 使用 CLI 登录到 Azure
 
-若要使用 CLI 对 Azure 运行命令，需要登录。 可通过 `az login` 命令非常简单地完成此操作：
+## 创建资源组
 
-# 创建资源组
-
-资源组是相关资源的容器。 所有资源都必须在资源组中部署。 我们将为本教程创建一个资源组。 以下命令创建具有前面定义的 $MY_RESOURCE_GROUP_NAME 和 $REGION 参数的资源组。
+资源组是在其中部署和管理 Azure 资源的逻辑容器。 所有资源都必须在资源组中部署。 以下命令创建具有前面定义的 $MY_RESOURCE_GROUP_NAME 和 $REGION 参数的资源组。
 
 ```bash
 az group create --name $MY_RESOURCE_GROUP_NAME --location $REGION -o JSON
 ```
 
 结果：
-
 <!-- expected_similarity=0.3 -->
 ```json   
 {
@@ -64,19 +71,17 @@ az group create --name $MY_RESOURCE_GROUP_NAME --location $REGION -o JSON
 }
 ```
 
-# 创建网络资源 
+## 创建网络资源 
 
-在继续执行 VMSS 步骤之前，需要创建网络资源。 在此步骤中，你将创建一个 VNET、2 个子网，1 个用于 Azure 应用程序网关，1 个用于 VM。 还需要有一个公共 IP 来附加 Azure 应用程序网关，以便能够从 Internet 访问 Web 应用程序。 
+现在，你将创建网络资源。 在此步骤中，你将创建 1 个虚拟网络、1 个用于应用程序网关的子网 1，以及 1 个用于 VM 的子网。 你还需要有一个公共 IP 来附加应用程序网关，以便从 Internet 访问 Web 应用程序。 
 
-
-#### 创建虚拟网络 (VNET) 和 VM 子网
+#### 创建虚拟网络和子网
 
 ```bash
 az network vnet create  --name $MY_VNET_NAME  --resource-group $MY_RESOURCE_GROUP_NAME --location $REGION  --address-prefix $MY_VNET_PREFIX  --subnet-name $MY_VM_SN_NAME --subnet-prefix $MY_VM_SN_PREFIX -o JSON
 ```
 
 结果：
-
 <!-- expected_similarity=0.3 -->
 ```json   
 {
@@ -114,17 +119,15 @@ az network vnet create  --name $MY_VNET_NAME  --resource-group $MY_RESOURCE_GROU
 }
 ```
 
-### 创建 Azure 应用程序网关资源
+### 创建应用程序网关资源
 
-Azure 应用程序网关需要虚拟网络中的专用子网。 以下命令在 VNET $MY_VNET_NAME 中创建名为 $MY_APPGW_SN_NAME 的子网，其地址前缀为 $MY_APPGW_SN_PREFIX 
-
+Azure 应用程序网关需要虚拟网络中的专用子网。 以下命令会在虚拟网络 $MY_VNET_NAME 中创建一个名为 $MY_APPGW_SN_NAME 的子网，指定的地址前缀为 $MY_APPGW_SN_PREFIX。
 
 ```bash
 az network vnet subnet create  --name $MY_APPGW_SN_NAME  --resource-group $MY_RESOURCE_GROUP_NAME --vnet-name  $MY_VNET_NAME --address-prefix  $MY_APPGW_SN_PREFIX -o JSON
 ```
 
 结果：
-
 <!-- expected_similarity=0.3 -->
 ```json  
 {
@@ -140,14 +143,13 @@ az network vnet subnet create  --name $MY_APPGW_SN_NAME  --resource-group $MY_RE
   "type": "Microsoft.Network/virtualNetworks/subnets"
 }
 ```
-以下命令在资源组中创建标准、区域冗余、静态、公共 IPv4。  
+以下命令会在资源组中创建标准、区域冗余、静态、公共 IPv4。  
 
 ```bash
 az network public-ip create  --resource-group $MY_RESOURCE_GROUP_NAME --name $MY_APPGW_PUBLIC_IP_NAME --sku Standard   --location $REGION  --allocation-method static --version IPv4 --zone 1 2 3 -o JSON
- ```
+```
 
 结果：
-
 <!-- expected_similarity=0.3 -->
 ```json  
 {
@@ -181,11 +183,11 @@ az network public-ip create  --resource-group $MY_RESOURCE_GROUP_NAME --name $MY
 }
 ```
 
-在此步骤中，你将创建一个要与虚拟机规模集集成的 Azure 应用程序网关。 在此示例中，我们将创建具有 Standard_v2 SKU 的区域冗余 Azure 应用程序网关，并为应用程序网关启用 Http 通信。 我们在上一步中创建的公共 IP $MY_APPGW_PUBLIC_IP_NAME 附加到 Azure 应用程序网关。 
+在此步骤中，你将创建一个要与虚拟机规模集集成的应用程序网关。 此示例使用 Standard_v2 SKU 创建一个区域冗余应用程序网关，并为该应用程序网关启用 Http 通信。 上一步中创建的公共 IP $MY_APPGW_PUBLIC_IP_NAME 会附加到该应用程序网关。 
 
 ```bash
 az network application-gateway create   --name $MY_APPGW_NAME --location $REGION --resource-group $MY_RESOURCE_GROUP_NAME --vnet-name $MY_VNET_NAME --subnet $MY_APPGW_SN_NAME --capacity 2  --zones 1 2 3 --sku Standard_v2   --http-settings-cookie-based-affinity Disabled   --frontend-port 80 --http-settings-port 80   --http-settings-protocol Http --public-ip-address $MY_APPGW_PUBLIC_IP_NAME --priority 1001 -o JSON
- ```
+```
 
 <!-- expected_similarity=0.3 -->
 ```json 
@@ -375,19 +377,21 @@ az network application-gateway create   --name $MY_APPGW_NAME --location $REGION
     "urlPathMaps": []
   }
 }
- ```
+```
 
+## 创建虚拟机规模集
 
-# 创建虚拟机规模集 
+> [!IMPORTANT]
+>从 2023 年 11 月开始，使用 PowerShell 和 Azure CLI 创建的 VM 规模集将默认为灵活业务流程模式（如果未指定业务流程模式）。 若要详细了解此更改以及你应采取哪些操作，请访问[针对 VMSS PowerShell/CLI 客户的中断性变更 - Microsoft 社区中心](
+https://techcommunity.microsoft.com/t5/azure-compute-blog/breaking-change-for-vmss-powershell-cli-customers/ba-p/3818295)
 
-以下命令在资源组 $MY_RESOURCE_GROUP_NAME 中创建区域冗余虚拟机规模集 (VMSS)。 我们集成了上一步创建的 Azure 应用程序网关。 此命令在子网 $MY_VM_SN_NAME 中创建具有公共 IP 的 2 个 Standard_DS2_v2 SKU 虚拟机。 在下面的步骤中，将创建一个 ssh 密钥，如果需要通过 ssh 登录 VM，你可能需要保存该密钥。
+现在，使用 [az vmss create](/cli/azure/vmss) 创建虚拟机规模集。 以下示例会创建一个实例计数为 2 的区域冗余规模集，它具有资源组 $MY_RESOURCE_GROUP_NAME 中的子网 $MY_VM_SN_NAME 中的公共 IP，该示例还会集成应用程序网关并生成 SSH 密钥。** 如果需要通过 ssh 登录到 VM，请务必保存 SSH 密钥。
 
 ```bash
 az vmss create --name $MY_VMSS_NAME --resource-group $MY_RESOURCE_GROUP_NAME --image $MY_VM_IMAGE --admin-username $MY_USERNAME --generate-ssh-keys --public-ip-per-vm --orchestration-mode Uniform --instance-count 2 --zones 1 2 3 --vnet-name $MY_VNET_NAME --subnet $MY_VM_SN_NAME --vm-sku Standard_DS2_v2 --upgrade-policy-mode Automatic --app-gateway $MY_APPGW_NAME --backend-pool-name appGatewayBackendPool -o JSON
  ```
 
 结果：
-
 <!-- expected_similarity=0.3 -->
 ```json  
 {
@@ -499,17 +503,15 @@ az vmss create --name $MY_VMSS_NAME --resource-group $MY_RESOURCE_GROUP_NAME --i
 }
 ```
 
-### 使用 VMSS 扩展安装 ngnix 
+### 使用虚拟机规模集扩展安装 ngnix 
 
-以下命令使用 VMSS 扩展运行自定义脚本。 出于测试目的，我们在此处安装 ngnix 并发布一个页面，其中显示了 HTTP 请求命中的虚拟机的主机名。 我们将此自定义脚本用于此目的：https://raw.githubusercontent.com/Azure-Samples/compute-automation-configurations/master/automate_nginx.sh 
-
+以下命令使用虚拟机规模集扩展运行[自定义脚本](https://github.com/Azure-Samples/compute-automation-configurations/blob/master/automate_nginx.sh)，该脚本会安装 ngnix 并发布一个页面来显示 HTTP 请求命中的虚拟机的主机名。 
 
 ```bash
 az vmss extension set --publisher Microsoft.Azure.Extensions --version 2.0  --name CustomScript --resource-group $MY_RESOURCE_GROUP_NAME --vmss-name $MY_VMSS_NAME --settings '{ "fileUris": ["https://raw.githubusercontent.com/Azure-Samples/compute-automation-configurations/master/automate_nginx.sh"], "commandToExecute": "./automate_nginx.sh" }' -o JSON
 ```
 
 结果：
-
 <!-- expected_similarity=0.3 -->
 ```json  
 {
@@ -703,19 +705,16 @@ az vmss extension set --publisher Microsoft.Azure.Extensions --version 2.0  --na
 }
 ```
 
+## 定义自动缩放配置文件  
 
-# 定义自动缩放配置文件  
-
-若要在规模集上启用自动缩放，首先要定义自动缩放配置文件。 此配置文件定义默认、最小和最大规模集容量。 这些限制可让你通过不继续创建 VM 实例来控制成本，并可使用缩小事件中保留的最小数量的实例均衡可接受的性能。
-以下示例设置了默认值，以及最小容量 2 个 VM 实例、最大容量 10 个 VM ：
+若要在规模集上启用自动缩放，首先请定义自动缩放配置文件。 此配置文件定义默认、最小和最大规模集容量。 这些限制让你不用继续创建 VM 实例，从而控制成本，并且在可接受的性能与横向缩减事件中保留的最小实例数量之间取得平衡。
+以下示例设置默认值、两个 VM 实例的最小容量，以及最大容量 10：
 
 ```bash
 az monitor autoscale create --resource-group $MY_RESOURCE_GROUP_NAME --resource  $MY_VMSS_NAME --resource-type Microsoft.Compute/virtualMachineScaleSets --name autoscale --min-count 2 --max-count 10 --count 2
 ```
 
-
 结果：
-
 <!-- expected_similarity=0.3 -->
 ```json  
 {
@@ -760,16 +759,15 @@ az monitor autoscale create --resource-group $MY_RESOURCE_GROUP_NAME --resource 
 }
 ```
 
-# 创建规则，以便自动横向扩展
+## 创建规则，以便自动横向扩展
 
-以下命令创建一个规则，当平均 CPU 负载在 5 分钟内大于 70% 时，该规则会增加规模集中的 VM 实例数。 触发规则时，VM 实例数增加 3。
+以下命令会创建一个规则，当平均 CPU 负载在 5 分钟内超过 70% 时，该规则会增加规模集中的 VM 实例数。 触发规则时，VM 实例数增加 3。
 
 ```bash
 az monitor autoscale rule create --resource-group $MY_RESOURCE_GROUP_NAME --autoscale-name autoscale --condition "Percentage CPU > 70 avg 5m" --scale out 3
 ```
 
 结果：
-
 <!-- expected_similarity=0.3 -->
 ```json 
 {
@@ -796,16 +794,15 @@ az monitor autoscale rule create --resource-group $MY_RESOURCE_GROUP_NAME --auto
 } 
 ```
 
-# 创建规则，以便自动横向缩减
+## 创建规则，以便自动横向缩减
 
-让我们使用 az monitor autoscale rule create 创建另一个规则，当平均 CPU 负载随后在 5 分钟内低于 30% 时，该规则会减少规模集中的 VM 实例数。 以下示例定义将 VM 实例数减 1 的规则。
+使用 `az monitor autoscale rule create` 创建一个规则，当平均 CPU 负载在 5 分钟内下降至 30% 以下时，该规则会减少规模集中的 VM 实例数。 以下示例定义将 VM 实例数减 1 的规则。
 
 ```bash
 az monitor autoscale rule create --resource-group  $MY_RESOURCE_GROUP_NAME --autoscale-name autoscale --condition "Percentage CPU < 30 avg 5m" --scale in 1
 ```
 
 结果：
-
 <!-- expected_similarity=0.3 -->
 ```json 
 {
@@ -832,19 +829,19 @@ az monitor autoscale rule create --resource-group  $MY_RESOURCE_GROUP_NAME --aut
 }
 ```
 
-
 ### 测试页面
 
-以下命令显示 Azure 应用程序网关的公共 IP。 可以将 IP 地址粘贴到浏览器页面进行测试。
+以下命令会显示应用程序网关的公共 IP。 将 IP 地址粘贴到浏览器页中以进行测试。
 
 ```bash
 az network public-ip show --resource-group $MY_RESOURCE_GROUP_NAME --name $MY_APPGW_PUBLIC_IP_NAME --query [ipAddress]  --output tsv
 ```
 
+## 清理资源（可选）
 
+若要避免 Azure 费用，应清除不需要的资源。 如果不再需要规模集和其他资源，请使用 [az group delete](/cli/azure/group) 删除资源组及其所有资源。 `--no-wait` 参数会使光标返回提示符处，无需等待操作完成。 使用 `--yes` 参数将确认你希望删除资源，不会再通过其他提示进行询问。 本教程会为你清理资源。
 
-# 参考
-
-* [VMSS 文档](https://learn.microsoft.com/en-us/azure/virtual-machine-scale-sets/overview)
-* [VMSS 自动缩放](https://learn.microsoft.com/en-us/azure/virtual-machine-scale-sets/tutorial-autoscale-cli?tabs=Ubuntu)
-
+## 后续步骤
+- [了解如何在 Azure 门户中创建规模集。](flexible-virtual-machine-scale-sets-portal.md)
+- [了解虚拟机规模集。](overview.md)
+- [使用 Azure CLI 自动缩放虚拟机规模集](tutorial-autoscale-cli.md)
