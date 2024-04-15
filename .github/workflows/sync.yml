@@ -23,4 +23,4 @@ jobs:
       run: npm install axios
 
     - name: Sync markdown files
-      run: node sync.js
+      run: node .github/workflows/sync.js
