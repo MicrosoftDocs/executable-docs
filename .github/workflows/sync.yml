@@ -1,0 +1,26 @@
+name: Sync Markdown Files
+
+on:
+  schedule:
+    - cron: '0 0 * * 1' # Runs every Monday
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout executable-docs
+      uses: actions/checkout@v2
+      with:
+        repository: 'executable-docs'
+
+    - name: Setup Node.js environment
+      uses: actions/setup-node@v2
+      with:
+        node-version: '14'
+
+    - name: Install dependencies
+      run: npm install axios
+
+    - name: Sync markdown files
+      run: node sync.js
