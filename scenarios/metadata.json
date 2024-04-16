@@ -1,20 +1,19 @@
 [
     {
         "status": "active",
-        "tutorialKey": "https://github.com/MicrosoftDocs/azure-docs/blob/main/articles/virtual-machines/linux/quick-create-cli.md",
-        "tutorialTitle": "Quickstart: Use the Azure CLI to create a Linux Virtual Machine",
-        "tutorialDescription": "In this quickstart, you learn how to use the Azure CLI to create a Linux virtual machine",
-        "extraDetails": "A relatively modest Linux VM (Ubuntu 2204) ideal for exploring Linux on Azure and/or running lightweight jobs.",
-        "extraDetailsBulletPoints": [
+        "key": "azure-docs/articles/virtual-machines/linux/quick-create-cli.md",
+        "title": "Quickstart: Use the Azure CLI to create a Linux Virtual Machine",
+        "description": "In this quickstart, you learn how to use the Azure CLI to create a Linux virtual machine",
+        "stackDetails": [
             "An Ubuntu 22.04 Linux VM (Standard DS1_v2)",
             "30 GB Premium SSD (120 IOPS, 25 MBps)",
             "Network interface with public IP and network security group",
             "Port 22 will be opened"
         ],
-        "sourceFileUrl": "https://raw.githubusercontent.com/MicrosoftDocs/azure-docs/main/articles/virtual-machines/linux/quick-create-cli.md",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/azure-docs/main/articles/virtual-machines/linux/quick-create-cli.md",
         "documentationUrl": "https://learn.microsoft.com/azure/virtual-machines/linux/quick-create-cli",
-        "configurableDocInformation": {
-            "permissionsList": [
+        "configurations": {
+            "permissions": [
                 "Microsoft.Resources/resourceGroups/write",
                 "Microsoft.Compute/virtualMachines/write",
                 "Microsoft.Network/publicIPAddresses/write",
@@ -30,11 +29,10 @@
     },
     {
         "status": "active",
-        "tutorialKey": "https://github.com/MicrosoftDocs/azure-docs/blob/main/articles/virtual-machines/linux/tutorial-lemp-stack.md",
-        "tutorialTitle": "Tutorial - Deploy a LEMP stack using WordPress on a VM",
-        "tutorialDescription": "In this tutorial, you learn how to install the LEMP stack, and WordPress, on a Linux virtual machine in Azure.",
-        "extraDetails": "A great starter for a single VM LEMP stack. Ideal for prototyping or development.",
-        "extraDetailsBulletPoints": [
+        "key": "azure-docs/articles/virtual-machines/linux/tutorial-lemp-stack.md",
+        "title": "Tutorial - Deploy a LEMP stack using WordPress on a VM",
+        "description": "In this tutorial, you learn how to install the LEMP stack, and WordPress, on a Linux virtual machine in Azure.",
+        "stackDetails": [
             "An Ubuntu 22.04 Linux VM (Standard DS2_v2)",
             "Azure Database for MySQL - Flexible Server: 8.0.21",
             "NGINX web server",
@@ -44,10 +42,10 @@
             "Azure Private DNS Zone for Azure MySQL Flexible Server",
             "Use port 22 for SSH and ports 80, 443 for web traffic"
         ],
-        "sourceFileUrl": "https://raw.githubusercontent.com/MicrosoftDocs/azure-docs/main/articles/virtual-machines/linux/tutorial-lemp-stack.md",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/azure-docs/main/articles/virtual-machines/linux/tutorial-lemp-stack.md",
         "documentationUrl": "https://learn.microsoft.com/azure/virtual-machines/linux/tutorial-lemp-stack",
-        "configurableDocInformation": {
-            "permissionsList": [
+        "configurations": {
+            "permissions": [
                 "Microsoft.Resources/resourceGroups/write",
                 "Microsoft.Network/virtualNetworks/write",
                 "Microsoft.Network/publicIPAddresses/write",
@@ -87,17 +85,16 @@
         }
     },
     {
-        "status": "inactive",
-        "tutorialKey": "https://github.com/MicrosoftDocs/azure-docs/blob/main/articles/aks/learn/quick-kubernetes-deploy-cli.md",
-        "tutorialTitle": "Quickstart: Deploy an Azure Kubernetes Service (AKS) cluster using Azure CLI",
-        "tutorialDescription": "Learn how to quickly deploy a Kubernetes cluster and deploy an application in Azure Kubernetes Service (AKS) using Azure CLI.",
-        "extraDetails": "",
-        "extraDetailsBulletPoints": [
+        "status": "active",
+        "key": "azure-docs/articles/aks/learn/quick-kubernetes-deploy-cli.md",
+        "title": "Quickstart: Deploy an Azure Kubernetes Service (AKS) cluster using Azure CLI",
+        "description": "Learn how to quickly deploy a Kubernetes cluster and deploy an application in Azure Kubernetes Service (AKS) using Azure CLI.",
+        "stackDetails": [
             ],
-        "sourceFileUrl": "https://raw.githubusercontent.com/MicrosoftDocs/azure-docs/main/articles/aks/learn/quick-kubernetes-deploy-cli.md",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/azure-docs/main/articles/aks/learn/quick-kubernetes-deploy-cli.md",
         "documentationUrl": "https://learn.microsoft.com/azure/aks/learn/quick-kubernetes-deploy-cli",
-        "configurableDocInformation": {
-            "permissionsList": [
+        "configurations": {
+            "permissions": [
                 "Microsoft.Resources/resourceGroups/write",
                 "Microsoft.Resources/resourceGroups/read",
                 "Microsoft.Network/virtualNetworks/write",
@@ -132,65 +129,61 @@
     },
     {
         "status": "active",
-        "tutorialKey": "https://github.com/MicrosoftDocs/azure-docs/blob/main/articles/virtual-machine-scale-sets/flexible-virtual-machine-scale-sets-cli.md",
-        "tutorialTitle": "Create virtual machines in a Flexible scale set using Azure CLI",
-        "tutorialDescription": "Learn how to create a Virtual Machine Scale Set in Flexible orchestration mode using Azure CLI.",
-        "extraDetails": "A great way to get started with VMSS and learn how to create and manage VMSS instances.",
-        "extraDetailsBulletPoints": [
+        "key": "azure-docs/articles/virtual-machine-scale-sets/flexible-virtual-machine-scale-sets-cli.md",
+        "title": "Create virtual machines in a Flexible scale set using Azure CLI",
+        "description": "Learn how to create a Virtual Machine Scale Set in Flexible orchestration mode using Azure CLI.",
+        "stackDetails": [
             
         ],
-        "sourceFileUrl": "https://raw.githubusercontent.com/MicrosoftDocs/azure-docs/main/articles/virtual-machine-scale-sets/flexible-virtual-machine-scale-sets-cli.md",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/azure-docs/main/articles/virtual-machine-scale-sets/flexible-virtual-machine-scale-sets-cli.md",
         "documentationUrl": "https://learn.microsoft.com/azure/virtual-machine-scale-sets/flexible-virtual-machine-scale-sets-cli",
-        "configurableDocInformation": {
-            "permissionsList": [
+        "configurations": {
+            "permissions": [
             ]
         }
     },
     {
         "status": "active",
-        "tutorialKey": "https://github.com/MicrosoftDocs/azure-docs/blob/main/articles/mysql/flexible-server/tutorial-deploy-wordpress-on-aks.md",
-        "tutorialTitle": "Tutorial: Deploy WordPress on AKS cluster by using Azure CLI",
-        "tutorialDescription": "Learn how to quickly build and deploy WordPress on AKS with Azure Database for MySQL - Flexible Server.",
-        "extraDetails": "A great way to get started with AKS and learn how to deploy a WordPress site on AKS.",
-        "extraDetailsBulletPoints": [
+        "key": "azure-docs/articles/mysql/flexible-server/tutorial-deploy-wordpress-on-aks.md",
+        "title": "Tutorial: Deploy WordPress on AKS cluster by using Azure CLI",
+        "description": "Learn how to quickly build and deploy WordPress on AKS with Azure Database for MySQL - Flexible Server.",
+        "stackDetails": [
             
         ],
-        "sourceFileUrl": "https://raw.githubusercontent.com/MicrosoftDocs/azure-docs/main/articles/mysql/flexible-server/tutorial-deploy-wordpress-on-aks.md",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/azure-docs/main/articles/mysql/flexible-server/tutorial-deploy-wordpress-on-aks.md",
         "documentationUrl": "https://learn.microsoft.com/azure/mysql/flexible-server/tutorial-deploy-wordpress-on-aks",
-        "configurableDocInformation": {
-            "permissionsList": [
+        "configurations": {
+            "permissions": [
             ]
         }
     },
     {
         "status": "active",
-        "tutorialKey": "https://github.com/MicrosoftDocs/SupportArticles-docs/blob/main/support/azure/azure-kubernetes/capture-system-insights-from-aks.md",
-        "tutorialTitle": "Capture real-time system insights from an AKS cluster",
-        "tutorialDescription": "Learn how to use Inspektor Gadget to capture useful information for debugging issues in an Azure Kubernetes Service (AKS) cluster.",
-        "extraDetails": "A great way to get started with AKS and learn how to capture real-time system insights from an AKS cluster.",
-        "extraDetailsBulletPoints": [
+        "key": "SupportArticles-docs/support/azure/azure-kubernetes/capture-system-insights-from-aks.md",
+        "title": "Capture real-time system insights from an AKS cluster",
+        "description": "Learn how to use Inspektor Gadget to capture useful information for debugging issues in an Azure Kubernetes Service (AKS) cluster.",
+        "stackDetails": [
             
         ],
-        "sourceFileUrl": "https://raw.githubusercontent.com/MicrosoftDocs/SupportArticles-docs/main/support/azure/azure-kubernetes/capture-system-insights-from-aks.md",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/SupportArticles-docs/main/support/azure/azure-kubernetes/capture-system-insights-from-aks.md",
         "documentationUrl": "https://learn.microsoft.com/troubleshoot/azure/azure-kubernetes/capture-system-insights-from-aks",
-        "configurableDocInformation": {
-            "permissionsList": [
+        "configurations": {
+            "permissions": [
             ]
         }
     },
     {
         "status": "active",
-        "tutorialKey": "https://github.com/MicrosoftDocs/azure-docs/blob/main/articles/static-web-apps/get-started-cli.md",
-        "tutorialTitle": "Quickstart: Building your first static site with the Azure Static Web Apps using the CLI",
-        "tutorialDescription": "Learn to deploy a static site to Azure Static Web Apps with the Azure CLI.",
-        "extraDetails": "A great way to get started with Azure Static Web Apps and learn how to deploy a static site to Azure Static Web Apps using the CLI.",
-        "extraDetailsBulletPoints": [
+        "key": "azure-docs/articles/static-web-apps/get-started-cli.md",
+        "title": "Quickstart: Building your first static site with the Azure Static Web Apps using the CLI",
+        "description": "Learn to deploy a static site to Azure Static Web Apps with the Azure CLI.",
+        "stackDetails": [
             
         ],
-        "sourceFileUrl": "https://raw.githubusercontent.com/MicrosoftDocs/azure-docs/main/articles/static-web-apps/get-started-cli.md",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/azure-docs/main/articles/static-web-apps/get-started-cli.md",
         "documentationUrl": "https://learn.microsoft.com/azure/static-web-apps/get-started-cli",
-        "configurableDocInformation": {
-            "permissionsList": [
+        "configurations": {
+            "permissions": [
             ]
         }
     }
