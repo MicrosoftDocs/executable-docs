@@ -299,8 +299,8 @@ The `az aro list-credentials` command is used to get the login credentials for t
 Finally, the `oc login` command is used to log in to the ARO cluster using the retrieved API server URL, the `kubeadmin` username, and the login credentials.
 
 ```bash
-apiServer=$(az aro show -g $RG_NAME -n $ARO_CLUSTER_NAME --query apiserverProfile.url -o tsv)
-loginCred=$(az aro list-credentials --name $ARO_CLUSTER_NAME --resource-group $RG_NAME --query "kubeadminPassword" -o tsv)
+export apiServer=$(az aro show -g $RG_NAME -n $ARO_CLUSTER_NAME --query apiserverProfile.url -o tsv)
+export loginCred=$(az aro list-credentials --name $ARO_CLUSTER_NAME --resource-group $RG_NAME --query "kubeadminPassword" -o tsv)
 
 oc login $apiServer -u kubeadmin -p $loginCred --insecure-skip-tls-verify
 ```
@@ -368,6 +368,12 @@ spec:
 EOF
 ```
 
+Results:
+<!-- expected_similarity=0.3 -->
+```text
+subscription.operators.coreos.com/rhbk-operator created
+```
+
 ## Create the ARO PosgreSQL Database
 
 Fetch secrets from Key Vault and create the ARO database login secret object.
@@ -379,11 +385,23 @@ pgPassword=$(az keyvault secret show --name AroPGPassword --vault-name AROKeyVau
 oc create secret generic app-auth --from-literal=username=${pgUserName} --from-literal=password=${pgPassword} -n aro-demo
 ```
 
+Results:
+<!-- expected_similarity=0.3 -->
+```text
+secret/app-auth created
+```
+
 Create the secret for backing up to Azure Storage
 
 ```bash
-STORAGE_ACCOUNT_KEY=$(az storage account keys list --account-name ${STORAGE_ACCOUNT_NAME} --resource-group ${RG_NAME} --query "[0].value" --output tsv)
+export STORAGE_ACCOUNT_KEY=$(az storage account keys list --account-name ${STORAGE_ACCOUNT_NAME} --resource-group ${RG_NAME} --query "[0].value" --output tsv)
 oc create secret generic azure-storage-secret --from-literal=storage-account-name=${STORAGE_ACCOUNT_NAME} --from-literal=storage-account-key=${STORAGE_ACCOUNT_KEY} --namespace aro-demo
+```
+
+Results:
+<!-- expected_similarity=0.3 -->
+```text
+secret/azure-storage-secret created
 ```
 
 Create the Postgres Cluster
@@ -461,49 +479,78 @@ spec:
 EOF
 ```
 
+Results:
+<!-- expected_similarity=0.3 -->
+```text
+cluster.postgresql.k8s.enterprisedb.io/cluster-arodemo created
+```
+
 ## Create the ARO Keycloak instance
 
+Deploy a Keycloak instance on an OpenShift cluster. It uses the `oc apply` command to apply a YAML configuration file that defines the Keycloak resource.
+The YAML configuration specifies various settings for the Keycloak instance, including the database, hostname, HTTP settings, ingress, number of instances, and transaction settings.
+To deploy Keycloak, run this code block in a shell environment with the necessary permissions and access to the OpenShift cluster.
+Note: Make sure to replace the values of the variables `$apiServer`, `$kc_hosts`, and the database credentials (`passwordSecret` and `usernameSecret`) with the appropriate values for your environment.
+
 ```bash
-kc_hosts=$(echo $apiServer | sed -E 's/\/\/api\./\/\/apps./' | sed -En 's/.*\/\/([^:]+).*/\1/p' )
+export kc_hosts=$(echo $apiServer | sed -E 's/\/\/api\./\/\/apps./' | sed -En 's/.*\/\/([^:]+).*/\1/p' )
 
 cat <<EOF | oc apply -f -
 apiVersion: k8s.keycloak.org/v2alpha1
 kind: Keycloak
 metadata:
-  name: kc001
   labels:
     app: sso
+  name: kc001
   namespace: aro-demo
 spec:
+  db:
+    database: WorldDB
+    host: cluster-arodemo-rw
+    passwordSecret:
+      key: password
+      name: app-auth
+    port: 5432
+    usernameSecret:
+      key: username
+      name: app-auth
+    vendor: postgres
   hostname:
-    hostname: kc001.$kc_hosts
+    hostname: kc001.${kc_hosts}
+  http:
+    httpEnabled: true
   ingress:
     enabled: true
-  db:
-    usernameSecret:
-      name: app-auth
-      key: username
-    passwordSecret:
-      name: app-auth
-      key: password
-    port: 5432
-    vendor: postgres
-    host: cluster-arodemo-rw
-    database: WorldDB
   instances: 1
-  tlsSecret: my-tls-secret
+  transaction:
+    xaEnabled: false
 EOF
 ```
 
-Expose the CMS workload
-
-```bash
-oc create route edge --service=drupal
+Results:
+<!-- expected_similarity=0.3 -->
+```text
+keycloak.k8s.keycloak.org/kc001 created
 ```
 
 Access the workload
 
 ```bash
-URL=$(oc get route drupal -o json | jq -r '.spec.host')
+URL=$(ooc get ingress kc001-ingress -o json | jq -r '.spec.rules[0].host')
 curl -Iv https://$URL
+```
+
+Results:
+<!-- expected_similarity=0.3 -->
+```text
+*   Trying 104.42.132.245:443...
+* Connected to kc001.apps.foppnyl9.westus.aroapp.io (104.42.132.245) port 443 (#0)
+* ALPN, offering h2
+* ALPN, offering http/1.1
+*  CAfile: /etc/ssl/certs/ca-certificates.crt
+*  CApath: /etc/ssl/certs
+* TLSv1.0 (OUT), TLS header, Certificate Status (22):
+* TLSv1.3 (OUT), TLS handshake, Client hello (1):
+* TLSv1.2 (IN), TLS header, Certificate Status (22):
+* TLSv1.3 (IN), TLS handshake, Server hello (2):
 ```
