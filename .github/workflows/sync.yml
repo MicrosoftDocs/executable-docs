@@ -13,11 +13,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout ggalexp
+    - name: Checkout executable-docs
       uses: actions/checkout@v2
       with:
-        repository: 'naman-msft/ggalexp'
-        token: ${{ secrets.PAT }} # This line is added
+        repository: 'MicrosoftDocs/executable-docs'
+        token: ${{ secrets.GITHUB_TOKEN }} # This line is added
 
     - name: Setup Python environment
       uses: actions/setup-python@v2
@@ -35,7 +35,7 @@ jobs:
     - name: Sync markdown files
       run: python .github/workflows/sync.py
       env:
-        GITHUB_TOKEN: ${{ secrets.PAT }} # Replace with the name of your secret
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Replace with the name of your secret
 
     - name: Commit and push changes
       run: |
