@@ -163,6 +163,23 @@ Results:
 }
 ```
 
+## Create Storage accounts
+
+This code snippet performs the following steps:
+
+1. Sets the `STORAGE_ACCOUNT_NAME` environment variable to a concatenation of `stor`, `LOCAL_NAME` (converted to lowercase), and `SUFFIX` (converted to lowercase).
+2. Sets the `BARMAN_CONTAINER_NAME` environment variable to `"barman"`.
+3. Creates a storage account with the specified `STORAGE_ACCOUNT_NAME` in the specified resource group.
+4. Creates a storage container with the specified `BARMAN_CONTAINER_NAME` in the created storage account.
+
+```bash
+export STORAGE_ACCOUNT_NAME="stor${LOCAL_NAME,,}${SUFFIX,,}"
+export BARMAN_CONTAINER_NAME="barman"
+
+az storage account create --name "${STORAGE_ACCOUNT_NAME}" --resource-group "${RG_NAME}" --sku Standard_LRS
+az storage container create --name "${BARMAN_CONTAINER_NAME}" --account-name "${STORAGE_ACCOUNT_NAME}"
+```
+
 ## Create a service principal for the ARO cluster
 
 In this section, you'll be creating a service principal for your Azure Red Hat OpenShift (ARO) cluster. The SP_NAME variable will hold the name of your service principal. The SUBSCRIPTION_ID variable, which can be retrieved using the az account show command, will store your Azure subscription ID. This ID is necessary for assigning roles to your service principal. After that, create the service principal using the az ad sp create-for-rbac command. Finally, extract the service principal's ID and secret from the servicePrincipalInfo variable, output as a JSON object. These values will be used later to authenticate your ARO cluster with Azure.
@@ -187,7 +204,6 @@ az aro create -g $RG_NAME -n $ARO_CLUSTER_NAME --vnet $VNET_NAME --master-subnet
 ```
 
 Results:
-
 <!-- expected_similarity=0.3 -->
 ```json
 {
@@ -286,107 +302,208 @@ Finally, the `oc login` command is used to log in to the ARO cluster using the r
 apiServer=$(az aro show -g $RG_NAME -n $ARO_CLUSTER_NAME --query apiserverProfile.url -o tsv)
 loginCred=$(az aro list-credentials --name $ARO_CLUSTER_NAME --resource-group $RG_NAME --query "kubeadminPassword" -o tsv)
 
-oc login $apiServer -u kubeadmin -p $loginCred
+oc login $apiServer -u kubeadmin -p $loginCred --insecure-skip-tls-verify
 ```
 
-## Deploy the CMS workload
+## Add operators to ARO
 
-The code block below sets environment variables for deploying a High Availability PostgreSQL (HAPG) on Azure Red Hat OpenShift (ARO). Here's a breakdown of the variables being set:
-
-- `PGSQL_DB_NAME`: A randomly generated name for the PostgreSQL database.
-- `PGSQL_ADMIN_USERNAME`: A randomly generated username for the PostgreSQL admin.
-- `PGSQL_ADMIN_PW`: A randomly generated password for the PostgreSQL admin.
-- `PGSQL_SN_NAME`: A randomly generated name for the PostgreSQL server name.
-- `PGSQL_HOSTNAME`: The hostname for the PostgreSQL database, constructed using the `PGSQL_DB_NAME` variable.
+Create ARO project
 
 ```bash
-export PGSQL_DB_NAME="pgsqldb$SUFFIX"
-export PGSQL_ADMIN_USERNAME="dbadmin$SUFFIX"
-export PGSQL_ADMIN_PW="$(openssl rand -base64 32)"
-export PGSQL_HOSTNAME="$PGSQL_DB_NAME.PGSQL.database.azure.com"
+oc new-project aro-demo
 ```
 
-1. Create ARO project
+Cloud Native Postgresql operator
 
-    ```bash
-    oc new-project cms-demo
-    ```
+```bash
+channelspec=$(oc get packagemanifests cloud-native-postgresql -o jsonpath="{range .status.channels[*]}Channel: {.name} currentCSV: {.currentCSV}{'\n'}{end}" | grep "stable-v1.22")
+IFS=" " read -r -a array <<< "${channelspec}"
+channel=${array[1]}
+csv=${array[3]}
 
-2. Deploy PostgreSQL
+catalogSource=$(oc get packagemanifests cloud-native-postgresql -o jsonpath="{.status.catalogSource}")
+catalogSourceNamespace=$(oc get packagemanifests cloud-native-postgresql -o jsonpath="{.status.catalogSourceNamespace}")
 
-    ```bash
-    kubectl create -n cms-demo secret generic cms-creds --from-literal=postgres-password=$PGSQL_ADMIN_PW
-    ```
+cat <<EOF | oc apply -f -
+---
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  name: cloud-native-postgresql
+  namespace: aro-demo
+spec:
+    channel: $channel
+    name: cloud-native-postgresql
+    source: $catalogSource
+    sourceNamespace: $catalogSourceNamespace
+    installPlanApproval: Automatic
+    startingCSV: $csv
+EOF
+```
 
-## Install your CMS to ARO cluster
+RedHat Keycloak operator
 
-For this tutorial, we're using an existing Helm chart for Drupal built by Bitnami. The Bitnami Helm chart uses a local MariaDB as the database, so we need to override these values to use the app with an external PostgreSQL DB.
+```bash
+channelspec_kc=$(oc get packagemanifests rhbk-operator -o jsonpath="{range .status.channels[*]}Channel: {.name} currentCSV: {.currentCSV}{'\n'}{end}" | grep "stable-v22")
+IFS=" " read -r -a array <<< "${channelspec_kc}"
+channel_kc=${array[1]}
+csv_kc=${array[3]}
 
-1. Add the Wordpress Bitnami Helm repository.
+catalogSource_kc=$(oc get packagemanifests rhbk-operator -o jsonpath="{.status.catalogSource}")
+catalogSourceNamespace_kc=$(oc get packagemanifests rhbk-operator -o jsonpath="{.status.catalogSourceNamespace}")
 
-    ```bash
-    helm repo add bitnami https://charts.bitnami.com/bitnami
-    ```
+cat <<EOF | oc apply -f -
+---
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  name: rhbk-operator
+  namespace: aro-demo
+spec:
+  channel: $channel_kc
+  name: rhbk-operator
+  source: $catalogSource_kc
+  sourceNamespace: $catalogSourceNamespace_kc
+  startingCSV: $csv_kc
+EOF
+```
 
-2. Update local Helm chart repository cache.
+## Create the ARO PosgreSQL Database
 
-    ```bash
-    helm repo update
-    ```
+Fetch secrets from Key Vault and create the ARO database login secret object.
 
-3. Install Drupal workload via Helm.
+```bash
+pgUserName=$(az keyvault secret show --name AroPGUser --vault-name AROKeyVault --query value -o tsv)
+pgPassword=$(az keyvault secret show --name AroPGPassword --vault-name AROKeyVault --query value -o tsv)
 
-    ```bash
-    helm upgrade --install --cleanup-on-fail \
-        --wait --timeout 10m0s \
-        --namespace cms-demo \
-        --create-namespace \
-        --set externalDatabase.host="$PGSQL_HOSTNAME" \
-        --set externalDatabase.user="$PGSQL_ADMIN_USERNAME" \
-        --set externalDatabase.password="$PGSQL_ADMIN_PW" \
-        --set externalDatabase.database="$PGSQL_DB_NAME" \
-        --set externalDatabase.port=5432
-        drupal bitnami/drupal
-    ```
+oc create secret generic app-auth --from-literal=username=${pgUserName} --from-literal=password=${pgPassword} -n aro-demo
+```
 
-    Results:
-    <!-- expected_similarity=0.3 -->
-    ```text
-    Release "drupal" does not exist. Installing it now.
-    NAME: drupal
-    LAST DEPLOYED: Fri Apr 12 19:23:50 2024
-    NAMESPACE: demo
-    STATUS: deployed
-    REVISION: 1
-    TEST SUITE: None
-    NOTES:
-    CHART NAME: drupal
-    CHART VERSION: 18.0.2
-    APP VERSION: 10.2.5** Please be patient while the chart is being deployed **
-    
-    1. Get the Drupal URL:
-    
-      NOTE: It may take a few minutes for the LoadBalancer IP to be available.
-            Watch the status with: 'kubectl get svc --namespace demo -w drupal'
-    
-      export SERVICE_IP=$(kubectl get svc --namespace demo drupal --template "{{ range (index .status.loadBalancer.ingress 0) }}{{ . }}{{ end }}")
-      echo "Drupal URL: http://$SERVICE_IP/"
-    
-    2. Get your Drupal login credentials by running:
-    
-      echo Username: user
-      echo Password: $(kubectl get secret --namespace demo drupal -o jsonpath="{.data.drupal-password}" | base64 -d)
-    ```
+Create the secret for backing up to Azure Storage
 
-4. Expose the CMS workload
+```bash
+STORAGE_ACCOUNT_KEY=$(az storage account keys list --account-name ${STORAGE_ACCOUNT_NAME} --resource-group ${RG_NAME} --query "[0].value" --output tsv)
+oc create secret generic azure-storage-secret --from-literal=storage-account-name=${STORAGE_ACCOUNT_NAME} --from-literal=storage-account-key=${STORAGE_ACCOUNT_KEY} --namespace aro-demo
+```
 
-    ```bash
-    oc create route edge --service=drupal
-    ```
+Create the Postgres Cluster
 
-5. Access the workload
+```bash
+cat <<EOF | oc apply -f -
+---
+apiVersion: postgresql.k8s.enterprisedb.io/v1
+kind: Cluster
+metadata:
+  name: cluster-arodemo
+  namespace: aro-demo
+spec:
+  description: "HA Postgres Cluster Demo for ARO"
+  # Choose your PostGres Database Version
+  imageName: ghcr.io/cloudnative-pg/postgresql:15.2
+  # Number of Replicas
+  instances: 3
+  startDelay: 300
+  stopDelay: 300
+  replicationSlots:
+    highAvailability:
+      enabled: true
+    updateInterval: 300
+  primaryUpdateStrategy: unsupervised
+  postgresql:
+    parameters:
+      shared_buffers: 256MB
+      pg_stat_statements.max: '10000'
+      pg_stat_statements.track: all
+      auto_explain.log_min_duration: '10s'
+    pg_hba:
+      # - hostssl app all all cert
+      - host app app all password
+  logLevel: debug
+  # Choose the right storageclass for type of workload.
+  storage:
+    storageClass: managed-csi
+    size: 1Gi
+  walStorage:
+    storageClass: managed-csi
+    size: 1Gi
+  monitoring:
+    enablePodMonitor: true
+  bootstrap:
+    initdb: # Deploying a new cluster
+      database: WorldDB
+      owner: app
+      secret:
+        name: app-auth
+  backup:
+    barmanObjectStore:
+      # For backup, we use a blob container in an Azure Storage Account to store data.
+      # On this Blueprint, we get the account and container name from the environment variables.
+      destinationPath: https://${STORAGE_ACCOUNT_NAME}.blob.core.windows.net/${BARMAN_CONTAINER_NAME}/
+      azureCredentials:
+        storageAccount:
+          name: azure-storage-secret
+          key: storage-account-name
+        storageKey:
+          name: azure-storage-secret
+          key: storage-account-key
+      wal:
+        compression: gzip
+        maxParallel: 8
+    retentionPolicy: "30d"
 
-    ```bash
-    URL=$(oc get route drupal -o json | jq -r '.spec.host')
-    curl -Iv https://$URL
-    ```
+  affinity:
+    enablePodAntiAffinity: true
+    topologyKey: failure-domain.beta.kubernetes.io/zone
+
+  nodeMaintenanceWindow:
+    inProgress: false
+    reusePVC: false
+EOF
+```
+
+## Create the ARO Keycloak instance
+
+```bash
+kc_hosts=$(echo $apiServer | sed -E 's/\/\/api\./\/\/apps./' | sed -En 's/.*\/\/([^:]+).*/\1/p' )
+
+cat <<EOF | oc apply -f -
+apiVersion: k8s.keycloak.org/v2alpha1
+kind: Keycloak
+metadata:
+  name: kc001
+  labels:
+    app: sso
+  namespace: aro-demo
+spec:
+  hostname:
+    hostname: kc001.$kc_hosts
+  ingress:
+    enabled: true
+  db:
+    usernameSecret:
+      name: app-auth
+      key: username
+    passwordSecret:
+      name: app-auth
+      key: password
+    port: 5432
+    vendor: postgres
+    host: cluster-arodemo-rw
+    database: WorldDB
+  instances: 1
+  tlsSecret: my-tls-secret
+EOF
+```
+
+Expose the CMS workload
+
+```bash
+oc create route edge --service=drupal
+```
+
+Access the workload
+
+```bash
+URL=$(oc get route drupal -o json | jq -r '.spec.host')
+curl -Iv https://$URL
+```
