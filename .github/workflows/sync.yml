@@ -5,25 +5,40 @@ on:
     - cron: '0 0 * * 1' # Runs every Monday
   workflow_dispatch:
 
+permissions:
+    contents: write
+
 jobs:
   sync:
     runs-on: ubuntu-latest
-    env:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     steps:
-    - name: Checkout executable-docs
+    - name: Checkout ggalexp
       uses: actions/checkout@v2
       with:
-        repository: 'MicrosoftDocs/executable-docs'
+        repository: 'naman-msft/ggalexp'
+        token: ${{ secrets.PAT }} # This line is added
 
-    - name: Setup Node.js environment
-      uses: actions/setup-node@v2
+    - name: Setup Python environment
+      uses: actions/setup-python@v2
       with:
-        node-version: '20'
+        python-version: '3.8'
 
     - name: Install dependencies
-      run: npm install axios
+      run: pip install PyGithub
+
+    - name: Set git identity
+      run: |
+        git config --global user.email "${{ github.actor }}@users.noreply.github.com"
+        git config --global user.name "${{ github.actor }}"
 
     - name: Sync markdown files
-      run: node .github/workflows/sync.js
+      run: python .github/workflows/sync.py
+      env:
+        GITHUB_TOKEN: ${{ secrets.PAT }} # Replace with the name of your secret
+
+    - name: Commit and push changes
+      run: |
+        git add .
+        git commit -m "Sync markdown files"
+        git push
