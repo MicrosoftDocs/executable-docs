@@ -1,18 +1,35 @@
 ---
-title: 在 AKS 上部署可缩放且安全的 WordPress 实例
-description: 本教程演示如何通过 CLI 在 AKS 上部署可缩放且安全的 WordPress 实例
-author: adrian.joian
-ms.author: adrian.joian
-ms.topic: article
-ms.date: 12/06/2023
-ms.custom: innovation-engine
+title: 教程：使用 Azure CLI 在 AKS 群集上部署 WordPress
+description: 了解如何使用 Azure Database for MySQL 灵活服务器在 AKS 上快速构建和部署 WordPress。
+ms.service: mysql
+ms.subservice: flexible-server
+author: mksuni
+ms.author: sumuth
+ms.topic: tutorial
+ms.date: 3/20/2024
+ms.custom: 'vc, devx-track-azurecli, innovation-engine, linux-related-content'
 ---
 
-# 快速入门：在 AKS 上部署可缩放且安全的 WordPress 实例
+# 教程：使用 Azure Database for MySQL 灵活服务器在 AKS 上部署 WordPress 应用
+
+[!INCLUDE[applies-to-mysql-flexible-server](../includes/applies-to-mysql-flexible-server.md)]
 
 [![部署到 Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262843)
 
-欢迎学习本教程，我们会逐步介绍如何创建通过 https 保护的 Azure Kubernetes Web 应用程序。 本教程假定你已登录到 Azure CLI，并已选择要与 CLI 一起使用的订阅。 它还假定你已安装 Helm（[说明可在此处找到](https://helm.sh/docs/intro/install/)）。
+在本教程中，你将使用 Azure CLI 通过 Azure Kubernetes 服务 (AKS) 群集上的 HTTPS 保护的可缩放 WordPress 应用程序部署到 Azure Database for MySQL 灵活服务器。
+[AKS](../../aks/intro-kubernetes.md) 是可用于快速部署和管理群集的托管式 Kubernetes 服务。 **[Azure Database for MySQL 灵活服务器](overview.md)** 是一种完全托管的数据库服务，旨在针对数据库管理功能和配置设置提供更精细的控制和更大的灵活性。
+
+> [!NOTE]
+> 本快速入门假设读者基本了解 Kubernetes 的概念以及 WordPress 和 MySQL。
+
+[!INCLUDE [flexible-server-free-trial-note](../includes/flexible-server-free-trial-note.md)]
+
+## 先决条件 
+
+在开始之前，请确保已登录到 Azure CLI，并选择了要与 CLI 一起使用的订阅。 请确保[已安装 Helm](https://helm.sh/docs/intro/install/)。
+
+> [!NOTE]
+> 如果在本地而不是 Azure Cloud Shell 中运行本教程中的命令，请以管理员身份运行命令。
 
 ## 定义环境变量
 
@@ -43,7 +60,7 @@ export FQDN="${MY_DNS_LABEL}.${REGION}.cloudapp.azure.com"
 
 ## 创建资源组
 
-资源组是相关资源的容器。 所有资源都必须在资源组中部署。 我们将为本教程创建一个资源组。 以下命令创建具有前面定义的 $MY_RESOURCE_GROUP_NAME 和 $REGION 参数的资源组。
+Azure 资源组是用于部署和管理 Azure 资源的逻辑组。 所有资源都必须在资源组中部署。 以下命令使用前面定义的 `$MY_RESOURCE_GROUP_NAME` 和 `$REGION` 参数创建一个资源组。
 
 ```bash
 az group create \
@@ -52,7 +69,6 @@ az group create \
 ```
 
 结果：
-
 <!-- expected_similarity=0.3 -->
 ```json
 {
@@ -67,6 +83,9 @@ az group create \
   "type": "Microsoft.Resources/resourceGroups"
 }
 ```
+
+> [!NOTE]
+> 此位置是资源组元数据的存储位置。 如果在资源创建期间未指定另一个区域，则它还是你的资源在 Azure 中的运行位置。
 
 ## 创建虚拟网络和子网
 
@@ -83,7 +102,6 @@ az network vnet create \
 ```
 
 结果：
-
 <!-- expected_similarity=0.3 -->
 ```json
 {
@@ -118,9 +136,9 @@ az network vnet create \
 }
 ```
 
-## 创建 Azure Database for MySQL 灵活服务器
+## 创建 Azure Database for MySQL 灵活服务器实例
 
-Azure Database for MySQL 灵活服务器是一种托管服务，可用于在云中运行、管理和缩放具有高可用性的 MySQL 服务器。 使用 [az mysql flexible-server create](https://learn.microsoft.com/cli/azure/mysql/flexible-server#az-mysql-flexible-server-create) 命令创建灵活服务器。 一个服务器可以包含多个数据库。 以下命令使用服务默认值和 Azure CLI 本地环境中的变量值创建服务器：
+Azure Database for MySQL 灵活服务器是一种托管服务，可用于在云中运行、管理和缩放具有高可用性的 MySQL 服务器。 使用 [az mysql flexible-server create](/cli/azure/mysql/flexible-server) 命令创建 Azure Database for MySQL 灵活服务器实例。 一个服务器可以包含多个数据库。 以下命令使用服务默认值和 Azure CLI 本地上下文中的变量值创建服务器：
 
 ```bash
 echo "Your MySQL user $MY_MYSQL_ADMIN_USERNAME password is: $MY_WP_ADMIN_PW" 
@@ -149,7 +167,6 @@ az mysql flexible-server create \
 ```
 
 结果：
-
 <!-- expected_similarity=0.3 -->
 ```json
 {
@@ -167,14 +184,15 @@ az mysql flexible-server create \
 
 创建的服务器具有以下属性：
 
-- 服务器名称、管理员用户名、管理员密码、资源组名称及位置已在 Cloud Shell 的本地上下文环境中指定，并将在资源组和其他 Azure 组件所在的同一位置创建。
-- 其余服务器配置的服务默认值：计算层（可突发）、计算大小/SKU (Standard_B2s)、备份保持期（7 天）和 MySQL 版本 (8.0.21)
-- 默认连接方法是具有链接虚拟网络和自动生成子网的专用访问（VNet 集成）。
+- 首次预配服务器时，将创建一个新的空数据库。
+- 服务器名称、管理员用户名、管理员密码、资源组名称和位置已在 Cloud shell 的本地上下文环境中指定，并且与资源组和其他 Azure 组件位于同一位置。
+- 其余服务器配置的服务默认值为计算层（可突发）、计算大小/SKU (Standard_B2s)、备份保留期（7 天）和 MySQL 版本 (8.0.21)。
+- 默认连接方法是使用链接的虚拟网络和自动生成的子网进行专用访问（虚拟网络集成）。
 
 > [!NOTE]
-> 创建服务器后，无法更改连接方法。 例如，如果在创建期间选择了 `Private access (VNet Integration)`，则无法在创建后更改为 `Public access (allowed IP addresses)`。 强烈建议创建采用专用访问的服务器，以使用 VNet 集成安全地访问你的服务器。 若要详细了解专用访问，请参阅[概念文章](https://learn.microsoft.com/azure/mysql/flexible-server/concepts-networking-vnet)。
+> 创建服务器后，无法更改连接方法。 例如，如果在创建过程中选择了 `Private access (VNet Integration)`，则无法在创建后更改为 `Public access (allowed IP addresses)`。 强烈建议创建采用专用访问的服务器，以使用 VNet 集成安全地访问你的服务器。 若要详细了解专用访问，请参阅[概念文章](./concepts-networking-vnet.md)。
 
-如果要更改任何默认设置，请参阅 Azure CLI [参考文档](https://learn.microsoft.com/cli/azure//mysql/flexible-server)以获取可配置 CLI 参数的完整列表。
+如果要更改任何默认设置，请参阅 Azure CLI [参考文档](/cli/azure//mysql/flexible-server)，以获取可配置 CLI 参数的完整列表。
 
 ## 检查 Azure Database for MySQL 灵活服务器状态
 
@@ -188,11 +206,11 @@ runtime="10 minute"; endtime=$(date -ud "$runtime" +%s); while [[ $(date -u +%s)
 
 你可以使用服务器参数管理 Azure Database for MySQL 灵活服务器配置。 创建服务器时，将使用默认值和推荐值配置服务器参数。
 
-显示服务器参数详细信息 若要显示服务器的某个特定参数的详细信息，请运行 [az mysql flexible-server parameter show](https://learn.microsoft.com/cli/azure/mysql/flexible-server/parameter) 命令。
+若要显示服务器的某个特定参数的详细信息，请运行 [az mysql flexible-server parameter show](/cli/azure/mysql/flexible-server/parameter) 命令。
 
 ### 为 WordPress 集成禁用 Azure Database for MySQL 灵活服务器 SSL 连接参数
 
-还可以修改某些服务器参数的值，这会更新 MySQL 服务器引擎的基础配置值。 若要更新服务器参数，请使用 [az mysql flexible-server parameter set](https://learn.microsoft.com/cli/azure/mysql/flexible-server/parameter#az-mysql-flexible-server-parameter-set) 命令。
+还可以修改某些服务器参数的值，以更新 MySQL 服务器引擎的基础配置值。 若要更新服务器参数，请使用 [az mysql flexible-server parameter set](/cli/azure/mysql/flexible-server/parameter#az-mysql-flexible-server-parameter-set) 命令。
 
 ```bash
 az mysql flexible-server parameter set \
@@ -202,7 +220,6 @@ az mysql flexible-server parameter set \
 ```
 
 结果：
-
 <!-- expected_similarity=0.3 -->
 ```json
 {
@@ -225,9 +242,9 @@ az mysql flexible-server parameter set \
 
 ## 创建 AKS 群集
 
-使用带有 --enable-addons monitoring 参数的 az aks create 命令创建 AKS 群集，以启用 容器见解。 以下示例创建一个名为 myAKSCluster 的自动缩放群集，该群集启用了可用性区域：
+若要使用 Container Insights 创建 AKS 群集，请使用 [az aks create](/cli/azure/aks#az-aks-create) 命令和 --enable-addons 监视参数****。 以下示例创建名为 myAKSCluster 的自动缩放的可用性区域群集：****
 
-这需要几分钟时间
+此操作需要几分钟时间。
 
 ```bash
 export MY_SN_ID=$(az network vnet subnet list --resource-group $MY_RESOURCE_GROUP_NAME --vnet-name $MY_VNET_NAME --query "[0].id" --output tsv)
@@ -251,62 +268,46 @@ az aks create \
     --dns-service-ip 10.255.0.10 \
     --zones 1 2 3
 ```
+> [!NOTE]
+> 创建 AKS 群集时，会自动创建另一个资源组来存储 AKS 资源。 请参阅[为什么使用 AKS 创建两个资源组？](../../aks/faq.md#why-are-two-resource-groups-created-with-aks)
 
 ## 连接到群集
 
-若要管理 Kubernetes 群集，请使用 Kubernetes 命令行客户端 kubectl。 如果使用的是 Azure Cloud Shell，则 kubectl 已安装。
+若要管理 Kubernetes 群集，请使用 Kubernetes 命令行客户端 [kubectl](https://kubernetes.io/docs/reference/kubectl/overview/)。 如果使用的是 Azure Cloud Shell，则 `kubectl` 已安装。 以下示例使用 [az aks install-cli](/cli/azure/aks#az-aks-install-cli) 命令在本地安装 `kubectl`。 
 
-1. 使用 az aks install-cli 命令在本地安装 az aks CLI
-
-    ```bash
+ ```bash
     if ! [ -x "$(command -v kubectl)" ]; then az aks install-cli; fi
-    ```
+```
 
-2. 使用 az aks get-credentials 命令将 kubectl 配置为连接到 Kubernetes 群集。 以下命令：
+接下来，使用 [az aks get-credentials](/cli/azure/aks#az-aks-get-credentials) 命令将 `kubectl` 配置为连接到你的 Kubernetes 群集。 此命令将下载凭据，并将 Kubernetes CLI 配置为使用这些凭据。 该命令使用 `~/.kube/config`，即 [Kubernetes 配置文件](https://kubernetes.io/docs/concepts/configuration/organize-cluster-access-kubeconfig/)的默认位置。 可以使用 **--file** 参数为你的 Kubernetes 配置文件指定其他位置。
 
-    - 下载凭据，并将 Kubernetes CLI 配置为使用这些凭据。
-    - 使用 ~/.kube/config，这是 Kubernetes 配置文件的默认位置。 使用 --file 参数指定 Kubernetes 配置文件的其他位置。
+> [!WARNING]
+> 此命令将覆盖具有相同条目的任何现有凭据。
 
-    > [!WARNING]
-    > 这将覆盖具有相同条目的任何现有凭据
+```bash
+az aks get-credentials --resource-group $MY_RESOURCE_GROUP_NAME --name $MY_AKS_CLUSTER_NAME --overwrite-existing
+```
 
-    ```bash
-    az aks get-credentials --resource-group $MY_RESOURCE_GROUP_NAME --name $MY_AKS_CLUSTER_NAME --overwrite-existing
-    ```
+若要验证与群集的连接，请使用 kubectl get 命令返回群集节点列表。
 
-3. 使用 kubectl get 命令验证与群集之间的连接。 此命令将返回群集节点的列表。
-
-    ```bash
-    kubectl get nodes
-    ```
+```bash
+kubectl get nodes
+```
 
 ## 安装 NGINX 入口控制器
 
 可使用静态公共 IP 地址创建入口控制器。 如果删除入口控制器，静态公共 IP 地址仍存在。 如果删除 AKS 群集，IP 地址不会保留。
-升级入口控制器时，必须将参数传递给 Helm 版本，以确保入口控制器服务知道将分配给它的负载均衡器。 为使 HTTPS 证书正常工作，使用 DNS 标签来配置入口控制器 IP 地址的 FQDN。
-FQDN 应遵循以下形式：$MY_DNS_LABEL.AZURE_REGION_NAME.cloudapp.azure.com。
+升级入口控制器时，必须将参数传递给 Helm 版本，以确保入口控制器服务知道将分配给它的负载均衡器。 若要使 HTTPS 证书正常工作，请使用 DNS 标签为入口控制器 IP 地址配置完全限定的域名 (FQDN)。 FQDN 应遵循以下形式：$MY_DNS_LABEL.AZURE_REGION_NAME.cloudapp.azure.com。
 
 ```bash
 export MY_STATIC_IP=$(az network public-ip create --resource-group MC_${MY_RESOURCE_GROUP_NAME}_${MY_AKS_CLUSTER_NAME}_${REGION} --location ${REGION} --name ${MY_PUBLIC_IP_NAME} --dns-name ${MY_DNS_LABEL} --sku Standard --allocation-method static --version IPv4 --zone 1 2 3 --query publicIp.ipAddress -o tsv)
 ```
 
-添加 --set controller.service.annotations."service\.beta\.kubernetes\.io/azure-dns-label-name"="<DNS_LABEL>" 参数。 可以在首次部署入口控制器时设置 DNS 标签，也可以稍后进行配置。 添加 --set controller.service.loadBalancerIP="<STATIC_IP>" 参数。 指定在前面的步骤中创建的你自己的公共 IP 地址。
+接下来，添加 ingress-nginx Helm 存储库，更新本地 Helm 图表存储库缓存，并通过 Helm 安装 ingress-nginx 加载项。 可在首次部署入口控制器会之后，使用 **--set controller.service.annotations."service\.beta\.kubernetes\.io/azure-dns-label-name"="<DNS_LABEL>"** 参数设置 DNS 标签。 在本示例中，使用 **--set controller.service.loadBalancerIP="<STATIC_IP>" 参数**指定在上一步中创建的自己的公共 IP 地址。
 
-1. 添加 ingress-nginx Helm 存储库
-
-    ```bash
+```bash
     helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
-    ```
-
-2. 更新本地 Helm Chart 存储库缓存
-
-    ```bash
     helm repo update
-    ```
-
-3. 运行以下命令，通过 Helm 安装 ingress-nginx 加载项：
-
-    ```bash
     helm upgrade --install --cleanup-on-fail --atomic ingress-nginx ingress-nginx/ingress-nginx \
         --namespace ingress-nginx \
         --create-namespace \
@@ -314,29 +315,29 @@ export MY_STATIC_IP=$(az network public-ip create --resource-group MC_${MY_RESOU
         --set controller.service.loadBalancerIP=$MY_STATIC_IP \
         --set controller.service.annotations."service\.beta\.kubernetes\.io/azure-load-balancer-health-probe-request-path"=/healthz \
         --wait --timeout 10m0s
-    ```
+```
 
 ## 将 HTTPS 终止添加到自定义域
 
-本教程进行到此，你有一个 AKS Web 应用，其中 NGINX 作为入口控制器，还有一个可用于访问应用程序的自定义域。 下一步是将 SSL 证书添加到域，以便用户可通过 https 安全地访问应用程序。
+在本教程的这一步，你有一个使用 NGINX 作为入口控制器的 AKS Web 应用，以及一个可用于访问应用程序的自定义域。 下一步是将 SSL 证书添加到域，以便用户可通过 https 安全地访问应用程序。
 
-## 设置证书管理器
+### 设置证书管理器
 
-为了添加 HTTPS，我们将使用证书管理器。 证书管理器是一种开源工具，用于获取和管理用于 Kubernetes 部署的 SSL 证书。 证书管理器将从各种颁发者（常用公共颁发者以及专用颁发者）获取证书，并确保证书有效且最新，并会在到期前于配置时间尝试续订证书。
+若要添加 HTTPS，我们将使用证书管理器。 证书管理器是一种开源工具，用于获取和管理 Kubernetes 部署的 SSL 证书。 证书管理器从常用的公共颁发者和专用颁发者处获取证书，确保证书有效且最新，并尝试在证书到期前的配置时间续订证书。
 
-1. 若要安装证书管理器，必须先创建一个命名空间来运行它。 本教程将证书管理器安装到证书管理器命名空间中。 可以在不同的命名空间中运行证书管理器，不过需要对部署清单进行修改。
+1. 若要安装证书管理器，必须先创建一个命名空间来运行它。 本教程将证书管理器安装到证书管理器命名空间中。 可以在不同的命名空间中运行证书管理器，但必须对部署清单进行修改。
 
     ```bash
     kubectl create namespace cert-manager
     ```
 
-2. 现在可以安装证书管理器了。 所有资源都包含在单个 YAML 清单文件中。 可以通过运行以下命令来安装此文件：
+2. 现在可以安装证书管理器了。 所有资源都包含在单个 YAML 清单文件中。 使用以下命令安装清单文件：
 
     ```bash
     kubectl apply -f https://github.com/jetstack/cert-manager/releases/download/v1.7.0/cert-manager.crds.yaml
     ```
 
-3. 运行以下命令，将 certmanager.k8s.io/disable-validation：“true”标签添加到证书管理器命名空间。 这样，就可以在自己的命名空间中创建 cert-manager 引导 TLS 所需的系统资源。
+3. 通过运行以下命令将 `certmanager.k8s.io/disable-validation: "true"` 标签添加到证书管理器命名空间。 这样，证书管理器可以在其自己的命名空间中创建启动 TLS 所需的系统资源。
 
     ```bash
     kubectl label namespace cert-manager certmanager.k8s.io/disable-validation=true
@@ -344,25 +345,23 @@ export MY_STATIC_IP=$(az network public-ip create --resource-group MC_${MY_RESOU
 
 ## 通过 Helm 图表获取证书
 
-Helm 是一种 Kubernetes 部署工具，用于应用程序和服务的自动创建、打包、配置，以及自动将应用程序和服务部署到 Kubernetes 群集。
+Helm 是一种 Kubernetes 部署工具，用于自动创建、打包、配置应用程序和服务以及将其部署到 Kubernetes 群集。
 
 Cert-manager 提供 Helm 图表，作为在 Kubernetes 上安装的一级方法。
 
-1. 添加 Jetstack Helm 存储库
-
-    此存储库是唯一受支持的 cert-manager 图表源。 Internet 上还有其他一些镜像和副本，但这些镜像是完全非官方的，可能会带来安全风险。
+1. 添加 Jetstack Helm 存储库。 此存储库是唯一受支持的 cert-manager 图表源。 Internet 上还有其他镜像和副本，但这些都是非官方的，可能会带来安全风险。
 
     ```bash
     helm repo add jetstack https://charts.jetstack.io
     ```
 
-2. 更新本地 Helm Chart 存储库缓存
+2. 更新本地 Helm 图表存储库缓存。
 
     ```bash
     helm repo update
     ```
 
-3. 运行以下命令，通过 Helm 安装 Cert-Manager 加载项：
+3. 通过 Helm 安装证书管理器加载项。
 
     ```bash
     helm upgrade --install --cleanup-on-fail --atomic \
@@ -372,10 +371,7 @@ Cert-manager 提供 Helm 图表，作为在 Kubernetes 上安装的一级方法�
         cert-manager jetstack/cert-manager
     ```
 
-4. 应用证书颁发者 YAML 文件
-
-    ClusterIssuers 是表示证书颁发机构 (CA) 的 Kubernetes 资源，这些资源能够通过遵循证书签名请求来生成签名的证书。 所有证书管理器证书都需要一个已引用的颁发者，该颁发者处于就绪状态以尝试遵循请求。
-    可在 `cluster-issuer-prod.yml file` 中找到正在使用的颁发者
+4. 应用证书颁发者 YAML 文件。 ClusterIssuers 是代表证书颁发机构 (CA) 的 Kubernetes 资源，这些资源可以通过遵循证书签名请求来生成签名的证书。 所有证书管理器证书都需要一个已引用的颁发者，该颁发者处于就绪状态以尝试遵循请求。 可以通过 `cluster-issuer-prod.yaml file` 找到我们使用的颁发者。
 
     ```bash
     cluster_issuer_variables=$(<cluster-issuer-prod.yaml)
@@ -384,8 +380,8 @@ Cert-manager 提供 Helm 图表，作为在 Kubernetes 上安装的一级方法�
 
 ## 创建自定义存储类
 
-默认存储类适合最常见的方案，但并非适合所有方案。 在某些情况下，你可能想要使用自己的参数来自定义自己的存储类。 例如，使用以下清单配置文件共享的 mountOptions。
-对于 Kubernetes 装载的文件共享，fileMode 和 dirMode 的默认值为 0755。 可以在存储类对象中指定不同的装载选项。
+默认存储类适合最常见的方案，但并非适合所有方案。 在某些情况下，你可能想要使用自己的参数来自定义自己的存储类。 例如，使用以下清单来配置文件共享的 mountOptions。****
+对于 Kubernetes 装载的文件共享，fileMode 和 dirMode 的默认值为 0755。************ 可以在存储类对象中指定不同的装载选项。
 
 ```bash
 kubectl apply -f wp-azurefiles-sc.yaml
@@ -393,21 +389,21 @@ kubectl apply -f wp-azurefiles-sc.yaml
 
 ## 将 WordPress 部署到 AKS 群集
 
-对于本文档，我们将使用 Bitnami 构建的现有 WordPress Helm 图表。 例如，Bitnami Helm 图表使用本地 MariaDB 作为数据库，我们需要重写这些值，以便将应用与 Azure Database for MySQL 配合使用。 所有替代值：可替代值，可在 `helm-wp-aks-values.yaml` 文件中找到自定义设置
+在本教程中，我们使用由 Bitnami 为 WordPress 生成的现有 Helm 图表。 Bitnami Helm 图表使用本地 MariaDB 作为数据库，因此我们需要重写这些值，以便将应用与 Azure Database for MySQL 配合使用。 可以覆盖文件的值和自定义设置 `helm-wp-aks-values.yaml` 文件。
 
-1. 添加 Wordpress Bitnami Helm 存储库
+1. 添加 Wordpress Bitnami Helm 存储库。
 
     ```bash
     helm repo add bitnami https://charts.bitnami.com/bitnami
     ```
 
-2. 更新本地 Helm Chart 存储库缓存
+2. 更新本地 Helm 图表存储库缓存。
 
     ```bash
     helm repo update
     ```
 
-3. 运行以下命令，通过 Helm 安装 Wordpress 工作负载：
+3. 通过 Helm 安装 Wordpress 工作负载。
 
     ```bash
     helm upgrade --install --cleanup-on-fail \
@@ -426,7 +422,6 @@ kubectl apply -f wp-azurefiles-sc.yaml
     ```
 
 结果：
-
 <!-- expected_similarity=0.3 -->
 ```text
 Release "wordpress" does not exist. Installing it now.
@@ -471,7 +466,7 @@ To access your WordPress site from outside the cluster follow the steps below:
 运行以下命令以获取应用程序的 HTTPS 终结点：
 
 > [!NOTE]
-> SSL 证书通常需要 2-3 分钟的时间来传播，大约 5 分钟即可准备好所有 WordPress POD 副本，此时可通过 https 完全访问网站。
+> SSL 证书传播通常需要 2-3 分钟，大约需要 5 分钟才能让所有 WordPress POD 副本准备就绪，并且站点可通过 https 完全访问。
 
 ```bash
 runtime="5 minute"
@@ -487,7 +482,7 @@ while [[ $(date -u +%s) -le $endtime ]]; do
 done
 ```
 
-检查 WordPress 内容是否已正确传送。
+使用以下命令检查 WordPress 内容是否已正确传送：
 
 ```bash
 if curl -I -s -f https://$FQDN > /dev/null ; then 
@@ -498,7 +493,6 @@ fi;
 ```
 
 结果：
-
 <!-- expected_similarity=0.3 -->
 ```HTML
 {
@@ -514,8 +508,22 @@ fi;
 }
 ```
 
-可通过以下 URL 访问该网站：
+通过以下 URL 访问网站：
 
 ```bash
 echo "You can now visit your web server at https://$FQDN"
 ```
+
+## 清理资源（可选）
+
+若要避免 Azure 费用，应清除不需要的资源。 如果不再需要群集，可以使用 [az group delete](/cli/azure/group#az-group-delete) 命令删除资源组、容器服务及所有相关资源。 
+
+> [!NOTE]
+> 删除群集时，AKS 群集使用的 Microsoft Entra 服务主体不会被删除。 有关如何删除服务主体的步骤，请参阅 [AKS 服务主体的注意事项和删除](../../aks/kubernetes-service-principal.md#other-considerations)。 如果你使用了托管标识，则该标识由平台托管，不需要删除。
+
+## 后续步骤
+
+- 了解如何[访问 AKS 群集的 Kubernetes Web 仪表板](../../aks/kubernetes-dashboard.md)
+- 了解如何[缩放群集](../../aks/tutorial-kubernetes-scale.md)
+- 了解如何管理 [Azure Database for MySQL 灵活服务器实例](./quickstart-create-server-cli.md)
+- 了解如何为数据库服务器[配置服务器参数](./how-to-configure-server-parameters-cli.md)
