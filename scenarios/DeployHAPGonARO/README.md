@@ -16,30 +16,11 @@ In order to run commands against Azure using the CLI you need to login. This is 
 
 ## Check for Prerequisites
 
-Next, check for prerequisites. This section checks for the following prerequisites: RedHat OpenShift, kubectl, and Openshift Client.
+Next, check for prerequisites. This can be done by running the following commands: 
 
-### RedHat OpenShift
-
-```bash
-az provider register -n Microsoft.RedHatOpenShift --wait
-```
-
-### Kubectl
-
-```bash
-az aks install-cli
-```
-
-### Openshift Client
-
-Install the Openshift client locally.
-
-```bash
-mkdir ~/ocp
-wget -q https://mirror.openshift.com/pub/openshift-v4/clients/ocp/latest/openshift-client-linux.tar.gz -O ~/ocp/openshift-client-linux.tar.gz
-tar -xf ~/ocp/openshift-client-linux.tar.gz
-export PATH="$PATH:~/ocp"
-```
+- RedHat OpenShift: `az provider register -n Microsoft.RedHatOpenShift --wait`
+- kubectl: `az aks install-cli`
+- Openshift Client: `mkdir ~/ocp ; wget -q https://mirror.openshift.com/pub/openshift-v4/clients/ocp/latest/openshift-client-linux.tar.gz -O ~/ocp/openshift-client-linux.tar.gz ; tar -xf ~/ocp/openshift-client-linux.tar.gz ; export PATH="$PATH:~/ocp"`
 
 ## Create a resource group
 
