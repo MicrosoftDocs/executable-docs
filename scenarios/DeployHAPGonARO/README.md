@@ -12,7 +12,11 @@ ms.custom: innovation-engine, linux-related content
 
 ## Login to Azure using the CLI
 
-In order to run commands against Azure using the CLI you need to login. This is done, very simply, though the `az login` command:
+In order to run commands against Azure using the CLI you need to login. This is done, very simply, though the following command:
+
+```bash
+az login
+```
 
 ## Check for Prerequisites
 
