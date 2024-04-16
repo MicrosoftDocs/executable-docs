@@ -4,7 +4,7 @@ description: This tutorial shows how to create a Highly Available PostgreSQL clu
 author: russd2357
 ms.author: rdepina
 ms.topic: article
-ms.date: 04/12/2024
+ms.date: 04/16/2024
 ms.custom: innovation-engine, linux-related content
 ---
 
