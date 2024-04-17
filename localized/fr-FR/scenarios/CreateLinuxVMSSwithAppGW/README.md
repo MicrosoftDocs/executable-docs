@@ -1,23 +1,35 @@
 ---
-title: Créer un groupe de machines virtuelles identiques avec Application Gateway avec une image Linux
-description: Ce tutoriel montre comment créer un groupe de machines virtuelles identiques avec Application Gateway avec une image Linux.
-author: belginceran
-ms.author: belginceran
-ms.topic: article
-ms.date: 01/05/2024
-ms.custom: innovation-engine
+title: Créer des machines virtuelles dans un groupe identique Flexible à l’aide de l’interface CLI Azure
+description: Découvrez comment créer un groupe de machines virtuelles identiques en mode d’orchestration Flexible à l’aide d’Azure CLI.
+author: fitzgeraldsteele
+ms.author: fisteele
+ms.topic: how-to
+ms.service: virtual-machine-scale-sets
+ms.date: 3/19/2024
+ms.reviewer: jushiman
+ms.custom: 'mimckitt, devx-track-azurecli, vmss-flex, innovation-engine, linux-related-content'
 ---
 
-# Créer un groupe de machines virtuelles identiques avec Application Gateway avec une image Linux
+# Créer des machines virtuelles dans un groupe identique à l’aide d’Azure CLI
 
 [![Déployer dans Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262759)
 
+Cet article explique comment créer un groupe identique de machines virtuelles à l’aide d’Azure CLI.
+
+Assurez-vous que vous avez installé la dernière version d’[Azure CLI](/cli/azure/install-az-cli2) et que vous êtes connecté à un compte Azure avec [az login](/cli/azure/reference-index).
+
+
+## Lancement d’Azure Cloud Shell
+
+Azure Cloud Shell est un interpréteur de commandes interactif et gratuit que vous pouvez utiliser pour exécuter les étapes de cet article. Il contient des outils Azure courants préinstallés et configurés pour être utilisés avec votre compte.
+
+Pour ouvrir Cloud Shell, sélectionnez **Ouvrir Cloud Shell** en haut à droite d’un bloc de code. Vous pouvez aussi lancer Cloud Shell dans un onglet distinct du navigateur en accédant à [https://shell.azure.com/cli](https://shell.azure.com/cli). Sélectionnez **Copier** pour copier les blocs de code, collez-les dans Cloud Shell, puis appuyez sur Entrée pour les exécuter.
+
 ## Définissez des variables d’environnement
 
-La première étape de ce tutoriel définit des variables d’environnement.
+Définissez des variables d’environnement comme suit.
 
 ```bash
-
 export RANDOM_ID="$(openssl rand -hex 3)"
 export MY_RESOURCE_GROUP_NAME="myVMSSResourceGroup$RANDOM_ID"
 export REGION=EastUS
@@ -33,22 +45,17 @@ export MY_APPGW_SN_NAME="myAPPGWSN$RANDOM_ID"
 export MY_APPGW_SN_PREFIX="10.$NETWORK_PREFIX.1.0/24"
 export MY_APPGW_NAME="myAPPGW$RANDOM_ID"
 export MY_APPGW_PUBLIC_IP_NAME="myAPPGWPublicIP$RANDOM_ID"
-
 ```
-# Connectez-vous à Azure à l’aide de l’interface CLI
 
-Pour exécuter des commandes sur Azure à l’aide de l’interface CLI, vous devez vous connecter. Pour cela, utilisez tout simplement la commande `az login` :
+## Créer un groupe de ressources
 
-# Créer un groupe de ressources
-
-Un groupe de ressources est un conteneur de ressources associées. Toutes les ressources doivent être placées dans un groupe de ressources. Nous en créons un pour ce tutoriel. La commande suivante crée un groupe de ressources avec les paramètres $MY_RESOURCE_GROUP_NAME et $REGION précédemment définis.
+Un groupe de ressources est un conteneur logique dans lequel les ressources Azure sont déployées et gérées. Toutes les ressources doivent être placées dans un groupe de ressources. La commande suivante crée un groupe de ressources avec les paramètres $MY_RESOURCE_GROUP_NAME et $REGION précédemment définis.
 
 ```bash
 az group create --name $MY_RESOURCE_GROUP_NAME --location $REGION -o JSON
 ```
 
 Résultats :
-
 <!-- expected_similarity=0.3 -->
 ```json   
 {
@@ -64,19 +71,17 @@ Résultats :
 }
 ```
 
-# Créer des ressources réseau 
+## Créer des ressources réseau 
 
-Vous devez créer des ressources réseau avant d’effectuer les étapes VMSS. Lors de cette étape, vous allez créer un réseau virtuel et deux sous-réseaux : un pour Application Gateway et un pour les machines virtuelles. Vous devez également attacher une adresse IP publique à votre passerelle Application Gateway, afin qu’elle puisse atteindre votre application web à partir d’Internet. 
+Vous allez à présent créer des ressources réseau. Lors de cette étape, vous allez créer un réseau virtuel, un sous-réseau 1 pour la passerelle Application Gateway et un sous-réseau pour les machines virtuelles. Vous devez également disposer d’une adresse IP publique à attacher à votre passerelle Application Gateway pour accéder à votre application web à partir d’Internet. 
 
-
-#### Créer le réseau virtuel et le sous-réseau de machines virtuelles
+#### Créer un réseau virtuel et un sous-réseau
 
 ```bash
 az network vnet create  --name $MY_VNET_NAME  --resource-group $MY_RESOURCE_GROUP_NAME --location $REGION  --address-prefix $MY_VNET_PREFIX  --subnet-name $MY_VM_SN_NAME --subnet-prefix $MY_VM_SN_PREFIX -o JSON
 ```
 
 Résultats :
-
 <!-- expected_similarity=0.3 -->
 ```json   
 {
@@ -116,15 +121,13 @@ Résultats :
 
 ### Créer des ressources Application Gateway
 
-Azure Application Gateway nécessite un sous-réseau dédié au sein de votre réseau virtuel. La commande ci-dessous crée un sous-réseau nommé $MY_APPGW_SN_NAME avec le préfixe d’adresse spécifié nommé $MY_APPGW_SN_PREFIX dans votre réseau virtuel $MY_VNET_NAME. 
-
+Azure Application Gateway nécessite un sous-réseau dédié au sein de votre réseau virtuel. La commande suivante crée un sous-réseau nommé $MY_APPGW_SN_NAME avec le préfixe spécifié de l’adresse nommé $MY_APPGW_SN_PREFIX dans votre réseau virtuel $MY_VNET_NAME.
 
 ```bash
 az network vnet subnet create  --name $MY_APPGW_SN_NAME  --resource-group $MY_RESOURCE_GROUP_NAME --vnet-name  $MY_VNET_NAME --address-prefix  $MY_APPGW_SN_PREFIX -o JSON
 ```
 
 Résultats :
-
 <!-- expected_similarity=0.3 -->
 ```json  
 {
@@ -140,14 +143,13 @@ Résultats :
   "type": "Microsoft.Network/virtualNetworks/subnets"
 }
 ```
-La commande ci-dessous crée une adresse IPv4 standard, redondante interzone, statique et publique dans votre groupe de ressources.  
+La commande suivante crée une adresse IPv4 standard, redondante interzone, statique et publique dans votre groupe de ressources.  
 
 ```bash
 az network public-ip create  --resource-group $MY_RESOURCE_GROUP_NAME --name $MY_APPGW_PUBLIC_IP_NAME --sku Standard   --location $REGION  --allocation-method static --version IPv4 --zone 1 2 3 -o JSON
- ```
+```
 
 Résultats :
-
 <!-- expected_similarity=0.3 -->
 ```json  
 {
@@ -181,11 +183,11 @@ Résultats :
 }
 ```
 
-Lors de cette étape, vous allez créer une passerelle Application Gateway que vous allez intégrer à votre groupe de machines virtuelles identiques. Dans cet exemple, nous créons une passerelle Application Gateway redondante interzone avec une référence SKU Standard_v2, et nous activons la communication HTTP pour Application Gateway. L’adresse IP publique $MY_APPGW_PUBLIC_IP_NAME que nous avons créée à l’étape précédente attachée à Application Gateway. 
+Lors de cette étape, vous allez créer une passerelle Application Gateway à intégrer à votre groupe de machines virtuelles identiques. Cet exemple crée une passerelle Application Gateway redondante interzone, avec une référence SKU Standard_v2, tout en activant la communication HTTP pour Application Gateway. L’adresse IP publique $MY_APPGW_PUBLIC_IP_NAME créée à l’étape précédente est attachée à la passerelle Application Gateway. 
 
 ```bash
 az network application-gateway create   --name $MY_APPGW_NAME --location $REGION --resource-group $MY_RESOURCE_GROUP_NAME --vnet-name $MY_VNET_NAME --subnet $MY_APPGW_SN_NAME --capacity 2  --zones 1 2 3 --sku Standard_v2   --http-settings-cookie-based-affinity Disabled   --frontend-port 80 --http-settings-port 80   --http-settings-protocol Http --public-ip-address $MY_APPGW_PUBLIC_IP_NAME --priority 1001 -o JSON
- ```
+```
 
 <!-- expected_similarity=0.3 -->
 ```json 
@@ -375,19 +377,21 @@ az network application-gateway create   --name $MY_APPGW_NAME --location $REGION
     "urlPathMaps": []
   }
 }
- ```
+```
 
+## Crée un groupe de machines virtuelles identiques
 
-# Créer un groupe de machines virtuelles identiques 
+> [!IMPORTANT]
+>À compter de novembre 2023, les groupes de machines virtuelles identiques créés à l'aide de PowerShell et d'Azure CLI utilisent par défaut le mode d'orchestration flexible si aucun mode d'orchestration n'est spécifié. Pour plus d’informations sur ce changement et les actions que vous devez entreprendre, consultez l’article [Changement cassant pour les clients VMSS PowerShell/CLI – Hub Communauté Microsoft](
+https://techcommunity.microsoft.com/t5/azure-compute-blog/breaking-change-for-vmss-powershell-cli-customers/ba-p/3818295)
 
-La commande ci-dessous crée un groupe de machines virtuelles identiques redondant interzone au sein de votre groupe de ressources $MY_RESOURCE_GROUP_NAME. Nous intégrons la passerelle Application Gateway que nous avons créée à l’étape précédente. Cette commande crée deux machines virtuelles de référence SKU Standard_DS2_v2 avec une adresse IP publique dans le sous-réseau $MY_VM_SN_NAME. Une clé SSH est créée pendant l’étape ci-dessous ; vous souhaiterez peut-être l’enregistrer si vous devez connecter vos machines virtuelles via SSH.
+Créez à présent un groupe de machines virtuelles identiques avec [az vmss create](/cli/azure/vmss). L’exemple suivant crée un groupe identique redondant interzone avec un nombre d’instances de *2* avec une adresse IP publique dans le sous-réseau $MY_VM_SN_NAME au sein de votre groupe de ressources $MY_RESOURCE_GROUP_NAME, intègre la passerelle Application Gateway et génère des clés SSH. Assurez-vous d’enregistrer les clés SSH si vous devez vous connecter à vos machines virtuelles par le protocole SSH.
 
 ```bash
 az vmss create --name $MY_VMSS_NAME --resource-group $MY_RESOURCE_GROUP_NAME --image $MY_VM_IMAGE --admin-username $MY_USERNAME --generate-ssh-keys --public-ip-per-vm --orchestration-mode Uniform --instance-count 2 --zones 1 2 3 --vnet-name $MY_VNET_NAME --subnet $MY_VM_SN_NAME --vm-sku Standard_DS2_v2 --upgrade-policy-mode Automatic --app-gateway $MY_APPGW_NAME --backend-pool-name appGatewayBackendPool -o JSON
  ```
 
 Résultats :
-
 <!-- expected_similarity=0.3 -->
 ```json  
 {
@@ -499,17 +503,15 @@ Résultats :
 }
 ```
 
-### Installer ngnix avec les extensions VMSS 
+### Installer ngnix avec des extensions Virtual Machine Scale Sets 
 
-La commande ci-dessous utilise l’extension VMSS pour exécuter un script personnalisé. À des fins de test, nous installons ici ngnix et publions une page qui affiche le nom d’hôte de la machine virtuelle atteinte par vos requêtes HTTP. Nous utilisons ce script personnalisé à cette fin : https://raw.githubusercontent.com/Azure-Samples/compute-automation-configurations/master/automate_nginx.sh 
-
+La commande suivante utilise l’extension Virtual Machine Scale Sets pour exécuter un [script personnalisé](https://github.com/Azure-Samples/compute-automation-configurations/blob/master/automate_nginx.sh) qui installe ngnix et publie une page affichant le nom d’hôte de la machine virtuelle que vos requêtes HTTP atteignent. 
 
 ```bash
 az vmss extension set --publisher Microsoft.Azure.Extensions --version 2.0  --name CustomScript --resource-group $MY_RESOURCE_GROUP_NAME --vmss-name $MY_VMSS_NAME --settings '{ "fileUris": ["https://raw.githubusercontent.com/Azure-Samples/compute-automation-configurations/master/automate_nginx.sh"], "commandToExecute": "./automate_nginx.sh" }' -o JSON
 ```
 
 Résultats :
-
 <!-- expected_similarity=0.3 -->
 ```json  
 {
@@ -703,19 +705,16 @@ Résultats :
 }
 ```
 
+## Définir un profil de mise à l’échelle automatique  
 
-# Définir un profil de mise à l’échelle automatique  
-
-Pour activer la mise à l’échelle automatique sur un groupe identique, vous devez d’abord définir un profil de mise à l’échelle automatique. Ce profil définit les capacités par défaut, minimale et maximale du groupe identique. Ces limites vous permettent de contrôler le coût en évitant de créer continuellement des instances de machine virtuelle et d’équilibrer les performances acceptables sur un nombre minimal d’instances qui restent dans un événement de diminution du nombre d’instances.
-L’exemple suivant définit les capacités par défaut et minimale de 2 instances de machine virtuelle, et la capacité maximale de 10 :
+Pour activer la mise à l’échelle automatique sur un groupe identique, définissez au préalable un profil de mise à l’échelle automatique. Ce profil définit les capacités par défaut, minimale et maximale du groupe identique. Ces limites vous permettent de contrôler les coûts en évitant de créer continuellement des instances de machine virtuelle et en équilibrant les performances acceptables sur un nombre minimal d’instances qui restent dans un événement scale-in.
+L’exemple suivant définit les capacités minimales par défaut à deux instances de machine virtuelle et la capacité maximale à 10 :
 
 ```bash
 az monitor autoscale create --resource-group $MY_RESOURCE_GROUP_NAME --resource  $MY_VMSS_NAME --resource-type Microsoft.Compute/virtualMachineScaleSets --name autoscale --min-count 2 --max-count 10 --count 2
 ```
 
-
 Résultats :
-
 <!-- expected_similarity=0.3 -->
 ```json  
 {
@@ -760,16 +759,15 @@ Résultats :
 }
 ```
 
-# Créer une règle pour le scale-out automatique
+## Créer une règle pour le scale-out automatique
 
-La commande suivante crée une règle qui augmente le nombre d’instances de machine virtuelle dans un groupe identique lorsque la charge moyenne du processeur est supérieure à 70 % pendant cinq minutes. Lorsque la règle se déclenche, le nombre d’instances de machine virtuelle est majoré de trois unités.
+La commande suivante crée une règle qui augmente le nombre d’instances de machine virtuelle dans un groupe identique lorsque la charge moyenne du processeur est supérieure à 70 % pendant cinq minutes. Lorsque la règle se déclenche, le nombre d’instances de machine virtuelle augmente de trois unités.
 
 ```bash
 az monitor autoscale rule create --resource-group $MY_RESOURCE_GROUP_NAME --autoscale-name autoscale --condition "Percentage CPU > 70 avg 5m" --scale out 3
 ```
 
 Résultats :
-
 <!-- expected_similarity=0.3 -->
 ```json 
 {
@@ -796,16 +794,15 @@ Résultats :
 } 
 ```
 
-# Créer une règle pour le scale-in automatique
+## Créer une règle pour le scale-in automatique
 
-Créez avec az monitor autoscale rule create une autre règle qui réduit le nombre d’instances de machine virtuelle dans un groupe identique lorsque la charge moyenne du processeur est inférieure à 30 % pendant 5 minutes. L’exemple suivant définit la règle pour diminuer de une unité le nombre d’instances de machine virtuelle.
+Créez une autre règle avec `az monitor autoscale rule create` qui diminue le nombre d’instances de machine virtuelle dans un groupe identique lorsque la charge moyenne du processeur est inférieure à 30 % pendant 5 minutes. L’exemple suivant définit la règle pour diminuer de une unité le nombre d’instances de machine virtuelle.
 
 ```bash
 az monitor autoscale rule create --resource-group  $MY_RESOURCE_GROUP_NAME --autoscale-name autoscale --condition "Percentage CPU < 30 avg 5m" --scale in 1
 ```
 
 Résultats :
-
 <!-- expected_similarity=0.3 -->
 ```json 
 {
@@ -832,19 +829,19 @@ Résultats :
 }
 ```
 
-
 ### Tester la page
 
-La commande ci-dessous montre l’adresse IP publique de votre passerelle Application Gateway. Vous pouvez coller l’adresse IP dans une page de navigateur à des fins de test.
+La commande suivante montre l’adresse IP publique de votre passerelle Application Gateway. Collez l’adresse IP dans une page de navigateur à des fins de test.
 
 ```bash
 az network public-ip show --resource-group $MY_RESOURCE_GROUP_NAME --name $MY_APPGW_PUBLIC_IP_NAME --query [ipAddress]  --output tsv
 ```
 
+## Nettoyez les ressources (facultatif)
 
+Pour éviter des frais Azure, vous devez nettoyer les ressources inutiles. Lorsque vous n’avez plus besoin de votre groupe identique et d’autres ressources, supprimez le groupe de ressources et toutes ses ressources avec la commande [az group delete](/cli/azure/group). Le paramètre `--no-wait` retourne le contrôle à l’invite de commandes sans attendre que l’opération se termine. Le paramètre `--yes` confirme que vous souhaitez supprimer les ressources sans passer par une autre invite. Ce tutoriel vous aide à nettoyer les ressources.
 
-# Références
-
-* [Documentation VMSS](https://learn.microsoft.com/en-us/azure/virtual-machine-scale-sets/overview)
-* [Mise à l’échelle automatique de VMSS](https://learn.microsoft.com/en-us/azure/virtual-machine-scale-sets/tutorial-autoscale-cli?tabs=Ubuntu)
-
+## Étapes suivantes
+- [Découvrez comment créer un groupe identique Flexible dans le Portail Azure.](flexible-virtual-machine-scale-sets-portal.md)
+- [En savoir plus sur Virtual Machine Scale Sets.](overview.md)
+- [Effectuer une mise à l’échelle automatique d’un groupe de machines virtuelles identiques avec Azure CLI](tutorial-autoscale-cli.md)
