@@ -10,7 +10,7 @@
             "Network interface with public IP and network security group",
             "Port 22 will be opened"
         ],
-        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/azure-docs/main/articles/virtual-machines/linux/quick-create-cli.md",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/scenarios/azure-docs/articles/virtual-machines/linux/quick-create-cli.md",
         "documentationUrl": "https://learn.microsoft.com/azure/virtual-machines/linux/quick-create-cli",
         "configurations": {
             "permissions": [
@@ -42,7 +42,7 @@
             "Azure Private DNS Zone for Azure MySQL Flexible Server",
             "Use port 22 for SSH and ports 80, 443 for web traffic"
         ],
-        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/azure-docs/main/articles/virtual-machines/linux/tutorial-lemp-stack.md",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/scenarios/azure-docs/articles/virtual-machines/linux/tutorial-lemp-stack.md",
         "documentationUrl": "https://learn.microsoft.com/azure/virtual-machines/linux/tutorial-lemp-stack",
         "configurations": {
             "permissions": [
@@ -91,7 +91,7 @@
         "description": "Learn how to quickly deploy a Kubernetes cluster and deploy an application in Azure Kubernetes Service (AKS) using Azure CLI.",
         "stackDetails": [
             ],
-        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/azure-docs/main/articles/aks/learn/quick-kubernetes-deploy-cli.md",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/scenarios/azure-docs/articles/aks/learn/quick-kubernetes-deploy-cli.md",
         "documentationUrl": "https://learn.microsoft.com/azure/aks/learn/quick-kubernetes-deploy-cli",
         "configurations": {
             "permissions": [
@@ -135,7 +135,7 @@
         "stackDetails": [
             
         ],
-        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/azure-docs/main/articles/virtual-machine-scale-sets/flexible-virtual-machine-scale-sets-cli.md",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/scenarios/azure-docs/articles/virtual-machine-scale-sets/flexible-virtual-machine-scale-sets-cli.md",
         "documentationUrl": "https://learn.microsoft.com/azure/virtual-machine-scale-sets/flexible-virtual-machine-scale-sets-cli",
         "configurations": {
             "permissions": [
@@ -150,7 +150,7 @@
         "stackDetails": [
             
         ],
-        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/azure-docs/main/articles/mysql/flexible-server/tutorial-deploy-wordpress-on-aks.md",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/scenarios/azure-docs/articles/mysql/flexible-server/tutorial-deploy-wordpress-on-aks.md",
         "documentationUrl": "https://learn.microsoft.com/azure/mysql/flexible-server/tutorial-deploy-wordpress-on-aks",
         "configurations": {
             "permissions": [
@@ -165,7 +165,7 @@
         "stackDetails": [
             
         ],
-        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/SupportArticles-docs/main/support/azure/azure-kubernetes/capture-system-insights-from-aks.md",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/scenarios/SupportArticles-docs/support/azure/azure-kubernetes/capture-system-insights-from-aks.md",
         "documentationUrl": "https://learn.microsoft.com/troubleshoot/azure/azure-kubernetes/capture-system-insights-from-aks",
         "configurations": {
             "permissions": [
@@ -180,7 +180,7 @@
         "stackDetails": [
             
         ],
-        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/azure-docs/main/articles/static-web-apps/get-started-cli.md",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/scenarios/azure-docs/articles/static-web-apps/get-started-cli.md",
         "documentationUrl": "https://learn.microsoft.com/azure/static-web-apps/get-started-cli",
         "configurations": {
             "permissions": [
