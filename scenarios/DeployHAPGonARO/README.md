@@ -20,7 +20,7 @@ az login
 
 ## Check for Prerequisites
 
-Next, check for prerequisites. This can be done by running the following commands: 
+Next, check for prerequisites. This can be done by running the following commands:
 
 - RedHat OpenShift: `az provider register -n Microsoft.RedHatOpenShift --wait`
 - kubectl: `az aks install-cli`
@@ -165,27 +165,15 @@ az storage account create --name "${STORAGE_ACCOUNT_NAME}" --resource-group "${R
 az storage container create --name "${BARMAN_CONTAINER_NAME}" --account-name "${STORAGE_ACCOUNT_NAME}"
 ```
 
-## Create a service principal for the ARO cluster
-
-In this section, you'll be creating a service principal for your Azure Red Hat OpenShift (ARO) cluster. The SP_NAME variable will hold the name of your service principal. The SUBSCRIPTION_ID variable, which can be retrieved using the az account show command, will store your Azure subscription ID. This ID is necessary for assigning roles to your service principal. After that, create the service principal using the az ad sp create-for-rbac command. Finally, extract the service principal's ID and secret from the servicePrincipalInfo variable, output as a JSON object. These values will be used later to authenticate your ARO cluster with Azure.
-
-```bash
-export SP_NAME="sp-aro-${LOCAL_NAME}-${SUFFIX}"
-export SUBSCRIPTION_ID=$(az account show --query id --output tsv)
-servicePrincipalInfo=$(az ad sp create-for-rbac -n $SP_NAME --role Contributor --scopes /subscriptions/$SUBSCRIPTION_ID/resourceGroups/$RG_NAME --output json)
-SP_ID=$(echo $servicePrincipalInfo | jq -r '.appId')
-SP_SECRET=$(echo $servicePrincipalInfo | jq -r '.password')
-```
-
 ## Deploy the ARO cluster
 
-In this section, you'll be deploying an Azure Red Hat OpenShift (ARO) cluster. The ARO_CLUSTER_NAME variable will hold the name of your ARO cluster. The az aro create command will deploy the ARO cluster with the specified name, resource group, virtual network, subnets, and service principal. This process may take about 30 minutes to complete.
+In this section, you'll be deploying an Azure Red Hat OpenShift (ARO) cluster. The ARO_CLUSTER_NAME variable will hold the name of your ARO cluster. The az aro create command will deploy the ARO cluster with the specified name, resource group, virtual network, subnets, and the RedHat OpenShift pull secret that you previously downloaded and saved in your Key Vault. This process may take about 30 minutes to complete.
 
 ```bash
 export ARO_CLUSTER_NAME="aro-${LOCAL_NAME}-${SUFFIX}"
 export ARO_PULL_SECRET=$(az keyvault secret show --name AROPullSecret --vault-name AROKeyVault --query value -o tsv)
 echo "This will take about 30 minutes to complete..." 
-az aro create -g $RG_NAME -n $ARO_CLUSTER_NAME --vnet $VNET_NAME --master-subnet $SUBNET1_NAME --worker-subnet $SUBNET2_NAME --tags $RGTAGS --client-id ${SP_ID} --client-secret ${SP_SECRET} --pull-secret ${ARO_PULL_SECRET}
+az aro create -g $RG_NAME -n $ARO_CLUSTER_NAME --vnet $VNET_NAME --master-subnet $SUBNET1_NAME --worker-subnet $SUBNET2_NAME --tags $RGTAGS --pull-secret ${ARO_PULL_SECRET}
 ```
 
 Results:
@@ -292,10 +280,10 @@ oc login $apiServer -u kubeadmin -p $loginCred --insecure-skip-tls-verify
 
 ## Add operators to ARO
 
-Create ARO project
+Set the namespace to install the operators to the built-in namespace `openshift-operators`.
 
 ```bash
-oc new-project aro-demo
+export NAMESPACE="openshift-operators"
 ```
 
 Cloud Native Postgresql operator
@@ -315,7 +303,7 @@ apiVersion: operators.coreos.com/v1alpha1
 kind: Subscription
 metadata:
   name: cloud-native-postgresql
-  namespace: aro-demo
+  namespace: ${NAMESPACE}
 spec:
     channel: $channel
     name: cloud-native-postgresql
@@ -343,7 +331,7 @@ apiVersion: operators.coreos.com/v1alpha1
 kind: Subscription
 metadata:
   name: rhbk-operator
-  namespace: aro-demo
+  namespace: ${NAMESPACE}
 spec:
   channel: $channel_kc
   name: rhbk-operator
@@ -367,7 +355,7 @@ Fetch secrets from Key Vault and create the ARO database login secret object.
 pgUserName=$(az keyvault secret show --name AroPGUser --vault-name AROKeyVault --query value -o tsv)
 pgPassword=$(az keyvault secret show --name AroPGPassword --vault-name AROKeyVault --query value -o tsv)
 
-oc create secret generic app-auth --from-literal=username=${pgUserName} --from-literal=password=${pgPassword} -n aro-demo
+oc create secret generic app-auth --from-literal=username=${pgUserName} --from-literal=password=${pgPassword} -n ${NAMESPACE}
 ```
 
 Results:
@@ -380,7 +368,7 @@ Create the secret for backing up to Azure Storage
 
 ```bash
 export STORAGE_ACCOUNT_KEY=$(az storage account keys list --account-name ${STORAGE_ACCOUNT_NAME} --resource-group ${RG_NAME} --query "[0].value" --output tsv)
-oc create secret generic azure-storage-secret --from-literal=storage-account-name=${STORAGE_ACCOUNT_NAME} --from-literal=storage-account-key=${STORAGE_ACCOUNT_KEY} --namespace aro-demo
+oc create secret generic azure-storage-secret --from-literal=storage-account-name=${STORAGE_ACCOUNT_NAME} --from-literal=storage-account-key=${STORAGE_ACCOUNT_KEY} --namespace ${NAMESPACE}
 ```
 
 Results:
@@ -398,7 +386,7 @@ apiVersion: postgresql.k8s.enterprisedb.io/v1
 kind: Cluster
 metadata:
   name: cluster-arodemo
-  namespace: aro-demo
+  namespace: ${NAMESPACE}
 spec:
   description: "HA Postgres Cluster Demo for ARO"
   # Choose your PostGres Database Version
@@ -487,7 +475,7 @@ metadata:
   labels:
     app: sso
   name: kc001
-  namespace: aro-demo
+  namespace: ${NAMESPACE}
 spec:
   db:
     database: WorldDB
