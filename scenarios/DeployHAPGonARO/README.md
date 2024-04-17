@@ -167,7 +167,7 @@ In this section, you'll be deploying an Azure Red Hat OpenShift (ARO) cluster. T
 
 ```bash
 export ARO_CLUSTER_NAME="aro-${LOCAL_NAME}-${SUFFIX}"
-export ARO_PULL_SECRET=$(az keyvault secret show --name AROPullSecret --vault-name AROKeyVault --query value -o tsv)
+export ARO_PULL_SECRET=$(az keyvault secret show --name AroPullSecret --vault-name kv-rdp-dev --query value -o tsv)
 echo "This will take about 30 minutes to complete..." 
 az aro create -g $RG_NAME -n $ARO_CLUSTER_NAME --vnet $VNET_NAME --master-subnet $SUBNET1_NAME --worker-subnet $SUBNET2_NAME --tags $RGTAGS --pull-secret ${ARO_PULL_SECRET}
 ```
@@ -348,8 +348,8 @@ subscription.operators.coreos.com/rhbk-operator created
 Fetch secrets from Key Vault and create the ARO database login secret object.
 
 ```bash
-pgUserName=$(az keyvault secret show --name AroPGUser --vault-name AROKeyVault --query value -o tsv)
-pgPassword=$(az keyvault secret show --name AroPGPassword --vault-name AROKeyVault --query value -o tsv)
+pgUserName=$(az keyvault secret show --name AroPGUser --vault-name kv-rdp-dev --query value -o tsv)
+pgPassword=$(az keyvault secret show --name AroPGPassword --vault-name kv-rdp-dev --query value -o tsv)
 
 oc create secret generic app-auth --from-literal=username=${pgUserName} --from-literal=password=${pgPassword} -n ${NAMESPACE}
 ```
