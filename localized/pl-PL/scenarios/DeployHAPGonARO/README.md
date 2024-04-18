@@ -4,7 +4,7 @@ description: 'W tym samouczku pokazano, jak utworzyć klaster PostgreSQL o wysok
 author: russd2357
 ms.author: rdepina
 ms.topic: article
-ms.date: 04/02/2024
+ms.date: 04/16/2024
 ms.custom: 'innovation-engine, linux-related content'
 ---
 
@@ -16,19 +16,11 @@ Aby uruchamiać polecenia na platformie Azure przy użyciu interfejsu wiersza po
 
 ## Sprawdzanie wymagań wstępnych
 
-Następnie sprawdź wymagania wstępne. Ta sekcja sprawdza następujące wymagania wstępne: RedHat OpenShift i kubectl. 
+Następnie sprawdź wymagania wstępne. Można to zrobić, uruchamiając następujące polecenia:
 
-### RedHat OpenShift 
-    
-```bash
-az provider register -n Microsoft.RedHatOpenShift --wait
-```
-
-### Kubectl
-
-```bash
-az aks install-cli
-```
+- RedHat OpenShift: `az provider register -n Microsoft.RedHatOpenShift --wait`
+- kubectl: `az aks install-cli`
+- Klient Openshift: `mkdir ~/ocp ; wget -q https://mirror.openshift.com/pub/openshift-v4/clients/ocp/latest/openshift-client-linux.tar.gz -O ~/ocp/openshift-client-linux.tar.gz ; tar -xf ~/ocp/openshift-client-linux.tar.gz ; export PATH="$PATH:~/ocp"`
 
 ## Tworzenie grupy zasobów
 
@@ -44,8 +36,8 @@ az group create -n $RG_NAME -l $LOCATION --tags $RGTAGS
 ```
 
 Wyniki:
-    
-<!-- expected_similarity=0.3 -->    
+
+<!-- expected_similarity=0.3 -->
 ```json
 {
 "id": "/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/xx-xxxxx-xxxxx",
@@ -65,7 +57,7 @@ Wyniki:
 ## Tworzenie sieci wirtualnej
 
 W tej sekcji utworzysz sieć wirtualną na platformie Azure. Zacznij od zdefiniowania kilku zmiennych środowiskowych. Te zmienne będą zawierać nazwy sieci wirtualnej i podsieci, a także blok CIDR dla sieci wirtualnej. Następnie utwórz sieć wirtualną o określonej nazwie i bloku CIDR w grupie zasobów przy użyciu polecenia az network vnet create. Ten proces może potrwać kilka minut.
-    
+
 ```bash
 export VNET_NAME="vnet-${LOCAL_NAME}-${SUFFIX}"
 export SUBNET1_NAME="sn-main-${SUFFIX}"
@@ -99,8 +91,9 @@ Wyniki:
   }
 }
 ```
+
 ## Tworzenie podsieci głównych węzłów
-    
+
 W tej sekcji utworzysz podsieć głównych węzłów z określoną nazwą i blokiem CIDR w utworzonej wcześniej sieci wirtualnej. Uruchom polecenie az network vnet subnet create. Ten proces może potrwać kilka minut. Po pomyślnym utworzeniu podsieci można przystąpić do wdrażania zasobów w tej podsieci.
 
 ```bash
@@ -151,30 +144,35 @@ Wyniki:
 }
 ```
 
-## Tworzenie jednostki usługi dla klastra ARO
+## Tworzenie kont magazynu
 
-W tej sekcji utworzysz jednostkę usługi dla klastra usługi Azure Red Hat OpenShift (ARO). Zmienna SP_NAME będzie przechowywać nazwę jednostki usługi. Zmienna SUBSCRIPTION_ID, którą można pobrać za pomocą polecenia az account show, będzie przechowywać identyfikator subskrypcji platformy Azure. Ten identyfikator jest niezbędny do przypisywania ról do jednostki usługi. Następnie utwórz jednostkę usługi przy użyciu polecenia az ad sp create-for-rbac. Na koniec wyodrębnij identyfikator jednostki usługi i wpis tajny ze zmiennej servicePrincipalInfo, dane wyjściowe jako obiekt JSON. Te wartości będą później używane do uwierzytelniania klastra ARO na platformie Azure.
+Ten fragment kodu wykonuje następujące czynności:
+
+1. `STORAGE_ACCOUNT_NAME` Ustawia zmienną środowiskową na łączenie `stor`wartości , `LOCAL_NAME` (przekonwertowane na małe litery) i `SUFFIX` (przekonwertowane na małe litery).
+2. Ustawia zmienną `BARMAN_CONTAINER_NAME` środowiskową na `"barman"`.
+3. Tworzy konto magazynu z określonymi `STORAGE_ACCOUNT_NAME` w określonej grupie zasobów.
+4. Tworzy kontener magazynu z określonym `BARMAN_CONTAINER_NAME` w utworzonym koncie magazynu.
 
 ```bash
-export SP_NAME="sp-aro-${LOCAL_NAME}-${SUFFIX}"
-export SUBSCRIPTION_ID=$(az account show --query id --output tsv)
-servicePrincipalInfo=$(az ad sp create-for-rbac -n $SP_NAME --role Contributor --scopes /subscriptions/$SUBSCRIPTION_ID/resourceGroups/$RG_NAME --output json)
-SP_ID=$(echo $servicePrincipalInfo | jq -r '.appId')
-SP_SECRET=$(echo $servicePrincipalInfo | jq -r '.password')
+export STORAGE_ACCOUNT_NAME="stor${LOCAL_NAME,,}${SUFFIX,,}"
+export BARMAN_CONTAINER_NAME="barman"
+
+az storage account create --name "${STORAGE_ACCOUNT_NAME}" --resource-group "${RG_NAME}" --sku Standard_LRS
+az storage container create --name "${BARMAN_CONTAINER_NAME}" --account-name "${STORAGE_ACCOUNT_NAME}"
 ```
 
 ## Wdrażanie klastra usługi ARO
 
-W tej sekcji wdrożysz klaster usługi Azure Red Hat OpenShift (ARO). Zmienna ARO_CLUSTER_NAME będzie przechowywać nazwę klastra ARO. Polecenie az aro create wdroży klaster ARO o określonej nazwie, grupie zasobów, sieci wirtualnej, podsieciach i jednostce usługi. Ukończenie tego procesu może potrwać około 30 minut.
-    
+W tej sekcji wdrożysz klaster usługi Azure Red Hat OpenShift (ARO). Zmienna ARO_CLUSTER_NAME będzie przechowywać nazwę klastra ARO. Polecenie az aro create wdroży klaster ARO z określoną nazwą, grupą zasobów, siecią wirtualną, podsieciami i wpisem tajnym ściągania RedHat OpenShift, który został wcześniej pobrany i zapisany w usłudze Key Vault. Ukończenie tego procesu może potrwać około 30 minut.
+
 ```bash
 export ARO_CLUSTER_NAME="aro-${LOCAL_NAME}-${SUFFIX}"
-echo ${YELLOW} "This will take about 30 minutes to complete..." 
-az aro create -g $RG_NAME -n $ARO_CLUSTER_NAME --vnet $VNET_NAME --master-subnet $SUBNET1_NAME --worker-subnet $SUBNET2_NAME --tags $RGTAGS --client-id ${SP_ID} --client-secret ${SP_SECRET}
+export ARO_PULL_SECRET=$(az keyvault secret show --name AROPullSecret --vault-name AROKeyVault --query value -o tsv)
+echo "This will take about 30 minutes to complete..." 
+az aro create -g $RG_NAME -n $ARO_CLUSTER_NAME --vnet $VNET_NAME --master-subnet $SUBNET1_NAME --worker-subnet $SUBNET2_NAME --tags $RGTAGS --pull-secret ${ARO_PULL_SECRET}
 ```
 
 Wyniki:
-
 <!-- expected_similarity=0.3 -->
 ```json
 {
@@ -257,4 +255,271 @@ Wyniki:
     }
   ]
 }
+```
+
+## Uzyskiwanie poświadczeń klastra i logowania
+
+Ten kod pobiera adres URL serwera interfejsu API i poświadczenia logowania dla klastra usługi Azure Red Hat OpenShift (ARO) przy użyciu interfejsu wiersza polecenia platformy Azure.
+
+Polecenie `az aro show` służy do pobierania adresu URL serwera interfejsu API przez podanie nazwy grupy zasobów i nazwy klastra ARO. Parametr `--query` służy do wyodrębniania `apiserverProfile.url` właściwości, a `-o tsv` opcja jest używana do wyprowadzania wyniku jako wartości rozdzielanej tabulatorem.
+
+Polecenie `az aro list-credentials` służy do pobierania poświadczeń logowania dla klastra ARO. Parametr `--name` określa nazwę klastra ARO, a `--resource-group` parametr określa nazwę grupy zasobów. Parametr `--query` służy do wyodrębniania `kubeadminPassword` właściwości, a `-o tsv` opcja jest używana do wyprowadzania wyniku jako wartości rozdzielanej tabulatorem.
+
+`oc login` Na koniec polecenie służy do logowania się do klastra usługi ARO przy użyciu adresu URL pobranego serwera interfejsu API, `kubeadmin` nazwy użytkownika i poświadczeń logowania.
+
+```bash
+export apiServer=$(az aro show -g $RG_NAME -n $ARO_CLUSTER_NAME --query apiserverProfile.url -o tsv)
+export loginCred=$(az aro list-credentials --name $ARO_CLUSTER_NAME --resource-group $RG_NAME --query "kubeadminPassword" -o tsv)
+
+oc login $apiServer -u kubeadmin -p $loginCred --insecure-skip-tls-verify
+```
+
+## Dodawanie operatorów do usługi ARO
+
+Ustaw przestrzeń nazw, aby zainstalować operatory w wbudowanej przestrzeni nazw `openshift-operators`.
+
+```bash
+export NAMESPACE="openshift-operators"
+```
+
+Operator Cloud Native Postgresql
+
+```bash
+channelspec=$(oc get packagemanifests cloud-native-postgresql -o jsonpath="{range .status.channels[*]}Channel: {.name} currentCSV: {.currentCSV}{'\n'}{end}" | grep "stable-v1.22")
+IFS=" " read -r -a array <<< "${channelspec}"
+channel=${array[1]}
+csv=${array[3]}
+
+catalogSource=$(oc get packagemanifests cloud-native-postgresql -o jsonpath="{.status.catalogSource}")
+catalogSourceNamespace=$(oc get packagemanifests cloud-native-postgresql -o jsonpath="{.status.catalogSourceNamespace}")
+
+cat <<EOF | oc apply -f -
+---
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  name: cloud-native-postgresql
+  namespace: ${NAMESPACE}
+spec:
+    channel: $channel
+    name: cloud-native-postgresql
+    source: $catalogSource
+    sourceNamespace: $catalogSourceNamespace
+    installPlanApproval: Automatic
+    startingCSV: $csv
+EOF
+```
+
+Operator RedHat Keycloak
+
+```bash
+channelspec_kc=$(oc get packagemanifests rhbk-operator -o jsonpath="{range .status.channels[*]}Channel: {.name} currentCSV: {.currentCSV}{'\n'}{end}" | grep "stable-v22")
+IFS=" " read -r -a array <<< "${channelspec_kc}"
+channel_kc=${array[1]}
+csv_kc=${array[3]}
+
+catalogSource_kc=$(oc get packagemanifests rhbk-operator -o jsonpath="{.status.catalogSource}")
+catalogSourceNamespace_kc=$(oc get packagemanifests rhbk-operator -o jsonpath="{.status.catalogSourceNamespace}")
+
+cat <<EOF | oc apply -f -
+---
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  name: rhbk-operator
+  namespace: ${NAMESPACE}
+spec:
+  channel: $channel_kc
+  name: rhbk-operator
+  source: $catalogSource_kc
+  sourceNamespace: $catalogSourceNamespace_kc
+  startingCSV: $csv_kc
+EOF
+```
+
+Wyniki:
+<!-- expected_similarity=0.3 -->
+```text
+subscription.operators.coreos.com/rhbk-operator created
+```
+
+## Tworzenie bazy danych ARO PosgreSQL
+
+Pobieranie wpisów tajnych z usługi Key Vault i tworzenie obiektu wpisu tajnego logowania bazy danych usługi ARO.
+
+```bash
+pgUserName=$(az keyvault secret show --name AroPGUser --vault-name AROKeyVault --query value -o tsv)
+pgPassword=$(az keyvault secret show --name AroPGPassword --vault-name AROKeyVault --query value -o tsv)
+
+oc create secret generic app-auth --from-literal=username=${pgUserName} --from-literal=password=${pgPassword} -n ${NAMESPACE}
+```
+
+Wyniki:
+<!-- expected_similarity=0.3 -->
+```text
+secret/app-auth created
+```
+
+Tworzenie wpisu tajnego na potrzeby tworzenia kopii zapasowej w usłudze Azure Storage
+
+```bash
+export STORAGE_ACCOUNT_KEY=$(az storage account keys list --account-name ${STORAGE_ACCOUNT_NAME} --resource-group ${RG_NAME} --query "[0].value" --output tsv)
+oc create secret generic azure-storage-secret --from-literal=storage-account-name=${STORAGE_ACCOUNT_NAME} --from-literal=storage-account-key=${STORAGE_ACCOUNT_KEY} --namespace ${NAMESPACE}
+```
+
+Wyniki:
+<!-- expected_similarity=0.3 -->
+```text
+secret/azure-storage-secret created
+```
+
+Tworzenie klastra Postgres
+
+```bash
+cat <<EOF | oc apply -f -
+---
+apiVersion: postgresql.k8s.enterprisedb.io/v1
+kind: Cluster
+metadata:
+  name: cluster-arodemo
+  namespace: ${NAMESPACE}
+spec:
+  description: "HA Postgres Cluster Demo for ARO"
+  # Choose your PostGres Database Version
+  imageName: ghcr.io/cloudnative-pg/postgresql:15.2
+  # Number of Replicas
+  instances: 3
+  startDelay: 300
+  stopDelay: 300
+  replicationSlots:
+    highAvailability:
+      enabled: true
+    updateInterval: 300
+  primaryUpdateStrategy: unsupervised
+  postgresql:
+    parameters:
+      shared_buffers: 256MB
+      pg_stat_statements.max: '10000'
+      pg_stat_statements.track: all
+      auto_explain.log_min_duration: '10s'
+    pg_hba:
+      # - hostssl app all all cert
+      - host app app all password
+  logLevel: debug
+  # Choose the right storageclass for type of workload.
+  storage:
+    storageClass: managed-csi
+    size: 1Gi
+  walStorage:
+    storageClass: managed-csi
+    size: 1Gi
+  monitoring:
+    enablePodMonitor: true
+  bootstrap:
+    initdb: # Deploying a new cluster
+      database: WorldDB
+      owner: app
+      secret:
+        name: app-auth
+  backup:
+    barmanObjectStore:
+      # For backup, we use a blob container in an Azure Storage Account to store data.
+      # On this Blueprint, we get the account and container name from the environment variables.
+      destinationPath: https://${STORAGE_ACCOUNT_NAME}.blob.core.windows.net/${BARMAN_CONTAINER_NAME}/
+      azureCredentials:
+        storageAccount:
+          name: azure-storage-secret
+          key: storage-account-name
+        storageKey:
+          name: azure-storage-secret
+          key: storage-account-key
+      wal:
+        compression: gzip
+        maxParallel: 8
+    retentionPolicy: "30d"
+
+  affinity:
+    enablePodAntiAffinity: true
+    topologyKey: failure-domain.beta.kubernetes.io/zone
+
+  nodeMaintenanceWindow:
+    inProgress: false
+    reusePVC: false
+EOF
+```
+
+Wyniki:
+<!-- expected_similarity=0.3 -->
+```text
+cluster.postgresql.k8s.enterprisedb.io/cluster-arodemo created
+```
+
+## Tworzenie wystąpienia ARO Keycloak
+
+Wdróż wystąpienie keycloak w klastrze OpenShift. Używa `oc apply` polecenia , aby zastosować plik konfiguracji YAML, który definiuje zasób Keycloak.
+Konfiguracja YAML określa różne ustawienia dla wystąpienia keycloak, w tym bazy danych, nazwy hosta, ustawień HTTP, ruchu przychodzącego, liczby wystąpień i ustawień transakcji.
+Aby wdrożyć klasę Keycloak, uruchom ten blok kodu w środowisku powłoki z niezbędnymi uprawnieniami i dostępem do klastra OpenShift.
+Uwaga: pamiętaj, aby zastąpić wartości zmiennych `$apiServer`, `$kc_hosts`i poświadczenia bazy danych (`passwordSecret` i `usernameSecret`) odpowiednimi wartościami dla danego środowiska.
+
+```bash
+export kc_hosts=$(echo $apiServer | sed -E 's/\/\/api\./\/\/apps./' | sed -En 's/.*\/\/([^:]+).*/\1/p' )
+
+cat <<EOF | oc apply -f -
+apiVersion: k8s.keycloak.org/v2alpha1
+kind: Keycloak
+metadata:
+  labels:
+    app: sso
+  name: kc001
+  namespace: ${NAMESPACE}
+spec:
+  db:
+    database: WorldDB
+    host: cluster-arodemo-rw
+    passwordSecret:
+      key: password
+      name: app-auth
+    port: 5432
+    usernameSecret:
+      key: username
+      name: app-auth
+    vendor: postgres
+  hostname:
+    hostname: kc001.${kc_hosts}
+  http:
+    httpEnabled: true
+  ingress:
+    enabled: true
+  instances: 1
+  transaction:
+    xaEnabled: false
+EOF
+```
+
+Wyniki:
+<!-- expected_similarity=0.3 -->
+```text
+keycloak.k8s.keycloak.org/kc001 created
+```
+
+Uzyskiwanie dostępu do obciążenia
+
+```bash
+URL=$(ooc get ingress kc001-ingress -o json | jq -r '.spec.rules[0].host')
+curl -Iv https://$URL
+```
+
+Wyniki:
+<!-- expected_similarity=0.3 -->
+```text
+*   Trying 104.42.132.245:443...
+* Connected to kc001.apps.foppnyl9.westus.aroapp.io (104.42.132.245) port 443 (#0)
+* ALPN, offering h2
+* ALPN, offering http/1.1
+*  CAfile: /etc/ssl/certs/ca-certificates.crt
+*  CApath: /etc/ssl/certs
+* TLSv1.0 (OUT), TLS header, Certificate Status (22):
+* TLSv1.3 (OUT), TLS handshake, Client hello (1):
+* TLSv1.2 (IN), TLS header, Certificate Status (22):
+* TLSv1.3 (IN), TLS handshake, Server hello (2):
 ```
