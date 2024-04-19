@@ -4,8 +4,12 @@ on:
   push:
     paths:
       - 'scenarios/metadata.json'
+  workflow_dispatch:
+    branches:
+      - naman-code # replace with your branch name
 
-workflow_dispatch:
+permissions:
+    contents: write
 
 jobs:
   run_script:
@@ -14,11 +18,15 @@ jobs:
     steps:
       - name: Check out repository
         uses: actions/checkout@v2
+        with:
+            repository: 'MicrosoftDocs/executable-docs'
+            ref: your-branch-name  # replace with your branch name
+            token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
-          python-version: '3.12'
+          python-version: '3.8'
 
       - name: Install dependencies
         run: |
@@ -27,6 +35,8 @@ jobs:
 
       - name: Run metadata.py
         run: python .github/workflows/metadata.py
+        env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Commit and push changes
         run: |
