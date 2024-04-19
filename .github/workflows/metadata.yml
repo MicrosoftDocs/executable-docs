@@ -31,5 +31,5 @@ jobs:
       - name: Commit and push changes
         run: |
           git add .
-          git commit -m "Sync markdown files"
+          git commit -m "Updated localized metadata.json files"
           git push
