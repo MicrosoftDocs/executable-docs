@@ -4,8 +4,10 @@ on:
   push:
     paths:
       - 'scenarios/metadata.json'
+  workflow_dispatch:
 
-workflow_dispatch:
+permissions:
+    contents: write
 
 jobs:
   run_script:
