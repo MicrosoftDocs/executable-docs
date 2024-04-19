@@ -5,9 +5,7 @@ on:
     paths:
       - 'scenarios/metadata.json'
   workflow_dispatch:
-    branches:
-      - naman-code # replace with your branch name
-
+  
 permissions:
     contents: write
 
