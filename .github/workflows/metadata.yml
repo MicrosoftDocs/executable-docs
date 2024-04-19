@@ -14,6 +14,9 @@ jobs:
     steps:
       - name: Check out repository
         uses: actions/checkout@v2
+        with:
+            repository: 'MicrosoftDocs/executable-docs'
+            token: ${{ secrets.GITHUB_TOKEN }} # This line is added
 
       - name: Set up Python
         uses: actions/setup-python@v2
@@ -27,6 +30,8 @@ jobs:
 
       - name: Run metadata.py
         run: python .github/workflows/metadata.py
+        env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Replace with the name of your secret
 
       - name: Commit and push changes
         run: |
