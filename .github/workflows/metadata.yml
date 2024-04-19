@@ -22,11 +22,6 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install pyyaml
-    
-      - name: Set git identity
-        run: |
-          git config --global user.email "${{ github.actor }}@users.noreply.github.com"
-          git config --global user.name "${{ github.actor }}"
 
       - name: Run metadata.py
         run: python .github/workflows/metadata.py
