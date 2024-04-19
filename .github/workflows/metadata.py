@@ -10,7 +10,6 @@ def process_directory(directory):
             # If it's a directory, process it recursively
             process_directory(path)
         else:
-            print(path)
             # If it's a file, check if it's a README file
             if '.md' in name.lower():
                 # Process the README file
@@ -27,20 +26,17 @@ def process_directory(directory):
 
                     # Parse the metadata from the string
                     readme_metadata = yaml.safe_load(metadata_str)
+                    readme_metadata = json.loads(json.dumps(readme_metadata, ensure_ascii=False))
+                    
                     # Replace the corresponding keys in the metadata.json file
                     for item in metadata:
-                        if item['key'] == '/'.join(path.split('/')[2:]):
-                            print('yes')
+                        if item['key'] == '/'.join(path.split('/')[3:]):
                             item['title'] = readme_metadata.get('title', item['title'])
                             item['description'] = readme_metadata.get('description', item['description'])
                             item['stackDetails'] = readme_metadata.get('stackDetails', item['stackDetails'])
-                            item['sourceUrl'] = readme_metadata.get('sourceUrl', item['sourceUrl'])
-                            item['documentationUrl'] = readme_metadata.get('documentationUrl', item['documentationUrl'])
-
-                    
-                    import time
-                    time.sleep(10)
-
+                            item['sourceUrl'] = item['sourceUrl'].replace('/scenarios/', f'/localized/{locale}/scenarios/')
+                            item['documentationUrl'] = item['documentationUrl'].replace('learn.microsoft.com/azure', f'learn.microsoft.com/{locale}/azure')
+    
 # Base directory for localized content
 base_dir = 'localized'
 
