@@ -31,27 +31,7 @@ export RGTAGS="owner=ARO Demo"
 export LOCATION="westus"
 export LOCAL_NAME="arodemo"
 export SUFFIX=$(tr -dc A-Za-z0-9 </dev/urandom | head -c 6; echo)
-export RG_NAME="rg-${LOCAL_NAME}-${SUFFIX}"
-az group create -n $RG_NAME -l $LOCATION --tags $RGTAGS
-```
-
-Resultados:
-
-<!-- expected_similarity=0.3 -->
-```json
-{
-"id": "/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/xx-xxxxx-xxxxx",
-"location": "westus",
-"managedBy": null,
-"name": "xx-xxxxx-xxxxx",
-"properties": {
-    "provisioningState": "Succeeded"
-},
-"tags": {
-    "owner": "xxx xxxx"
-},
-"type": "Microsoft.Resources/resourceGroups"
-}
+export RG_NAME="rg-arodemo-perm"
 ```
 
 ## Criar VNet
@@ -167,9 +147,11 @@ Nesta seção, você implantará um cluster do Red Hat OpenShift do Azure (ARO).
 
 ```bash
 export ARO_CLUSTER_NAME="aro-${LOCAL_NAME}-${SUFFIX}"
-export ARO_PULL_SECRET=$(az keyvault secret show --name AROPullSecret --vault-name AROKeyVault --query value -o tsv)
+export ARO_PULL_SECRET=$(az keyvault secret show --name AroPullSecret --vault-name kv-rdp-dev --query value -o tsv)
+export ARO_SP_ID=$(az keyvault secret show --name arodemo-sp-id --vault-name kv-rdp-dev --query value -o tsv)
+export ARO_SP_PASSWORD=$(az keyvault secret show --name arodemo-sp-password --vault-name kv-rdp-dev --query value -o tsv)
 echo "This will take about 30 minutes to complete..." 
-az aro create -g $RG_NAME -n $ARO_CLUSTER_NAME --vnet $VNET_NAME --master-subnet $SUBNET1_NAME --worker-subnet $SUBNET2_NAME --tags $RGTAGS --pull-secret ${ARO_PULL_SECRET}
+az aro create -g $RG_NAME -n $ARO_CLUSTER_NAME --vnet $VNET_NAME --master-subnet $SUBNET1_NAME --worker-subnet $SUBNET2_NAME --tags $RGTAGS --pull-secret ${ARO_PULL_SECRET} --client-id ${ARO_SP_ID} --client-secret ${ARO_SP_PASSWORD}
 ```
 
 Resultados:
@@ -348,8 +330,8 @@ subscription.operators.coreos.com/rhbk-operator created
 Busque segredos do Cofre de Chaves e crie o objeto secreto de login do banco de dados ARO.
 
 ```bash
-pgUserName=$(az keyvault secret show --name AroPGUser --vault-name AROKeyVault --query value -o tsv)
-pgPassword=$(az keyvault secret show --name AroPGPassword --vault-name AROKeyVault --query value -o tsv)
+pgUserName=$(az keyvault secret show --name AroPGUser --vault-name kv-rdp-dev --query value -o tsv)
+pgPassword=$(az keyvault secret show --name AroPGPassword --vault-name kv-rdp-dev --query value -o tsv)
 
 oc create secret generic app-auth --from-literal=username=${pgUserName} --from-literal=password=${pgPassword} -n ${NAMESPACE}
 ```
