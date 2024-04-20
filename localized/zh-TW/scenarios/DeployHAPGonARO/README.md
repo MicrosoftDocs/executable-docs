@@ -31,27 +31,7 @@ export RGTAGS="owner=ARO Demo"
 export LOCATION="westus"
 export LOCAL_NAME="arodemo"
 export SUFFIX=$(tr -dc A-Za-z0-9 </dev/urandom | head -c 6; echo)
-export RG_NAME="rg-${LOCAL_NAME}-${SUFFIX}"
-az group create -n $RG_NAME -l $LOCATION --tags $RGTAGS
-```
-
-結果：
-
-<!-- expected_similarity=0.3 -->
-```json
-{
-"id": "/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/xx-xxxxx-xxxxx",
-"location": "westus",
-"managedBy": null,
-"name": "xx-xxxxx-xxxxx",
-"properties": {
-    "provisioningState": "Succeeded"
-},
-"tags": {
-    "owner": "xxx xxxx"
-},
-"type": "Microsoft.Resources/resourceGroups"
-}
+export RG_NAME="rg-arodemo-perm"
 ```
 
 ## 建立 VNet
@@ -120,7 +100,7 @@ az network vnet subnet create -g $RG_NAME --vnet-name $VNET_NAME -n $SUBNET1_NAM
 
 ## 建立背景工作節點子網
 
-在本節中，您會在先前建立的 虛擬網絡 （VNet） 內，為背景工作節點建立具有指定名稱和 CIDR 區塊的子網。 從執行 az network vnet subnet create 命令開始。 成功建立子網之後，您就可以將背景工作節點部署至此子網。
+在本節中，您將在先前建立的 虛擬網絡 （VNet） 內，為背景工作節點建立具有指定名稱和 CIDR 區塊的子網。 從執行 az network vnet subnet create 命令開始。 成功建立子網之後，您就可以將背景工作節點部署至此子網。
 
 ```bash
 az network vnet subnet create -g $RG_NAME --vnet-name $VNET_NAME -n $SUBNET2_NAME --address-prefixes 10.0.2.0/23
@@ -163,13 +143,15 @@ az storage container create --name "${BARMAN_CONTAINER_NAME}" --account-name "${
 
 ## 部署 ARO 叢集
 
-在本節中，您將部署 Azure Red Hat OpenShift （ARO） 叢集。 ARO_CLUSTER_NAME變數會保留 ARO 叢集的名稱。 az aro create 命令會部署具有指定名稱、資源群組、虛擬網路、子網和 RedHat OpenShift 提取密碼的 ARO 叢集，您先前下載並儲存在 金鑰保存庫 中。 此程式可能需要大約 30 分鐘才能完成。
+在本節中，您將部署 Azure Red Hat OpenShift （ARO） 叢集。 ARO_CLUSTER_NAME變數會保留 ARO 叢集的名稱。 az aro create 命令會部署具有指定名稱、資源群組、虛擬網路、子網，以及您先前下載並儲存在 金鑰保存庫 中的 RedHat OpenShift 提取秘密的 ARO 叢集。 此程式可能需要大約 30 分鐘才能完成。
 
 ```bash
 export ARO_CLUSTER_NAME="aro-${LOCAL_NAME}-${SUFFIX}"
-export ARO_PULL_SECRET=$(az keyvault secret show --name AROPullSecret --vault-name AROKeyVault --query value -o tsv)
+export ARO_PULL_SECRET=$(az keyvault secret show --name AroPullSecret --vault-name kv-rdp-dev --query value -o tsv)
+export ARO_SP_ID=$(az keyvault secret show --name arodemo-sp-id --vault-name kv-rdp-dev --query value -o tsv)
+export ARO_SP_PASSWORD=$(az keyvault secret show --name arodemo-sp-password --vault-name kv-rdp-dev --query value -o tsv)
 echo "This will take about 30 minutes to complete..." 
-az aro create -g $RG_NAME -n $ARO_CLUSTER_NAME --vnet $VNET_NAME --master-subnet $SUBNET1_NAME --worker-subnet $SUBNET2_NAME --tags $RGTAGS --pull-secret ${ARO_PULL_SECRET}
+az aro create -g $RG_NAME -n $ARO_CLUSTER_NAME --vnet $VNET_NAME --master-subnet $SUBNET1_NAME --worker-subnet $SUBNET2_NAME --tags $RGTAGS --pull-secret ${ARO_PULL_SECRET} --client-id ${ARO_SP_ID} --client-secret ${ARO_SP_PASSWORD}
 ```
 
 結果：
@@ -348,8 +330,8 @@ subscription.operators.coreos.com/rhbk-operator created
 從 金鑰保存庫 擷取秘密，並建立 ARO 資料庫登入秘密物件。
 
 ```bash
-pgUserName=$(az keyvault secret show --name AroPGUser --vault-name AROKeyVault --query value -o tsv)
-pgPassword=$(az keyvault secret show --name AroPGPassword --vault-name AROKeyVault --query value -o tsv)
+pgUserName=$(az keyvault secret show --name AroPGUser --vault-name kv-rdp-dev --query value -o tsv)
+pgPassword=$(az keyvault secret show --name AroPGPassword --vault-name kv-rdp-dev --query value -o tsv)
 
 oc create secret generic app-auth --from-literal=username=${pgUserName} --from-literal=password=${pgPassword} -n ${NAMESPACE}
 ```
