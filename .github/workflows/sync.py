@@ -1,14 +1,13 @@
 import os
 import github
 
-GITHUB_TOKEN = os.getenv('GitHub_Token')
+GITHUB_TOKEN = os.getenv('GITHUB_TOKEN')
 g = github.Github(GITHUB_TOKEN)
 
 def sync_markdown_files():
     query = "innovation-engine in:file language:markdown org:MicrosoftDocs -path:/localized/ -repo:MicrosoftDocs/executable-docs"
     result = g.search_code(query)
     for file in result:
-        
         content_file = file.repository.get_contents(file.path)
         file_content = content_file.decoded_content.decode('utf-8')
         if '---' in file_content:
