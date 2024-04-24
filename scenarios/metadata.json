@@ -7,7 +7,9 @@
         "stackDetails": "",
         "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-docs/articles/aks/learn/quick-kubernetes-deploy-cli.md",
         "documentationUrl": "abcdef.com",
-        "configurations": {"abc":"def"}
+        "configurations": {
+            "abc": "def"
+        }
     },
     {
         "status": "active",
