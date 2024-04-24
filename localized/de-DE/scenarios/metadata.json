@@ -58,5 +58,65 @@
         "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/localized/de-DE/scenarios/azure-docs/articles/virtual-machines/linux/tutorial-lemp-stack.md",
         "documentationUrl": "",
         "configurations": {}
+    },
+    {
+        "status": "active",
+        "key": "azure-docs/articles/aks/learn/quick-kubernetes-deploy-cli.md",
+        "title": "Bereitstellen eines skalierbaren und sicheren Azure Kubernetes Service-Clusters \u00fcber die Azure CLI",
+        "description": "In diesem Tutorial wird Schritt f\u00fcr Schritt erl\u00e4utert, wie Sie eine Azure Kubernetes-Webanwendung erstellen, die \u00fcber HTTPS gesch\u00fctzt ist.",
+        "stackDetails": "",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/localized/de-DE/scenarios/azure-docs/articles/aks/learn/quick-kubernetes-deploy-cli.md",
+        "documentationUrl": "",
+        "configurations": {}
+    },
+    {
+        "status": "active",
+        "key": "azure-docs/articles/mysql/flexible-server/tutorial-deploy-wordpress-on-aks.md",
+        "title": "Tutorial: Bereitstellen von WordPress in einem AKS-Cluster unter Verwendung der Azure\u00a0CLI",
+        "description": "Hier erfahren Sie, wie Sie WordPress in AKS mit Azure Database for MySQL\u00a0\u2013 Flexible Server schnell erstellen und bereitstellen.",
+        "stackDetails": "",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/localized/de-DE/scenarios/azure-docs/articles/mysql/flexible-server/tutorial-deploy-wordpress-on-aks.md",
+        "documentationUrl": "",
+        "configurations": {}
+    },
+    {
+        "status": "active",
+        "key": "azure-docs/articles/static-web-apps/get-started-cli.md",
+        "title": "Erstellen einer Static Site mithilfe der Azure CLI",
+        "description": "In diesem Tutorial wird gezeigt, wie Sie eine Static Site in Azure erstellen.",
+        "stackDetails": "",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/localized/de-DE/scenarios/azure-docs/articles/static-web-apps/get-started-cli.md",
+        "documentationUrl": "",
+        "configurations": {}
+    },
+    {
+        "status": "active",
+        "key": "azure-docs/articles/virtual-machine-scale-sets/flexible-virtual-machine-scale-sets-cli.md",
+        "title": "Erstellen von VMs in einer flexiblen Skalierungsgruppe mit Azure CLI",
+        "description": "Erfahren Sie, wie Sie im Orchestrierungsmodus \u201eFlexibel\u201c eine VM-Skalierungsgruppe im Azure-CLI erstellen.",
+        "stackDetails": "",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/localized/de-DE/scenarios/azure-docs/articles/virtual-machine-scale-sets/flexible-virtual-machine-scale-sets-cli.md",
+        "documentationUrl": "",
+        "configurations": {}
+    },
+    {
+        "status": "active",
+        "key": "azure-docs/articles/virtual-machines/linux/quick-create-cli.md",
+        "title": "Schnellstart: Verwenden der Azure CLI zum Erstellen einer Linux-VM",
+        "description": "In dieser Schnellstartanleitung erfahren Sie, wie Sie mit Azure CLI einen virtuellen Linux-Computer erstellen.",
+        "stackDetails": "",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/localized/de-DE/scenarios/azure-docs/articles/virtual-machines/linux/quick-create-cli.md",
+        "documentationUrl": "",
+        "configurations": {}
+    },
+    {
+        "status": "active",
+        "key": "azure-docs/articles/virtual-machines/linux/tutorial-lemp-stack.md",
+        "title": "Tutorial\u00a0\u2013 Bereitstellen eines LEMP-Stapels mit WordPress auf einer VM",
+        "description": "In diesem Tutorial erfahren Sie, wie Sie den LEMP-Stack und WordPress auf einem virtuellen Linux-Computer in Azure installieren.",
+        "stackDetails": "",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/localized/de-DE/scenarios/azure-docs/articles/virtual-machines/linux/tutorial-lemp-stack.md",
+        "documentationUrl": "",
+        "configurations": {}
     }
 ]
