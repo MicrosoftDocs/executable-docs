@@ -6,8 +6,8 @@
         "description": "Learn how to quickly deploy a Kubernetes cluster and deploy an application in Azure Kubernetes Service (AKS) using Azure CLI.",
         "stackDetails": "",
         "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-docs/articles/aks/learn/quick-kubernetes-deploy-cli.md",
-        "documentationUrl": "",
-        "configurations": {}
+        "documentationUrl": "abcdef.com",
+        "configurations": {"abc":"def"}
     },
     {
         "status": "active",
