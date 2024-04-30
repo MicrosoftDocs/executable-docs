@@ -4,7 +4,7 @@ description: This tutorial shows how to create a Highly Available PostgreSQL clu
 author: russd2357
 ms.author: rdepina
 ms.topic: article
-ms.date: 04/16/2024
+ms.date: 04/30/2024
 ms.custom: innovation-engine, linux-related content
 ---
 
@@ -30,7 +30,6 @@ A resource group is a container for related resources. All resources must be pla
 export RGTAGS="owner=ARO Demo"
 export LOCATION="westus"
 export LOCAL_NAME="arodemo"
-export SUFFIX=$(tr -dc A-Za-z0-9 </dev/urandom | head -c 6; echo)
 export RG_NAME="rg-arodemo-perm"
 ```
 
@@ -39,9 +38,9 @@ export RG_NAME="rg-arodemo-perm"
 In this section, you'll be creating a Virtual Network (VNet) in Azure. Start by defining several environment variables. These variables will hold the names of your VNet and subnets, as well as the CIDR block for your VNet. Next, create the VNet  with the specified name and CIDR block in your resource group using the az network vnet create command. This process may take a few minutes.
 
 ```bash
-export VNET_NAME="vnet-${LOCAL_NAME}-${SUFFIX}"
-export SUBNET1_NAME="sn-main-${SUFFIX}"
-export SUBNET2_NAME="sn-worker-${SUFFIX}"
+export VNET_NAME="vnet-${LOCAL_NAME}"
+export SUBNET1_NAME="sn-main"
+export SUBNET2_NAME="sn-worker"
 export VNET_CIDR="10.0.0.0/22"
 az network vnet create -g $RG_NAME -n $VNET_NAME --address-prefixes $VNET_CIDR
 ```
@@ -128,13 +127,13 @@ Results:
 
 This code snippet performs the following steps:
 
-1. Sets the `STORAGE_ACCOUNT_NAME` environment variable to a concatenation of `stor`, `LOCAL_NAME` (converted to lowercase), and `SUFFIX` (converted to lowercase).
+1. Sets the `STORAGE_ACCOUNT_NAME` environment variable to a concatenation of `stor`, `LOCAL_NAME` (converted to lowercase).
 2. Sets the `BARMAN_CONTAINER_NAME` environment variable to `"barman"`.
 3. Creates a storage account with the specified `STORAGE_ACCOUNT_NAME` in the specified resource group.
 4. Creates a storage container with the specified `BARMAN_CONTAINER_NAME` in the created storage account.
 
 ```bash
-export STORAGE_ACCOUNT_NAME="stor${LOCAL_NAME,,}${SUFFIX,,}"
+export STORAGE_ACCOUNT_NAME="stor${LOCAL_NAME,,}"
 export BARMAN_CONTAINER_NAME="barman"
 
 az storage account create --name "${STORAGE_ACCOUNT_NAME}" --resource-group "${RG_NAME}" --sku Standard_LRS
@@ -146,7 +145,7 @@ az storage container create --name "${BARMAN_CONTAINER_NAME}" --account-name "${
 In this section, you'll be deploying an Azure Red Hat OpenShift (ARO) cluster. The ARO_CLUSTER_NAME variable will hold the name of your ARO cluster. The az aro create command will deploy the ARO cluster with the specified name, resource group, virtual network, subnets, and the RedHat OpenShift pull secret that you previously downloaded and saved in your Key Vault. This process may take about 30 minutes to complete.
 
 ```bash
-export ARO_CLUSTER_NAME="aro-${LOCAL_NAME}-${SUFFIX}"
+export ARO_CLUSTER_NAME="aro-${LOCAL_NAME}"
 export ARO_PULL_SECRET=$(az keyvault secret show --name AroPullSecret --vault-name kv-rdp-dev --query value -o tsv)
 export ARO_SP_ID=$(az keyvault secret show --name arodemo-sp-id --vault-name kv-rdp-dev --query value -o tsv)
 export ARO_SP_PASSWORD=$(az keyvault secret show --name arodemo-sp-password --vault-name kv-rdp-dev --query value -o tsv)
