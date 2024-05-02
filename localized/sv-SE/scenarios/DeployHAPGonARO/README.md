@@ -4,7 +4,7 @@ description: Den här självstudien visar hur du skapar ett PostgreSQL-kluster m
 author: russd2357
 ms.author: rdepina
 ms.topic: article
-ms.date: 04/16/2024
+ms.date: 04/30/2024
 ms.custom: 'innovation-engine, linux-related content'
 ---
 
@@ -30,7 +30,6 @@ En resursgrupp är en container för relaterade resurser. Alla resurser måste p
 export RGTAGS="owner=ARO Demo"
 export LOCATION="westus"
 export LOCAL_NAME="arodemo"
-export SUFFIX=$(tr -dc A-Za-z0-9 </dev/urandom | head -c 6; echo)
 export RG_NAME="rg-arodemo-perm"
 ```
 
@@ -39,9 +38,9 @@ export RG_NAME="rg-arodemo-perm"
 I det här avsnittet skapar du ett virtuellt nätverk (VNet) i Azure. Börja med att definiera flera miljövariabler. Dessa variabler innehåller namnen på ditt virtuella nätverk och undernät samt CIDR-blocket för ditt virtuella nätverk. Skapa sedan det virtuella nätverket med det angivna namnet och CIDR-blocket i resursgruppen med kommandot az network vnet create. Processen kan ta några minuter.
 
 ```bash
-export VNET_NAME="vnet-${LOCAL_NAME}-${SUFFIX}"
-export SUBNET1_NAME="sn-main-${SUFFIX}"
-export SUBNET2_NAME="sn-worker-${SUFFIX}"
+export VNET_NAME="vnet-${LOCAL_NAME}"
+export SUBNET1_NAME="sn-main"
+export SUBNET2_NAME="sn-worker"
 export VNET_CIDR="10.0.0.0/22"
 az network vnet create -g $RG_NAME -n $VNET_NAME --address-prefixes $VNET_CIDR
 ```
@@ -128,13 +127,13 @@ Resultat:
 
 Det här kodfragmentet utför följande steg:
 
-1. `STORAGE_ACCOUNT_NAME` Anger miljövariabeln till en sammanlänkning av `stor`, `LOCAL_NAME` (konverterad till gemener) och `SUFFIX` (konverterad till gemener).
+1. `STORAGE_ACCOUNT_NAME` Anger miljövariabeln till en sammanlänkning av `stor`, `LOCAL_NAME` (konverterad till gemener).
 2. `BARMAN_CONTAINER_NAME` Anger miljövariabeln till `"barman"`.
 3. Skapar ett lagringskonto med angivet `STORAGE_ACCOUNT_NAME` i den angivna resursgruppen.
 4. Skapar en lagringscontainer med angivet `BARMAN_CONTAINER_NAME` i det skapade lagringskontot.
 
 ```bash
-export STORAGE_ACCOUNT_NAME="stor${LOCAL_NAME,,}${SUFFIX,,}"
+export STORAGE_ACCOUNT_NAME="stor${LOCAL_NAME,,}"
 export BARMAN_CONTAINER_NAME="barman"
 
 az storage account create --name "${STORAGE_ACCOUNT_NAME}" --resource-group "${RG_NAME}" --sku Standard_LRS
@@ -146,7 +145,7 @@ az storage container create --name "${BARMAN_CONTAINER_NAME}" --account-name "${
 I det här avsnittet distribuerar du ett Azure Red Hat OpenShift-kluster (ARO). Variabeln ARO_CLUSTER_NAME innehåller namnet på ditt ARO-kluster. Kommandot az aro create distribuerar ARO-klustret med angivet namn, resursgrupp, virtuellt nätverk, undernät och RedHat OpenShift-pullhemligheten som du tidigare laddade ned och sparade i ditt Key Vault. Den här processen kan ta cirka 30 minuter att slutföra.
 
 ```bash
-export ARO_CLUSTER_NAME="aro-${LOCAL_NAME}-${SUFFIX}"
+export ARO_CLUSTER_NAME="aro-${LOCAL_NAME}"
 export ARO_PULL_SECRET=$(az keyvault secret show --name AroPullSecret --vault-name kv-rdp-dev --query value -o tsv)
 export ARO_SP_ID=$(az keyvault secret show --name arodemo-sp-id --vault-name kv-rdp-dev --query value -o tsv)
 export ARO_SP_PASSWORD=$(az keyvault secret show --name arodemo-sp-password --vault-name kv-rdp-dev --query value -o tsv)
