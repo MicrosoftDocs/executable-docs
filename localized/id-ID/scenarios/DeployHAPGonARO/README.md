@@ -4,7 +4,7 @@ description: Tutorial ini menunjukkan cara membuat kluster PostgreSQL dengan Ket
 author: russd2357
 ms.author: rdepina
 ms.topic: article
-ms.date: 04/16/2024
+ms.date: 04/30/2024
 ms.custom: 'innovation-engine, linux-related content'
 ---
 
@@ -30,7 +30,6 @@ Grup sumber daya adalah kontainer untuk sumber daya terkait. Semua sumber daya h
 export RGTAGS="owner=ARO Demo"
 export LOCATION="westus"
 export LOCAL_NAME="arodemo"
-export SUFFIX=$(tr -dc A-Za-z0-9 </dev/urandom | head -c 6; echo)
 export RG_NAME="rg-arodemo-perm"
 ```
 
@@ -39,9 +38,9 @@ export RG_NAME="rg-arodemo-perm"
 Di bagian ini, Anda akan membuat Virtual Network (VNet) di Azure. Mulailah dengan menentukan beberapa variabel lingkungan. Variabel ini akan menyimpan nama VNet dan subnet Anda, serta blok CIDR untuk VNet Anda. Selanjutnya, buat VNet dengan nama dan blok CIDR yang ditentukan di grup sumber daya Anda menggunakan perintah az network vnet create. Proses ini mungkin memakan waktu beberapa menit.
 
 ```bash
-export VNET_NAME="vnet-${LOCAL_NAME}-${SUFFIX}"
-export SUBNET1_NAME="sn-main-${SUFFIX}"
-export SUBNET2_NAME="sn-worker-${SUFFIX}"
+export VNET_NAME="vnet-${LOCAL_NAME}"
+export SUBNET1_NAME="sn-main"
+export SUBNET2_NAME="sn-worker"
 export VNET_CIDR="10.0.0.0/22"
 az network vnet create -g $RG_NAME -n $VNET_NAME --address-prefixes $VNET_CIDR
 ```
@@ -128,13 +127,13 @@ Hasil:
 
 Cuplikan kode ini melakukan langkah-langkah berikut:
 
-1. `STORAGE_ACCOUNT_NAME` Mengatur variabel lingkungan ke perangkaian `stor`, `LOCAL_NAME` (dikonversi ke huruf kecil), dan `SUFFIX` (dikonversi ke huruf kecil).
+1. `STORAGE_ACCOUNT_NAME` Mengatur variabel lingkungan ke perangkaian `stor`, `LOCAL_NAME` (dikonversi ke huruf kecil).
 2. `BARMAN_CONTAINER_NAME` Mengatur variabel lingkungan ke `"barman"`.
 3. Membuat akun penyimpanan dengan yang ditentukan `STORAGE_ACCOUNT_NAME` dalam grup sumber daya yang ditentukan.
 4. Membuat kontainer penyimpanan dengan yang ditentukan `BARMAN_CONTAINER_NAME` di akun penyimpanan yang dibuat.
 
 ```bash
-export STORAGE_ACCOUNT_NAME="stor${LOCAL_NAME,,}${SUFFIX,,}"
+export STORAGE_ACCOUNT_NAME="stor${LOCAL_NAME,,}"
 export BARMAN_CONTAINER_NAME="barman"
 
 az storage account create --name "${STORAGE_ACCOUNT_NAME}" --resource-group "${RG_NAME}" --sku Standard_LRS
@@ -146,7 +145,7 @@ az storage container create --name "${BARMAN_CONTAINER_NAME}" --account-name "${
 Di bagian ini, Anda akan menyebarkan kluster Azure Red Hat OpenShift (ARO). Variabel ARO_CLUSTER_NAME akan menyimpan nama kluster ARO Anda. Perintah az aro create akan menyebarkan kluster ARO dengan nama, grup sumber daya, jaringan virtual, subnet, dan rahasia penarikan RedHat OpenShift yang sebelumnya Anda unduh dan simpan di Key Vault Anda. Proses ini mungkin memakan waktu sekitar 30 menit untuk diselesaikan.
 
 ```bash
-export ARO_CLUSTER_NAME="aro-${LOCAL_NAME}-${SUFFIX}"
+export ARO_CLUSTER_NAME="aro-${LOCAL_NAME}"
 export ARO_PULL_SECRET=$(az keyvault secret show --name AroPullSecret --vault-name kv-rdp-dev --query value -o tsv)
 export ARO_SP_ID=$(az keyvault secret show --name arodemo-sp-id --vault-name kv-rdp-dev --query value -o tsv)
 export ARO_SP_PASSWORD=$(az keyvault secret show --name arodemo-sp-password --vault-name kv-rdp-dev --query value -o tsv)
