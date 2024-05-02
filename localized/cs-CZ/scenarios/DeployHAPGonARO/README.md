@@ -4,7 +4,7 @@ description: 'Tento kurz ukazuje, jak vytvořit cluster PostgreSQL s vysokou dos
 author: russd2357
 ms.author: rdepina
 ms.topic: article
-ms.date: 04/16/2024
+ms.date: 04/30/2024
 ms.custom: 'innovation-engine, linux-related content'
 ---
 
@@ -30,7 +30,6 @@ Skupina prostředků je kontejner pro související prostředky. Všechny prost�
 export RGTAGS="owner=ARO Demo"
 export LOCATION="westus"
 export LOCAL_NAME="arodemo"
-export SUFFIX=$(tr -dc A-Za-z0-9 </dev/urandom | head -c 6; echo)
 export RG_NAME="rg-arodemo-perm"
 ```
 
@@ -39,9 +38,9 @@ export RG_NAME="rg-arodemo-perm"
 V této části vytvoříte virtuální síť v Azure. Začněte definováním několika proměnných prostředí. Tyto proměnné budou obsahovat názvy virtuální sítě a podsítí a blok CIDR pro vaši virtuální síť. Dále pomocí příkazu az network vnet create vytvořte virtuální síť se zadaným názvem a blokem CIDR ve vaší skupině prostředků. Tento proces může trvat několik minut.
 
 ```bash
-export VNET_NAME="vnet-${LOCAL_NAME}-${SUFFIX}"
-export SUBNET1_NAME="sn-main-${SUFFIX}"
-export SUBNET2_NAME="sn-worker-${SUFFIX}"
+export VNET_NAME="vnet-${LOCAL_NAME}"
+export SUBNET1_NAME="sn-main"
+export SUBNET2_NAME="sn-worker"
 export VNET_CIDR="10.0.0.0/22"
 az network vnet create -g $RG_NAME -n $VNET_NAME --address-prefixes $VNET_CIDR
 ```
@@ -128,13 +127,13 @@ Výsledky:
 
 Tento fragment kódu provádí následující kroky:
 
-1. `STORAGE_ACCOUNT_NAME` Nastaví proměnnou prostředí na zřetězení `stor`( `LOCAL_NAME` převedeno na malá písmena) a `SUFFIX` (převedeno na malá písmena).
+1. `STORAGE_ACCOUNT_NAME` Nastaví proměnnou prostředí na zřetězení `stor``LOCAL_NAME` ( převedeno na malá písmena).
 2. Nastaví proměnnou `BARMAN_CONTAINER_NAME` prostředí na `"barman"`hodnotu .
 3. Vytvoří účet úložiště se zadaným `STORAGE_ACCOUNT_NAME` v zadané skupině prostředků.
 4. Vytvoří kontejner úložiště se zadaným `BARMAN_CONTAINER_NAME` v vytvořeném účtu úložiště.
 
 ```bash
-export STORAGE_ACCOUNT_NAME="stor${LOCAL_NAME,,}${SUFFIX,,}"
+export STORAGE_ACCOUNT_NAME="stor${LOCAL_NAME,,}"
 export BARMAN_CONTAINER_NAME="barman"
 
 az storage account create --name "${STORAGE_ACCOUNT_NAME}" --resource-group "${RG_NAME}" --sku Standard_LRS
@@ -146,7 +145,7 @@ az storage container create --name "${BARMAN_CONTAINER_NAME}" --account-name "${
 V této části nasadíte cluster Azure Red Hat OpenShift (ARO). Proměnná ARO_CLUSTER_NAME bude obsahovat název clusteru ARO. Příkaz az aro create nasadí cluster ARO se zadaným názvem, skupinou prostředků, virtuální sítí, podsítěmi a tajným kódem pro vyžádání obsahu RedHat OpenShift, který jste si předtím stáhli a uložili ve službě Key Vault. Dokončení tohoto procesu může trvat přibližně 30 minut.
 
 ```bash
-export ARO_CLUSTER_NAME="aro-${LOCAL_NAME}-${SUFFIX}"
+export ARO_CLUSTER_NAME="aro-${LOCAL_NAME}"
 export ARO_PULL_SECRET=$(az keyvault secret show --name AroPullSecret --vault-name kv-rdp-dev --query value -o tsv)
 export ARO_SP_ID=$(az keyvault secret show --name arodemo-sp-id --vault-name kv-rdp-dev --query value -o tsv)
 export ARO_SP_PASSWORD=$(az keyvault secret show --name arodemo-sp-password --vault-name kv-rdp-dev --query value -o tsv)
