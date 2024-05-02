@@ -4,7 +4,7 @@ description: 'В этом руководстве показано, как соз
 author: russd2357
 ms.author: rdepina
 ms.topic: article
-ms.date: 04/16/2024
+ms.date: 04/30/2024
 ms.custom: 'innovation-engine, linux-related content'
 ---
 
@@ -30,7 +30,6 @@ ms.custom: 'innovation-engine, linux-related content'
 export RGTAGS="owner=ARO Demo"
 export LOCATION="westus"
 export LOCAL_NAME="arodemo"
-export SUFFIX=$(tr -dc A-Za-z0-9 </dev/urandom | head -c 6; echo)
 export RG_NAME="rg-arodemo-perm"
 ```
 
@@ -39,9 +38,9 @@ export RG_NAME="rg-arodemo-perm"
 В этом разделе вы создадите виртуальная сеть (виртуальная сеть) в Azure. Начните с определения нескольких переменных среды. Эти переменные будут содержать имена виртуальной сети и подсетей, а также блок CIDR для виртуальной сети. Затем создайте виртуальную сеть с указанным именем и блоком CIDR в группе ресурсов с помощью команды az network vnet create. Этот процесс может занять несколько минут.
 
 ```bash
-export VNET_NAME="vnet-${LOCAL_NAME}-${SUFFIX}"
-export SUBNET1_NAME="sn-main-${SUFFIX}"
-export SUBNET2_NAME="sn-worker-${SUFFIX}"
+export VNET_NAME="vnet-${LOCAL_NAME}"
+export SUBNET1_NAME="sn-main"
+export SUBNET2_NAME="sn-worker"
 export VNET_CIDR="10.0.0.0/22"
 az network vnet create -g $RG_NAME -n $VNET_NAME --address-prefixes $VNET_CIDR
 ```
@@ -128,13 +127,13 @@ az network vnet subnet create -g $RG_NAME --vnet-name $VNET_NAME -n $SUBNET2_NAM
 
 Этот фрагмент кода выполняет следующие действия.
 
-1. `STORAGE_ACCOUNT_NAME` Задает переменную среды в сцепление `stor`, `LOCAL_NAME` (преобразованную в нижний регистр) и `SUFFIX` (преобразованную в строчные регистры).
+1. `STORAGE_ACCOUNT_NAME` Задает переменную среды для объединения `stor`( `LOCAL_NAME` преобразуется в нижний регистр).
 2. Задает для переменной `BARMAN_CONTAINER_NAME` среды значение `"barman"`.
 3. Создает учетную запись хранения с указанным `STORAGE_ACCOUNT_NAME` в указанной группе ресурсов.
 4. Создает контейнер хранилища с указанным `BARMAN_CONTAINER_NAME` в созданной учетной записи хранения.
 
 ```bash
-export STORAGE_ACCOUNT_NAME="stor${LOCAL_NAME,,}${SUFFIX,,}"
+export STORAGE_ACCOUNT_NAME="stor${LOCAL_NAME,,}"
 export BARMAN_CONTAINER_NAME="barman"
 
 az storage account create --name "${STORAGE_ACCOUNT_NAME}" --resource-group "${RG_NAME}" --sku Standard_LRS
@@ -146,7 +145,7 @@ az storage container create --name "${BARMAN_CONTAINER_NAME}" --account-name "${
 В этом разделе описано, как развернуть кластер Azure Red Hat OpenShift (ARO). Переменная ARO_CLUSTER_NAME будет содержать имя кластера ARO. Команда az aro create развернет кластер ARO с указанным именем, группой ресурсов, виртуальной сетью, подсетями и секретом извлечения RedHat OpenShift, который вы ранее скачали и сохранили в Key Vault. Для завершения этого процесса может потребоваться около 30 минут.
 
 ```bash
-export ARO_CLUSTER_NAME="aro-${LOCAL_NAME}-${SUFFIX}"
+export ARO_CLUSTER_NAME="aro-${LOCAL_NAME}"
 export ARO_PULL_SECRET=$(az keyvault secret show --name AroPullSecret --vault-name kv-rdp-dev --query value -o tsv)
 export ARO_SP_ID=$(az keyvault secret show --name arodemo-sp-id --vault-name kv-rdp-dev --query value -o tsv)
 export ARO_SP_PASSWORD=$(az keyvault secret show --name arodemo-sp-password --vault-name kv-rdp-dev --query value -o tsv)
