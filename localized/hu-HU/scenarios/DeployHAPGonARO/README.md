@@ -4,7 +4,7 @@ description: 'Ez az oktatóanyag bemutatja, hogyan hozhat létre magas rendelkez
 author: russd2357
 ms.author: rdepina
 ms.topic: article
-ms.date: 04/16/2024
+ms.date: 04/30/2024
 ms.custom: 'innovation-engine, linux-related content'
 ---
 
@@ -30,7 +30,6 @@ Az erőforráscsoportok a kapcsolódó erőforrások tárolói. Minden erőforr�
 export RGTAGS="owner=ARO Demo"
 export LOCATION="westus"
 export LOCAL_NAME="arodemo"
-export SUFFIX=$(tr -dc A-Za-z0-9 </dev/urandom | head -c 6; echo)
 export RG_NAME="rg-arodemo-perm"
 ```
 
@@ -39,9 +38,9 @@ export RG_NAME="rg-arodemo-perm"
 Ebben a szakaszban virtuális hálózatot (VNetet) fog létrehozni az Azure-ban. Először is definiáljon több környezeti változót. Ezek a változók a virtuális hálózat és az alhálózatok nevét, valamint a virtuális hálózat CIDR-blokkját fogják tárolni. Ezután hozza létre a megadott névvel és CIDR-blokktal rendelkező virtuális hálózatot az erőforráscsoportban az az network vnet create paranccsal. Ez a folyamat eltarthat néhány percig.
 
 ```bash
-export VNET_NAME="vnet-${LOCAL_NAME}-${SUFFIX}"
-export SUBNET1_NAME="sn-main-${SUFFIX}"
-export SUBNET2_NAME="sn-worker-${SUFFIX}"
+export VNET_NAME="vnet-${LOCAL_NAME}"
+export SUBNET1_NAME="sn-main"
+export SUBNET2_NAME="sn-worker"
 export VNET_CIDR="10.0.0.0/22"
 az network vnet create -g $RG_NAME -n $VNET_NAME --address-prefixes $VNET_CIDR
 ```
@@ -128,13 +127,13 @@ Eredmények:
 
 Ez a kódrészlet a következő lépéseket hajtja végre:
 
-1. A környezeti változót a `STORAGE_ACCOUNT_NAME` ( kisbetűssé `LOCAL_NAME` konvertált) és `SUFFIX` a (kisbetűssé konvertált) változó összefűzésére `stor`állítja be.
+1. A környezeti változót a `STORAGE_ACCOUNT_NAME` következő `LOCAL_NAME` összefűzésére állítja `stor`be (kisbetűssé alakítva).
 2. A környezeti változó beállítása `BARMAN_CONTAINER_NAME` a következőre `"barman"`: .
 3. Létrehoz egy tárfiókot a megadott erőforráscsoportban megadottakkal `STORAGE_ACCOUNT_NAME` .
 4. Létrehoz egy tárolót a létrehozott tárfiókban megadottakkal `BARMAN_CONTAINER_NAME` .
 
 ```bash
-export STORAGE_ACCOUNT_NAME="stor${LOCAL_NAME,,}${SUFFIX,,}"
+export STORAGE_ACCOUNT_NAME="stor${LOCAL_NAME,,}"
 export BARMAN_CONTAINER_NAME="barman"
 
 az storage account create --name "${STORAGE_ACCOUNT_NAME}" --resource-group "${RG_NAME}" --sku Standard_LRS
@@ -146,7 +145,7 @@ az storage container create --name "${BARMAN_CONTAINER_NAME}" --account-name "${
 Ebben a szakaszban egy Azure Red Hat OpenShift (ARO) fürtöt fog üzembe helyezni. A ARO_CLUSTER_NAME változó az ARO-fürt nevét fogja tárolni. Az az aro create parancs a megadott névvel, erőforráscsoporttal, virtuális hálózattal, alhálózatokkal és a Korábban a Key Vaultban letöltött és mentett RedHat OpenShift lekéréses titkos kóddal telepíti az ARO-fürtöt. Ez a folyamat körülbelül 30 percet vehet igénybe.
 
 ```bash
-export ARO_CLUSTER_NAME="aro-${LOCAL_NAME}-${SUFFIX}"
+export ARO_CLUSTER_NAME="aro-${LOCAL_NAME}"
 export ARO_PULL_SECRET=$(az keyvault secret show --name AroPullSecret --vault-name kv-rdp-dev --query value -o tsv)
 export ARO_SP_ID=$(az keyvault secret show --name arodemo-sp-id --vault-name kv-rdp-dev --query value -o tsv)
 export ARO_SP_PASSWORD=$(az keyvault secret show --name arodemo-sp-password --vault-name kv-rdp-dev --query value -o tsv)
