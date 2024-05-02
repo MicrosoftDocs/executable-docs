@@ -4,7 +4,7 @@ description: 이 자습서에서는 CloudNativePG 연산자를 사용하여 ARO(
 author: russd2357
 ms.author: rdepina
 ms.topic: article
-ms.date: 04/16/2024
+ms.date: 04/30/2024
 ms.custom: 'innovation-engine, linux-related content'
 ---
 
@@ -30,7 +30,6 @@ CLI를 사용하여 Azure에 대해 명령을 실행하려면 로그인해야 �
 export RGTAGS="owner=ARO Demo"
 export LOCATION="westus"
 export LOCAL_NAME="arodemo"
-export SUFFIX=$(tr -dc A-Za-z0-9 </dev/urandom | head -c 6; echo)
 export RG_NAME="rg-arodemo-perm"
 ```
 
@@ -39,9 +38,9 @@ export RG_NAME="rg-arodemo-perm"
 이 섹션에서는 Azure에서 VNet(Virtual Network)을 만듭니다. 먼저 여러 환경 변수를 정의합니다. 이러한 변수에는 VNet 및 서브넷의 이름과 VNet의 CIDR 블록이 포함됩니다. 다음으로, az network vnet create 명령을 사용하여 리소스 그룹에 지정된 이름과 CIDR 블록을 사용하여 VNet을 만듭니다. 이 프로세스에는 몇 분 정도가 소요됩니다.
 
 ```bash
-export VNET_NAME="vnet-${LOCAL_NAME}-${SUFFIX}"
-export SUBNET1_NAME="sn-main-${SUFFIX}"
-export SUBNET2_NAME="sn-worker-${SUFFIX}"
+export VNET_NAME="vnet-${LOCAL_NAME}"
+export SUBNET1_NAME="sn-main"
+export SUBNET2_NAME="sn-worker"
 export VNET_CIDR="10.0.0.0/22"
 az network vnet create -g $RG_NAME -n $VNET_NAME --address-prefixes $VNET_CIDR
 ```
@@ -128,13 +127,13 @@ Results:
 
 이 코드 조각은 다음 단계를 수행합니다.
 
-1. 환경 변수를 `STORAGE_ACCOUNT_NAME` (`stor``LOCAL_NAME`소문자로 변환) 및 `SUFFIX` 소문자로 변환된 연결로 설정합니다.
+1. 환경 변수를 `STORAGE_ACCOUNT_NAME` 의 `stor``LOCAL_NAME` 연결(소문자로 변환)으로 설정합니다.
 2. 환경 변수를 `BARMAN_CONTAINER_NAME` .로 `"barman"`설정합니다.
 3. 지정된 리소스 그룹에 지정된 `STORAGE_ACCOUNT_NAME` 스토리지 계정을 만듭니다.
 4. 만든 스토리지 계정에 지정된 `BARMAN_CONTAINER_NAME` 스토리지 컨테이너를 만듭니다.
 
 ```bash
-export STORAGE_ACCOUNT_NAME="stor${LOCAL_NAME,,}${SUFFIX,,}"
+export STORAGE_ACCOUNT_NAME="stor${LOCAL_NAME,,}"
 export BARMAN_CONTAINER_NAME="barman"
 
 az storage account create --name "${STORAGE_ACCOUNT_NAME}" --resource-group "${RG_NAME}" --sku Standard_LRS
@@ -146,7 +145,7 @@ az storage container create --name "${BARMAN_CONTAINER_NAME}" --account-name "${
 이 섹션에서는 ARO(Azure Red Hat OpenShift) 클러스터를 배포합니다. ARO_CLUSTER_NAME 변수는 ARO 클러스터의 이름을 보유합니다. az aro create 명령은 이전에 Key Vault에서 다운로드하고 저장한 지정된 이름, 리소스 그룹, 가상 네트워크, 서브넷 및 RedHat OpenShift 끌어오기 비밀을 사용하여 ARO 클러스터를 배포합니다. 이 프로세스를 완료하는 데 약 30분이 걸릴 수 있습니다.
 
 ```bash
-export ARO_CLUSTER_NAME="aro-${LOCAL_NAME}-${SUFFIX}"
+export ARO_CLUSTER_NAME="aro-${LOCAL_NAME}"
 export ARO_PULL_SECRET=$(az keyvault secret show --name AroPullSecret --vault-name kv-rdp-dev --query value -o tsv)
 export ARO_SP_ID=$(az keyvault secret show --name arodemo-sp-id --vault-name kv-rdp-dev --query value -o tsv)
 export ARO_SP_PASSWORD=$(az keyvault secret show --name arodemo-sp-password --vault-name kv-rdp-dev --query value -o tsv)
