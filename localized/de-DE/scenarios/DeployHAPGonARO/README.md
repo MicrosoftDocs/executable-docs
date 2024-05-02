@@ -4,7 +4,7 @@ description: 'In diesem Tutorial wird gezeigt, wie Sie mithilfe des CloudNativeP
 author: russd2357
 ms.author: rdepina
 ms.topic: article
-ms.date: 04/16/2024
+ms.date: 04/30/2024
 ms.custom: 'innovation-engine, linux-related content'
 ---
 
@@ -30,7 +30,6 @@ Eine Ressourcengruppe ist ein Container für zugehörige Ressourcen. Alle Ressou
 export RGTAGS="owner=ARO Demo"
 export LOCATION="westus"
 export LOCAL_NAME="arodemo"
-export SUFFIX=$(tr -dc A-Za-z0-9 </dev/urandom | head -c 6; echo)
 export RG_NAME="rg-arodemo-perm"
 ```
 
@@ -39,9 +38,9 @@ export RG_NAME="rg-arodemo-perm"
 In diesem Abschnitt erstellen Sie ein virtuelles Netzwerk (Virtual Network, VNet) in Azure. Definieren Sie zunächst mehrere Umgebungsvariablen. Diese Variablen enthalten die Namen Ihrer VNet- und Subnetze sowie den CIDR-Block für Ihr VNet. Erstellen Sie als Nächstes das VNet mit dem angegebenen Namen und dem CIDR-Block in Ihrer Ressourcengruppe, indem Sie den Befehl "az network vnet create" verwenden. Dieser Prozess kann einige Minuten in Anspruch nehmen.
 
 ```bash
-export VNET_NAME="vnet-${LOCAL_NAME}-${SUFFIX}"
-export SUBNET1_NAME="sn-main-${SUFFIX}"
-export SUBNET2_NAME="sn-worker-${SUFFIX}"
+export VNET_NAME="vnet-${LOCAL_NAME}"
+export SUBNET1_NAME="sn-main"
+export SUBNET2_NAME="sn-worker"
 export VNET_CIDR="10.0.0.0/22"
 az network vnet create -g $RG_NAME -n $VNET_NAME --address-prefixes $VNET_CIDR
 ```
@@ -128,13 +127,13 @@ Ergebnisse:
 
 Dieser Codeausschnitt führt die folgenden Schritte aus:
 
-1. Legt die `STORAGE_ACCOUNT_NAME` Umgebungsvariable auf eine Verkettung von `stor`, `LOCAL_NAME` (konvertiert in Kleinbuchstaben) und `SUFFIX` (in Kleinbuchstaben konvertiert) fest.
+1. Legt die `STORAGE_ACCOUNT_NAME` Umgebungsvariable auf eine Verkettung von `stor`, `LOCAL_NAME` (konvertiert in Kleinbuchstaben) fest.
 2. Legt die Umgebungsvariable `BARMAN_CONTAINER_NAME` auf `"barman"`.
 3. Erstellt ein Speicherkonto mit dem in der angegebenen Ressourcengruppe angegebenen `STORAGE_ACCOUNT_NAME` .
 4. Erstellt einen Speichercontainer mit dem im erstellten Speicherkonto angegebenen `BARMAN_CONTAINER_NAME` .
 
 ```bash
-export STORAGE_ACCOUNT_NAME="stor${LOCAL_NAME,,}${SUFFIX,,}"
+export STORAGE_ACCOUNT_NAME="stor${LOCAL_NAME,,}"
 export BARMAN_CONTAINER_NAME="barman"
 
 az storage account create --name "${STORAGE_ACCOUNT_NAME}" --resource-group "${RG_NAME}" --sku Standard_LRS
@@ -146,7 +145,7 @@ az storage container create --name "${BARMAN_CONTAINER_NAME}" --account-name "${
 In diesem Abschnitt stellen Sie einen Azure Red Hat OpenShift (ARO)-Cluster bereit. Die ARO_CLUSTER_NAME Variable enthält den Namen Ihres ARO-Clusters. Der Befehl "az aro create" stellt den ARO-Cluster mit dem angegebenen Namen, der Ressourcengruppe, dem virtuellen Netzwerk, den Subnetzen und dem RedHat OpenShift-Pullschlüssel bereit, den Sie zuvor in Ihrem Key Vault heruntergeladen und gespeichert haben. Dieser Vorgang kann bis zu 30 Minuten dauern.
 
 ```bash
-export ARO_CLUSTER_NAME="aro-${LOCAL_NAME}-${SUFFIX}"
+export ARO_CLUSTER_NAME="aro-${LOCAL_NAME}"
 export ARO_PULL_SECRET=$(az keyvault secret show --name AroPullSecret --vault-name kv-rdp-dev --query value -o tsv)
 export ARO_SP_ID=$(az keyvault secret show --name arodemo-sp-id --vault-name kv-rdp-dev --query value -o tsv)
 export ARO_SP_PASSWORD=$(az keyvault secret show --name arodemo-sp-password --vault-name kv-rdp-dev --query value -o tsv)
