@@ -4,7 +4,7 @@ description: Bu öğreticide CloudNativePG işlecini kullanarak Azure Red Hat Op
 author: russd2357
 ms.author: rdepina
 ms.topic: article
-ms.date: 04/16/2024
+ms.date: 04/30/2024
 ms.custom: 'innovation-engine, linux-related content'
 ---
 
@@ -30,7 +30,6 @@ Kaynak grubu, ilgili kaynaklar için bir kapsayıcıdır. Tüm kaynaklar bir kay
 export RGTAGS="owner=ARO Demo"
 export LOCATION="westus"
 export LOCAL_NAME="arodemo"
-export SUFFIX=$(tr -dc A-Za-z0-9 </dev/urandom | head -c 6; echo)
 export RG_NAME="rg-arodemo-perm"
 ```
 
@@ -39,9 +38,9 @@ export RG_NAME="rg-arodemo-perm"
 Bu bölümde Azure'da bir Sanal Ağ (VNet) oluşturacaksınız. Birkaç ortam değişkeni tanımlayarak başlayın. Bu değişkenler, sanal ağınızın ve alt ağlarınızın adlarının yanı sıra sanal ağınızın CIDR bloğunu barındıracaktır. Ardından az network vnet create komutunu kullanarak kaynak grubunuzda belirtilen ad ve CIDR bloğuyla sanal ağı oluşturun. Bu süreç birkaç dakika sürebilir.
 
 ```bash
-export VNET_NAME="vnet-${LOCAL_NAME}-${SUFFIX}"
-export SUBNET1_NAME="sn-main-${SUFFIX}"
-export SUBNET2_NAME="sn-worker-${SUFFIX}"
+export VNET_NAME="vnet-${LOCAL_NAME}"
+export SUBNET1_NAME="sn-main"
+export SUBNET2_NAME="sn-worker"
 export VNET_CIDR="10.0.0.0/22"
 az network vnet create -g $RG_NAME -n $VNET_NAME --address-prefixes $VNET_CIDR
 ```
@@ -128,13 +127,13 @@ Sonuçlar:
 
 Bu kod parçacığı aşağıdaki adımları gerçekleştirir:
 
-1. Ortam değişkenini `STORAGE_ACCOUNT_NAME` , `LOCAL_NAME` (küçük harfe dönüştürülür) ve `SUFFIX` (küçük harfe dönüştürülür) bir birleştirmesine `stor`ayarlar.
+1. Ortam değişkenini `STORAGE_ACCOUNT_NAME` , `LOCAL_NAME` (küçük harfe dönüştürülür) bir birleştirmesine `stor`ayarlar.
 2. Ortam değişkenini `BARMAN_CONTAINER_NAME` olarak `"barman"`ayarlar.
 3. Belirtilen kaynak grubunda belirtilen `STORAGE_ACCOUNT_NAME` ile bir depolama hesabı oluşturur.
 4. Oluşturulan depolama hesabında belirtilen `BARMAN_CONTAINER_NAME` ile bir depolama kapsayıcısı oluşturur.
 
 ```bash
-export STORAGE_ACCOUNT_NAME="stor${LOCAL_NAME,,}${SUFFIX,,}"
+export STORAGE_ACCOUNT_NAME="stor${LOCAL_NAME,,}"
 export BARMAN_CONTAINER_NAME="barman"
 
 az storage account create --name "${STORAGE_ACCOUNT_NAME}" --resource-group "${RG_NAME}" --sku Standard_LRS
@@ -146,7 +145,7 @@ az storage container create --name "${BARMAN_CONTAINER_NAME}" --account-name "${
 Bu bölümde bir Azure Red Hat OpenShift (ARO) kümesi dağıtacaksınız. ARO_CLUSTER_NAME değişkeni, ARO kümenizin adını tutar. az aro create komutu, ARO kümesini daha önce indirdiğiniz ve Key Vault'unuza kaydettiğiniz belirtilen ad, kaynak grubu, sanal ağ, alt ağlar ve RedHat OpenShift çekme gizli dizisiyle dağıtır. Bu işlemin tamamlanması yaklaşık 30 dakika sürebilir.
 
 ```bash
-export ARO_CLUSTER_NAME="aro-${LOCAL_NAME}-${SUFFIX}"
+export ARO_CLUSTER_NAME="aro-${LOCAL_NAME}"
 export ARO_PULL_SECRET=$(az keyvault secret show --name AroPullSecret --vault-name kv-rdp-dev --query value -o tsv)
 export ARO_SP_ID=$(az keyvault secret show --name arodemo-sp-id --vault-name kv-rdp-dev --query value -o tsv)
 export ARO_SP_PASSWORD=$(az keyvault secret show --name arodemo-sp-password --vault-name kv-rdp-dev --query value -o tsv)
