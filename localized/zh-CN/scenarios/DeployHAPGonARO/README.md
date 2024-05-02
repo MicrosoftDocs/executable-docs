@@ -4,7 +4,7 @@ description: 本教程演示如何使用 CloudNativePG 运算符在 Azure Red Ha
 author: russd2357
 ms.author: rdepina
 ms.topic: article
-ms.date: 04/16/2024
+ms.date: 04/30/2024
 ms.custom: 'innovation-engine, linux-related content'
 ---
 
@@ -30,7 +30,6 @@ ms.custom: 'innovation-engine, linux-related content'
 export RGTAGS="owner=ARO Demo"
 export LOCATION="westus"
 export LOCAL_NAME="arodemo"
-export SUFFIX=$(tr -dc A-Za-z0-9 </dev/urandom | head -c 6; echo)
 export RG_NAME="rg-arodemo-perm"
 ```
 
@@ -39,9 +38,9 @@ export RG_NAME="rg-arodemo-perm"
 在本部分中，你将在 Azure 中创建虚拟网络 (VNet)。 首先定义多个环境变量。 这些变量将保存 VNet 和子网的名称，以及 VNet 的 CIDR 块。 接下来，使用 az network vnet create 命令在资源组中创建具有指定名称和 CIDR 块的 VNet。 这个过程可能需要几分钟。
 
 ```bash
-export VNET_NAME="vnet-${LOCAL_NAME}-${SUFFIX}"
-export SUBNET1_NAME="sn-main-${SUFFIX}"
-export SUBNET2_NAME="sn-worker-${SUFFIX}"
+export VNET_NAME="vnet-${LOCAL_NAME}"
+export SUBNET1_NAME="sn-main"
+export SUBNET2_NAME="sn-worker"
 export VNET_CIDR="10.0.0.0/22"
 az network vnet create -g $RG_NAME -n $VNET_NAME --address-prefixes $VNET_CIDR
 ```
@@ -128,13 +127,13 @@ az network vnet subnet create -g $RG_NAME --vnet-name $VNET_NAME -n $SUBNET2_NAM
 
 此代码片段执行以下步骤：
 
-1. 将 `STORAGE_ACCOUNT_NAME` 环境变量设置为串联 `stor`（ `LOCAL_NAME` 转换为小写），以及 `SUFFIX` （转换为小写）。
+1. 将 `STORAGE_ACCOUNT_NAME` 环境变量设置为串联 `stor`（ `LOCAL_NAME` 转换为小写）。
 2. 将 `BARMAN_CONTAINER_NAME` 环境变量设置为 `"barman"`.
 3. 创建具有指定 `STORAGE_ACCOUNT_NAME` 资源组中指定的存储帐户。
 4. 使用创建的存储帐户中指定的值 `BARMAN_CONTAINER_NAME` 创建存储容器。
 
 ```bash
-export STORAGE_ACCOUNT_NAME="stor${LOCAL_NAME,,}${SUFFIX,,}"
+export STORAGE_ACCOUNT_NAME="stor${LOCAL_NAME,,}"
 export BARMAN_CONTAINER_NAME="barman"
 
 az storage account create --name "${STORAGE_ACCOUNT_NAME}" --resource-group "${RG_NAME}" --sku Standard_LRS
@@ -146,7 +145,7 @@ az storage container create --name "${BARMAN_CONTAINER_NAME}" --account-name "${
 在本部分中，你将部署 Azure Red Hat OpenShift (ARO) 群集。 ARO_CLUSTER_NAME 变量将保留 ARO 群集的名称。 az aro create 命令将使用之前下载并保存在密钥库中的指定名称、资源组、虚拟网络、子网和 RedHat OpenShift 拉取机密部署 ARO 群集。 完成此过程可能需要 30 分钟。
 
 ```bash
-export ARO_CLUSTER_NAME="aro-${LOCAL_NAME}-${SUFFIX}"
+export ARO_CLUSTER_NAME="aro-${LOCAL_NAME}"
 export ARO_PULL_SECRET=$(az keyvault secret show --name AroPullSecret --vault-name kv-rdp-dev --query value -o tsv)
 export ARO_SP_ID=$(az keyvault secret show --name arodemo-sp-id --vault-name kv-rdp-dev --query value -o tsv)
 export ARO_SP_PASSWORD=$(az keyvault secret show --name arodemo-sp-password --vault-name kv-rdp-dev --query value -o tsv)
