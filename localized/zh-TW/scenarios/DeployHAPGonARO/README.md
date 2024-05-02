@@ -4,7 +4,7 @@ description: 本教學課程說明如何使用 CloudNativePG 操作員在 Azure 
 author: russd2357
 ms.author: rdepina
 ms.topic: article
-ms.date: 04/16/2024
+ms.date: 04/30/2024
 ms.custom: 'innovation-engine, linux-related content'
 ---
 
@@ -30,7 +30,6 @@ ms.custom: 'innovation-engine, linux-related content'
 export RGTAGS="owner=ARO Demo"
 export LOCATION="westus"
 export LOCAL_NAME="arodemo"
-export SUFFIX=$(tr -dc A-Za-z0-9 </dev/urandom | head -c 6; echo)
 export RG_NAME="rg-arodemo-perm"
 ```
 
@@ -39,9 +38,9 @@ export RG_NAME="rg-arodemo-perm"
 在本節中，您將在 Azure 中建立 虛擬網絡 （VNet）。 首先，定義數個環境變數。 這些變數會保存 VNet 和子網的名稱，以及 VNet 的 CIDR 區塊。 接下來，使用 az network vnet create 命令，在您的資源群組中建立具有指定名稱和 CIDR 區塊的 VNet。 此程序可能需要幾分鐘的時間。
 
 ```bash
-export VNET_NAME="vnet-${LOCAL_NAME}-${SUFFIX}"
-export SUBNET1_NAME="sn-main-${SUFFIX}"
-export SUBNET2_NAME="sn-worker-${SUFFIX}"
+export VNET_NAME="vnet-${LOCAL_NAME}"
+export SUBNET1_NAME="sn-main"
+export SUBNET2_NAME="sn-worker"
 export VNET_CIDR="10.0.0.0/22"
 az network vnet create -g $RG_NAME -n $VNET_NAME --address-prefixes $VNET_CIDR
 ```
@@ -100,7 +99,7 @@ az network vnet subnet create -g $RG_NAME --vnet-name $VNET_NAME -n $SUBNET1_NAM
 
 ## 建立背景工作節點子網
 
-在本節中，您將在先前建立的 虛擬網絡 （VNet） 內，為背景工作節點建立具有指定名稱和 CIDR 區塊的子網。 從執行 az network vnet subnet create 命令開始。 成功建立子網之後，您就可以將背景工作節點部署至此子網。
+在本節中，您會在先前建立的 虛擬網絡 （VNet） 內，為背景工作節點建立具有指定名稱和 CIDR 區塊的子網。 從執行 az network vnet subnet create 命令開始。 成功建立子網之後，您就可以將背景工作節點部署至此子網。
 
 ```bash
 az network vnet subnet create -g $RG_NAME --vnet-name $VNET_NAME -n $SUBNET2_NAME --address-prefixes 10.0.2.0/23
@@ -128,13 +127,13 @@ az network vnet subnet create -g $RG_NAME --vnet-name $VNET_NAME -n $SUBNET2_NAM
 
 此代碼段會執行下列步驟：
 
-1. 將 `STORAGE_ACCOUNT_NAME` 環境變數設定為的串連 `stor`、 `LOCAL_NAME` （轉換成小寫），以及 `SUFFIX` （轉換成小寫）。
+1. 將`STORAGE_ACCOUNT_NAME`環境變數設定為的`stor``LOCAL_NAME`串連 ，（轉換成小寫）。
 2. 將 `BARMAN_CONTAINER_NAME` 環境變數設定為 `"barman"`。
 3. 使用指定 `STORAGE_ACCOUNT_NAME` 資源群組中指定的 建立記憶體帳戶。
 4. 使用已建立的記憶體帳戶中指定的 建立記憶體容器 `BARMAN_CONTAINER_NAME` 。
 
 ```bash
-export STORAGE_ACCOUNT_NAME="stor${LOCAL_NAME,,}${SUFFIX,,}"
+export STORAGE_ACCOUNT_NAME="stor${LOCAL_NAME,,}"
 export BARMAN_CONTAINER_NAME="barman"
 
 az storage account create --name "${STORAGE_ACCOUNT_NAME}" --resource-group "${RG_NAME}" --sku Standard_LRS
@@ -143,10 +142,10 @@ az storage container create --name "${BARMAN_CONTAINER_NAME}" --account-name "${
 
 ## 部署 ARO 叢集
 
-在本節中，您將部署 Azure Red Hat OpenShift （ARO） 叢集。 ARO_CLUSTER_NAME變數會保留 ARO 叢集的名稱。 az aro create 命令會部署具有指定名稱、資源群組、虛擬網路、子網，以及您先前下載並儲存在 金鑰保存庫 中的 RedHat OpenShift 提取秘密的 ARO 叢集。 此程式可能需要大約 30 分鐘才能完成。
+在本節中，您將部署 Azure Red Hat OpenShift （ARO） 叢集。 ARO_CLUSTER_NAME變數會保留 ARO 叢集的名稱。 az aro create 命令會部署具有指定名稱、資源群組、虛擬網路、子網和 RedHat OpenShift 提取密碼的 ARO 叢集，而您先前下載並儲存在 金鑰保存庫 中。 此程式可能需要大約 30 分鐘才能完成。
 
 ```bash
-export ARO_CLUSTER_NAME="aro-${LOCAL_NAME}-${SUFFIX}"
+export ARO_CLUSTER_NAME="aro-${LOCAL_NAME}"
 export ARO_PULL_SECRET=$(az keyvault secret show --name AroPullSecret --vault-name kv-rdp-dev --query value -o tsv)
 export ARO_SP_ID=$(az keyvault secret show --name arodemo-sp-id --vault-name kv-rdp-dev --query value -o tsv)
 export ARO_SP_PASSWORD=$(az keyvault secret show --name arodemo-sp-password --vault-name kv-rdp-dev --query value -o tsv)
