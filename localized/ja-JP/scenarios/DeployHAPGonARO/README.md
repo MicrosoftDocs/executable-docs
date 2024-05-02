@@ -4,7 +4,7 @@ description: このチュートリアルでは、CloudNativePG オペレータ�
 author: russd2357
 ms.author: rdepina
 ms.topic: article
-ms.date: 04/16/2024
+ms.date: 04/30/2024
 ms.custom: 'innovation-engine, linux-related content'
 ---
 
@@ -30,7 +30,6 @@ CLI を使用して Azure に対してコマンドを実行するには、ログ
 export RGTAGS="owner=ARO Demo"
 export LOCATION="westus"
 export LOCAL_NAME="arodemo"
-export SUFFIX=$(tr -dc A-Za-z0-9 </dev/urandom | head -c 6; echo)
 export RG_NAME="rg-arodemo-perm"
 ```
 
@@ -39,9 +38,9 @@ export RG_NAME="rg-arodemo-perm"
 このセクションでは、Azure で Virtual Network (VNet) を作成します。 まず、いくつかの環境変数を定義します。 これらの変数には、VNet とサブネットの名前、および VNet の CIDR ブロックが保持されます。 次に、az network vnet create コマンドを使用して、指定した名前と CIDR ブロックを持つ VNet をリソース グループに作成します。 このプロセスには数分かかることがあります。
 
 ```bash
-export VNET_NAME="vnet-${LOCAL_NAME}-${SUFFIX}"
-export SUBNET1_NAME="sn-main-${SUFFIX}"
-export SUBNET2_NAME="sn-worker-${SUFFIX}"
+export VNET_NAME="vnet-${LOCAL_NAME}"
+export SUBNET1_NAME="sn-main"
+export SUBNET2_NAME="sn-worker"
 export VNET_CIDR="10.0.0.0/22"
 az network vnet create -g $RG_NAME -n $VNET_NAME --address-prefixes $VNET_CIDR
 ```
@@ -128,13 +127,13 @@ az network vnet subnet create -g $RG_NAME --vnet-name $VNET_NAME -n $SUBNET2_NAM
 
 このコード スニペットでは、次の手順を実行します。
 
-1. 環境変数を `STORAGE_ACCOUNT_NAME` 、(小文字に変換)、 `LOCAL_NAME` および `SUFFIX` (小文字に変換) の連結`stor`に設定します。
+1. 環境変数を `STORAGE_ACCOUNT_NAME` 、 `LOCAL_NAME` (小文字に変換) の連結`stor`に設定します。
 2. 環境変数を > に`"barman"`設定します`BARMAN_CONTAINER_NAME`。
 3. 指定したリソース グループに指定された `STORAGE_ACCOUNT_NAME` ストレージ アカウントを作成します。
 4. 作成されたストレージ アカウントで指定された `BARMAN_CONTAINER_NAME` ストレージ コンテナーを作成します。
 
 ```bash
-export STORAGE_ACCOUNT_NAME="stor${LOCAL_NAME,,}${SUFFIX,,}"
+export STORAGE_ACCOUNT_NAME="stor${LOCAL_NAME,,}"
 export BARMAN_CONTAINER_NAME="barman"
 
 az storage account create --name "${STORAGE_ACCOUNT_NAME}" --resource-group "${RG_NAME}" --sku Standard_LRS
@@ -146,7 +145,7 @@ az storage container create --name "${BARMAN_CONTAINER_NAME}" --account-name "${
 このセクションでは、Azure Red Hat OpenShift (ARO) クラスターをデプロイします。 ARO_CLUSTER_NAME 変数には、ARO クラスターの名前が保持されます。 az aro create コマンドは、指定した名前、リソース グループ、仮想ネットワーク、サブネット、および以前にダウンロードして Key Vault に保存した RedHat OpenShift プル シークレットを持つ ARO クラスターをデプロイします。 このプロセスは、完了までに 30 分程かかる場合があります。
 
 ```bash
-export ARO_CLUSTER_NAME="aro-${LOCAL_NAME}-${SUFFIX}"
+export ARO_CLUSTER_NAME="aro-${LOCAL_NAME}"
 export ARO_PULL_SECRET=$(az keyvault secret show --name AroPullSecret --vault-name kv-rdp-dev --query value -o tsv)
 export ARO_SP_ID=$(az keyvault secret show --name arodemo-sp-id --vault-name kv-rdp-dev --query value -o tsv)
 export ARO_SP_PASSWORD=$(az keyvault secret show --name arodemo-sp-password --vault-name kv-rdp-dev --query value -o tsv)
