@@ -4,7 +4,7 @@ description: Deze zelfstudie laat zien hoe u een PostgreSQL-cluster met hoge bes
 author: russd2357
 ms.author: rdepina
 ms.topic: article
-ms.date: 04/16/2024
+ms.date: 04/30/2024
 ms.custom: 'innovation-engine, linux-related content'
 ---
 
@@ -30,7 +30,6 @@ Een resourcegroep is een container voor gerelateerde resources. Alle resources m
 export RGTAGS="owner=ARO Demo"
 export LOCATION="westus"
 export LOCAL_NAME="arodemo"
-export SUFFIX=$(tr -dc A-Za-z0-9 </dev/urandom | head -c 6; echo)
 export RG_NAME="rg-arodemo-perm"
 ```
 
@@ -39,9 +38,9 @@ export RG_NAME="rg-arodemo-perm"
 In deze sectie maakt u een virtueel netwerk (VNet) in Azure. Begin met het definiëren van verschillende omgevingsvariabelen. Deze variabelen bevatten de namen van uw VNet en subnetten, evenals het CIDR-blok voor uw VNet. Maak vervolgens het VNet met de opgegeven naam en het CIDR-blok in uw resourcegroep met behulp van de opdracht az network vnet create. Dit proces kan enkele minuten in beslag nemen.
 
 ```bash
-export VNET_NAME="vnet-${LOCAL_NAME}-${SUFFIX}"
-export SUBNET1_NAME="sn-main-${SUFFIX}"
-export SUBNET2_NAME="sn-worker-${SUFFIX}"
+export VNET_NAME="vnet-${LOCAL_NAME}"
+export SUBNET1_NAME="sn-main"
+export SUBNET2_NAME="sn-worker"
 export VNET_CIDR="10.0.0.0/22"
 az network vnet create -g $RG_NAME -n $VNET_NAME --address-prefixes $VNET_CIDR
 ```
@@ -128,13 +127,13 @@ Resultaten:
 
 Met dit codefragment worden de volgende stappen uitgevoerd:
 
-1. Hiermee stelt u de `STORAGE_ACCOUNT_NAME` omgevingsvariabele in op een samenvoeging van `stor`, `LOCAL_NAME` (geconverteerd naar kleine letters) en `SUFFIX` (geconverteerd naar kleine letters).
+1. Hiermee stelt u de `STORAGE_ACCOUNT_NAME` omgevingsvariabele in op een samenvoeging van `stor`, `LOCAL_NAME` (geconverteerd naar kleine letters).
 2. Hiermee stelt u de `BARMAN_CONTAINER_NAME` omgevingsvariabele in op `"barman"`.
 3. Hiermee maakt u een opslagaccount met de opgegeven `STORAGE_ACCOUNT_NAME` in de opgegeven resourcegroep.
 4. Hiermee maakt u een opslagcontainer met de opgegeven `BARMAN_CONTAINER_NAME` in het gemaakte opslagaccount.
 
 ```bash
-export STORAGE_ACCOUNT_NAME="stor${LOCAL_NAME,,}${SUFFIX,,}"
+export STORAGE_ACCOUNT_NAME="stor${LOCAL_NAME,,}"
 export BARMAN_CONTAINER_NAME="barman"
 
 az storage account create --name "${STORAGE_ACCOUNT_NAME}" --resource-group "${RG_NAME}" --sku Standard_LRS
@@ -146,7 +145,7 @@ az storage container create --name "${BARMAN_CONTAINER_NAME}" --account-name "${
 In deze sectie implementeert u een ARO-cluster (Azure Red Hat OpenShift). De ARO_CLUSTER_NAME variabele bevat de naam van uw ARO-cluster. Met de opdracht az aro create wordt het ARO-cluster geïmplementeerd met de opgegeven naam, resourcegroep, virtueel netwerk, subnetten en het Pull-geheim redHat OpenShift dat u eerder hebt gedownload en opgeslagen in uw Key Vault. Dit proces kan ongeveer 30 minuten duren.
 
 ```bash
-export ARO_CLUSTER_NAME="aro-${LOCAL_NAME}-${SUFFIX}"
+export ARO_CLUSTER_NAME="aro-${LOCAL_NAME}"
 export ARO_PULL_SECRET=$(az keyvault secret show --name AroPullSecret --vault-name kv-rdp-dev --query value -o tsv)
 export ARO_SP_ID=$(az keyvault secret show --name arodemo-sp-id --vault-name kv-rdp-dev --query value -o tsv)
 export ARO_SP_PASSWORD=$(az keyvault secret show --name arodemo-sp-password --vault-name kv-rdp-dev --query value -o tsv)
