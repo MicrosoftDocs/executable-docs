@@ -31,6 +31,25 @@ export RGTAGS="owner=ARO Demo"
 export LOCATION="westus"
 export LOCAL_NAME="arodemo"
 export RG_NAME="rg-arodemo-perm"
+az group create -n $RG_NAME -l $LOCATION --tags $RGTAGS
+```
+
+結果：
+<!-- expected_similarity=0.3 -->
+```json
+{
+"id": "/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/xx-xxxxx-xxxxx",
+"location": "westus",
+"managedBy": null,
+"name": "xx-xxxxx-xxxxx",
+"properties": {
+    "provisioningState": "Succeeded"
+},
+"tags": {
+    "owner": "xxx xxxx"
+},
+"type": "Microsoft.Resources/resourceGroups"
+}
 ```
 
 ## 建立 VNet
@@ -142,7 +161,7 @@ az storage container create --name "${BARMAN_CONTAINER_NAME}" --account-name "${
 
 ## 部署 ARO 叢集
 
-在本節中，您將部署 Azure Red Hat OpenShift （ARO） 叢集。 ARO_CLUSTER_NAME變數會保留 ARO 叢集的名稱。 az aro create 命令會部署具有指定名稱、資源群組、虛擬網路、子網和 RedHat OpenShift 提取密碼的 ARO 叢集，而您先前下載並儲存在 金鑰保存庫 中。 此程式可能需要大約 30 分鐘才能完成。
+在本節中，您將部署 Azure Red Hat OpenShift （ARO） 叢集。 ARO_CLUSTER_NAME變數會保留 ARO 叢集的名稱。 az aro create 命令會部署具有指定名稱、資源群組、虛擬網路、子網和您先前下載並儲存在 金鑰保存庫 中的 RedHat OpenShift 提取秘密的 ARO 叢集。 此程式可能需要大約 30 分鐘才能完成。
 
 ```bash
 export ARO_CLUSTER_NAME="aro-${LOCAL_NAME}"
