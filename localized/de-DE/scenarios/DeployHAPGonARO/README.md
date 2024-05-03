@@ -31,6 +31,25 @@ export RGTAGS="owner=ARO Demo"
 export LOCATION="westus"
 export LOCAL_NAME="arodemo"
 export RG_NAME="rg-arodemo-perm"
+az group create -n $RG_NAME -l $LOCATION --tags $RGTAGS
+```
+
+Ergebnisse:
+<!-- expected_similarity=0.3 -->
+```json
+{
+"id": "/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/xx-xxxxx-xxxxx",
+"location": "westus",
+"managedBy": null,
+"name": "xx-xxxxx-xxxxx",
+"properties": {
+    "provisioningState": "Succeeded"
+},
+"tags": {
+    "owner": "xxx xxxx"
+},
+"type": "Microsoft.Resources/resourceGroups"
+}
 ```
 
 ## Erstellen eines VNET
