@@ -1,0 +1,59 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+spec:
+  ingressClassName: nginx
+  rules:
+  - http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: node-port
+            port:
+              number: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: node-port
+spec:
+  ports:
+    - port: 80
+      targetPort: 3000
+      protocol: TCP
+  type: NodePort
+  selector:
+    app: vision-demo
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deployment
+spec:
+  selector:
+    matchLabels:
+      app:  vision-demo
+  template:
+    metadata:
+      labels:
+        app:  vision-demo
+    spec:
+      containers:
+      - image: <IMAGE_NAME>
+        name: vision-demo
+        env:
+          - name: AZURE_DATABASE_URL
+            value: <DATABASE_URL>
+          - name: AZURE_COMPUTER_VISION_KEY
+            value: <COMPUTER_VISION_KEY>
+          - name: AZURE_COMPUTER_VISION_ENDPOINT
+            value: <COMPUTER_VISION_ENDPOINT>
+          - name: AZURE_STORAGE_ACCOUNT_NAME
+            value: <MY_STORAGE_ACCOUNT_NAME>
+          - name: AZURE_STORAGE_ACCOUNT_KEY
+            value: <STORAGE_ACCOUNT_KEY> 
