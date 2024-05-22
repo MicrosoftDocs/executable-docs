@@ -52,7 +52,7 @@ An [Azure resource group][azure-resource-group] is a logical group in which Azur
 Create a resource group using the [`az group create`][az-group-create] command.
 
 ```azurecli-interactive
-azz group create --name $MY_RESOURCE_GROUP_NAME --location $REGION
+az group create --name $MY_RESOURCE_GROUP_NAME --location $REGION
 ```
 
 Results:

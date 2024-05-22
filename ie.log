@@ -1,0 +1,645 @@
+time=2024-05-22T14:04:54-07:00 level=info msg=INI file 'scenarios/mc-docs-pr/articles/aks/learn/quick-kubernetes-deploy-cli.ini' does not exist, skipping...
+time=2024-05-22T14:04:54-07:00 level=debug msg=Found HTML block with the content: <!--NOT AVAILABLE ON FEATURE Azure Cloud Shell-->
+
+
+time=2024-05-22T14:04:54-07:00 level=debug msg=Found HTML block with the content: <!-- expected_similarity=0.3 -->
+
+
+time=2024-05-22T14:04:54-07:00 level=debug msg=Found HTML block with the content: <!-- expected_similarity=0.3 -->
+
+
+time=2024-05-22T14:04:54-07:00 level=debug msg=Found HTML block with the content: <!-- LINKS - external -->
+
+
+time=2024-05-22T14:04:54-07:00 level=debug msg=Found HTML block with the content: <!-- LINKS - internal -->
+
+
+time=2024-05-22T14:04:54-07:00 level=debug msg=Found HTML block with the content: <!--Update_Description: update meta properties, wording update, update link-->
+
+
+time=2024-05-22T14:04:54-07:00 level=debug msg=Simalrity score of 0.300000 found
+time=2024-05-22T14:04:54-07:00 level=debug msg=Simalrity score of 0.300000 found
+time=2024-05-22T14:04:54-07:00 level=debug msg=Found 8 code blocks CodeBlocks=[{azurecli export RANDOM_ID="$(openssl rand -hex 3)"
+export MY_RESOURCE_GROUP_NAME="myAKSResourceGroup$RANDOM_ID"
+export REGION="westeurope"
+export MY_AKS_CLUSTER_NAME="myAKSCluster$RANDOM_ID"
+export MY_DNS_LABEL="mydnslabel$RANDOM_ID"
+ Define environment variables {  0 <nil>}} {azurecli az group create --name $MY_RESOURCE_GROUP_NAME --location $REGION
+ Create a resource group {JSON {
+  "id": "/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/myAKSResourceGroupxxxxxx",
+  "location": "eastus",
+  "managedBy": null,
+  "name": "testResourceGroup",
+  "properties": {
+    "provisioningState": "Succeeded"
+  },
+  "tags": null,
+  "type": "Microsoft.Resources/resourceGroups"
+}
+ 0.3 <nil>}} {azurecli az aks create --resource-group $MY_RESOURCE_GROUP_NAME --name $MY_AKS_CLUSTER_NAME --enable-managed-identity --node-count 1 --generate-ssh-keys
+ Create an AKS cluster {  0 <nil>}} {azurecli az aks get-credentials --resource-group $MY_RESOURCE_GROUP_NAME --name $MY_AKS_CLUSTER_NAME
+ Connect to the cluster {  0 <nil>}} {azurecli kubectl get nodes
+ Connect to the cluster {  0 <nil>}} {azurecli kubectl apply -f aks-store-quickstart.yaml
+ Deploy the application {  0 <nil>}} {azurecli runtime="5 minute"
+endtime=$(date -ud "$runtime" +%s)
+while [[ $(date -u +%s) -le $endtime ]]
+do
+   STATUS=$(kubectl get pods -l app=store-front -o 'jsonpath={..status.conditions[?(@.type=="Ready")].status}')
+   echo $STATUS
+   if [ "$STATUS" == 'True' ]
+   then
+      export IP_ADDRESS=$(kubectl get service store-front --output 'jsonpath={..status.loadBalancer.ingress[0].ip}')
+      echo "Service IP Address: $IP_ADDRESS"
+      break
+   else
+      sleep 10
+   fi
+done
+ Test the application {  0 <nil>}} {azurecli curl $IP_ADDRESS
+ Test the application {JSON <!doctype html>
+<html lang="">
+   <head>
+      <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      <link rel="icon" href="/favicon.ico">
+      <title>store-front</title>
+      <script defer="defer" src="/js/chunk-vendors.df69ae47.js"></script>
+      <script defer="defer" src="/js/app.7e8cfbb2.js"></script>
+      <link href="/css/app.a5dc49f6.css" rel="stylesheet">
+   </head>
+   <body>
+      <div id="app"></div>
+   </body>
+</html>
+ 0.3 <nil>}}]
+time=2024-05-22T14:04:54-07:00 level=info msg=Successfully built out the scenario: Quickstart: Deploy an Azure Kubernetes Service (AKS) cluster using Azure CLI
+time=2024-05-22T14:04:54-07:00 level=info msg=Changed directory to .
+time=2024-05-22T14:04:54-07:00 level=info msg=Executing command: export RANDOM_ID="$(openssl rand -hex 3)"
+export MY_RESOURCE_GROUP_NAME="myAKSResourceGroup$RANDOM_ID"
+export REGION="westeurope"
+export MY_AKS_CLUSTER_NAME="myAKSCluster$RANDOM_ID"
+export MY_DNS_LABEL="mydnslabel$RANDOM_ID"
+
+time=2024-05-22T14:04:54-07:00 level=info msg=Command stdout: 
+time=2024-05-22T14:04:54-07:00 level=info msg=Command stderr: 
+time=2024-05-22T14:04:54-07:00 level=info msg=Executing command: az group create --name $MY_RESOURCE_GROUP_NAME --location $REGION
+
+time=2024-05-22T14:04:59-07:00 level=info msg=Command stdout: {
+  "id": "/subscriptions/d1aa957b-94f5-49ef-b29a-0178c58a7132/resourceGroups/myAKSResourceGroup968025",
+  "location": "westeurope",
+  "managedBy": null,
+  "name": "myAKSResourceGroup968025",
+  "properties": {
+    "provisioningState": "Succeeded"
+  },
+  "tags": null,
+  "type": "Microsoft.Resources/resourceGroups"
+}
+
+time=2024-05-22T14:04:59-07:00 level=info msg=Command stderr: 
+time=2024-05-22T14:04:59-07:00 level=debug msg=Comparing JSON strings:
+Expected: {
+  "id": "/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/myAKSResourceGroupxxxxxx",
+  "location": "eastus",
+  "managedBy": null,
+  "name": "testResourceGroup",
+  "properties": {
+    "provisioningState": "Succeeded"
+  },
+  "tags": null,
+  "type": "Microsoft.Resources/resourceGroups"
+}
+
+Actual{
+  "id": "/subscriptions/d1aa957b-94f5-49ef-b29a-0178c58a7132/resourceGroups/myAKSResourceGroup968025",
+  "location": "westeurope",
+  "managedBy": null,
+  "name": "myAKSResourceGroup968025",
+  "properties": {
+    "provisioningState": "Succeeded"
+  },
+  "tags": null,
+  "type": "Microsoft.Resources/resourceGroups"
+}
+
+time=2024-05-22T14:04:59-07:00 level=debug msg=Expected Similarity: 0.300000, Actual Similarity: 0.747720
+time=2024-05-22T14:04:59-07:00 level=info msg=Found resource group: myAKSResourceGroup968025
+time=2024-05-22T14:04:59-07:00 level=info msg=Executing command: az aks create --resource-group $MY_RESOURCE_GROUP_NAME --name $MY_AKS_CLUSTER_NAME --enable-managed-identity --node-count 1 --generate-ssh-keys
+
+time=2024-05-22T14:05:46-07:00 level=info msg=INI file 'scenarios/mc-docs-pr/articles/aks/learn/quick-kubernetes-deploy-cli.ini' does not exist, skipping...
+time=2024-05-22T14:05:46-07:00 level=debug msg=Found HTML block with the content: <!--NOT AVAILABLE ON FEATURE Azure Cloud Shell-->
+
+
+time=2024-05-22T14:05:46-07:00 level=debug msg=Found HTML block with the content: <!-- expected_similarity=0.3 -->
+
+
+time=2024-05-22T14:05:46-07:00 level=debug msg=Found HTML block with the content: <!-- expected_similarity=0.3 -->
+
+
+time=2024-05-22T14:05:46-07:00 level=debug msg=Found HTML block with the content: <!-- LINKS - external -->
+
+
+time=2024-05-22T14:05:46-07:00 level=debug msg=Found HTML block with the content: <!-- LINKS - internal -->
+
+
+time=2024-05-22T14:05:46-07:00 level=debug msg=Found HTML block with the content: <!--Update_Description: update meta properties, wording update, update link-->
+
+
+time=2024-05-22T14:05:46-07:00 level=debug msg=Simalrity score of 0.300000 found
+time=2024-05-22T14:05:46-07:00 level=debug msg=Simalrity score of 0.300000 found
+time=2024-05-22T14:05:46-07:00 level=debug msg=Found 8 code blocks CodeBlocks=[{azurecli export RANDOM_ID="$(openssl rand -hex 3)"
+export MY_RESOURCE_GROUP_NAME="myAKSResourceGroup$RANDOM_ID"
+export REGION="westeurope"
+export MY_AKS_CLUSTER_NAME="myAKSCluster$RANDOM_ID"
+export MY_DNS_LABEL="mydnslabel$RANDOM_ID"
+ Define environment variables {  0 <nil>}} {azurecli az group create --name $MY_RESOURCE_GROUP_NAME --location $REGION
+ Create a resource group {JSON {
+  "id": "/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/myAKSResourceGroupxxxxxx",
+  "location": "eastus",
+  "managedBy": null,
+  "name": "testResourceGroup",
+  "properties": {
+    "provisioningState": "Succeeded"
+  },
+  "tags": null,
+  "type": "Microsoft.Resources/resourceGroups"
+}
+ 0.3 <nil>}} {azurecli az aks create --resource-group $MY_RESOURCE_GROUP_NAME --name $MY_AKS_CLUSTER_NAME --enable-managed-identity --node-count 1 --generate-ssh-keys
+ Create an AKS cluster {  0 <nil>}} {azurecli az aks get-credentials --resource-group $MY_RESOURCE_GROUP_NAME --name $MY_AKS_CLUSTER_NAME
+ Connect to the cluster {  0 <nil>}} {azurecli kubectl get nodes
+ Connect to the cluster {  0 <nil>}} {azurecli kubectl apply -f aks-store-quickstart.yaml
+ Deploy the application {  0 <nil>}} {azurecli runtime="5 minute"
+endtime=$(date -ud "$runtime" +%s)
+while [[ $(date -u +%s) -le $endtime ]]
+do
+   STATUS=$(kubectl get pods -l app=store-front -o 'jsonpath={..status.conditions[?(@.type=="Ready")].status}')
+   echo $STATUS
+   if [ "$STATUS" == 'True' ]
+   then
+      export IP_ADDRESS=$(kubectl get service store-front --output 'jsonpath={..status.loadBalancer.ingress[0].ip}')
+      echo "Service IP Address: $IP_ADDRESS"
+      break
+   else
+      sleep 10
+   fi
+done
+ Test the application {  0 <nil>}} {azurecli curl $IP_ADDRESS
+ Test the application {JSON <!doctype html>
+<html lang="">
+   <head>
+      <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      <link rel="icon" href="/favicon.ico">
+      <title>store-front</title>
+      <script defer="defer" src="/js/chunk-vendors.df69ae47.js"></script>
+      <script defer="defer" src="/js/app.7e8cfbb2.js"></script>
+      <link href="/css/app.a5dc49f6.css" rel="stylesheet">
+   </head>
+   <body>
+      <div id="app"></div>
+   </body>
+</html>
+ 0.3 <nil>}}]
+time=2024-05-22T14:05:46-07:00 level=info msg=Successfully built out the scenario: Quickstart: Deploy an Azure Kubernetes Service (AKS) cluster using Azure CLI
+time=2024-05-22T14:05:46-07:00 level=info msg=Changed directory to .
+time=2024-05-22T14:05:46-07:00 level=info msg=Executing command: export RANDOM_ID="$(openssl rand -hex 3)"
+export MY_RESOURCE_GROUP_NAME="myAKSResourceGroup$RANDOM_ID"
+export REGION="westeurope"
+export MY_AKS_CLUSTER_NAME="myAKSCluster$RANDOM_ID"
+export MY_DNS_LABEL="mydnslabel$RANDOM_ID"
+
+time=2024-05-22T14:05:46-07:00 level=info msg=Command stdout: 
+time=2024-05-22T14:05:46-07:00 level=info msg=Command stderr: 
+time=2024-05-22T14:05:46-07:00 level=info msg=Executing command: az group create --name $MY_RESOURCE_GROUP_NAME --location $REGION
+
+time=2024-05-22T14:05:49-07:00 level=info msg=Command stdout: {
+  "id": "/subscriptions/d1aa957b-94f5-49ef-b29a-0178c58a7132/resourceGroups/myAKSResourceGroupaa0a6d",
+  "location": "westeurope",
+  "managedBy": null,
+  "name": "myAKSResourceGroupaa0a6d",
+  "properties": {
+    "provisioningState": "Succeeded"
+  },
+  "tags": null,
+  "type": "Microsoft.Resources/resourceGroups"
+}
+
+time=2024-05-22T14:05:49-07:00 level=info msg=Command stderr: 
+time=2024-05-22T14:05:49-07:00 level=debug msg=Comparing JSON strings:
+Expected: {
+  "id": "/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/myAKSResourceGroupxxxxxx",
+  "location": "eastus",
+  "managedBy": null,
+  "name": "testResourceGroup",
+  "properties": {
+    "provisioningState": "Succeeded"
+  },
+  "tags": null,
+  "type": "Microsoft.Resources/resourceGroups"
+}
+
+Actual{
+  "id": "/subscriptions/d1aa957b-94f5-49ef-b29a-0178c58a7132/resourceGroups/myAKSResourceGroupaa0a6d",
+  "location": "westeurope",
+  "managedBy": null,
+  "name": "myAKSResourceGroupaa0a6d",
+  "properties": {
+    "provisioningState": "Succeeded"
+  },
+  "tags": null,
+  "type": "Microsoft.Resources/resourceGroups"
+}
+
+time=2024-05-22T14:05:49-07:00 level=debug msg=Expected Similarity: 0.300000, Actual Similarity: 0.747720
+time=2024-05-22T14:05:49-07:00 level=info msg=Found resource group: myAKSResourceGroupaa0a6d
+time=2024-05-22T14:05:49-07:00 level=info msg=Executing command: az aks create --resource-group $MY_RESOURCE_GROUP_NAME --name $MY_AKS_CLUSTER_NAME --enable-managed-identity --node-count 1 --generate-ssh-keys
+
+time=2024-05-22T14:07:18-07:00 level=info msg=INI file 'scenarios/mc-docs-pr/articles/aks/learn/quick-kubernetes-deploy-cli.ini' does not exist, skipping...
+time=2024-05-22T14:07:18-07:00 level=debug msg=Found HTML block with the content: <!--NOT AVAILABLE ON FEATURE Azure Cloud Shell-->
+
+
+time=2024-05-22T14:07:18-07:00 level=debug msg=Found HTML block with the content: <!-- expected_similarity=0.3 -->
+
+
+time=2024-05-22T14:07:18-07:00 level=debug msg=Found HTML block with the content: <!-- expected_similarity=0.3 -->
+
+
+time=2024-05-22T14:07:18-07:00 level=debug msg=Found HTML block with the content: <!-- LINKS - external -->
+
+
+time=2024-05-22T14:07:18-07:00 level=debug msg=Found HTML block with the content: <!-- LINKS - internal -->
+
+
+time=2024-05-22T14:07:18-07:00 level=debug msg=Found HTML block with the content: <!--Update_Description: update meta properties, wording update, update link-->
+
+
+time=2024-05-22T14:07:18-07:00 level=debug msg=Simalrity score of 0.300000 found
+time=2024-05-22T14:07:18-07:00 level=debug msg=Simalrity score of 0.300000 found
+time=2024-05-22T14:07:18-07:00 level=debug msg=Found 8 code blocks CodeBlocks=[{azurecli export RANDOM_ID="$(openssl rand -hex 3)"
+export MY_RESOURCE_GROUP_NAME="myAKSResourceGroup$RANDOM_ID"
+export REGION="westeurope"
+export MY_AKS_CLUSTER_NAME="myAKSCluster$RANDOM_ID"
+export MY_DNS_LABEL="mydnslabel$RANDOM_ID"
+ Define environment variables {  0 <nil>}} {azurecli az group create --name $MY_RESOURCE_GROUP_NAME --location $REGION
+ Create a resource group {JSON {
+  "id": "/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/myAKSResourceGroupxxxxxx",
+  "location": "eastus",
+  "managedBy": null,
+  "name": "testResourceGroup",
+  "properties": {
+    "provisioningState": "Succeeded"
+  },
+  "tags": null,
+  "type": "Microsoft.Resources/resourceGroups"
+}
+ 0.3 <nil>}} {azurecli az aks create --resource-group $MY_RESOURCE_GROUP_NAME --name $MY_AKS_CLUSTER_NAME --enable-managed-identity --node-count 1 --generate-ssh-keys
+ Create an AKS cluster {  0 <nil>}} {azurecli az aks get-credentials --resource-group $MY_RESOURCE_GROUP_NAME --name $MY_AKS_CLUSTER_NAME
+ Connect to the cluster {  0 <nil>}} {azurecli kubectl get nodes
+ Connect to the cluster {  0 <nil>}} {azurecli kubectl apply -f aks-store-quickstart.yaml
+ Deploy the application {  0 <nil>}} {azurecli runtime="5 minute"
+endtime=$(date -ud "$runtime" +%s)
+while [[ $(date -u +%s) -le $endtime ]]
+do
+   STATUS=$(kubectl get pods -l app=store-front -o 'jsonpath={..status.conditions[?(@.type=="Ready")].status}')
+   echo $STATUS
+   if [ "$STATUS" == 'True' ]
+   then
+      export IP_ADDRESS=$(kubectl get service store-front --output 'jsonpath={..status.loadBalancer.ingress[0].ip}')
+      echo "Service IP Address: $IP_ADDRESS"
+      break
+   else
+      sleep 10
+   fi
+done
+ Test the application {  0 <nil>}} {azurecli curl $IP_ADDRESS
+ Test the application {JSON <!doctype html>
+<html lang="">
+   <head>
+      <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      <link rel="icon" href="/favicon.ico">
+      <title>store-front</title>
+      <script defer="defer" src="/js/chunk-vendors.df69ae47.js"></script>
+      <script defer="defer" src="/js/app.7e8cfbb2.js"></script>
+      <link href="/css/app.a5dc49f6.css" rel="stylesheet">
+   </head>
+   <body>
+      <div id="app"></div>
+   </body>
+</html>
+ 0.3 <nil>}}]
+time=2024-05-22T14:07:18-07:00 level=info msg=Successfully built out the scenario: Quickstart: Deploy an Azure Kubernetes Service (AKS) cluster using Azure CLI
+time=2024-05-22T14:07:18-07:00 level=info msg=Changed directory to .
+time=2024-05-22T14:07:18-07:00 level=info msg=Executing command: export RANDOM_ID="$(openssl rand -hex 3)"
+export MY_RESOURCE_GROUP_NAME="myAKSResourceGroup$RANDOM_ID"
+export REGION="westeurope"
+export MY_AKS_CLUSTER_NAME="myAKSCluster$RANDOM_ID"
+export MY_DNS_LABEL="mydnslabel$RANDOM_ID"
+
+time=2024-05-22T14:07:18-07:00 level=info msg=Command stdout: 
+time=2024-05-22T14:07:18-07:00 level=info msg=Command stderr: 
+time=2024-05-22T14:07:18-07:00 level=info msg=Executing command: az group create --name $MY_RESOURCE_GROUP_NAME --location $REGION
+
+time=2024-05-22T14:07:21-07:00 level=info msg=Command stdout: {
+  "id": "/subscriptions/d1aa957b-94f5-49ef-b29a-0178c58a7132/resourceGroups/myAKSResourceGroup32a9f8",
+  "location": "westeurope",
+  "managedBy": null,
+  "name": "myAKSResourceGroup32a9f8",
+  "properties": {
+    "provisioningState": "Succeeded"
+  },
+  "tags": null,
+  "type": "Microsoft.Resources/resourceGroups"
+}
+
+time=2024-05-22T14:07:21-07:00 level=info msg=Command stderr: 
+time=2024-05-22T14:07:21-07:00 level=debug msg=Comparing JSON strings:
+Expected: {
+  "id": "/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/myAKSResourceGroupxxxxxx",
+  "location": "eastus",
+  "managedBy": null,
+  "name": "testResourceGroup",
+  "properties": {
+    "provisioningState": "Succeeded"
+  },
+  "tags": null,
+  "type": "Microsoft.Resources/resourceGroups"
+}
+
+Actual{
+  "id": "/subscriptions/d1aa957b-94f5-49ef-b29a-0178c58a7132/resourceGroups/myAKSResourceGroup32a9f8",
+  "location": "westeurope",
+  "managedBy": null,
+  "name": "myAKSResourceGroup32a9f8",
+  "properties": {
+    "provisioningState": "Succeeded"
+  },
+  "tags": null,
+  "type": "Microsoft.Resources/resourceGroups"
+}
+
+time=2024-05-22T14:07:21-07:00 level=debug msg=Expected Similarity: 0.300000, Actual Similarity: 0.747720
+time=2024-05-22T14:07:21-07:00 level=info msg=Found resource group: myAKSResourceGroup32a9f8
+time=2024-05-22T14:07:21-07:00 level=info msg=Executing command: az aks create --resource-group $MY_RESOURCE_GROUP_NAME --name $MY_AKS_CLUSTER_NAME --enable-managed-identity --node-count 1 --generate-ssh-keys
+
+time=2024-05-22T14:08:07-07:00 level=info msg=INI file 'scenarios/mc-docs-pr/articles/aks/learn/quick-kubernetes-deploy-cli.ini' does not exist, skipping...
+time=2024-05-22T14:08:07-07:00 level=debug msg=Found HTML block with the content: <!--NOT AVAILABLE ON FEATURE Azure Cloud Shell-->
+
+
+time=2024-05-22T14:08:07-07:00 level=debug msg=Found HTML block with the content: <!-- expected_similarity=0.3 -->
+
+
+time=2024-05-22T14:08:07-07:00 level=debug msg=Found HTML block with the content: <!-- expected_similarity=0.3 -->
+
+
+time=2024-05-22T14:08:07-07:00 level=debug msg=Found HTML block with the content: <!-- LINKS - external -->
+
+
+time=2024-05-22T14:08:07-07:00 level=debug msg=Found HTML block with the content: <!-- LINKS - internal -->
+
+
+time=2024-05-22T14:08:07-07:00 level=debug msg=Found HTML block with the content: <!--Update_Description: update meta properties, wording update, update link-->
+
+
+time=2024-05-22T14:08:07-07:00 level=debug msg=Simalrity score of 0.300000 found
+time=2024-05-22T14:08:07-07:00 level=debug msg=Simalrity score of 0.300000 found
+time=2024-05-22T14:08:07-07:00 level=debug msg=Found 8 code blocks CodeBlocks=[{azurecli export RANDOM_ID="$(openssl rand -hex 3)"
+export MY_RESOURCE_GROUP_NAME="myAKSResourceGroup$RANDOM_ID"
+export REGION="westeurope"
+export MY_AKS_CLUSTER_NAME="myAKSCluster$RANDOM_ID"
+export MY_DNS_LABEL="mydnslabel$RANDOM_ID"
+ Define environment variables {  0 <nil>}} {azurecli az group create --name $MY_RESOURCE_GROUP_NAME --location $REGION
+ Create a resource group {JSON {
+  "id": "/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/myAKSResourceGroupxxxxxx",
+  "location": "eastus",
+  "managedBy": null,
+  "name": "testResourceGroup",
+  "properties": {
+    "provisioningState": "Succeeded"
+  },
+  "tags": null,
+  "type": "Microsoft.Resources/resourceGroups"
+}
+ 0.3 <nil>}} {azurecli az aks create --resource-group $MY_RESOURCE_GROUP_NAME --name $MY_AKS_CLUSTER_NAME --enable-managed-identity --node-count 1 --generate-ssh-keys
+ Create an AKS cluster {  0 <nil>}} {azurecli az aks get-credentials --resource-group $MY_RESOURCE_GROUP_NAME --name $MY_AKS_CLUSTER_NAME
+ Connect to the cluster {  0 <nil>}} {azurecli kubectl get nodes
+ Connect to the cluster {  0 <nil>}} {azurecli kubectl apply -f aks-store-quickstart.yaml
+ Deploy the application {  0 <nil>}} {azurecli runtime="5 minute"
+endtime=$(date -ud "$runtime" +%s)
+while [[ $(date -u +%s) -le $endtime ]]
+do
+   STATUS=$(kubectl get pods -l app=store-front -o 'jsonpath={..status.conditions[?(@.type=="Ready")].status}')
+   echo $STATUS
+   if [ "$STATUS" == 'True' ]
+   then
+      export IP_ADDRESS=$(kubectl get service store-front --output 'jsonpath={..status.loadBalancer.ingress[0].ip}')
+      echo "Service IP Address: $IP_ADDRESS"
+      break
+   else
+      sleep 10
+   fi
+done
+ Test the application {  0 <nil>}} {azurecli curl $IP_ADDRESS
+ Test the application {JSON <!doctype html>
+<html lang="">
+   <head>
+      <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      <link rel="icon" href="/favicon.ico">
+      <title>store-front</title>
+      <script defer="defer" src="/js/chunk-vendors.df69ae47.js"></script>
+      <script defer="defer" src="/js/app.7e8cfbb2.js"></script>
+      <link href="/css/app.a5dc49f6.css" rel="stylesheet">
+   </head>
+   <body>
+      <div id="app"></div>
+   </body>
+</html>
+ 0.3 <nil>}}]
+time=2024-05-22T14:08:07-07:00 level=info msg=Successfully built out the scenario: Quickstart: Deploy an Azure Kubernetes Service (AKS) cluster using Azure CLI
+time=2024-05-22T14:08:07-07:00 level=info msg=Changed directory to .
+time=2024-05-22T14:08:07-07:00 level=info msg=Executing command: export RANDOM_ID="$(openssl rand -hex 3)"
+export MY_RESOURCE_GROUP_NAME="myAKSResourceGroup$RANDOM_ID"
+export REGION="westeurope"
+export MY_AKS_CLUSTER_NAME="myAKSCluster$RANDOM_ID"
+export MY_DNS_LABEL="mydnslabel$RANDOM_ID"
+
+time=2024-05-22T14:08:07-07:00 level=info msg=Command stdout: 
+time=2024-05-22T14:08:07-07:00 level=info msg=Command stderr: 
+time=2024-05-22T14:08:07-07:00 level=info msg=Executing command: az group create --name $MY_RESOURCE_GROUP_NAME --location $REGION
+
+time=2024-05-22T14:08:10-07:00 level=info msg=Command stdout: {
+  "id": "/subscriptions/d1aa957b-94f5-49ef-b29a-0178c58a7132/resourceGroups/myAKSResourceGroup1527e2",
+  "location": "westeurope",
+  "managedBy": null,
+  "name": "myAKSResourceGroup1527e2",
+  "properties": {
+    "provisioningState": "Succeeded"
+  },
+  "tags": null,
+  "type": "Microsoft.Resources/resourceGroups"
+}
+
+time=2024-05-22T14:08:10-07:00 level=info msg=Command stderr: 
+time=2024-05-22T14:08:10-07:00 level=debug msg=Comparing JSON strings:
+Expected: {
+  "id": "/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/myAKSResourceGroupxxxxxx",
+  "location": "eastus",
+  "managedBy": null,
+  "name": "testResourceGroup",
+  "properties": {
+    "provisioningState": "Succeeded"
+  },
+  "tags": null,
+  "type": "Microsoft.Resources/resourceGroups"
+}
+
+Actual{
+  "id": "/subscriptions/d1aa957b-94f5-49ef-b29a-0178c58a7132/resourceGroups/myAKSResourceGroup1527e2",
+  "location": "westeurope",
+  "managedBy": null,
+  "name": "myAKSResourceGroup1527e2",
+  "properties": {
+    "provisioningState": "Succeeded"
+  },
+  "tags": null,
+  "type": "Microsoft.Resources/resourceGroups"
+}
+
+time=2024-05-22T14:08:10-07:00 level=debug msg=Expected Similarity: 0.300000, Actual Similarity: 0.744757
+time=2024-05-22T14:08:10-07:00 level=info msg=Found resource group: myAKSResourceGroup1527e2
+time=2024-05-22T14:08:10-07:00 level=info msg=Executing command: az aks create --resource-group $MY_RESOURCE_GROUP_NAME --name $MY_AKS_CLUSTER_NAME --enable-managed-identity --node-count 1 --generate-ssh-keys
+
+time=2024-05-22T14:08:51-07:00 level=info msg=INI file 'scenarios/mc-docs-pr/articles/aks/learn/quick-kubernetes-deploy-cli.ini' does not exist, skipping...
+time=2024-05-22T14:08:51-07:00 level=debug msg=Found HTML block with the content: <!--NOT AVAILABLE ON FEATURE Azure Cloud Shell-->
+
+
+time=2024-05-22T14:08:51-07:00 level=debug msg=Found HTML block with the content: <!-- expected_similarity=0.3 -->
+
+
+time=2024-05-22T14:08:51-07:00 level=debug msg=Found HTML block with the content: <!-- expected_similarity=0.3 -->
+
+
+time=2024-05-22T14:08:51-07:00 level=debug msg=Found HTML block with the content: <!-- LINKS - external -->
+
+
+time=2024-05-22T14:08:51-07:00 level=debug msg=Found HTML block with the content: <!-- LINKS - internal -->
+
+
+time=2024-05-22T14:08:51-07:00 level=debug msg=Found HTML block with the content: <!--Update_Description: update meta properties, wording update, update link-->
+
+
+time=2024-05-22T14:08:51-07:00 level=debug msg=Simalrity score of 0.300000 found
+time=2024-05-22T14:08:51-07:00 level=debug msg=Simalrity score of 0.300000 found
+time=2024-05-22T14:08:51-07:00 level=debug msg=Found 8 code blocks CodeBlocks=[{azurecli export RANDOM_ID="$(openssl rand -hex 3)"
+export MY_RESOURCE_GROUP_NAME="myAKSResourceGroup$RANDOM_ID"
+export REGION="westeurope"
+export MY_AKS_CLUSTER_NAME="myAKSCluster$RANDOM_ID"
+export MY_DNS_LABEL="mydnslabel$RANDOM_ID"
+ Define environment variables {  0 <nil>}} {azurecli az group create --name $MY_RESOURCE_GROUP_NAME --location $REGION
+ Create a resource group {JSON {
+  "id": "/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/myAKSResourceGroupxxxxxx",
+  "location": "eastus",
+  "managedBy": null,
+  "name": "testResourceGroup",
+  "properties": {
+    "provisioningState": "Succeeded"
+  },
+  "tags": null,
+  "type": "Microsoft.Resources/resourceGroups"
+}
+ 0.3 <nil>}} {azurecli az aks create --resource-group $MY_RESOURCE_GROUP_NAME --name $MY_AKS_CLUSTER_NAME --enable-managed-identity --node-count 1 --generate-ssh-keys
+ Create an AKS cluster {  0 <nil>}} {azurecli az aks get-credentials --resource-group $MY_RESOURCE_GROUP_NAME --name $MY_AKS_CLUSTER_NAME
+ Connect to the cluster {  0 <nil>}} {azurecli kubectl get nodes
+ Connect to the cluster {  0 <nil>}} {azurecli kubectl apply -f aks-store-quickstart.yaml
+ Deploy the application {  0 <nil>}} {azurecli runtime="5 minute"
+endtime=$(date -ud "$runtime" +%s)
+while [[ $(date -u +%s) -le $endtime ]]
+do
+   STATUS=$(kubectl get pods -l app=store-front -o 'jsonpath={..status.conditions[?(@.type=="Ready")].status}')
+   echo $STATUS
+   if [ "$STATUS" == 'True' ]
+   then
+      export IP_ADDRESS=$(kubectl get service store-front --output 'jsonpath={..status.loadBalancer.ingress[0].ip}')
+      echo "Service IP Address: $IP_ADDRESS"
+      break
+   else
+      sleep 10
+   fi
+done
+ Test the application {  0 <nil>}} {azurecli curl $IP_ADDRESS
+ Test the application {JSON <!doctype html>
+<html lang="">
+   <head>
+      <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      <link rel="icon" href="/favicon.ico">
+      <title>store-front</title>
+      <script defer="defer" src="/js/chunk-vendors.df69ae47.js"></script>
+      <script defer="defer" src="/js/app.7e8cfbb2.js"></script>
+      <link href="/css/app.a5dc49f6.css" rel="stylesheet">
+   </head>
+   <body>
+      <div id="app"></div>
+   </body>
+</html>
+ 0.3 <nil>}}]
+time=2024-05-22T14:08:51-07:00 level=info msg=Successfully built out the scenario: Quickstart: Deploy an Azure Kubernetes Service (AKS) cluster using Azure CLI
+time=2024-05-22T14:08:51-07:00 level=info msg=Changed directory to .
+time=2024-05-22T14:08:51-07:00 level=info msg=Executing command: export RANDOM_ID="$(openssl rand -hex 3)"
+export MY_RESOURCE_GROUP_NAME="myAKSResourceGroup$RANDOM_ID"
+export REGION="westeurope"
+export MY_AKS_CLUSTER_NAME="myAKSCluster$RANDOM_ID"
+export MY_DNS_LABEL="mydnslabel$RANDOM_ID"
+
+time=2024-05-22T14:08:51-07:00 level=info msg=Command stdout: 
+time=2024-05-22T14:08:51-07:00 level=info msg=Command stderr: 
+time=2024-05-22T14:08:51-07:00 level=info msg=Executing command: az group create --name $MY_RESOURCE_GROUP_NAME --location $REGION
+
+time=2024-05-22T14:08:55-07:00 level=info msg=Command stdout: {
+  "id": "/subscriptions/d1aa957b-94f5-49ef-b29a-0178c58a7132/resourceGroups/myAKSResourceGroupdd8f94",
+  "location": "westeurope",
+  "managedBy": null,
+  "name": "myAKSResourceGroupdd8f94",
+  "properties": {
+    "provisioningState": "Succeeded"
+  },
+  "tags": null,
+  "type": "Microsoft.Resources/resourceGroups"
+}
+
+time=2024-05-22T14:08:55-07:00 level=info msg=Command stderr: 
+time=2024-05-22T14:08:55-07:00 level=debug msg=Comparing JSON strings:
+Expected: {
+  "id": "/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/myAKSResourceGroupxxxxxx",
+  "location": "eastus",
+  "managedBy": null,
+  "name": "testResourceGroup",
+  "properties": {
+    "provisioningState": "Succeeded"
+  },
+  "tags": null,
+  "type": "Microsoft.Resources/resourceGroups"
+}
+
+Actual{
+  "id": "/subscriptions/d1aa957b-94f5-49ef-b29a-0178c58a7132/resourceGroups/myAKSResourceGroupdd8f94",
+  "location": "westeurope",
+  "managedBy": null,
+  "name": "myAKSResourceGroupdd8f94",
+  "properties": {
+    "provisioningState": "Succeeded"
+  },
+  "tags": null,
+  "type": "Microsoft.Resources/resourceGroups"
+}
+
+time=2024-05-22T14:08:55-07:00 level=debug msg=Expected Similarity: 0.300000, Actual Similarity: 0.750683
+time=2024-05-22T14:08:55-07:00 level=info msg=Found resource group: myAKSResourceGroupdd8f94
+time=2024-05-22T14:08:55-07:00 level=info msg=Executing command: az aks create --resource-group $MY_RESOURCE_GROUP_NAME --name $MY_AKS_CLUSTER_NAME --enable-managed-identity --node-count 1 --generate-ssh-keys
+

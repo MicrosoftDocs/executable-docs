@@ -2,42 +2,42 @@
 title: 'Quickstart: Deploy an Azure Kubernetes Service (AKS) cluster using Azure CLI'
 description: Learn how to quickly deploy a Kubernetes cluster and deploy an application in Azure Kubernetes Service (AKS) using Azure CLI.
 ms.topic: quickstart
-ms.date: 04/09/2024
-author: tamram
-ms.author: tamram
+ms.date: 04/24/2024
+author: yujiang111
+ms.author: v-leozhao
 ms.custom: H1Hack27Feb2017, mvc, devcenter, devx-track-azurecli, mode-api, innovation-engine, linux-related-content
 #Customer intent: As a developer or cluster operator, I want to deploy an AKS cluster and deploy an application so I can see how to run applications using the managed Kubernetes service in Azure.
 ---
 
 # Quickstart: Deploy an Azure Kubernetes Service (AKS) cluster using Azure CLI
 
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262758)
-
 Azure Kubernetes Service (AKS) is a managed Kubernetes service that lets you quickly deploy and manage clusters. In this quickstart, you learn how to:
 
 - Deploy an AKS cluster using the Azure CLI.
 - Run a sample multi-container application with a group of microservices and web front ends simulating a retail scenario.
 
-> [!NOTE]
-> To get started with quickly provisioning an AKS cluster, this article includes steps to deploy a cluster with default settings for evaluation purposes only. Before deploying a production-ready cluster, we recommend that you familiarize yourself with our [baseline reference architecture][baseline-reference-architecture] to consider how it aligns with your business requirements.
 
 ## Before you begin
 
 This quickstart assumes a basic understanding of Kubernetes concepts. For more information, see [Kubernetes core concepts for Azure Kubernetes Service (AKS)][kubernetes-concepts].
 
-- [!INCLUDE [quickstarts-free-trial-note](../../../includes/quickstarts-free-trial-note.md)]
+- If you don't have an Azure subscription, create a [trial account](https://www.microsoft.com/china/azure/index.html?fromtype=cn) before you begin.
 
-[!INCLUDE [azure-cli-prepare-your-environment-no-header.md](~/reusable-content/azure-cli/azure-cli-prepare-your-environment-no-header.md)]
+[!INCLUDE [azure-cli-prepare-your-environment-no-header.md](../../../includes/azure-cli-prepare-your-environment-no-header.md)]
 
-- This article requires version 2.0.64 or later of the Azure CLI. If you're using Azure Cloud Shell, the latest version is already installed there.
+- This article requires version 2.0.64 or later of the Azure CLI.
+
+<!--NOT AVAILABLE ON FEATURE Azure Cloud Shell-->
+
+
 - Make sure that the identity you're using to create your cluster has the appropriate minimum permissions. For more details on access and identity for AKS, see [Access and identity options for Azure Kubernetes Service (AKS)](../concepts-identity.md).
-- If you have multiple Azure subscriptions, select the appropriate subscription ID in which the resources should be billed using the [az account set](/cli/azure/account#az-account-set) command. For more information, see [How to manage Azure subscriptions – Azure CLI](/cli/azure/manage-azure-subscriptions-azure-cli?tabs=bash#change-the-active-subscription).
+- If you have multiple Azure subscriptions, select the appropriate subscription ID in which the resources should be billed using the [az account set](https://learn.microsoft.com/cli/azure/account#az-account-set) command.
 
 ## Define environment variables
 
 Define the following environment variables for use throughout this quickstart:
 
-```azurecli-interactive
+```azurecli
 export RANDOM_ID="$(openssl rand -hex 3)"
 export MY_RESOURCE_GROUP_NAME="myAKSResourceGroup$RANDOM_ID"
 export REGION="westeurope"
@@ -51,8 +51,8 @@ An [Azure resource group][azure-resource-group] is a logical group in which Azur
 
 Create a resource group using the [`az group create`][az-group-create] command.
 
-```azurecli-interactive
-azz group create --name $MY_RESOURCE_GROUP_NAME --location $REGION
+```azurecli
+az group create --name $MY_RESOURCE_GROUP_NAME --location $REGION
 ```
 
 Results:
@@ -75,7 +75,7 @@ Results:
 
 Create an AKS cluster using the [`az aks create`][az-aks-create] command. The following example creates a cluster with one node and enables a system-assigned managed identity.
 
-```azurecli-interactive
+```azurecli
 az aks create --resource-group $MY_RESOURCE_GROUP_NAME --name $MY_AKS_CLUSTER_NAME --enable-managed-identity --node-count 1 --generate-ssh-keys
 ```
 
@@ -84,17 +84,17 @@ az aks create --resource-group $MY_RESOURCE_GROUP_NAME --name $MY_AKS_CLUSTER_NA
 
 ## Connect to the cluster
 
-To manage a Kubernetes cluster, use the Kubernetes command-line client, [kubectl][kubectl]. `kubectl` is already installed if you use Azure Cloud Shell. To install `kubectl` locally, use the [`az aks install-cli`][az-aks-install-cli] command.
+To manage a Kubernetes cluster, use the Kubernetes command-line client, [kubectl][kubectl]. `kubectl` is already installed if you use Azure Power Shell.
 
 1. Configure `kubectl` to connect to your Kubernetes cluster using the [az aks get-credentials][az-aks-get-credentials] command. This command downloads credentials and configures the Kubernetes CLI to use them.
 
-    ```azurecli-interactive
+    ```azurecli
     az aks get-credentials --resource-group $MY_RESOURCE_GROUP_NAME --name $MY_AKS_CLUSTER_NAME
     ```
 
 1. Verify the connection to your cluster using the [kubectl get][kubectl-get] command. This command returns a list of the cluster nodes.
 
-    ```azurecli-interactive
+    ```azurecli
     kubectl get nodes
     ```
 
@@ -349,7 +349,7 @@ To deploy the application, you use a manifest file to create all the objects req
 
 1. Deploy the application using the [`kubectl apply`][kubectl-apply] command and specify the name of your YAML manifest.
 
-    ```azurecli-interactive
+    ```azurecli
     kubectl apply -f aks-store-quickstart.yaml
     ```
 
@@ -359,7 +359,7 @@ You can validate that the application is running by visiting the public IP addre
 
 Get the application URL using the following commands:
 
-```azurecli-interactive
+```azurecli
 runtime="5 minute"
 endtime=$(date -ud "$runtime" +%s)
 while [[ $(date -u +%s) -le $endtime ]]
@@ -377,7 +377,7 @@ do
 done
 ```
 
-```azurecli-interactive
+```azurecli
 curl $IP_ADDRESS
 ```
 
@@ -417,7 +417,7 @@ If you don't plan on going through the [AKS tutorial][aks-tutorial], clean up un
 
 ## Next steps
 
-In this quickstart, you deployed a Kubernetes cluster and then deployed a simple multi-container application to it. This sample application is for demo purposes only and doesn't represent all the best practices for Kubernetes applications. For guidance on creating full solutions with AKS for production, see [AKS solution guidance][aks-solution-guidance].
+In this quickstart, you deployed a Kubernetes cluster and then deployed a simple multi-container application to it. This sample application is for demo purposes only and doesn't represent all the best practices for Kubernetes applications.
 
 To learn more about AKS and walk through a complete code-to-deployment example, continue to the Kubernetes cluster tutorial.
 
@@ -433,11 +433,11 @@ To learn more about AKS and walk through a complete code-to-deployment example, 
 [kubernetes-concepts]: ../concepts-clusters-workloads.md
 [aks-tutorial]: ../tutorial-kubernetes-prepare-app.md
 [azure-resource-group]: ../../azure-resource-manager/management/overview.md
-[az-aks-create]: /cli/azure/aks#az-aks-create
-[az-aks-get-credentials]: /cli/azure/aks#az-aks-get-credentials
-[az-aks-install-cli]: /cli/azure/aks#az-aks-install-cli
-[az-group-create]: /cli/azure/group#az-group-create
-[az-group-delete]: /cli/azure/group#az-group-delete
+[az-aks-create]: https://learn.microsoft.com/cli/azure/aks#az-aks-create
+[az-aks-get-credentials]: https://learn.microsoft.com/cli/azure/aks#az-aks-get-credentials
+[az-aks-install-cli]: https://learn.microsoft.com/cli/azure/aks#az-aks-install-cli
+[az-group-create]: https://learn.microsoft.com/cli/azure/group#az-group-create
+[az-group-delete]: https://learn.microsoft.com/cli/azure/group#az-group-delete
 [kubernetes-deployment]: ../concepts-clusters-workloads.md#deployments-and-yaml-manifests
-[aks-solution-guidance]: /azure/architecture/reference-architectures/containers/aks-start-here?toc=/azure/aks/toc.json&bc=/azure/aks/breadcrumb/toc.json
-[baseline-reference-architecture]: /azure/architecture/reference-architectures/containers/aks/baseline-aks?toc=/azure/aks/toc.json&bc=/azure/aks/breadcrumb/toc.json
+
+<!--Update_Description: update meta properties, wording update, update link-->

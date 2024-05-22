@@ -1,5 +1,8 @@
 import os
 import github
+import shutil
+import subprocess
+import tempfile
 
 GITHUB_TOKEN = os.getenv('GITHUB_TOKEN')
 g = github.Github(GITHUB_TOKEN)
@@ -31,5 +34,58 @@ def sync_markdown_files():
                     with open(file_path, 'w') as f:
                         f.write(file_content)
 
+
+def install_ie():
+    """Installs IE if it is not already on the path."""
+    if shutil.which("ie") is not None:
+        pass# print("IE is already installed. Skipping installation...")
+        return
+    print("Innovation Engine not detected. Installing IE...")
+    original_dir = os.getcwd()
+    with tempfile.TemporaryDirectory() as temp_dir:
+        os.chdir(temp_dir)
+        process = subprocess.Popen(
+            "sudo apt install unzip", shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE
+        )
+        output, error = process.communicate()
+        if error:
+            print("Error (fixing it): ", error)
+
+        install_result = subprocess.run(
+            "curl -Lks https://aka.ms/install-ie | /bin/bash", shell=True
+        )
+        if install_result.returncode != 0:
+            print("Failed to install IE")
+        else:
+            print("Successfully installed IE.")
+
+    os.chdir(original_dir)
+
+    if shutil.which("ie") is None:
+        print(
+            "IE was successfully installed but you need to add ~/.local/bin to your PATH to access it."
+        )
+        print("You can do so by adding the following line to your ~/.bashrc file:")
+        print("export PATH=$PATH:~/.local/bin")
+        exit(0)
+
+def run_tests():
+    success_count = 0
+    failure_count = 0
+
+    for root, dirs, files in os.walk('scenarios'):
+        for file in files:
+            if file.endswith('.md'):
+                file_path = os.path.join(root, file)
+                result = subprocess.run(['ie', 'test', file_path])
+
+                if result.returncode == 0:
+                    success_count += 1
+                else:
+                    failure_count += 1
+
+    print(f'Successfully tested docs: {success_count}')
+    print(f'Failed docs: {failure_count}')
 if __name__ == "__main__":
     sync_markdown_files()
+    run_tests()
