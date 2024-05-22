@@ -5,12 +5,10 @@ on:
     workflows: ["sync"]
     types:
       - completed
-  workflow_dispatch:
 
 jobs:
   create_issue:
     runs-on: ubuntu-latest
-    if: ${{ github.event.workflow_run.conclusion == 'failure' }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
