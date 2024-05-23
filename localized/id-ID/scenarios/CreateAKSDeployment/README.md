@@ -359,7 +359,7 @@ Anda dapat memvalidasi bahwa aplikasi berjalan dengan mengunjungi alamat IP publ
 Dapatkan URL aplikasi menggunakan perintah berikut:
 
 ```azurecli-interactive
-runtime="5 minute"
+runtime="5 minutes"
 endtime=$(date -ud "$runtime" +%s)
 while [[ $(date -u +%s) -le $endtime ]]
 do
