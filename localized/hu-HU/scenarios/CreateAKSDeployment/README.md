@@ -359,7 +359,7 @@ A nyilvános IP-cím vagy az alkalmazás URL-címének megtekintésével ellenő
 Kérje le az alkalmazás URL-címét a következő parancsokkal:
 
 ```azurecli-interactive
-runtime="5 minute"
+runtime="5 minutes"
 endtime=$(date -ud "$runtime" +%s)
 while [[ $(date -u +%s) -le $endtime ]]
 do
