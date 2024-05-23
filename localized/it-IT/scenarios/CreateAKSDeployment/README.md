@@ -18,7 +18,7 @@ Il servizio Azure Kubernetes è un servizio Kubernetes gestito che permette di d
 - Eseguire un'applicazione multi-contenitore di esempio con un gruppo di microservizi e front-end web, simulando uno scenario di vendita al dettaglio.
 
 > [!NOTE]
-> Per iniziare ad effettuare un veloce provisioning di un cluster del servizio Azure Kubernetes, questo articolo include i passaggi per la distribuzione di un cluster con impostazioni predefinite a solo scopo di valutazione. Prima di distribuire un cluster pronto per la produzione, è consigliabile acquisire familiarità con [l'architettura di riferimento iniziale][baseline-reference-architecture] per valutare se è in linea con i requisiti aziendali.
+> Per iniziare ad effettuare un veloce provisioning di un cluster del servizio Azure Kubernetes, questo articolo include i passaggi per la distribuzione di un cluster con impostazioni predefinite a solo scopo di valutazione. Prima di distribuire un cluster pronto per la produzione, è consigliabile acquisire familiarità con l'[architettura di riferimento di base][baseline-reference-architecture] per valutare il modo in cui è allineato ai requisiti aziendali.
 
 ## Operazioni preliminari
 
@@ -99,7 +99,7 @@ Per gestire un cluster Kubernetes, usare il client da riga di comando kubernetes
 
 ## Distribuire l'applicazione
 
-Per distribuire l'applicazione, usare un file manifesto per creare tutti gli oggetti necessari per eseguire l'[applicazione di Archiviazione del servizio Azure Kubernetes](https://github.com/Azure-Samples/aks-store-demo). Un [file manifesto kubernetes][kubernetes-deployment] definisce lo stato desiderato di un cluster, ad esempio le immagini del contenitore da eseguire. Il manifesto include le distribuzioni e i servizi Kubernetes seguenti:
+Per distribuire l'applicazione, usare un file manifesto per creare tutti gli oggetti necessari per eseguire l'[applicazione di Archiviazione del servizio Azure Kubernetes](https://github.com/Azure-Samples/aks-store-demo). Un [file manifesto Kubernetes][kubernetes-deployment] definisce lo stato desiderato di un cluster, ad esempio le immagini del contenitore da eseguire. Il manifesto include le distribuzioni e i servizi Kubernetes seguenti:
 
 :::image type="content" source="media/quick-kubernetes-deploy-portal/aks-store-architecture.png" alt-text="Screenshot dell'architettura di esempio di Azure Store." lightbox="media/quick-kubernetes-deploy-portal/aks-store-architecture.png":::
 
@@ -109,7 +109,7 @@ Per distribuire l'applicazione, usare un file manifesto per creare tutti gli ogg
 - **Rabbit MQ**: coda di messaggi per una coda di ordini.
 
 > [!NOTE]
-> Non è consigliabile eseguire contenitori con stato, ad esempio Rabbit MQ, senza l'archiviazione persistente per la produzione. Questi vengono usati qui per semplicità, ma è consigliabile usare servizi gestiti, ad esempio Azure CosmosDB o il bus di servizio di Azure.
+> Non è consigliabile eseguire contenitori con stato, ad esempio Rabbit MQ, senza l'archiviazione permanente per la produzione. Questi vengono usati qui per semplicità, ma è consigliabile usare servizi gestiti, ad esempio Azure CosmosDB o il bus di servizio di Azure.
 
 1. Creare un file denominato `aks-store-quickstart.yaml` e copiarlo nel manifesto seguente:
 
@@ -342,7 +342,7 @@ Per distribuire l'applicazione, usare un file manifesto per creare tutti gli ogg
       type: LoadBalancer
     ```
 
-    Per una suddivisione dei file manifesto YAML, vedere [Distribuzioni e manifesti YAML](../concepts-clusters-workloads.md#deployments-and-yaml-manifests).
+    Per un dettaglio dei file manifesto YAML, vedere [Distribuzioni e manifesti YAML](../concepts-clusters-workloads.md#deployments-and-yaml-manifests).
 
     Se si crea e si salva il file YAML in locale, è possibile caricare il file manifesto nella directory predefinita in CloudShell selezionando il pulsante **Carica/Scarica file** e selezionando il file dal file system locale.
 
@@ -359,7 +359,7 @@ Per distribuire l'applicazione, usare un file manifesto per creare tutti gli ogg
 Ottenere l'URL dell'applicazione usando i comandi seguenti:
 
 ```azurecli-interactive
-runtime="5 minute"
+runtime="5 minutes"
 endtime=$(date -ud "$runtime" +%s)
 while [[ $(date -u +%s) -le $endtime ]]
 do
@@ -409,16 +409,16 @@ echo "You can now visit your web server at $IP_ADDRESS"
 
 ## Eliminare il cluster
 
-Se non si prevede di eseguire l'[esercitazione sul servizio Azure Kubernetes][aks-tutorial], pulire le risorse non necessarie per evitare addebiti di Azure. È possibile rimuovere il gruppo di risorse, il servizio contenitore e tutte le risorse correlate usando il [`az group delete`][az-group-delete] comando .
+Se non si prevede di eseguire l'[esercitazione del servizio Azure Kubernetes][aks-tutorial], ripulire le risorse non necessarie per evitare addebiti di Azure. È possibile rimuovere il gruppo di risorse, il servizio contenitore e tutte le risorse correlate usando il [`az group delete`][az-group-delete] comando .
 
 > [!NOTE]
-> Il cluster del servizio Azure Kubernetes è stato creato con un'identità gestita assegnata dal sistema, che è l'opzione di identità predefinita usata in questo avvio rapido. La piattaforma gestisce questa identità in modo che non sia necessario rimuoverla manualmente.
+> Il cluster del servizio Azure Kubernetes è stato creato con un'identità gestita assegnata dal sistema, che è l'opzione di identità predefinita usata in questo avvio rapido. Questa identità è gestita dalla piattaforma, pertanto non è necessario rimuoverla manualmente.
 
 ## Passaggi successivi
 
-In questo avvio rapido è stato distribuito un cluster Kubernetes ed è stata quindi distribuita una semplice applicazione multi-contenitore. Questa applicazione di esempio è solo a scopo dimostrativo e non rappresenta tutte le procedure consigliate per le applicazioni Kubernetes. Per indicazioni sulla creazione di soluzioni complete con il servizio Azure Kubernetes per la produzione, vedere [Linee guida per la soluzione del servizio Azure Kubernetes][aks-solution-guidance].
+In questa guida introduttiva, è stato distribuito un cluster Kubernetes, successivamente è stata distribuita una semplice applicazione multi-contenitore. Questa applicazione di esempio è solo a scopo dimostrativo e non rappresenta tutte le procedure consigliate per le applicazioni Kubernetes. Per indicazioni sulla creazione di soluzioni complete con il servizio Azure Kubernetes per la produzione, vedere [Linee guida per le soluzioni del servizio Azure Kubernetes][aks-solution-guidance].
 
-Per altre informazioni sul servizio Azure Kubernetes e l'analisi del codice completo per un esempio di distribuzione, passare all'esercitazione sul cluster Kubernetes.
+Per altre informazioni sul servizio Azure Kubernetes e per un esempio completo di distribuzione del codice, passare all'esercitazione sul cluster Kubernetes.
 
 > [!div class="nextstepaction"]
 > [Esercitazione sul servizio Azure Container][aks-tutorial]
