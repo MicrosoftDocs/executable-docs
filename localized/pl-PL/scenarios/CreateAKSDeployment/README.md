@@ -359,7 +359,7 @@ Możesz sprawdzić, czy aplikacja jest uruchomiona, odwiedzając publiczny adres
 Pobierz adres URL aplikacji przy użyciu następujących poleceń:
 
 ```azurecli-interactive
-runtime="5 minute"
+runtime="5 minutes"
 endtime=$(date -ud "$runtime" +%s)
 while [[ $(date -u +%s) -le $endtime ]]
 do
