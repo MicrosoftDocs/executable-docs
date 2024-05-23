@@ -359,7 +359,7 @@ Vous pouvez vérifier que l’application est en cours d’exécution en consult
 Obtenez l’URL de l’application à l’aide des commandes suivantes :
 
 ```azurecli-interactive
-runtime="5 minute"
+runtime="5 minutes"
 endtime=$(date -ud "$runtime" +%s)
 while [[ $(date -u +%s) -le $endtime ]]
 do
