@@ -359,7 +359,7 @@ Aplikaci můžete ověřit tak, že navštívíte veřejnou IP adresu nebo adres
 Adresu URL aplikace získejte pomocí následujících příkazů:
 
 ```azurecli-interactive
-runtime="5 minute"
+runtime="5 minutes"
 endtime=$(date -ud "$runtime" +%s)
 while [[ $(date -u +%s) -le $endtime ]]
 do
