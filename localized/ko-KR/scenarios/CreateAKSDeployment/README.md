@@ -359,7 +359,7 @@ Kubernetes 클러스터를 관리하려면 Kubernetes 명령줄 클라이언트�
 다음 명령을 사용하여 애플리케이션 URL을 가져옵니다.
 
 ```azurecli-interactive
-runtime="5 minute"
+runtime="5 minutes"
 endtime=$(date -ud "$runtime" +%s)
 while [[ $(date -u +%s) -le $endtime ]]
 do
