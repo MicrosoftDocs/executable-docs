@@ -359,7 +359,7 @@ U kunt controleren of de toepassing wordt uitgevoerd door naar het openbare IP-a
 Haal de toepassings-URL op met behulp van de volgende opdrachten:
 
 ```azurecli-interactive
-runtime="5 minute"
+runtime="5 minutes"
 endtime=$(date -ud "$runtime" +%s)
 while [[ $(date -u +%s) -le $endtime ]]
 do
