@@ -359,7 +359,7 @@ Genel IP adresini veya uygulama URL'sini ziyaret ederek uygulamanın çalıştı
 Aşağıdaki komutları kullanarak uygulama URL'sini alın:
 
 ```azurecli-interactive
-runtime="5 minute"
+runtime="5 minutes"
 endtime=$(date -ud "$runtime" +%s)
 while [[ $(date -u +%s) -le $endtime ]]
 do
