@@ -359,7 +359,7 @@ Kubernetes クラスターを管理するには、Kubernetes のコマンドラ�
 以下のコマンドを使用してアプリケーション URL を取得します。
 
 ```azurecli-interactive
-runtime="5 minute"
+runtime="5 minutes"
 endtime=$(date -ud "$runtime" +%s)
 while [[ $(date -u +%s) -le $endtime ]]
 do
