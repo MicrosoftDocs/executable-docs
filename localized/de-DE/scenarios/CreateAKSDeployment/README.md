@@ -359,7 +359,7 @@ Sie können überprüfen, ob die Anwendung ausgeführt wird, indem Sie die öffe
 Rufen Sie die Anwendungs-URL mit den folgenden Befehlen ab:
 
 ```azurecli-interactive
-runtime="5 minute"
+runtime="5 minutes"
 endtime=$(date -ud "$runtime" +%s)
 while [[ $(date -u +%s) -le $endtime ]]
 do
