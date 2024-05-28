@@ -383,7 +383,7 @@ curl $IP_ADDRESS
 
 Results:
 <!-- expected_similarity=0.3 -->
-```JSON
+```HTML
 <!doctype html>
 <html lang="">
    <head>
