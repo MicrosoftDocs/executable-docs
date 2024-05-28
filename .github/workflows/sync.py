@@ -87,5 +87,6 @@ def run_tests():
     print(f'Successfully tested docs: {success_count}')
     print(f'Failed docs: {failure_count}')
 if __name__ == "__main__":
-    sync_markdown_files()
+    # sync_markdown_files()
+    install_ie()
     run_tests()
