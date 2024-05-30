@@ -38,7 +38,8 @@
                 "Microsoft.ContainerService/managedClusters/listClusterAdminCredential/action",
                 "Microsoft.ContainerService/managedClusters/GetAccessProfiles/action",
                 "Microsoft.Network/publicIPAddresses/list/action"
-            ]
+            ],
+            "region": "westeurope"
         }
     },
     {
@@ -95,7 +96,8 @@
                 "Microsoft.Authorization/roleAssignments/read",
                 "Microsoft.Authorization/roleDefinitions/read",
                 "Microsoft.Authorization/roleDefinitions/write"
-            ]
+            ],
+            "region": "westeurope"
         }
     },
     {
@@ -106,7 +108,9 @@
         "stackDetails": "",
         "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-docs/articles/static-web-apps/get-started-cli.md",
         "documentationUrl": "https://learn.microsoft.com/en-us/azure/static-web-apps/get-started-cli",
-        "configurations": {}
+        "configurations": {
+            "region": "westeurope"
+        }
     },
     {
         "status": "active",
@@ -116,7 +120,9 @@
         "stackDetails": "",
         "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-docs/articles/virtual-machine-scale-sets/flexible-virtual-machine-scale-sets-cli.md",
         "documentationUrl": "https://learn.microsoft.com/en-us/azure/virtual-machine-scale-sets/flexible-virtual-machine-scale-sets-cli",
-        "configurations": {}
+        "configurations": {
+            "region": "westeurope"
+        }
     },
     {
         "status": "active",
@@ -143,7 +149,8 @@
                 "Microsoft.Compute/virtualMachines/read",
                 "Microsoft.Network/publicIPAddresses/read",
                 "Microsoft.Compute/virtualMachines/instanceView/read"
-            ]
+            ],
+            "region": "westeurope"
         }
     },
     {
@@ -154,6 +161,8 @@
         "stackDetails": "",
         "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-docs/articles/virtual-machines/linux/tutorial-lemp-stack.md",
         "documentationUrl": "https://learn.microsoft.com/en-us/azure/virtual-machines/linux/tutorial-lemp-stack",
-        "configurations": {}
+        "configurations": {
+            "region": "westeurope"
+        }
     }
 ]
