@@ -1,6 +1,18 @@
 import os
 import json
 import yaml
+import re
+import time
+
+def find_region_value(markdown_text):
+    regions_list = ['eastus', 'westus', 'westeurope', 'eastasia', 'southeastasia', 'australiaeast', 'australiasoutheast', 'centralus', 'southcentralus',]
+    match = re.search(r'REGION="(.+?)"', markdown_text, re.IGNORECASE)
+    if match:
+        region = str(match.group(1))
+        if region in regions_list:
+            regions_list.remove(region)
+        regions_list.insert(0, region)
+    return regions_list
 
 def update_base_metadata(directory, metadata):
     for name in sorted(os.listdir(directory)):
@@ -13,6 +25,7 @@ def update_base_metadata(directory, metadata):
             if '.md' in name.lower():
                 # Process the README file
                 with open(path, 'r') as f:
+                    readme_content = f.read()
                     metadata_lines = []
                     collecting = False
                     for line in f:
@@ -56,7 +69,9 @@ def update_base_metadata(directory, metadata):
                     if not item.get('documentationUrl', ''):
                         item['documentationUrl'] = ''
                     if not item.get('configurations', ''):
-                        item['configurations'] = {}
+                        item['configurations'] = {
+                            "regions": find_region_value(readme_content)
+                        }
 
     return metadata
 

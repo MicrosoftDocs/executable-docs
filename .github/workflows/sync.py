@@ -1,8 +1,10 @@
+# sync exec docs every day, metadata.json gets updated as soon as exec docs are synced, ie test runs on all docs as soon as it is selective localization happens as soon as the localization goes through main (which is 2-3 hours post sync), portal tests every monday with all exec docs from previous week and pushes changes to be reflected the next week
 import os
 import github
 import shutil
 import subprocess
 import tempfile
+import re
 
 GITHUB_TOKEN = os.getenv('GITHUB_TOKEN')
 g = github.Github(GITHUB_TOKEN)
@@ -33,7 +35,6 @@ def sync_markdown_files():
                     
                     with open(file_path, 'w') as f:
                         f.write(file_content)
-
 
 def install_ie():
     """Installs IE if it is not already on the path."""
@@ -69,9 +70,31 @@ def install_ie():
         print("export PATH=$PATH:~/.local/bin")
         exit(0)
 
+import re
+
+def get_latest_error_log():
+    error_line_num = 0
+    log_file = "ie.log"
+    with open(log_file, "r") as file:
+        for i, line in enumerate(file, 1):
+            if re.search(r"level=error", line):
+                error_line_num = i
+
+    lines_from_error = []
+    with open(log_file, "r") as file:
+        for i, line in enumerate(file, 1):
+            if i >= error_line_num:
+                lines_from_error.append(line)
+
+    error_log = " ".join(lines_from_error)
+    message = re.search(r"msg=(.+?)\n", error_log)
+    if message:
+        return f"{message.group(1)}"
+    else:
+        return " ".join(lines_from_error)
+    
 def run_tests():
-    success_count = 0
-    failure_count = 0
+    repo = g.get_repo("MicrosoftDocs/executable-docs")
 
     for root, dirs, files in os.walk('scenarios'):
         for file in files:
@@ -79,13 +102,21 @@ def run_tests():
                 file_path = os.path.join(root, file)
                 result = subprocess.run(['ie', 'test', file_path])
 
-                if result.returncode == 0:
-                    success_count += 1
-                else:
-                    failure_count += 1
+                if result.returncode != 0:
+                    with open(file_path, 'r') as f:
+                        content = f.read()
+                        author = re.search(r'author: (.+)', content)
+                        ms_author = re.search(r'ms.author: (.+)', content)
 
-    print(f'Successfully tested docs: {success_count}')
-    print(f'Failed docs: {failure_count}')
+                        if author and ms_author:
+                            author = author.group(1)
+                            ms_author = ms_author.group(1)
+                            doc_link = f"https://github.com/MicrosoftDocs/{file_path.split('/')[1]}/blob/main/{'/'.join(file_path.split('/')[2:])}"
+                            issue_title = f"DOC FAILING TESTS: {'/'.join(file_path.split('/')[1:])}"
+                            issue_body = f"Hey {author}! Your executable document is not working. Please fix the errors given below. And reply to this issue with any questions.\n\nLink to Doc: {doc_link} \n\nAuthors: {ms_author}, {author}\n\n{get_latest_error_log()}"
+
+                            repo.create_issue(title=issue_title, body=issue_body, assignees=[author, 'naman-msft'])
+
 if __name__ == "__main__":
     # sync_markdown_files()
     install_ie()
