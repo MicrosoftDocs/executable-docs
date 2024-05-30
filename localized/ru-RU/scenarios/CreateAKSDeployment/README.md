@@ -382,7 +382,7 @@ curl $IP_ADDRESS
 
 Результаты.
 <!-- expected_similarity=0.3 -->
-```JSON
+```HTML
 <!doctype html>
 <html lang="">
    <head>
@@ -401,7 +401,7 @@ curl $IP_ADDRESS
 </html>
 ```
 
-```JSON
+```output
 echo "You can now visit your web server at $IP_ADDRESS"
 ```
 
