@@ -2,28 +2,49 @@ name: Sync Markdown Files
 
 on:
   schedule:
-    - cron: '0 0 * * 1' # Runs every Monday
+    - cron: '0 15 * * *' # Runs every Monday
   workflow_dispatch:
+
+permissions:
+    contents: write
 
 jobs:
   sync:
     runs-on: ubuntu-latest
-    env:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     steps:
     - name: Checkout executable-docs
       uses: actions/checkout@v2
       with:
-        repository: 'executable-docs'
+        repository: 'MicrosoftDocs/executable-docs'
+        token: ${{ secrets.GITHUB_TOKEN }} # This line is added
 
-    - name: Setup Node.js environment
-      uses: actions/setup-node@v2
+    - name: Setup Python environment
+      uses: actions/setup-python@v2
       with:
-        node-version: '14'
+        python-version: '3.10'
 
     - name: Install dependencies
-      run: npm install axios
+      run: |
+        pip install --quiet PyGithub pyyaml
+
+    - name: Set git identity
+      run: |
+        git config --global user.email "${{ github.actor }}@users.noreply.github.com"
+        git config --global user.name "${{ github.actor }}"
 
     - name: Sync markdown files
-      run: node .github/workflows/sync.js
+      run: python .github/workflows/sync.py
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Replace with the name of your secret
+    
+    - name: Check for changes
+      id: git-check
+      run: echo "::set-output name=modified::$(if git diff-index --quiet HEAD --; then echo 'false'; else echo 'true'; fi)"
+
+    - name: Commit and push changes
+      run: |
+        git add .
+        git commit -m "Synced executable docs, updated their metadata, and ran IE tests"
+        git push
+      if: steps.git-check.outputs.modified == 'true'
