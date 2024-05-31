@@ -5,36 +5,39 @@ import shutil
 import subprocess
 import tempfile
 import re
+import json
+import yaml
 
 GITHUB_TOKEN = os.getenv('GITHUB_TOKEN')
 g = github.Github(GITHUB_TOKEN)
 
 def sync_markdown_files():
-    query = "innovation-engine in:file language:markdown org:MicrosoftDocs -path:/localized/ -repo:MicrosoftDocs/executable-docs"
+    query = "innovation-engine in:file language:markdown org:MicrosoftDocs -path:/localized/ -repo:MicrosoftDocs/executable-docs" 
     result = g.search_code(query)
     for file in result:
-        content_file = file.repository.get_contents(file.path)
-        file_content = content_file.decoded_content.decode('utf-8')
-        if '---' in file_content:
-            metadata = file_content.split('---')[1]
-            if 'ms.custom:' in metadata:
-                custom_values = metadata.split('ms.custom:')[1].split(',')
-                custom_values = [value.strip() for value in custom_values]
-                if 'innovation-engine' in custom_values:
-                    dir_path = f'scenarios/{file.repository.name}/{os.path.dirname(file.path)}'
-                    if not os.path.exists(dir_path):
-                        os.makedirs(dir_path)
-                    file_path = os.path.join(dir_path, os.path.basename(file.path))
-                    
-                    # base_dir = 'localized'
-                    # for locale in sorted(os.listdir(base_dir)):
-                    #     locale_dir = os.path.join(base_dir, locale, file_path)           
-                    #     print(locale_dir)
-                    #     import time
-                    #     time.sleep(5)
-                    
-                    with open(file_path, 'w') as f:
-                        f.write(file_content)
+         if '-pr' not in file.repository.name:
+            content_file = file.repository.get_contents(file.path)
+            file_content = content_file.decoded_content.decode('utf-8')
+            if '---' in file_content:
+                metadata = file_content.split('---')[1]
+                if 'ms.custom:' in metadata:
+                    custom_values = metadata.split('ms.custom:')[1].split(',')
+                    custom_values = [value.strip() for value in custom_values]
+                    if 'innovation-engine' in custom_values:
+                        dir_path = f'scenarios/{file.repository.name}/{os.path.dirname(file.path)}'
+                        if not os.path.exists(dir_path):
+                            os.makedirs(dir_path)
+                        file_path = os.path.join(dir_path, os.path.basename(file.path))
+                        
+                        # base_dir = 'localized'
+                        # for locale in sorted(os.listdir(base_dir)):
+                        #     locale_dir = os.path.join(base_dir, locale, file_path)           
+                        #     print(locale_dir)
+                        #     import time
+                        #     time.sleep(5)
+                        
+                        with open(file_path, 'w') as f:
+                            f.write(file_content)
 
 def install_ie():
     """Installs IE if it is not already on the path."""
@@ -70,8 +73,6 @@ def install_ie():
         print("export PATH=$PATH:~/.local/bin")
         exit(0)
 
-import re
-
 def get_latest_error_log():
     error_line_num = 0
     log_file = "ie.log"
@@ -87,11 +88,17 @@ def get_latest_error_log():
                 lines_from_error.append(line)
 
     error_log = " ".join(lines_from_error)
-    message = re.search(r"msg=(.+?)\n", error_log)
-    if message:
-        return f"{message.group(1)}"
+    code = re.search(r"Code: (.+?)\n", error_log)
+    message = re.search(r"Message: (.+?)\n", error_log)
+
+    if code and message:
+        return f"Code: {code.group(1)}, Message: {message.group(1)}"
     else:
-        return " ".join(lines_from_error)
+        message = re.search(r"msg=(.+?)\n", error_log)
+        if message:
+            return f"{message.group(1)}"
+        else:
+            return " ".join(lines_from_error)
     
 def run_tests():
     repo = g.get_repo("MicrosoftDocs/executable-docs")
@@ -103,6 +110,13 @@ def run_tests():
                 result = subprocess.run(['ie', 'test', file_path])
 
                 if result.returncode != 0:
+                    if os.path.isfile('scenarios/metadata.json'):
+                        with open('scenarios/metadata.json', 'r') as f:
+                            metadata = json.load(f)
+                            for item in metadata:
+                                if item['key'] == '/'.join(file_path.split('/')[1:]):
+                                    item['status'] = 'inactive'
+                                    break
                     with open(file_path, 'r') as f:
                         content = f.read()
                         author = re.search(r'author: (.+)', content)
@@ -113,11 +127,104 @@ def run_tests():
                             ms_author = ms_author.group(1)
                             doc_link = f"https://github.com/MicrosoftDocs/{file_path.split('/')[1]}/blob/main/{'/'.join(file_path.split('/')[2:])}"
                             issue_title = f"DOC FAILING TESTS: {'/'.join(file_path.split('/')[1:])}"
-                            issue_body = f"Hey {author}! Your executable document is not working. Please fix the errors given below. And reply to this issue with any questions.\n\nLink to Doc: {doc_link} \n\nAuthors: {ms_author}, {author}\n\n{get_latest_error_log()}"
+                            issue_body = f"Hey @{author}! Your executable document is not working. Please fix the errors given below. And reply to this issue with any questions.\n\nLink to Doc: {doc_link} \n\nAuthors: {ms_author}, {author}\n\n{get_latest_error_log()}"
 
                             repo.create_issue(title=issue_title, body=issue_body, assignees=[author, 'naman-msft'])
 
+def find_region_value(markdown_text):
+    match = re.search(r'REGION="?([^"\n]+)"?', markdown_text, re.IGNORECASE)
+    if match:
+        region = str(match.group(1))
+        return region
+    else:
+        return ""
+
+def update_base_metadata(directory, metadata):
+    for name in sorted(os.listdir(directory)):
+        path = os.path.join(directory, name)
+        if os.path.isdir(path):
+            # If it's a directory, process it recursively
+            update_base_metadata(path, metadata)
+        else:
+            # If it's a file, check if it's a README file
+            if '.md' in name.lower():
+                # Process the README file
+                with open(path, 'r') as f:
+                    metadata_lines = []
+                    collecting = False
+                    for line in f:
+                        if line.strip() == '---':
+                            if collecting:
+                                break
+                            else:
+                                collecting = True
+                                continue
+                        if collecting:
+                            metadata_lines.append(line)
+                    # Join the lines together into a single string
+                    metadata_str = '\n'.join(metadata_lines).strip('---').strip('\n')
+
+                    # Parse the metadata from the string
+                    readme_metadata = yaml.safe_load(metadata_str)
+                    readme_metadata = json.loads(json.dumps(readme_metadata, ensure_ascii=False))
+                    # Get the key for this file
+                    key = '/'.join(path.split('/')[1:])
+                    # Find the item in metadata with this key
+                    
+                    if metadata:
+                        for item in metadata:
+                            if item['key'] == key:
+                                break
+                        else:
+                            # If the key was not found, add a new item to metadata
+                            item = {'status': 'active', 'key': key}
+                            metadata.append(item)
+                    else:
+                        item = {'status': 'active', 'key': key}
+                        metadata.append(item)
+                    if item is not None and readme_metadata is not None:
+                        # Update the item with the metadata from the README file
+                        item['title'] = readme_metadata.get('title', item.get('title', ''))
+                        item['description'] = readme_metadata.get('description', item.get('description', ''))
+                        item['stackDetails'] = readme_metadata.get('stackDetails', item.get('stackDetails', ''))
+                        item['sourceUrl'] = item.get('sourceUrl', "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/"+key)
+                        item['documentationUrl'] = item.get('documentationUrl', '')
+                        item.setdefault('configurations', {})["region"] = find_region_value(f.read())
+
+    return metadata
+
+def update_metadata():
+    # Load the base metadata.json file
+    if os.path.isfile('scenarios/metadata.json'):
+        with open('scenarios/metadata.json', 'r') as f:
+            base_metadata = json.load(f)
+
+        # Update the metadata with the README files in the scenarios directory
+        metadata = update_base_metadata('scenarios', base_metadata)
+
+        # Write the updated metadata.json file
+        with open('scenarios/metadata.json', 'w') as f:
+            json.dump(metadata, f, indent=4)
+
+    else:
+        with open('scenarios/metadata.json', 'w') as f:
+            base_metadata = []
+
+        # Update the metadata with the README files in the scenarios directory
+        metadata = update_base_metadata('scenarios', base_metadata)
+
+        # Write the updated metadata.json file
+        with open('scenarios/metadata.json', 'w') as f:
+            json.dump(metadata, f, indent=4)
+
 if __name__ == "__main__":
-    # sync_markdown_files()
+    sync_markdown_files()
+    update_metadata()
     install_ie()
     run_tests()
+
+    # run this command in the CLI to close all open issues: gh issue list --state open --json number -q '.[].number' | xargs -I % gh issue close %
+
+        
+    
+
