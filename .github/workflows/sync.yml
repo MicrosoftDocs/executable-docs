@@ -2,7 +2,7 @@ name: Sync Markdown Files
 
 on:
   schedule:
-    - cron: '0 15 * * *' # Runs every Monday
+    - cron: '0 15 * * *' 
   workflow_dispatch:
 
 permissions:
@@ -23,7 +23,7 @@ jobs:
     uses: azure/login@v1
     with:
       creds: ${{ secrets.AZURE_CREDENTIALS }}
-      
+
     - name: Setup Python environment
       uses: actions/setup-python@v2
       with:
