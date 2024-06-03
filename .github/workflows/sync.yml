@@ -20,9 +20,9 @@ jobs:
         token: ${{ secrets.GITHUB_TOKEN }} # This line is added
 
     - name: Azure Login
-    uses: azure/login@v1
-    with:
-      creds: ${{ secrets.AZURE_CREDENTIALS }}
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
 
     - name: Setup Python environment
       uses: actions/setup-python@v2
