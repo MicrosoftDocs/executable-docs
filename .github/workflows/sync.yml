@@ -12,7 +12,7 @@ permissions:
 jobs:
   sync:
     runs-on: ubuntu-latest
-
+    environment: ScenarioTesting
     steps:
     - name: Checkout executable-docs
       uses: actions/checkout@v2
