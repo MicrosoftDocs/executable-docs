@@ -218,8 +218,8 @@ def update_metadata():
             json.dump(metadata, f, indent=4)
 
 if __name__ == "__main__":
-    sync_markdown_files()
-    update_metadata()
+    # sync_markdown_files()
+    # update_metadata()
     install_ie()
     run_tests()
 
