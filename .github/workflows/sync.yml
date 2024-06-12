@@ -12,7 +12,7 @@ permissions:
 jobs:
   sync:
     runs-on: ubuntu-latest
-
+    environment: ScenarioTesting
     steps:
     - name: Checkout executable-docs
       uses: actions/checkout@v2
@@ -26,7 +26,6 @@ jobs:
           client-id: ${{ secrets.AZURE_CLIENT_ID }}
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-          auth-type: id-token
 
     - name: Setup Python environment
       uses: actions/setup-python@v2
@@ -36,12 +35,10 @@ jobs:
     - name: Install dependencies
       run: |
         pip install --quiet PyGithub pyyaml
-
     - name: Set git identity
       run: |
         git config --global user.email "${{ github.actor }}@users.noreply.github.com"
         git config --global user.name "${{ github.actor }}"
-
     - name: Sync markdown files
       run: python .github/workflows/sync.py
       env:
