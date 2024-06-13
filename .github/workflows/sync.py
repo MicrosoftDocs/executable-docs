@@ -218,9 +218,13 @@ def update_metadata():
             json.dump(metadata, f, indent=4)
 
 if __name__ == "__main__":
-    sync_markdown_files()
-    update_metadata()
+    # sync_markdown_files()
+    # update_metadata()
     install_ie()
     run_tests()
 
     # run this command in the CLI to close all open issues: gh issue list --state open --json number -q '.[].number' | xargs -I % gh issue close %
+
+        
+    
+

@@ -36,10 +36,12 @@ jobs:
     - name: Install dependencies
       run: |
         pip install --quiet PyGithub pyyaml
+
     - name: Set git identity
       run: |
         git config --global user.email "${{ github.actor }}@users.noreply.github.com"
         git config --global user.name "${{ github.actor }}"
+
     - name: Sync markdown files
       run: python .github/workflows/sync.py
       env:
