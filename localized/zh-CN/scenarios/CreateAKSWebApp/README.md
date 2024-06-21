@@ -206,7 +206,120 @@ Kubernetes 清单文件定义群集的所需状态，例如，要运行哪些容
 
 最后，将创建入口资源以将流量路由到 Azure Vote 应用程序。
 
-测试投票应用 YML 文件已准备好。 若要部署此应用，请运行以下命令
+测试投票应用 YML 文件已准备好。 
+
+```bash
+cat << EOF > azure-vote-start.yml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: azure-vote-back
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: azure-vote-back
+  template:
+    metadata:
+      labels:
+        app: azure-vote-back
+    spec:
+      nodeSelector:
+        "kubernetes.io/os": linux
+      containers:
+      - name: azure-vote-back
+        image: docker.io/bitnami/redis:6.0.8
+        env:
+        - name: ALLOW_EMPTY_PASSWORD
+          value: "yes"
+        resources:
+          requests:
+            cpu: 100m
+            memory: 128Mi
+          limits:
+            cpu: 250m
+            memory: 256Mi
+        ports:
+        - containerPort: 6379
+          name: redis
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: azure-vote-back
+  namespace: default
+spec:
+  ports:
+  - port: 6379
+  selector:
+    app: azure-vote-back
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: azure-vote-front
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: azure-vote-front
+  template:
+    metadata:
+      labels:
+        app: azure-vote-front
+    spec:
+      nodeSelector:
+        "kubernetes.io/os": linux
+      containers:
+      - name: azure-vote-front
+        image: mcr.microsoft.com/azuredocs/azure-vote-front:v1
+        resources:
+          requests:
+            cpu: 100m
+            memory: 128Mi
+          limits:
+            cpu: 250m
+            memory: 256Mi
+        ports:
+        - containerPort: 80
+        env:
+        - name: REDIS
+          value: "azure-vote-back"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: azure-vote-front
+  namespace: default
+spec:
+  ports:
+  - port: 80
+  selector:
+    app: azure-vote-front
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: vote-ingress
+  namespace: default
+spec:
+  ingressClassName: nginx
+  rules:
+  - http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: azure-vote-front
+            port:
+              number: 80
+EOF
+```
+
+若要部署此应用，请运行以下命令
 
 ```bash
 kubectl apply -f azure-vote-start.yml
@@ -328,20 +441,96 @@ Cert-manager 提供 Helm 图表，作为在 Kubernetes 上安装的一级方法�
 
    ClusterIssuers 是表示证书颁发机构 (CA) 的 Kubernetes 资源，这些资源能够通过遵循证书签名请求来生成签名的证书。 所有证书管理器证书都需要一个已引用的颁发者，该颁发者处于就绪状态以尝试遵循请求。
    可在 `cluster-issuer-prod.yml file` 中找到正在使用的颁发者
+    
+    ```bash
+    cat << EOF > cluster-issuer-prod.yml
+    #!/bin/bash
+    #kubectl apply -f - <<EOF
+    apiVersion: cert-manager.io/v1
+    kind: ClusterIssuer
+    metadata:
+    name: letsencrypt-prod
+    spec:
+    acme:
+        # You must replace this email address with your own.
+        # Let's Encrypt will use this to contact you about expiring
+        # certificates, and issues related to your account.
+        email: $SSL_EMAIL_ADDRESS
+        # ACME server URL for Let’s Encrypt’s prod environment.
+        # The staging environment will not issue trusted certificates but is
+        # used to ensure that the verification process is working properly
+        # before moving to production
+        server: https://acme-v02.api.letsencrypt.org/directory
+        # Secret resource used to store the account's private key.
+        privateKeySecretRef:
+        name: letsencrypt
+        # Enable the HTTP-01 challenge provider
+        # you prove ownership of a domain by ensuring that a particular
+        # file is present at the domain
+        solvers:
+        - http01:
+            ingress:
+            class: nginx
+            podTemplate:
+                spec:
+                nodeSelector:
+                    "kubernetes.io/os": linux
+    #EOF
 
-   ```bash
-   cluster_issuer_variables=$(<cluster-issuer-prod.yml)
-   echo "${cluster_issuer_variables//\$SSL_EMAIL_ADDRESS/$SSL_EMAIL_ADDRESS}" | kubectl apply -f -
-   ```
+    # References:
+    # https://docs.microsoft.com/azure/application-gateway/ingress-controller-letsencrypt-certificate-application-gateway
+    # https://cert-manager.io/docs/configuration/acme/
+    # kubectl delete -f clusterIssuer.yaml
+    # kubectl apply -f clusterIssuer-prod.yaml 
+    EOF  
+    ```
+
+    ```bash
+    cluster_issuer_variables=$(<cluster-issuer-prod.yml)
+    echo "${cluster_issuer_variables//\$SSL_EMAIL_ADDRESS/$SSL_EMAIL_ADDRESS}" | kubectl apply -f -
+    ```
 
 5. 启动投票应用应用程序，以使用 Cert-Manager 获取 SSL 证书。
 
    可以在 `azure-vote-nginx-ssl.yml` 中找到完整的 YAML 文件
 
-   ```bash
-   azure_vote_nginx_ssl_variables=$(<azure-vote-nginx-ssl.yml)
-   echo "${azure_vote_nginx_ssl_variables//\$FQDN/$FQDN}" | kubectl apply -f -
-   ```
+```bash
+cat << EOF > azure-vote-nginx-ssl.yml
+---
+# INGRESS WITH SSL PROD
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: vote-ingress
+  namespace: default
+  annotations:
+    kubernetes.io/tls-acme: "true"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+spec:
+  ingressClassName: nginx
+  tls:
+  - hosts:
+    - $FQDN
+    secretName: azure-vote-nginx-secret
+  rules:
+    - host: $FQDN
+      http:
+        paths:
+        - path: /
+          pathType: Prefix
+          backend:
+            service:
+              name: azure-vote-front
+              port:
+                number: 80
+EOF
+```
+
+    ```bash
+    azure_vote_nginx_ssl_variables=$(<azure-vote-nginx-ssl.yml)
+    echo "${azure_vote_nginx_ssl_variables//\$FQDN/$FQDN}" | kubectl apply -f -
+    ```
 
 <!--## Validate application is working
 
