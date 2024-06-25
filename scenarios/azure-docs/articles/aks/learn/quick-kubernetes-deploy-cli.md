@@ -114,7 +114,8 @@ To deploy the application, you use a manifest file to create all the objects req
 
 1. Create a file named `aks-store-quickstart.yaml` and copy in the following manifest:
 
-    ```yaml
+    ```bash
+    cat << EOF > aks-store-quickstart.yaml
     apiVersion: apps/v1
     kind: Deployment
     metadata:
@@ -341,6 +342,7 @@ To deploy the application, you use a manifest file to create all the objects req
       selector:
         app: store-front
       type: LoadBalancer
+    EOF
     ```
 
     For a breakdown of YAML manifest files, see [Deployments and YAML manifests](../concepts-clusters-workloads.md#deployments-and-yaml-manifests).

@@ -7,6 +7,16 @@
         "stackDetails": "",
         "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-docs/articles/aks/learn/quick-kubernetes-deploy-cli.md",
         "documentationUrl": "https://learn.microsoft.com/en-us/azure/aks/learn/quick-kubernetes-deploy-cli",
+        "nextSteps": [
+            {
+                "title": "Prepare an application for AKS",
+                "url": "https://learn.microsoft.com/en-us/azure/aks/tutorial-kubernetes-prepare-app"
+            },
+            {
+                "title": "AKS solution guidance",
+                "url": "https://learn.microsoft.com/en-us/azure/architecture/reference-architectures/containers/aks-start-here?toc=/azure/aks/toc.json&bc=/azure/aks/breadcrumb/toc.json"
+            }
+        ],
         "configurations": {
             "permissions": [
                 "Microsoft.Resources/resourceGroups/write",
@@ -59,6 +69,24 @@
         ],
         "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-docs/articles/mysql/flexible-server/tutorial-deploy-wordpress-on-aks.md",
         "documentationUrl": "https://learn.microsoft.com/en-us/azure/mysql/flexible-server/tutorial-deploy-wordpress-on-aks",
+        "nextSteps": [
+            {
+                "title": "Access the Kubernetes web dashboard",
+                "url": "https://learn.microsoft.com/en-us/azure/aks/kubernetes-dashboard"
+            },
+            {
+                "title": "Scale your AKS cluster",
+                "url": "https://learn.microsoft.com/en-us/azure/aks/tutorial-kubernetes-scale"
+            },
+            {
+                "title": "Manage your Azure Database for MySQL flexible server instance",
+                "url": "https://learn.microsoft.com/en-us/azure/mysql/flexible-server/quickstart-create-server-cli"
+            },
+            {
+                "title": "Configure server parameters for your database server",
+                "url": "https://learn.microsoft.com/en-us/azure/mysql/flexible-server/how-to-configure-server-parameters-cli"
+            }
+        ],
         "configurations": {
             "permissions": [
                 "Microsoft.Resources/resourceGroups/write",
@@ -108,6 +136,12 @@
         "stackDetails": "",
         "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-docs/articles/static-web-apps/get-started-cli.md",
         "documentationUrl": "https://learn.microsoft.com/en-us/azure/static-web-apps/get-started-cli",
+        "nextSteps": [
+            {
+                "title": "Add an API via Azure functions to your static site",
+                "url": "https://learn.microsoft.com/en-us/azure/static-web-apps/add-api"
+            }
+        ],
         "configurations": {
             "region": "westeurope"
         }
@@ -120,6 +154,20 @@
         "stackDetails": "",
         "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-docs/articles/virtual-machine-scale-sets/flexible-virtual-machine-scale-sets-cli.md",
         "documentationUrl": "https://learn.microsoft.com/en-us/azure/virtual-machine-scale-sets/flexible-virtual-machine-scale-sets-cli",
+        "nextSteps": [
+            {
+                "title": "Learn how to create a scale set in the Azure portal",
+                "url": "https://learn.microsoft.com/en-us/azure/virtual-machine-scale-sets/flexible-virtual-machine-scale-sets-portal"
+            },
+            {
+                "title": "Learn about Virtual Machine Scale Sets",
+                "url": "https://learn.microsoft.com/en-us/azure/virtual-machine-scale-sets/overview"
+            },
+            {
+                "title": "Automatically scale a Virtual Machine Scale Set with the Azure CLI",
+                "url": "https://learn.microsoft.com/en-us/azure/virtual-machine-scale-sets/tutorial-autoscale-cli"
+            }
+        ],
         "configurations": {
             "region": "westeurope"
         }
@@ -137,6 +185,24 @@
         ],
         "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-docs/articles/virtual-machines/linux/quick-create-cli.md",
         "documentationUrl": "https://learn.microsoft.com/en-us/azure/virtual-machines/linux/quick-create-cli",
+        "nextSteps": [
+            {
+                "title": "Learn about virtual machines",
+                "url": "https://learn.microsoft.com/en-us/azure/virtual-machines/"
+            },
+            {
+                "title": "Use Cloud-Init to initialize a Linux VM on first boot",
+                "url": "https://learn.microsoft.com/en-us/azure/virtual-machines/linux/tutorial-automate-vm-deployment"
+            },
+            {
+                "title": "Create custom VM images",
+                "url": "https://learn.microsoft.com/en-us/azure/virtual-machines/linux/tutorial-custom-images"
+            },
+            {
+                "title": "Load Balance VMs",
+                "url": "https://learn.microsoft.com/en-us/azure/load-balancer/quickstart-load-balancer-standard-public-cli"
+            }
+        ],
         "configurations": {
             "permissions": [
                 "Microsoft.Resources/resourceGroups/write",
@@ -173,6 +239,20 @@
         "stackDetails": "",
         "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/DeployIGonAKS/README.md",
         "documentationUrl": "",
+        "nextSteps": [
+            {
+                "title": "Real-world scenarios where Inspektor Gadget can help you",
+                "url": "https://go.microsoft.com/fwlink/p/?linkid=2260402#use-cases"
+            },
+            {
+                "title": "Explore the available gadgets",
+                "url": "https://go.microsoft.com/fwlink/p/?linkid=2260070"
+            },
+            {
+                "title": "Run your own eBPF program",
+                "url": "https://go.microsoft.com/fwlink/p/?linkid=2259865"
+            }
+        ],
         "configurations": {
             "region": "westeurope"
         }
@@ -185,6 +265,25 @@
         "stackDetails": "",
         "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/CreateAKSWebApp/README.md",
         "documentationUrl": "",
+        "nextSteps": [
+            {
+                "title": "Azure Kubernetes Service Documentation",
+                "url": "https://learn.microsoft.com/azure/aks/"
+            },
+            {
+                "title": "Create an Azure Container Registry",
+                "url": "https://learn.microsoft.com/azure/aks/tutorial-kubernetes-prepare-acr?tabs=azure-cli"
+            },
+            {
+                "title": "Scale your Applciation in AKS",
+                "url": "https://learn.microsoft.com/azure/aks/tutorial-kubernetes-scale?tabs=azure-cli"
+            },
+            {
+                "title": "Update your application in AKS",
+                "url": "https://learn.microsoft.com/azure/aks/tutorial-kubernetes-app-update?tabs=azure-cli"
+            }
+
+        ],
         "configurations": {
             "region": "westeurope"
         }
