@@ -478,7 +478,6 @@ Cert-manager provides Helm charts as a first-class method of installation on Kub
 
     ```bash
     cluster_issuer_variables=$(<cluster-issuer-prod.yml)
-    echo "${cluster_issuer_variables//\$SSL_EMAIL_ADDRESS/$SSL_EMAIL_ADDRESS}" | kubectl apply -f -
     ```
 
 5. Upate Voting App Application to use Cert-Manager to obtain an SSL Certificate.
