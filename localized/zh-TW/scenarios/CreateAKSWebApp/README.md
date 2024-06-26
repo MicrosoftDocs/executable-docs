@@ -23,7 +23,7 @@ export RANDOM_ID="$(openssl rand -hex 3)"
 export NETWORK_PREFIX="$(($RANDOM % 254 + 1))"
 export SSL_EMAIL_ADDRESS="$(az account show --query user.name --output tsv)"
 export MY_RESOURCE_GROUP_NAME="myAKSResourceGroup$RANDOM_ID"
-export REGION="eastus"
+export REGION="westeurope"
 export MY_AKS_CLUSTER_NAME="myAKSCluster$RANDOM_ID"
 export MY_PUBLIC_IP_NAME="myPublicIP$RANDOM_ID"
 export MY_DNS_LABEL="mydnslabel$RANDOM_ID"
@@ -391,7 +391,7 @@ curl "http://$FQDN"
 
 ## 設定 Cert Manager
 
-為了新增 HTTPS，我們將使用 Cert Manager。 Cert Manager 是用來取得和管理 Kubernetes 部署 SSL 憑證的 開放原始碼 工具。 憑證管理員會從各種簽發者取得憑證，包括熱門的公用簽發者以及私人簽發者，並確保憑證有效且最新，而且會在到期前嘗試在設定的某個時間更新憑證。
+為了新增 HTTPS，我們將使用 Cert Manager。 Cert Manager 是 開放原始碼 工具，可用來取得和管理 Kubernetes 部署的 SSL 憑證。 憑證管理員會從各種簽發者取得憑證，包括熱門的公用簽發者以及私人簽發者，並確保憑證有效且最新，而且會在到期前嘗試在設定的某個時間更新憑證。
 
 1. 若要安裝 cert-manager，我們必須先建立命名空間來執行它。 本教學課程會將 cert-manager 安裝到 cert-manager 命名空間。 您可以在不同的命名空間中執行 cert-manager，不過您必須對部署指令清單進行修改。
 
@@ -441,17 +441,15 @@ Cert-manager 提供 Helm 圖表作為 Kubernetes 上安裝的一流方法。
 
    ClusterIssuers 是 Kubernetes 資源，代表能夠藉由接受憑證簽署要求來產生已簽署憑證的證書頒發機構單位 （CA）。 所有憑證管理員憑證都需要處於就緒條件的參考簽發者，才能嘗試接受要求。
    我們所使用的簽發者可以在 中找到 `cluster-issuer-prod.yml file`
-    
+        
     ```bash
-    cat << EOF > cluster-issuer-prod.yml
-    #!/bin/bash
-    #kubectl apply -f - <<EOF
+    cat <<EOF > cluster-issuer-prod.yml
     apiVersion: cert-manager.io/v1
     kind: ClusterIssuer
     metadata:
-    name: letsencrypt-prod
+      name: letsencrypt-prod
     spec:
-    acme:
+      acme:
         # You must replace this email address with your own.
         # Let's Encrypt will use this to contact you about expiring
         # certificates, and issues related to your account.
@@ -463,31 +461,23 @@ Cert-manager 提供 Helm 圖表作為 Kubernetes 上安裝的一流方法。
         server: https://acme-v02.api.letsencrypt.org/directory
         # Secret resource used to store the account's private key.
         privateKeySecretRef:
-        name: letsencrypt
+          name: letsencrypt
         # Enable the HTTP-01 challenge provider
         # you prove ownership of a domain by ensuring that a particular
         # file is present at the domain
         solvers:
         - http01:
             ingress:
-            class: nginx
+              class: nginx
             podTemplate:
-                spec:
+              spec:
                 nodeSelector:
-                    "kubernetes.io/os": linux
-    #EOF
-
-    # References:
-    # https://docs.microsoft.com/azure/application-gateway/ingress-controller-letsencrypt-certificate-application-gateway
-    # https://cert-manager.io/docs/configuration/acme/
-    # kubectl delete -f clusterIssuer.yaml
-    # kubectl apply -f clusterIssuer-prod.yaml 
-    EOF  
+                  "kubernetes.io/os": linux
+    EOF
     ```
 
     ```bash
     cluster_issuer_variables=$(<cluster-issuer-prod.yml)
-    echo "${cluster_issuer_variables//\$SSL_EMAIL_ADDRESS/$SSL_EMAIL_ADDRESS}" | kubectl apply -f -
     ```
 
 5. 更新投票應用程式應用程式，以使用 Cert-Manager 取得 SSL 憑證。
