@@ -23,7 +23,7 @@ export RANDOM_ID="$(openssl rand -hex 3)"
 export NETWORK_PREFIX="$(($RANDOM % 254 + 1))"
 export SSL_EMAIL_ADDRESS="$(az account show --query user.name --output tsv)"
 export MY_RESOURCE_GROUP_NAME="myAKSResourceGroup$RANDOM_ID"
-export REGION="eastus"
+export REGION="westeurope"
 export MY_AKS_CLUSTER_NAME="myAKSCluster$RANDOM_ID"
 export MY_PUBLIC_IP_NAME="myPublicIP$RANDOM_ID"
 export MY_DNS_LABEL="mydnslabel$RANDOM_ID"
@@ -441,17 +441,15 @@ Cert-manager는 Kubernetes에 대한 최고 수준의 설치 방법으로 Helm �
 
    ClusterIssuers는 인증서 서명 요청을 적용하여 서명된 인증서를 생성할 수 있는 CA(인증 기관)를 나타내는 Kubernetes 리소스입니다. 모든 cert-manager 인증서에는 요청을 이행할 준비가 되어 있는 참조 발급자가 필요합니다.
    사용 중인 발급자는 다음에서 찾을 수 있습니다. `cluster-issuer-prod.yml file` 
-    
+        
     ```bash
-    cat << EOF > cluster-issuer-prod.yml
-    #!/bin/bash
-    #kubectl apply -f - <<EOF
+    cat <<EOF > cluster-issuer-prod.yml
     apiVersion: cert-manager.io/v1
     kind: ClusterIssuer
     metadata:
-    name: letsencrypt-prod
+      name: letsencrypt-prod
     spec:
-    acme:
+      acme:
         # You must replace this email address with your own.
         # Let's Encrypt will use this to contact you about expiring
         # certificates, and issues related to your account.
@@ -463,31 +461,23 @@ Cert-manager는 Kubernetes에 대한 최고 수준의 설치 방법으로 Helm �
         server: https://acme-v02.api.letsencrypt.org/directory
         # Secret resource used to store the account's private key.
         privateKeySecretRef:
-        name: letsencrypt
+          name: letsencrypt
         # Enable the HTTP-01 challenge provider
         # you prove ownership of a domain by ensuring that a particular
         # file is present at the domain
         solvers:
         - http01:
             ingress:
-            class: nginx
+              class: nginx
             podTemplate:
-                spec:
+              spec:
                 nodeSelector:
-                    "kubernetes.io/os": linux
-    #EOF
-
-    # References:
-    # https://docs.microsoft.com/azure/application-gateway/ingress-controller-letsencrypt-certificate-application-gateway
-    # https://cert-manager.io/docs/configuration/acme/
-    # kubectl delete -f clusterIssuer.yaml
-    # kubectl apply -f clusterIssuer-prod.yaml 
-    EOF  
+                  "kubernetes.io/os": linux
+    EOF
     ```
 
     ```bash
     cluster_issuer_variables=$(<cluster-issuer-prod.yml)
-    echo "${cluster_issuer_variables//\$SSL_EMAIL_ADDRESS/$SSL_EMAIL_ADDRESS}" | kubectl apply -f -
     ```
 
 5. Cert-Manager를 사용하여 SSL 인증서를 가져오도록 Voting App 애플리케이션을 업테이트합니다.
