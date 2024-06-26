@@ -23,7 +23,7 @@ export RANDOM_ID="$(openssl rand -hex 3)"
 export NETWORK_PREFIX="$(($RANDOM % 254 + 1))"
 export SSL_EMAIL_ADDRESS="$(az account show --query user.name --output tsv)"
 export MY_RESOURCE_GROUP_NAME="myAKSResourceGroup$RANDOM_ID"
-export REGION="eastus"
+export REGION="westeurope"
 export MY_AKS_CLUSTER_NAME="myAKSCluster$RANDOM_ID"
 export MY_PUBLIC_IP_NAME="myPublicIP$RANDOM_ID"
 export MY_DNS_LABEL="mydnslabel$RANDOM_ID"
@@ -441,17 +441,15 @@ cert-manager では、Kubernetes への第一級のインストール方法と�
 
    ClusterIssuers は、証明書署名要求を許可することで署名付き証明書を生成できる証明機関 (CA) を表す Kubernetes リソースです。 すべての cert-manager 証明書は、要求の許可を試行する準備の整った参照発行者が必要です。
    使用する発行者は `cluster-issuer-prod.yml file` で確認できます
-    
+        
     ```bash
-    cat << EOF > cluster-issuer-prod.yml
-    #!/bin/bash
-    #kubectl apply -f - <<EOF
+    cat <<EOF > cluster-issuer-prod.yml
     apiVersion: cert-manager.io/v1
     kind: ClusterIssuer
     metadata:
-    name: letsencrypt-prod
+      name: letsencrypt-prod
     spec:
-    acme:
+      acme:
         # You must replace this email address with your own.
         # Let's Encrypt will use this to contact you about expiring
         # certificates, and issues related to your account.
@@ -463,31 +461,23 @@ cert-manager では、Kubernetes への第一級のインストール方法と�
         server: https://acme-v02.api.letsencrypt.org/directory
         # Secret resource used to store the account's private key.
         privateKeySecretRef:
-        name: letsencrypt
+          name: letsencrypt
         # Enable the HTTP-01 challenge provider
         # you prove ownership of a domain by ensuring that a particular
         # file is present at the domain
         solvers:
         - http01:
             ingress:
-            class: nginx
+              class: nginx
             podTemplate:
-                spec:
+              spec:
                 nodeSelector:
-                    "kubernetes.io/os": linux
-    #EOF
-
-    # References:
-    # https://docs.microsoft.com/azure/application-gateway/ingress-controller-letsencrypt-certificate-application-gateway
-    # https://cert-manager.io/docs/configuration/acme/
-    # kubectl delete -f clusterIssuer.yaml
-    # kubectl apply -f clusterIssuer-prod.yaml 
-    EOF  
+                  "kubernetes.io/os": linux
+    EOF
     ```
 
     ```bash
     cluster_issuer_variables=$(<cluster-issuer-prod.yml)
-    echo "${cluster_issuer_variables//\$SSL_EMAIL_ADDRESS/$SSL_EMAIL_ADDRESS}" | kubectl apply -f -
     ```
 
 5. Voting App アプリケーションを更新し、cert-manager を使用して SSL 証明書を取得します。
