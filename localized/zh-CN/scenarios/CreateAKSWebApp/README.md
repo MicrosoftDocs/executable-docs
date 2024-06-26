@@ -23,7 +23,7 @@ export RANDOM_ID="$(openssl rand -hex 3)"
 export NETWORK_PREFIX="$(($RANDOM % 254 + 1))"
 export SSL_EMAIL_ADDRESS="$(az account show --query user.name --output tsv)"
 export MY_RESOURCE_GROUP_NAME="myAKSResourceGroup$RANDOM_ID"
-export REGION="eastus"
+export REGION="westeurope"
 export MY_AKS_CLUSTER_NAME="myAKSCluster$RANDOM_ID"
 export MY_PUBLIC_IP_NAME="myPublicIP$RANDOM_ID"
 export MY_DNS_LABEL="mydnslabel$RANDOM_ID"
@@ -441,17 +441,15 @@ Cert-manager 提供 Helm 图表，作为在 Kubernetes 上安装的一级方法�
 
    ClusterIssuers 是表示证书颁发机构 (CA) 的 Kubernetes 资源，这些资源能够通过遵循证书签名请求来生成签名的证书。 所有证书管理器证书都需要一个已引用的颁发者，该颁发者处于就绪状态以尝试遵循请求。
    可在 `cluster-issuer-prod.yml file` 中找到正在使用的颁发者
-    
+        
     ```bash
-    cat << EOF > cluster-issuer-prod.yml
-    #!/bin/bash
-    #kubectl apply -f - <<EOF
+    cat <<EOF > cluster-issuer-prod.yml
     apiVersion: cert-manager.io/v1
     kind: ClusterIssuer
     metadata:
-    name: letsencrypt-prod
+      name: letsencrypt-prod
     spec:
-    acme:
+      acme:
         # You must replace this email address with your own.
         # Let's Encrypt will use this to contact you about expiring
         # certificates, and issues related to your account.
@@ -463,31 +461,23 @@ Cert-manager 提供 Helm 图表，作为在 Kubernetes 上安装的一级方法�
         server: https://acme-v02.api.letsencrypt.org/directory
         # Secret resource used to store the account's private key.
         privateKeySecretRef:
-        name: letsencrypt
+          name: letsencrypt
         # Enable the HTTP-01 challenge provider
         # you prove ownership of a domain by ensuring that a particular
         # file is present at the domain
         solvers:
         - http01:
             ingress:
-            class: nginx
+              class: nginx
             podTemplate:
-                spec:
+              spec:
                 nodeSelector:
-                    "kubernetes.io/os": linux
-    #EOF
-
-    # References:
-    # https://docs.microsoft.com/azure/application-gateway/ingress-controller-letsencrypt-certificate-application-gateway
-    # https://cert-manager.io/docs/configuration/acme/
-    # kubectl delete -f clusterIssuer.yaml
-    # kubectl apply -f clusterIssuer-prod.yaml 
-    EOF  
+                  "kubernetes.io/os": linux
+    EOF
     ```
 
     ```bash
     cluster_issuer_variables=$(<cluster-issuer-prod.yml)
-    echo "${cluster_issuer_variables//\$SSL_EMAIL_ADDRESS/$SSL_EMAIL_ADDRESS}" | kubectl apply -f -
     ```
 
 5. 启动投票应用应用程序，以使用 Cert-Manager 获取 SSL 证书。
