@@ -1,13 +1,3 @@
----
-title: 'クイック スタート: Azure CLI を使用して Azure Kubernetes Service (AKS) クラスターをデプロイする'
-description: Azure CLI を使用して Kubernetes クラスターのデプロイ、および Azure Kubernetes Service (AKS) でのアプリケーションのデプロイを、迅速に行う方法を学習します。
-ms.topic: quickstart
-ms.date: 04/09/2024
-author: tamram
-ms.author: tamram
-ms.custom: 'H1Hack27Feb2017, mvc, devcenter, devx-track-azurecli, mode-api, innovation-engine, linux-related-content'
----
-
 # クイック スタート: Azure CLI を使用して Azure Kubernetes Service (AKS) クラスターをデプロイする
 
 [![Azure に配置する](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262758)
@@ -30,7 +20,7 @@ Azure Kubernetes Service (AKS) は、クラスターをすばやくデプロイ�
 
 - この記事では、Azure CLI のバージョン 2.0.64 以降が必要です。 Azure Cloud Shell を使用している場合は、最新バージョンが既にインストールされています。
 - クラスターの作成に使用している ID に、適切な最小限のアクセス許可が与えられていることを確認します。 AKS のアクセスと ID の詳細については、「[Azure Kubernetes Service (AKS) でのアクセスと ID オプション](../concepts-identity.md)」を参照してください。
-- 複数の Azure サブスクリプションをお持ちの場合は、[az account set](/cli/azure/account#az-account-set) コマンドを使用して、リソースが課金の対象となる適切なサブスクリプション ID を選択してください。
+- 複数の Azure サブスクリプションをお持ちの場合は、[az account set](/cli/azure/account#az-account-set) コマンドを使用して、リソースが課金の対象となる適切なサブスクリプション ID を選択してください。 詳細については、[Azure CLI で Azure サブスクリプションを管理する方法](/cli/azure/manage-azure-subscriptions-azure-cli?tabs=bash#change-the-active-subscription)に関するページを参照してください。
 
 ## 環境変数を定義する
 
@@ -75,7 +65,11 @@ az group create --name $MY_RESOURCE_GROUP_NAME --location $REGION
 [`az aks create`][az-aks-create] コマンドを使用して、AKS クラスターを作成します。 次の例では、1 つのノードを含むクラスターを作成し、システム割り当てマネージド ID を有効にします。
 
 ```azurecli-interactive
-az aks create --resource-group $MY_RESOURCE_GROUP_NAME --name $MY_AKS_CLUSTER_NAME --enable-managed-identity --node-count 1 --generate-ssh-keys
+az aks create \
+    --resource-group $MY_RESOURCE_GROUP_NAME \
+    --name $MY_AKS_CLUSTER_NAME \
+    --node-count 1 \
+    --generate-ssh-keys
 ```
 
 > [!NOTE]
@@ -113,7 +107,8 @@ Kubernetes クラスターを管理するには、Kubernetes のコマンドラ�
 
 1. `aks-store-quickstart.yaml` という名前のファイルを作成し、そこに次のマニフェストをコピーします。
 
-    ```yaml
+    ```bash
+    cat << EOF > aks-store-quickstart.yaml
     apiVersion: apps/v1
     kind: Deployment
     metadata:
@@ -340,6 +335,7 @@ Kubernetes クラスターを管理するには、Kubernetes のコマンドラ�
       selector:
         app: store-front
       type: LoadBalancer
+    EOF
     ```
 
     YAML マニフェスト ファイルの内訳については、「[デプロイと YAML マニフェスト](../concepts-clusters-workloads.md#deployments-and-yaml-manifests)」を参照してください。
@@ -359,7 +355,7 @@ Kubernetes クラスターを管理するには、Kubernetes のコマンドラ�
 以下のコマンドを使用してアプリケーション URL を取得します。
 
 ```azurecli-interactive
-runtime="5 minute"
+runtime="5 minutes"
 endtime=$(date -ud "$runtime" +%s)
 while [[ $(date -u +%s) -le $endtime ]]
 do
@@ -382,7 +378,7 @@ curl $IP_ADDRESS
 
 結果:
 <!-- expected_similarity=0.3 -->
-```JSON
+```HTML
 <!doctype html>
 <html lang="">
    <head>
@@ -401,7 +397,7 @@ curl $IP_ADDRESS
 </html>
 ```
 
-```JSON
+```OUTPUT
 echo "You can now visit your web server at $IP_ADDRESS"
 ```
 
