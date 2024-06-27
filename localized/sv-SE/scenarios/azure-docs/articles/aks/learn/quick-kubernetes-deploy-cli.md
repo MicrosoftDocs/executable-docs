@@ -1,13 +1,3 @@
----
-title: 'Snabbstart: Distribuera ett AKS-kluster (Azure Kubernetes Service) med Azure CLI'
-description: Lär dig hur du snabbt distribuerar ett Kubernetes-kluster och distribuerar ett program i Azure Kubernetes Service (AKS) med Azure CLI.
-ms.topic: quickstart
-ms.date: 04/09/2024
-author: tamram
-ms.author: tamram
-ms.custom: 'H1Hack27Feb2017, mvc, devcenter, devx-track-azurecli, mode-api, innovation-engine, linux-related-content'
----
-
 # Snabbstart: Distribuera ett AKS-kluster (Azure Kubernetes Service) med Azure CLI
 
 [![Distribuera till Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262758)
@@ -30,7 +20,7 @@ Den här snabbstarten förutsätter grundläggande kunskaper om Kubernetes-begre
 
 - Den här artikeln kräver version 2.0.64 eller senare av Azure CLI. Om du använder Azure Cloud Shell är den senaste versionen redan installerad där.
 - Kontrollera att den identitet som du använder för att skapa klustret har lämpliga minimibehörigheter. Mer information om åtkomst och identitet för AKS finns i [Åtkomst- och identitetsalternativ för Azure Kubernetes Service (AKS)](../concepts-identity.md).
-- Om du har flera Azure-prenumerationer väljer du lämpligt prenumerations-ID där resurserna ska faktureras med [kommandot az account set](/cli/azure/account#az-account-set) .
+- Om du har flera Azure-prenumerationer väljer du lämpligt prenumerations-ID där resurserna ska faktureras med [kommandot az account set](/cli/azure/account#az-account-set) . Mer information finns i [Hantera Azure-prenumerationer – Azure CLI](/cli/azure/manage-azure-subscriptions-azure-cli?tabs=bash#change-the-active-subscription).
 
 ## Definiera miljövariabler
 
@@ -75,7 +65,11 @@ Resultat:
 Skapa ett AKS-kluster med kommandot [`az aks create`][az-aks-create] . I följande exempel skapas ett kluster med en nod och en systemtilldelad hanterad identitet aktiveras.
 
 ```azurecli-interactive
-az aks create --resource-group $MY_RESOURCE_GROUP_NAME --name $MY_AKS_CLUSTER_NAME --enable-managed-identity --node-count 1 --generate-ssh-keys
+az aks create \
+    --resource-group $MY_RESOURCE_GROUP_NAME \
+    --name $MY_AKS_CLUSTER_NAME \
+    --node-count 1 \
+    --generate-ssh-keys
 ```
 
 > [!NOTE]
@@ -113,7 +107,8 @@ För att distribuera programmet använder du en manifestfil för att skapa alla 
 
 1. Skapa en fil med namnet `aks-store-quickstart.yaml` och kopiera i följande manifest:
 
-    ```yaml
+    ```bash
+    cat << EOF > aks-store-quickstart.yaml
     apiVersion: apps/v1
     kind: Deployment
     metadata:
@@ -340,6 +335,7 @@ För att distribuera programmet använder du en manifestfil för att skapa alla 
       selector:
         app: store-front
       type: LoadBalancer
+    EOF
     ```
 
     En uppdelning av YAML-manifestfiler [finns i Distributioner och YAML-manifest](../concepts-clusters-workloads.md#deployments-and-yaml-manifests).
@@ -359,7 +355,7 @@ Du kan kontrollera att programmet körs genom att besöka den offentliga IP-adre
 Hämta program-URL:en med hjälp av följande kommandon:
 
 ```azurecli-interactive
-runtime="5 minute"
+runtime="5 minutes"
 endtime=$(date -ud "$runtime" +%s)
 while [[ $(date -u +%s) -le $endtime ]]
 do
@@ -382,7 +378,7 @@ curl $IP_ADDRESS
 
 Resultat:
 <!-- expected_similarity=0.3 -->
-```JSON
+```HTML
 <!doctype html>
 <html lang="">
    <head>
@@ -401,7 +397,7 @@ Resultat:
 </html>
 ```
 
-```JSON
+```OUTPUT
 echo "You can now visit your web server at $IP_ADDRESS"
 ```
 
