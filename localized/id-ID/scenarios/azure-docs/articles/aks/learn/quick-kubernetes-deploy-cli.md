@@ -1,13 +1,3 @@
----
-title: 'Mulai cepat: Menyebarkan kluster Azure Kubernetes Service (AKS) menggunakan Azure CLI'
-description: Pelajari cara menyebarkan kluster Kubernetes dengan cepat dan menyebarkan aplikasi di Azure Kubernetes Service (AKS) menggunakan Azure CLI.
-ms.topic: quickstart
-ms.date: 04/09/2024
-author: tamram
-ms.author: tamram
-ms.custom: 'H1Hack27Feb2017, mvc, devcenter, devx-track-azurecli, mode-api, innovation-engine, linux-related-content'
----
-
 # Mulai cepat: Menyebarkan kluster Azure Kubernetes Service (AKS) menggunakan Azure CLI
 
 [![Sebarkan ke Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262758)
@@ -30,7 +20,7 @@ Mulai cepat ini mengasumsikan pemahaman dasar tentang konsep Kube. Untuk informa
 
 - Artikel ini memerlukan versi 2.0.64 atau yang lebih baru dari Azure CLI. Jika Anda menggunakan Azure Cloud Shell, versi terbaru sudah diinstal di sana.
 - Pastikan identitas yang Anda gunakan untuk membuat kluster Anda memiliki izin minimum yang sesuai. Untuk informasi selengkapnya tentang akses dan identitas AKS, lihat [Opsi akses dan identitas untuk Azure Kubernetes Service (AKS)](../concepts-identity.md).
-- Jika Anda memiliki beberapa langganan Azure, pilih ID langganan yang sesuai tempat sumber daya harus ditagih menggunakan [perintah az account set](/cli/azure/account#az-account-set) .
+- Jika Anda memiliki beberapa langganan Azure, pilih ID langganan yang sesuai tempat sumber daya harus ditagih menggunakan [perintah az account set](/cli/azure/account#az-account-set) . Untuk informasi selengkapnya, lihat [Cara mengelola langganan Azure – Azure CLI](/cli/azure/manage-azure-subscriptions-azure-cli?tabs=bash#change-the-active-subscription).
 
 ## Menentukan variabel lingkungan
 
@@ -75,7 +65,11 @@ Hasil:
 Buat kluster AKS menggunakan [`az aks create`][az-aks-create] perintah . Contoh berikut membuat kluster dengan satu simpul dan mengaktifkan identitas terkelola yang ditetapkan sistem.
 
 ```azurecli-interactive
-az aks create --resource-group $MY_RESOURCE_GROUP_NAME --name $MY_AKS_CLUSTER_NAME --enable-managed-identity --node-count 1 --generate-ssh-keys
+az aks create \
+    --resource-group $MY_RESOURCE_GROUP_NAME \
+    --name $MY_AKS_CLUSTER_NAME \
+    --node-count 1 \
+    --generate-ssh-keys
 ```
 
 > [!NOTE]
@@ -113,7 +107,8 @@ Untuk menyebarkan aplikasi, Anda menggunakan file manifes untuk membuat semua ob
 
 1. Buat file bernama `aks-store-quickstart.yaml` dan salin dalam manifes berikut:
 
-    ```yaml
+    ```bash
+    cat << EOF > aks-store-quickstart.yaml
     apiVersion: apps/v1
     kind: Deployment
     metadata:
@@ -340,6 +335,7 @@ Untuk menyebarkan aplikasi, Anda menggunakan file manifes untuk membuat semua ob
       selector:
         app: store-front
       type: LoadBalancer
+    EOF
     ```
 
     Untuk perincian file manifes YAML, lihat [Manifes](../concepts-clusters-workloads.md#deployments-and-yaml-manifests) Penyebaran dan YAML.
@@ -359,7 +355,7 @@ Anda dapat memvalidasi bahwa aplikasi berjalan dengan mengunjungi alamat IP publ
 Dapatkan URL aplikasi menggunakan perintah berikut:
 
 ```azurecli-interactive
-runtime="5 minute"
+runtime="5 minutes"
 endtime=$(date -ud "$runtime" +%s)
 while [[ $(date -u +%s) -le $endtime ]]
 do
@@ -382,7 +378,7 @@ curl $IP_ADDRESS
 
 Hasil:
 <!-- expected_similarity=0.3 -->
-```JSON
+```HTML
 <!doctype html>
 <html lang="">
    <head>
@@ -401,7 +397,7 @@ Hasil:
 </html>
 ```
 
-```JSON
+```OUTPUT
 echo "You can now visit your web server at $IP_ADDRESS"
 ```
 
