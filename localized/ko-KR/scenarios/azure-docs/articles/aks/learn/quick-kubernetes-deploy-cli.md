@@ -1,13 +1,3 @@
----
-title: '빠른 시작: Azure CLI를 사용하여 AKS(Azure Kubernetes Service) 클러스터 배포'
-description: Azure CLI를 사용하여 Kubernetes 클러스터를 빠르게 배포하고 AKS(Azure Kubernetes Service)에서 애플리케이션을 배포하는 방법을 알아봅니다.
-ms.topic: quickstart
-ms.date: 04/09/2024
-author: tamram
-ms.author: tamram
-ms.custom: 'H1Hack27Feb2017, mvc, devcenter, devx-track-azurecli, mode-api, innovation-engine, linux-related-content'
----
-
 # 빠른 시작: Azure CLI를 사용하여 AKS(Azure Kubernetes Service) 클러스터 배포
 
 [![Azure에 배포](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262758)
@@ -30,7 +20,7 @@ AKS(Azure Kubernetes Service)는 클러스터를 빠르게 배포하고 관리�
 
 - 이 문서에는 Azure CLI 버전 2.0.64 이상이 필요합니다. Azure Cloud Shell을 사용하는 경우 최신 버전이 이미 설치되어 있습니다.
 - 클러스터를 만드는 데 사용하는 ID에 적절한 최소 권한이 있는지 확인합니다. AKS의 액세스 및 ID에 대한 자세한 내용은 [AKS(Azure Kubernetes Service)에 대한 액세스 및 ID 옵션](../concepts-identity.md)을 참조하세요.
-- Azure 구독이 여러 개인 경우 [az account set](/cli/azure/account#az-account-set) 명령을 사용하여 리소스가 청구되어야 하는 적절한 구독 ID를 선택합니다.
+- Azure 구독이 여러 개인 경우 [az account set](/cli/azure/account#az-account-set) 명령을 사용하여 리소스가 청구되어야 하는 적절한 구독 ID를 선택합니다. 자세한 내용은 [Azure 구독 관리 방법 - Azure CLI](/cli/azure/manage-azure-subscriptions-azure-cli?tabs=bash#change-the-active-subscription)를 참조하세요.
 
 ## 환경 변수 정의
 
@@ -75,7 +65,11 @@ Results:
 [`az aks create`][az-aks-create] 명령을 사용하여 AKS 클러스터를 만듭니다. 다음 예에서는 노드가 1개 있는 클러스터를 만들고 시스템 할당 관리 ID를 사용하도록 설정합니다.
 
 ```azurecli-interactive
-az aks create --resource-group $MY_RESOURCE_GROUP_NAME --name $MY_AKS_CLUSTER_NAME --enable-managed-identity --node-count 1 --generate-ssh-keys
+az aks create \
+    --resource-group $MY_RESOURCE_GROUP_NAME \
+    --name $MY_AKS_CLUSTER_NAME \
+    --node-count 1 \
+    --generate-ssh-keys
 ```
 
 > [!NOTE]
@@ -113,7 +107,8 @@ Kubernetes 클러스터를 관리하려면 Kubernetes 명령줄 클라이언트�
 
 1. 파일 `aks-store-quickstart.yaml`을 만들고 다음 매니페스트에 복사합니다.
 
-    ```yaml
+    ```bash
+    cat << EOF > aks-store-quickstart.yaml
     apiVersion: apps/v1
     kind: Deployment
     metadata:
@@ -340,6 +335,7 @@ Kubernetes 클러스터를 관리하려면 Kubernetes 명령줄 클라이언트�
       selector:
         app: store-front
       type: LoadBalancer
+    EOF
     ```
 
     YAML 매니페스트 파일의 분석은 [배포 및 YAML 매니페스트](../concepts-clusters-workloads.md#deployments-and-yaml-manifests)를 참조하세요.
@@ -359,7 +355,7 @@ Kubernetes 클러스터를 관리하려면 Kubernetes 명령줄 클라이언트�
 다음 명령을 사용하여 애플리케이션 URL을 가져옵니다.
 
 ```azurecli-interactive
-runtime="5 minute"
+runtime="5 minutes"
 endtime=$(date -ud "$runtime" +%s)
 while [[ $(date -u +%s) -le $endtime ]]
 do
@@ -382,7 +378,7 @@ curl $IP_ADDRESS
 
 Results:
 <!-- expected_similarity=0.3 -->
-```JSON
+```HTML
 <!doctype html>
 <html lang="">
    <head>
@@ -401,7 +397,7 @@ Results:
 </html>
 ```
 
-```JSON
+```OUTPUT
 echo "You can now visit your web server at $IP_ADDRESS"
 ```
 
