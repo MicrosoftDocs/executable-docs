@@ -1,13 +1,3 @@
----
-title: "Schnellstart: Bereitstellen eines Azure Kubernetes Service-Clusters (AKS) mit Azure\_CLI"
-description: 'Hier erfahren Sie, wie Sie über Azure CLI schnell ein Kubernetes-Cluster und eine Anwendung in Azure Kubernetes Service (AKS) bereitstellen.'
-ms.topic: quickstart
-ms.date: 04/09/2024
-author: tamram
-ms.author: tamram
-ms.custom: 'H1Hack27Feb2017, mvc, devcenter, devx-track-azurecli, mode-api, innovation-engine, linux-related-content'
----
-
 # Schnellstart: Bereitstellen eines Azure Kubernetes Service-Clusters (AKS) mit Azure CLI
 
 [![Bereitstellung in Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262758)
@@ -30,7 +20,7 @@ Für diese Schnellstartanleitung werden Grundkenntnisse in Bezug auf die Kuberne
 
 - Für diesen Artikel ist mindestens Version 2.0.64 der Azure CLI erforderlich. Bei Verwendung von Azure Cloud Shell ist die aktuelle Version bereits installiert.
 - Stellen Sie sicher, dass die Identität, die Sie zum Erstellen Ihres Clusters verwenden, über die erforderlichen Mindestberechtigungen verfügt. Weitere Informationen zu Zugriff und Identität für AKS finden Sie unter [Zugriffs- und Identitätsoptionen für Azure Kubernetes Service (AKS)](../concepts-identity.md).
-- Wenn Sie über mehrere Azure-Abonnements verfügen, wählen Sie mithilfe des Befehls [az account set](/cli/azure/account#az-account-set) die ID des Abonnements aus, in dem die Ressourcen fakturiert werden sollen.
+- Wenn Sie über mehrere Azure-Abonnements verfügen, wählen Sie mithilfe des Befehls [az account set](/cli/azure/account#az-account-set) die ID des Abonnements aus, in dem die Ressourcen fakturiert werden sollen. Weitere Informationen finden Sie unter [Verwalten von Azure-Abonnementen – Azure CLI](/cli/azure/manage-azure-subscriptions-azure-cli?tabs=bash#change-the-active-subscription).
 
 ## Definieren von Umgebungsvariablen
 
@@ -75,7 +65,11 @@ Ergebnisse:
 Erstellen Sie mit dem Befehl [`az aks create`][az-aks-create] einen AKS-Cluster. Im folgenden Beispiel wird ein Cluster mit einem Knoten erstellt und eine systemseitig zugewiesene verwaltete Identität aktiviert.
 
 ```azurecli-interactive
-az aks create --resource-group $MY_RESOURCE_GROUP_NAME --name $MY_AKS_CLUSTER_NAME --enable-managed-identity --node-count 1 --generate-ssh-keys
+az aks create \
+    --resource-group $MY_RESOURCE_GROUP_NAME \
+    --name $MY_AKS_CLUSTER_NAME \
+    --node-count 1 \
+    --generate-ssh-keys
 ```
 
 > [!NOTE]
@@ -113,7 +107,8 @@ Zum Bereitstellen der Anwendung verwenden Sie eine Manifestdatei, um alle Objekt
 
 1. Erstellen Sie eine Datei namens `aks-store-quickstart.yaml`, und fügen Sie das folgende Manifest ein:
 
-    ```yaml
+    ```bash
+    cat << EOF > aks-store-quickstart.yaml
     apiVersion: apps/v1
     kind: Deployment
     metadata:
@@ -340,6 +335,7 @@ Zum Bereitstellen der Anwendung verwenden Sie eine Manifestdatei, um alle Objekt
       selector:
         app: store-front
       type: LoadBalancer
+    EOF
     ```
 
     Eine Aufschlüsselung der YAML-Manifestdateien finden Sie unter [Bereitstellungen und YAML-Manifeste](../concepts-clusters-workloads.md#deployments-and-yaml-manifests).
@@ -359,7 +355,7 @@ Sie können überprüfen, ob die Anwendung ausgeführt wird, indem Sie die öffe
 Rufen Sie die Anwendungs-URL mit den folgenden Befehlen ab:
 
 ```azurecli-interactive
-runtime="5 minute"
+runtime="5 minutes"
 endtime=$(date -ud "$runtime" +%s)
 while [[ $(date -u +%s) -le $endtime ]]
 do
@@ -382,7 +378,7 @@ curl $IP_ADDRESS
 
 Ergebnisse:
 <!-- expected_similarity=0.3 -->
-```JSON
+```HTML
 <!doctype html>
 <html lang="">
    <head>
@@ -401,7 +397,7 @@ Ergebnisse:
 </html>
 ```
 
-```JSON
+```OUTPUT
 echo "You can now visit your web server at $IP_ADDRESS"
 ```
 
