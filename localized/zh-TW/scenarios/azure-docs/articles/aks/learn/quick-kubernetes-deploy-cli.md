@@ -1,13 +1,3 @@
----
-title: 快速入門：使用 Azure CLI 部署 Azure Kubernetes Service (AKS) 叢集
-description: 了解如何使用 Azure CLI 在 Azure Kubernetes Service (AKS) 中快速部署 Kube 叢集並部署應用程式。
-ms.topic: quickstart
-ms.date: 04/09/2024
-author: tamram
-ms.author: tamram
-ms.custom: 'H1Hack27Feb2017, mvc, devcenter, devx-track-azurecli, mode-api, innovation-engine, linux-related-content'
----
-
 # 快速入門：使用 Azure CLI 部署 Azure Kubernetes Service (AKS) 叢集
 
 [![部署至 Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262758)
@@ -30,7 +20,7 @@ Azure Kubernetes Service (AKS) 是受控 Kubernetes 服務，可讓您快速部�
 
 - 本文需要 2.0.64 版或更新版本的 Azure CLI。 若您使用的是 Azure Cloud Shell，即已安裝最新版本。
 - 請確保您用來建立叢集的身分識別擁有適當的最低權限。 如需 AKS 存取和身分識別的詳細資訊，請參閱 [Azure Kubernetes Service (AKS) 的存取與身分識別選項](../concepts-identity.md)。
-- 如果您有多個 Azure 訂用帳戶，請使用 [az account set](/cli/azure/account#az-account-set) 命令來選取應對資源計費的適當訂用帳戶識別碼。
+- 如果您有多個 Azure 訂用帳戶，請使用 [az account set](/cli/azure/account#az-account-set) 命令來選取應對資源計費的適當訂用帳戶識別碼。 如需詳細資訊，請參閱 [如何管理 Azure 訂用帳戶 – Azure CLI](/cli/azure/manage-azure-subscriptions-azure-cli?tabs=bash#change-the-active-subscription)。
 
 ## 定義環境變數
 
@@ -46,7 +36,7 @@ export MY_DNS_LABEL="mydnslabel$RANDOM_ID"
 
 ## 建立資源群組
 
-[Azure 資源群組][azure-resource-group]是部署及管理 Azure 資源所在的邏輯群組。 建立資源群組時，系統提示您指定位置。 此位置是儲存資源群組中繼資料的位置，如果您未在資源建立期間指定另一個區域，此位置也會是您在 Azure 中執行資源的位置。
+[Azure 資源群組][azure-resource-group]是部署及管理 Azure 資源所在的邏輯群組。 建立資源群組時，系統會提示您指定位置。 此位置是資源群組中繼資料的儲存位置，如果未在資源建立期間指定另一個區域，此位置也會是您在 Azure 中執行資源的位置。
 
 使用 [`az group create`][az-group-create] 命令建立資源群組。
 
@@ -75,7 +65,11 @@ az group create --name $MY_RESOURCE_GROUP_NAME --location $REGION
 使用 [`az aks create`][az-aks-create] 命令建立 AKS 叢集。 下列範例會建立具有一個節點的叢集，並啟用系統指派的受控識別。
 
 ```azurecli-interactive
-az aks create --resource-group $MY_RESOURCE_GROUP_NAME --name $MY_AKS_CLUSTER_NAME --enable-managed-identity --node-count 1 --generate-ssh-keys
+az aks create \
+    --resource-group $MY_RESOURCE_GROUP_NAME \
+    --name $MY_AKS_CLUSTER_NAME \
+    --node-count 1 \
+    --generate-ssh-keys
 ```
 
 > [!NOTE]
@@ -113,7 +107,8 @@ az aks create --resource-group $MY_RESOURCE_GROUP_NAME --name $MY_AKS_CLUSTER_NA
 
 1. 建立名為 `aks-store-quickstart.yaml` 的檔案，然後將下列資訊清單複製進來：
 
-    ```yaml
+    ```bash
+    cat << EOF > aks-store-quickstart.yaml
     apiVersion: apps/v1
     kind: Deployment
     metadata:
@@ -340,6 +335,7 @@ az aks create --resource-group $MY_RESOURCE_GROUP_NAME --name $MY_AKS_CLUSTER_NA
       selector:
         app: store-front
       type: LoadBalancer
+    EOF
     ```
 
     如需 YAML 資訊清單檔案的詳細資訊，請參閱[部署和 YAML 資訊清單](../concepts-clusters-workloads.md#deployments-and-yaml-manifests)。
@@ -359,7 +355,7 @@ az aks create --resource-group $MY_RESOURCE_GROUP_NAME --name $MY_AKS_CLUSTER_NA
 使用下列指令取得應用程式 URL：
 
 ```azurecli-interactive
-runtime="5 minute"
+runtime="5 minutes"
 endtime=$(date -ud "$runtime" +%s)
 while [[ $(date -u +%s) -le $endtime ]]
 do
@@ -382,7 +378,7 @@ curl $IP_ADDRESS
 
 結果：
 <!-- expected_similarity=0.3 -->
-```JSON
+```HTML
 <!doctype html>
 <html lang="">
    <head>
@@ -401,7 +397,7 @@ curl $IP_ADDRESS
 </html>
 ```
 
-```JSON
+```OUTPUT
 echo "You can now visit your web server at $IP_ADDRESS"
 ```
 
