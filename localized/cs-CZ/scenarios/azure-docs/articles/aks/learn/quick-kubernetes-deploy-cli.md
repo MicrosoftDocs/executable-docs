@@ -1,13 +1,3 @@
----
-title: 'Rychlý start: Nasazení clusteru Azure Kubernetes Service (AKS) pomocí Azure CLI'
-description: 'Zjistěte, jak rychle nasadit cluster Kubernetes a nasadit aplikaci ve službě Azure Kubernetes Service (AKS) pomocí Azure CLI.'
-ms.topic: quickstart
-ms.date: 04/09/2024
-author: tamram
-ms.author: tamram
-ms.custom: 'H1Hack27Feb2017, mvc, devcenter, devx-track-azurecli, mode-api, innovation-engine, linux-related-content'
----
-
 # Rychlý start: Nasazení clusteru Azure Kubernetes Service (AKS) pomocí Azure CLI
 
 [![Nasazení do Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262758)
@@ -30,7 +20,7 @@ Tento rychlý start předpokládá základní znalosti konceptů Kubernetes. Dal
 
 - Tento článek vyžaduje verzi 2.0.64 nebo novější azure CLI. Pokud používáte Azure Cloud Shell, je tam už nainstalovaná nejnovější verze.
 - Ujistěte se, že identita, kterou používáte k vytvoření clusteru, má odpovídající minimální oprávnění. Další podrobnosti o přístupu a identitě pro AKS najdete v tématu [Možnosti přístupu a identit pro Službu Azure Kubernetes Service (AKS).](../concepts-identity.md)
-- Pokud máte více předplatných Azure, vyberte odpovídající ID předplatného, ve kterém se mají prostředky fakturovat pomocí [příkazu az account set](/cli/azure/account#az-account-set) .
+- Pokud máte více předplatných Azure, vyberte odpovídající ID předplatného, ve kterém se mají prostředky fakturovat pomocí [příkazu az account set](/cli/azure/account#az-account-set) . Další informace najdete v tématu [Správa předplatných Azure – Azure CLI](/cli/azure/manage-azure-subscriptions-azure-cli?tabs=bash#change-the-active-subscription).
 
 ## Definování proměnných prostředí
 
@@ -75,7 +65,11 @@ Výsledky:
 Pomocí příkazu vytvořte cluster [`az aks create`][az-aks-create] AKS. Následující příklad vytvoří cluster s jedním uzlem a povolí spravovanou identitu přiřazenou systémem.
 
 ```azurecli-interactive
-az aks create --resource-group $MY_RESOURCE_GROUP_NAME --name $MY_AKS_CLUSTER_NAME --enable-managed-identity --node-count 1 --generate-ssh-keys
+az aks create \
+    --resource-group $MY_RESOURCE_GROUP_NAME \
+    --name $MY_AKS_CLUSTER_NAME \
+    --node-count 1 \
+    --generate-ssh-keys
 ```
 
 > [!NOTE]
@@ -113,7 +107,8 @@ K nasazení aplikace použijete soubor manifestu k vytvoření všech objektů p
 
 1. Vytvořte soubor s názvem `aks-store-quickstart.yaml` a zkopírujte ho v následujícím manifestu:
 
-    ```yaml
+    ```bash
+    cat << EOF > aks-store-quickstart.yaml
     apiVersion: apps/v1
     kind: Deployment
     metadata:
@@ -340,6 +335,7 @@ K nasazení aplikace použijete soubor manifestu k vytvoření všech objektů p
       selector:
         app: store-front
       type: LoadBalancer
+    EOF
     ```
 
     Rozpis souborů manifestu YAML najdete v tématu [Nasazení a manifesty](../concepts-clusters-workloads.md#deployments-and-yaml-manifests) YAML.
@@ -359,7 +355,7 @@ Aplikaci můžete ověřit tak, že navštívíte veřejnou IP adresu nebo adres
 Adresu URL aplikace získejte pomocí následujících příkazů:
 
 ```azurecli-interactive
-runtime="5 minute"
+runtime="5 minutes"
 endtime=$(date -ud "$runtime" +%s)
 while [[ $(date -u +%s) -le $endtime ]]
 do
@@ -382,7 +378,7 @@ curl $IP_ADDRESS
 
 Výsledky:
 <!-- expected_similarity=0.3 -->
-```JSON
+```HTML
 <!doctype html>
 <html lang="">
    <head>
@@ -401,7 +397,7 @@ Výsledky:
 </html>
 ```
 
-```JSON
+```OUTPUT
 echo "You can now visit your web server at $IP_ADDRESS"
 ```
 
