@@ -1,13 +1,3 @@
----
-title: 快速入门：使用 Azure CLI 部署 Azure Kubernetes 服务 (AKS) 群集
-description: 了解如何使用 Azure CLI 快速部署 Kubernetes 群集和在 Azure Kubernetes 服务 (AKS) 中部署应用程序。
-ms.topic: quickstart
-ms.date: 04/09/2024
-author: tamram
-ms.author: tamram
-ms.custom: 'H1Hack27Feb2017, mvc, devcenter, devx-track-azurecli, mode-api, innovation-engine, linux-related-content'
----
-
 # 快速入门：使用 Azure CLI 部署 Azure Kubernetes 服务 (AKS) 群集
 
 [![部署到 Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262758)
@@ -30,7 +20,7 @@ Azure Kubernetes 服务 (AKS) 是可用于快速部署和管理群集的托管�
 
 - 本文需要 Azure CLI 版本 2.0.64 或更高版本。 如果你使用的是 Azure Cloud Shell，则表示已安装最新版本。
 - 确保用于创建群集的标识具有合适的的最低权限。 有关 AKS 访问和标识的详细信息，请参阅 [Azure Kubernetes Service (AKS) 的访问和标识选项](../concepts-identity.md)。
-- 如果有多个 Azure 订阅，请使用 [az account set](/cli/azure/account#az-account-set) 命令选择应在其中计收资源费用的相应订阅 ID。
+- 如果有多个 Azure 订阅，请使用 [az account set](/cli/azure/account#az-account-set) 命令选择应在其中计收资源费用的相应订阅 ID。 有关详细信息，请参阅[如何管理 Azure 订阅 – Azure CLI](/cli/azure/manage-azure-subscriptions-azure-cli?tabs=bash#change-the-active-subscription)。
 
 ## 定义环境变量
 
@@ -75,7 +65,11 @@ az group create --name $MY_RESOURCE_GROUP_NAME --location $REGION
 使用 [`az aks create`][az-aks-create] 命令创建 AKS 群集。 以下示例使用一个节点创建一个群集，并启用系统分配的托管标识。
 
 ```azurecli-interactive
-az aks create --resource-group $MY_RESOURCE_GROUP_NAME --name $MY_AKS_CLUSTER_NAME --enable-managed-identity --node-count 1 --generate-ssh-keys
+az aks create \
+    --resource-group $MY_RESOURCE_GROUP_NAME \
+    --name $MY_AKS_CLUSTER_NAME \
+    --node-count 1 \
+    --generate-ssh-keys
 ```
 
 > [!NOTE]
@@ -113,7 +107,8 @@ az aks create --resource-group $MY_RESOURCE_GROUP_NAME --name $MY_AKS_CLUSTER_NA
 
 1. 创建名为 `aks-store-quickstart.yaml` 的文件，并将以下清单复制到其中：
 
-    ```yaml
+    ```bash
+    cat << EOF > aks-store-quickstart.yaml
     apiVersion: apps/v1
     kind: Deployment
     metadata:
@@ -340,6 +335,7 @@ az aks create --resource-group $MY_RESOURCE_GROUP_NAME --name $MY_AKS_CLUSTER_NA
       selector:
         app: store-front
       type: LoadBalancer
+    EOF
     ```
 
     有关 YAML 清单文件的明细，请参阅[部署和 YAML 清单](../concepts-clusters-workloads.md#deployments-and-yaml-manifests)。
@@ -359,7 +355,7 @@ az aks create --resource-group $MY_RESOURCE_GROUP_NAME --name $MY_AKS_CLUSTER_NA
 使用以下命令来获取应用程序 URL：
 
 ```azurecli-interactive
-runtime="5 minute"
+runtime="5 minutes"
 endtime=$(date -ud "$runtime" +%s)
 while [[ $(date -u +%s) -le $endtime ]]
 do
@@ -382,7 +378,7 @@ curl $IP_ADDRESS
 
 结果：
 <!-- expected_similarity=0.3 -->
-```JSON
+```HTML
 <!doctype html>
 <html lang="">
    <head>
@@ -401,7 +397,7 @@ curl $IP_ADDRESS
 </html>
 ```
 
-```JSON
+```OUTPUT
 echo "You can now visit your web server at $IP_ADDRESS"
 ```
 
