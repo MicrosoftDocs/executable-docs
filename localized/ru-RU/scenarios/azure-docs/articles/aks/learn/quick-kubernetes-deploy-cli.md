@@ -1,13 +1,3 @@
----
-title: Краткое руководство. Развертывание кластера Служба Azure Kubernetes (AKS) с помощью Azure CLI
-description: 'Узнайте, как быстро развернуть кластер Kubernetes и развернуть приложение в Служба Azure Kubernetes (AKS) с помощью Azure CLI.'
-ms.topic: quickstart
-ms.date: 04/09/2024
-author: tamram
-ms.author: tamram
-ms.custom: 'H1Hack27Feb2017, mvc, devcenter, devx-track-azurecli, mode-api, innovation-engine, linux-related-content'
----
-
 # Краткое руководство. Развертывание кластера Служба Azure Kubernetes (AKS) с помощью Azure CLI
 
 [![Развертывание в Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262758)
@@ -30,7 +20,7 @@ ms.custom: 'H1Hack27Feb2017, mvc, devcenter, devx-track-azurecli, mode-api, inno
 
 - Для работы с этой статьей требуется Azure CLI версии 2.0.64 или более поздней. Если вы используете Azure Cloud Shell, последняя версия уже установлена там.
 - Убедитесь, что удостоверение, которое вы используете для создания кластера, имеет соответствующие минимальные разрешения. Дополнительные сведения о доступе и удостоверении для AKS см. в статье [Возможности контроля доступа и идентификации в Службе Azure Kubernetes (AKS)](../concepts-identity.md).
-- Если у вас несколько подписок Azure, выберите соответствующий идентификатор подписки, в котором необходимо выставлять счета за ресурсы с помощью [команды az account set](/cli/azure/account#az-account-set) .
+- Если у вас несколько подписок Azure, выберите соответствующий идентификатор подписки, в котором необходимо выставлять счета за ресурсы с помощью [команды az account set](/cli/azure/account#az-account-set) . Дополнительные сведения см. в статье ["Управление подписками Azure" — Azure CLI](/cli/azure/manage-azure-subscriptions-azure-cli?tabs=bash#change-the-active-subscription).
 
 ## Определение переменных среды
 
@@ -75,7 +65,11 @@ az group create --name $MY_RESOURCE_GROUP_NAME --location $REGION
 Создайте кластер AKS с помощью [`az aks create`][az-aks-create] команды. В следующем примере создается кластер с одним узлом и включается управляемое удостоверение, назначаемое системой.
 
 ```azurecli-interactive
-az aks create --resource-group $MY_RESOURCE_GROUP_NAME --name $MY_AKS_CLUSTER_NAME --enable-managed-identity --node-count 1 --generate-ssh-keys
+az aks create \
+    --resource-group $MY_RESOURCE_GROUP_NAME \
+    --name $MY_AKS_CLUSTER_NAME \
+    --node-count 1 \
+    --generate-ssh-keys
 ```
 
 > [!NOTE]
@@ -113,7 +107,8 @@ az aks create --resource-group $MY_RESOURCE_GROUP_NAME --name $MY_AKS_CLUSTER_NA
 
 1. Создайте файл с именем `aks-store-quickstart.yaml` и скопируйте его в следующем манифесте:
 
-    ```yaml
+    ```bash
+    cat << EOF > aks-store-quickstart.yaml
     apiVersion: apps/v1
     kind: Deployment
     metadata:
@@ -340,6 +335,7 @@ az aks create --resource-group $MY_RESOURCE_GROUP_NAME --name $MY_AKS_CLUSTER_NA
       selector:
         app: store-front
       type: LoadBalancer
+    EOF
     ```
 
     Сведения о разбивке файлов манифеста YAML см. в разделе ["Развертывания" и "Манифесты](../concepts-clusters-workloads.md#deployments-and-yaml-manifests) YAML".
@@ -359,7 +355,7 @@ az aks create --resource-group $MY_RESOURCE_GROUP_NAME --name $MY_AKS_CLUSTER_NA
 Получите URL-адрес приложения с помощью следующих команд:
 
 ```azurecli-interactive
-runtime="5 minute"
+runtime="5 minutes"
 endtime=$(date -ud "$runtime" +%s)
 while [[ $(date -u +%s) -le $endtime ]]
 do
@@ -382,7 +378,7 @@ curl $IP_ADDRESS
 
 Результаты.
 <!-- expected_similarity=0.3 -->
-```JSON
+```HTML
 <!doctype html>
 <html lang="">
    <head>
@@ -401,7 +397,7 @@ curl $IP_ADDRESS
 </html>
 ```
 
-```JSON
+```OUTPUT
 echo "You can now visit your web server at $IP_ADDRESS"
 ```
 
