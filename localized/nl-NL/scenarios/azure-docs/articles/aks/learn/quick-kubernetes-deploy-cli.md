@@ -1,13 +1,3 @@
----
-title: 'Quickstart: Een AKS-cluster (Azure Kubernetes Service) implementeren met behulp van Azure CLI'
-description: Meer informatie over het snel implementeren van een Kubernetes-cluster en het implementeren van een toepassing in Azure Kubernetes Service (AKS) met behulp van Azure CLI.
-ms.topic: quickstart
-ms.date: 04/09/2024
-author: tamram
-ms.author: tamram
-ms.custom: 'H1Hack27Feb2017, mvc, devcenter, devx-track-azurecli, mode-api, innovation-engine, linux-related-content'
----
-
 # Quickstart: Een AKS-cluster (Azure Kubernetes Service) implementeren met behulp van Azure CLI
 
 [![Implementeren naar Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262758)
@@ -30,7 +20,7 @@ In deze snelstart wordt ervan uitgegaan dat u een basisbegrip hebt van Kubernete
 
 - Voor dit artikel is versie 2.0.64 of hoger van Azure CLI vereist. Als u Azure Cloud Shell gebruikt, is de nieuwste versie daar al geïnstalleerd.
 - Zorg ervoor dat de identiteit die u gebruikt om uw cluster te maken de juiste minimale machtigingen heeft. Zie Toegangs- en identiteitsopties voor Azure Kubernetes Service (AKS)[ voor meer informatie over toegang en identiteit voor AKS](../concepts-identity.md).
-- Als u meerdere Azure-abonnementen hebt, selecteert u de juiste abonnements-id waarin de resources moeten worden gefactureerd met behulp van de [opdracht az account set](/cli/azure/account#az-account-set) .
+- Als u meerdere Azure-abonnementen hebt, selecteert u de juiste abonnements-id waarin de resources moeten worden gefactureerd met behulp van de [opdracht az account set](/cli/azure/account#az-account-set) . Zie [Azure-abonnementen beheren - Azure CLI](/cli/azure/manage-azure-subscriptions-azure-cli?tabs=bash#change-the-active-subscription) voor meer informatie.
 
 ## Omgevingsvariabelen definiëren
 
@@ -75,7 +65,11 @@ Resultaten:
 Maak een AKS-cluster met behulp van de [`az aks create`][az-aks-create] opdracht. In het volgende voorbeeld wordt een cluster met één knooppunt gemaakt en wordt een door het systeem toegewezen beheerde identiteit ingeschakeld.
 
 ```azurecli-interactive
-az aks create --resource-group $MY_RESOURCE_GROUP_NAME --name $MY_AKS_CLUSTER_NAME --enable-managed-identity --node-count 1 --generate-ssh-keys
+az aks create \
+    --resource-group $MY_RESOURCE_GROUP_NAME \
+    --name $MY_AKS_CLUSTER_NAME \
+    --node-count 1 \
+    --generate-ssh-keys
 ```
 
 > [!NOTE]
@@ -113,7 +107,8 @@ Als u de toepassing wilt implementeren, gebruikt u een manifestbestand om alle o
 
 1. Maak een bestand met de naam `aks-store-quickstart.yaml` en kopieer dit in het volgende manifest:
 
-    ```yaml
+    ```bash
+    cat << EOF > aks-store-quickstart.yaml
     apiVersion: apps/v1
     kind: Deployment
     metadata:
@@ -340,6 +335,7 @@ Als u de toepassing wilt implementeren, gebruikt u een manifestbestand om alle o
       selector:
         app: store-front
       type: LoadBalancer
+    EOF
     ```
 
     Zie Implementaties en YAML-manifestmanifesten voor een uitsplitsing van YAML-manifestbestanden[](../concepts-clusters-workloads.md#deployments-and-yaml-manifests).
@@ -359,7 +355,7 @@ U kunt controleren of de toepassing wordt uitgevoerd door naar het openbare IP-a
 Haal de toepassings-URL op met behulp van de volgende opdrachten:
 
 ```azurecli-interactive
-runtime="5 minute"
+runtime="5 minutes"
 endtime=$(date -ud "$runtime" +%s)
 while [[ $(date -u +%s) -le $endtime ]]
 do
@@ -382,7 +378,7 @@ curl $IP_ADDRESS
 
 Resultaten:
 <!-- expected_similarity=0.3 -->
-```JSON
+```HTML
 <!doctype html>
 <html lang="">
    <head>
@@ -401,7 +397,7 @@ Resultaten:
 </html>
 ```
 
-```JSON
+```OUTPUT
 echo "You can now visit your web server at $IP_ADDRESS"
 ```
 
