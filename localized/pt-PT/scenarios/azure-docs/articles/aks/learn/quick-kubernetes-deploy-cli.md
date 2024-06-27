@@ -1,13 +1,3 @@
----
-title: 'Guia de início rápido: implantar um cluster do Serviço Kubernetes do Azure (AKS) usando a CLI do Azure'
-description: Saiba como implantar rapidamente um cluster Kubernetes e implantar um aplicativo no Serviço Kubernetes do Azure (AKS) usando a CLI do Azure.
-ms.topic: quickstart
-ms.date: 04/09/2024
-author: tamram
-ms.author: tamram
-ms.custom: 'H1Hack27Feb2017, mvc, devcenter, devx-track-azurecli, mode-api, innovation-engine, linux-related-content'
----
-
 # Guia de início rápido: implantar um cluster do Serviço Kubernetes do Azure (AKS) usando a CLI do Azure
 
 [![Implementar no Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262758)
@@ -30,7 +20,7 @@ Este guia de introdução parte do princípio de que possui conhecimentos básic
 
 - Este artigo requer a versão 2.0.64 ou posterior da CLI do Azure. Se você estiver usando o Azure Cloud Shell, a versão mais recente já está instalada lá.
 - Verifique se a identidade que você está usando para criar seu cluster tem as permissões mínimas apropriadas. Para obter mais detalhes sobre acesso e identidade para AKS, consulte [Opções de acesso e identidade para o Serviço Kubernetes do Azure (AKS).](../concepts-identity.md)
-- Se você tiver várias assinaturas do Azure, selecione a ID de assinatura apropriada na qual os recursos devem ser cobrados usando o [comando az account set](/cli/azure/account#az-account-set) .
+- Se você tiver várias assinaturas do Azure, selecione a ID de assinatura apropriada na qual os recursos devem ser cobrados usando o [comando az account set](/cli/azure/account#az-account-set) . Para obter mais informações, consulte [Como gerenciar assinaturas do Azure – CLI](/cli/azure/manage-azure-subscriptions-azure-cli?tabs=bash#change-the-active-subscription) do Azure.
 
 ## Definir variáveis de ambiente
 
@@ -75,7 +65,11 @@ Resultados:
 Crie um cluster AKS usando o [`az aks create`][az-aks-create] comando. O exemplo a seguir cria um cluster com um nó e habilita uma identidade gerenciada atribuída ao sistema.
 
 ```azurecli-interactive
-az aks create --resource-group $MY_RESOURCE_GROUP_NAME --name $MY_AKS_CLUSTER_NAME --enable-managed-identity --node-count 1 --generate-ssh-keys
+az aks create \
+    --resource-group $MY_RESOURCE_GROUP_NAME \
+    --name $MY_AKS_CLUSTER_NAME \
+    --node-count 1 \
+    --generate-ssh-keys
 ```
 
 > [!NOTE]
@@ -113,7 +107,8 @@ Para implantar o aplicativo, use um arquivo de manifesto para criar todos os obj
 
 1. Crie um arquivo nomeado `aks-store-quickstart.yaml` e copie no seguinte manifesto:
 
-    ```yaml
+    ```bash
+    cat << EOF > aks-store-quickstart.yaml
     apiVersion: apps/v1
     kind: Deployment
     metadata:
@@ -340,6 +335,7 @@ Para implantar o aplicativo, use um arquivo de manifesto para criar todos os obj
       selector:
         app: store-front
       type: LoadBalancer
+    EOF
     ```
 
     Para obter um detalhamento dos arquivos de manifesto YAML, consulte [Implantações e manifestos](../concepts-clusters-workloads.md#deployments-and-yaml-manifests) YAML.
@@ -359,7 +355,7 @@ Você pode validar se o aplicativo está em execução visitando o endereço IP 
 Obtenha a URL do aplicativo usando os seguintes comandos:
 
 ```azurecli-interactive
-runtime="5 minute"
+runtime="5 minutes"
 endtime=$(date -ud "$runtime" +%s)
 while [[ $(date -u +%s) -le $endtime ]]
 do
@@ -382,7 +378,7 @@ curl $IP_ADDRESS
 
 Resultados:
 <!-- expected_similarity=0.3 -->
-```JSON
+```HTML
 <!doctype html>
 <html lang="">
    <head>
@@ -401,7 +397,7 @@ Resultados:
 </html>
 ```
 
-```JSON
+```OUTPUT
 echo "You can now visit your web server at $IP_ADDRESS"
 ```
 
