@@ -1,13 +1,3 @@
----
-title: 'Rövid útmutató: Azure Kubernetes Service- (AKS-) fürt üzembe helyezése az Azure CLI használatával'
-description: 'Megtudhatja, hogyan helyezhet üzembe gyorsan egy Kubernetes-fürtöt, és hogyan helyezhet üzembe alkalmazásokat az Azure Kubernetes Service-ben (AKS) az Azure CLI használatával.'
-ms.topic: quickstart
-ms.date: 04/09/2024
-author: tamram
-ms.author: tamram
-ms.custom: 'H1Hack27Feb2017, mvc, devcenter, devx-track-azurecli, mode-api, innovation-engine, linux-related-content'
----
-
 # Rövid útmutató: Azure Kubernetes Service- (AKS-) fürt üzembe helyezése az Azure CLI használatával
 
 [![Üzembe helyezés az Azure-ban](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262758)
@@ -30,7 +20,7 @@ A rövid útmutató feltételezi, hogy rendelkezik a Kubernetes használatára v
 
 - Ez a cikk az Azure CLI 2.0.64-es vagy újabb verzióját igényli. Az Azure Cloud Shell használata esetén a legújabb verzió már telepítve van.
 - Győződjön meg arról, hogy a fürt létrehozásához használt identitás rendelkezik a megfelelő minimális engedélyekkel. Az AKS-hez való hozzáféréssel és identitással kapcsolatos további részletekért tekintse meg [az Azure Kubernetes Service (AKS)](../concepts-identity.md) hozzáféréssel és identitással kapcsolatos lehetőségeit.
-- Ha több Azure-előfizetéssel rendelkezik, válassza ki a megfelelő előfizetés-azonosítót, amelyben az erőforrásokat az [az account set](/cli/azure/account#az-account-set) paranccsal kell számlázni.
+- Ha több Azure-előfizetéssel rendelkezik, válassza ki a megfelelő előfizetés-azonosítót, amelyben az erőforrásokat az [az account set](/cli/azure/account#az-account-set) paranccsal kell számlázni. További információ: [Azure-előfizetések kezelése – Azure CLI](/cli/azure/manage-azure-subscriptions-azure-cli?tabs=bash#change-the-active-subscription).
 
 ## Környezeti változók definiálása
 
@@ -75,7 +65,11 @@ Eredmények:
 Hozzon létre egy AKS-fürtöt a [`az aks create`][az-aks-create] paranccsal. Az alábbi példa egy egy csomóponttal rendelkező fürtöt hoz létre, és engedélyezi a rendszer által hozzárendelt felügyelt identitást.
 
 ```azurecli-interactive
-az aks create --resource-group $MY_RESOURCE_GROUP_NAME --name $MY_AKS_CLUSTER_NAME --enable-managed-identity --node-count 1 --generate-ssh-keys
+az aks create \
+    --resource-group $MY_RESOURCE_GROUP_NAME \
+    --name $MY_AKS_CLUSTER_NAME \
+    --node-count 1 \
+    --generate-ssh-keys
 ```
 
 > [!NOTE]
@@ -113,7 +107,8 @@ Az alkalmazás üzembe helyezéséhez egy jegyzékfájl használatával hozza l�
 
 1. Hozzon létre egy fájlt, `aks-store-quickstart.yaml` és másolja a következő jegyzékbe:
 
-    ```yaml
+    ```bash
+    cat << EOF > aks-store-quickstart.yaml
     apiVersion: apps/v1
     kind: Deployment
     metadata:
@@ -340,6 +335,7 @@ Az alkalmazás üzembe helyezéséhez egy jegyzékfájl használatával hozza l�
       selector:
         app: store-front
       type: LoadBalancer
+    EOF
     ```
 
     A YAML-jegyzékfájlok lebontásához tekintse meg [az üzembe helyezéseket és a YAML-jegyzékeket](../concepts-clusters-workloads.md#deployments-and-yaml-manifests).
@@ -359,7 +355,7 @@ A nyilvános IP-cím vagy az alkalmazás URL-címének megtekintésével ellenő
 Kérje le az alkalmazás URL-címét a következő parancsokkal:
 
 ```azurecli-interactive
-runtime="5 minute"
+runtime="5 minutes"
 endtime=$(date -ud "$runtime" +%s)
 while [[ $(date -u +%s) -le $endtime ]]
 do
@@ -382,7 +378,7 @@ curl $IP_ADDRESS
 
 Eredmények:
 <!-- expected_similarity=0.3 -->
-```JSON
+```HTML
 <!doctype html>
 <html lang="">
    <head>
@@ -401,7 +397,7 @@ Eredmények:
 </html>
 ```
 
-```JSON
+```OUTPUT
 echo "You can now visit your web server at $IP_ADDRESS"
 ```
 
