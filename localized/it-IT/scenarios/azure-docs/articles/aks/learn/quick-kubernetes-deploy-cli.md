@@ -1,13 +1,3 @@
----
-title: 'Guida introduttiva: distribuire un cluster del servizio Azure Kubernetes (AKS) con l’interfaccia della riga di comando di Azure'
-description: 'Informazioni su come distribuire rapidamente un cluster Kubernetes e un''applicazione nel servizio Azure Kubernetes (AKS), usando l’interfaccia della riga di comando di Azure.'
-ms.topic: quickstart
-ms.date: 04/09/2024
-author: tamram
-ms.author: tamram
-ms.custom: 'H1Hack27Feb2017, mvc, devcenter, devx-track-azurecli, mode-api, innovation-engine, linux-related-content'
----
-
 # Guida introduttiva: distribuire un cluster del servizio Azure Kubernetes (AKS) con l’interfaccia della riga di comando di Azure
 
 [![Distribuzione in Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262758)
@@ -30,7 +20,7 @@ Questa guida introduttiva presuppone una comprensione di base dei concetti relat
 
 - Questo articolo richiede la versione 2.0.64 o successiva dell'interfaccia della riga di comando di Azure. Se si sta usando Azure Cloud Shell, la versione più recente è già installata.
 - Assicurarsi che l'identità usata per creare il cluster disponga delle autorizzazioni minime adeguate. Per maggiori informazioni sull'accesso e l'identità per il servizio Azure Kubernetes, vedere [Opzioni di accesso e identità per il servizio Azure Kubernetes (AKS)](../concepts-identity.md).
-- Se si hanno più sottoscrizioni di Azure, selezionare l'ID sottoscrizione appropriato in cui devono essere fatturate le risorse, usando il comando [set account az](/cli/azure/account#az-account-set).
+- Se si hanno più sottoscrizioni di Azure, selezionare l'ID sottoscrizione appropriato in cui devono essere fatturate le risorse, usando il comando [set account az](/cli/azure/account#az-account-set). Per altre informazioni, vedere [Come gestire le sottoscrizioni di Azure - Interfaccia della riga di comando](/cli/azure/manage-azure-subscriptions-azure-cli?tabs=bash#change-the-active-subscription) di Azure.
 
 ## Definire le variabili di ambiente
 
@@ -75,7 +65,11 @@ Risultati:
 Creare un cluster del servizio Azure Kubernetes usando il comando [`az aks create`][az-aks-create]. L'esempio seguente crea un cluster con un nodo e abilita un'identità gestita assegnata dal sistema.
 
 ```azurecli-interactive
-az aks create --resource-group $MY_RESOURCE_GROUP_NAME --name $MY_AKS_CLUSTER_NAME --enable-managed-identity --node-count 1 --generate-ssh-keys
+az aks create \
+    --resource-group $MY_RESOURCE_GROUP_NAME \
+    --name $MY_AKS_CLUSTER_NAME \
+    --node-count 1 \
+    --generate-ssh-keys
 ```
 
 > [!NOTE]
@@ -113,7 +107,8 @@ Per distribuire l'applicazione, usare un file manifesto per creare tutti gli ogg
 
 1. Creare un file denominato `aks-store-quickstart.yaml` e copiarlo nel manifesto seguente:
 
-    ```yaml
+    ```bash
+    cat << EOF > aks-store-quickstart.yaml
     apiVersion: apps/v1
     kind: Deployment
     metadata:
@@ -340,6 +335,7 @@ Per distribuire l'applicazione, usare un file manifesto per creare tutti gli ogg
       selector:
         app: store-front
       type: LoadBalancer
+    EOF
     ```
 
     Per un dettaglio dei file manifesto YAML, vedere [Distribuzioni e manifesti YAML](../concepts-clusters-workloads.md#deployments-and-yaml-manifests).
@@ -359,7 +355,7 @@ Per distribuire l'applicazione, usare un file manifesto per creare tutti gli ogg
 Ottenere l'URL dell'applicazione usando i comandi seguenti:
 
 ```azurecli-interactive
-runtime="5 minute"
+runtime="5 minutes"
 endtime=$(date -ud "$runtime" +%s)
 while [[ $(date -u +%s) -le $endtime ]]
 do
@@ -382,7 +378,7 @@ curl $IP_ADDRESS
 
 Risultati:
 <!-- expected_similarity=0.3 -->
-```JSON
+```HTML
 <!doctype html>
 <html lang="">
    <head>
@@ -401,7 +397,7 @@ Risultati:
 </html>
 ```
 
-```JSON
+```OUTPUT
 echo "You can now visit your web server at $IP_ADDRESS"
 ```
 
