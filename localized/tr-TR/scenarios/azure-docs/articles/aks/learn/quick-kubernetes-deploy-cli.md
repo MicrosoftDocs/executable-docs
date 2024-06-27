@@ -1,13 +1,3 @@
----
-title: 'Hızlı Başlangıç: Azure CLI kullanarak Azure Kubernetes Service (AKS) kümesi dağıtma'
-description: Azure CLI kullanarak Bir Kubernetes kümesini hızla dağıtmayı ve Azure Kubernetes Service'te (AKS) uygulama dağıtmayı öğrenin.
-ms.topic: quickstart
-ms.date: 04/09/2024
-author: tamram
-ms.author: tamram
-ms.custom: 'H1Hack27Feb2017, mvc, devcenter, devx-track-azurecli, mode-api, innovation-engine, linux-related-content'
----
-
 # Hızlı Başlangıç: Azure CLI kullanarak Azure Kubernetes Service (AKS) kümesi dağıtma
 
 [![Azure’a dağıtın](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262758)
@@ -30,7 +20,7 @@ Bu hızlı başlangıç, Kubernetes kavramlarının temel olarak bilindiğini va
 
 - Bu makale, Azure CLI'nın 2.0.64 veya sonraki bir sürümünü gerektirir. Azure Cloud Shell kullanıyorsanız en son sürüm zaten orada yüklüdür.
 - Kümenizi oluşturmak için kullandığınız kimliğin uygun minimum izinlere sahip olduğundan emin olun. AKS erişimi ve kimliği hakkında daha fazla bilgi için bkz [. Azure Kubernetes Service (AKS)](../concepts-identity.md) için erişim ve kimlik seçenekleri.
-- Birden çok Azure aboneliğiniz varsa az account set[ komutu kullanılarak ](/cli/azure/account#az-account-set)kaynakların faturalandırılacağı uygun abonelik kimliğini seçin.
+- Birden çok Azure aboneliğiniz varsa az account set[ komutu kullanılarak ](/cli/azure/account#az-account-set)kaynakların faturalandırılacağı uygun abonelik kimliğini seçin. Daha fazla bilgi için bkz [. Azure aboneliklerini yönetme – Azure CLI](/cli/azure/manage-azure-subscriptions-azure-cli?tabs=bash#change-the-active-subscription).
 
 ## Ortam değişkenlerini tanımlama
 
@@ -75,7 +65,11 @@ Sonuçlar:
 komutunu kullanarak [`az aks create`][az-aks-create] bir AKS kümesi oluşturun. Aşağıdaki örnek, tek düğümlü bir küme oluşturur ve sistem tarafından atanan yönetilen kimliği etkinleştirir.
 
 ```azurecli-interactive
-az aks create --resource-group $MY_RESOURCE_GROUP_NAME --name $MY_AKS_CLUSTER_NAME --enable-managed-identity --node-count 1 --generate-ssh-keys
+az aks create \
+    --resource-group $MY_RESOURCE_GROUP_NAME \
+    --name $MY_AKS_CLUSTER_NAME \
+    --node-count 1 \
+    --generate-ssh-keys
 ```
 
 > [!NOTE]
@@ -113,7 +107,8 @@ Uygulamayı dağıtmak için, AKS Store uygulamasını[ çalıştırmak ](https:
 
 1. Adlı `aks-store-quickstart.yaml` bir dosya oluşturun ve aşağıdaki bildirimde kopyalayın:
 
-    ```yaml
+    ```bash
+    cat << EOF > aks-store-quickstart.yaml
     apiVersion: apps/v1
     kind: Deployment
     metadata:
@@ -340,6 +335,7 @@ Uygulamayı dağıtmak için, AKS Store uygulamasını[ çalıştırmak ](https:
       selector:
         app: store-front
       type: LoadBalancer
+    EOF
     ```
 
     YAML bildirim dosyalarının dökümü için bkz [. Dağıtımlar ve YAML bildirimleri](../concepts-clusters-workloads.md#deployments-and-yaml-manifests).
@@ -359,7 +355,7 @@ Genel IP adresini veya uygulama URL'sini ziyaret ederek uygulamanın çalıştı
 Aşağıdaki komutları kullanarak uygulama URL'sini alın:
 
 ```azurecli-interactive
-runtime="5 minute"
+runtime="5 minutes"
 endtime=$(date -ud "$runtime" +%s)
 while [[ $(date -u +%s) -le $endtime ]]
 do
@@ -382,7 +378,7 @@ curl $IP_ADDRESS
 
 Sonuçlar:
 <!-- expected_similarity=0.3 -->
-```JSON
+```HTML
 <!doctype html>
 <html lang="">
    <head>
@@ -401,7 +397,7 @@ Sonuçlar:
 </html>
 ```
 
-```JSON
+```OUTPUT
 echo "You can now visit your web server at $IP_ADDRESS"
 ```
 
