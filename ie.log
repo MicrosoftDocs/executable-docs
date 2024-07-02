@@ -1,0 +1,225 @@
+time=2024-07-02T14:56:24-07:00 level=info msg=INI file 'scenarios/CreateRHELVMAndSSH/README.ini' does not exist, skipping...
+time=2024-07-02T14:56:24-07:00 level=debug msg=Found HTML block with the content: <!-- expected_similarity=0.3 -->
+
+
+time=2024-07-02T14:56:24-07:00 level=debug msg=Found HTML block with the content: <!-- expected_similarity=0.3 -->
+
+
+time=2024-07-02T14:56:24-07:00 level=debug msg=Found HTML block with the content: <!--## Export the SSH configuration for use with SSH clients that support OpenSSH & SSH into the VM.
+
+
+time=2024-07-02T14:56:24-07:00 level=debug msg=Found HTML block with the content: <!--
+```bash
+yes | az ssh config --file ~/.ssh/config --name $MY_VM_NAME --resource-group $MY_RESOURCE_GROUP_NAME
+```
+
+
+time=2024-07-02T14:56:24-07:00 level=debug msg=Simalrity score of 0.300000 found
+time=2024-07-02T14:56:24-07:00 level=debug msg=Simalrity score of 0.300000 found
+time=2024-07-02T14:56:24-07:00 level=debug msg=Found 6 code blocks CodeBlocks=[{bash export RANDOM_ID="$(openssl rand -hex 3)"
+export MY_RESOURCE_GROUP_NAME="myVMResourceGroup$RANDOM_ID"
+export REGION="westeurope"
+export MY_VM_NAME="myVM$RANDOM_ID"
+export MY_USERNAME=azureuser
+export MY_VM_IMAGE="RedHat:RHEL:8-LVM:latest"
+ Define environment variables {  0 <nil>}} {bash az group create --name $MY_RESOURCE_GROUP_NAME --location $REGION
+ Create a resource group {json {
+  "id": "/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/myVMResourceGroup",
+  "location": "eastus",
+  "managedBy": null,
+  "name": "myVMResourceGroup",
+  "properties": {
+    "provisioningState": "Succeeded"
+  },
+  "tags": null,
+  "type": "Microsoft.Resources/resourceGroups"
+}
+ 0.3 <nil>}} {bash az vm create \
+    --resource-group $MY_RESOURCE_GROUP_NAME \
+    --name $MY_VM_NAME \
+    --image $MY_VM_IMAGE \
+    --admin-username $MY_USERNAME \
+    --assign-identity \
+    --generate-ssh-keys \
+    --public-ip-sku Standard
+ Create the virtual machine {json {
+  "fqdns": "",
+  "id": "/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/myVMResourceGroup/providers/Microsoft.Compute/virtualMachines/myVM",
+  "location": "eastus",
+  "macAddress": "00-0D-3A-10-4F-70",
+  "powerState": "VM running",
+  "privateIpAddress": "10.0.0.4",
+  "publicIpAddress": "52.147.208.85",
+  "resourceGroup": "myVMResourceGroup",
+  "zones": ""
+}
+ 0.3 <nil>}} {bash az vm extension set \
+    --publisher Microsoft.Azure.ActiveDirectory \
+    --name AADSSHLoginForLinux \
+    --resource-group $MY_RESOURCE_GROUP_NAME \
+    --vm-name $MY_VM_NAME
+ Enable Azure AD Login for a Linux virtual machine in Azure {  0 <nil>}} {bash export IP_ADDRESS=$(az vm show --show-details --resource-group $MY_RESOURCE_GROUP_NAME --name $MY_VM_NAME --query publicIps --output tsv)
+ Store IP address of VM in order to SSH {  0 <nil>}} {bash ssh -o StrictHostKeyChecking=no $MY_USERNAME@$IP_ADDRESS
+ SSH into the VM {  0 <nil>}}]
+time=2024-07-02T14:56:24-07:00 level=info msg=Successfully built out the scenario: Quickstart: Create a Red Hat Enterprise Linux virtual machine with the Azure CLI on Azure
+time=2024-07-02T14:56:24-07:00 level=info msg=Changed directory to .
+time=2024-07-02T14:56:24-07:00 level=info msg=Executing command: export RANDOM_ID="$(openssl rand -hex 3)"
+export MY_RESOURCE_GROUP_NAME="myVMResourceGroup$RANDOM_ID"
+export REGION="westeurope"
+export MY_VM_NAME="myVM$RANDOM_ID"
+export MY_USERNAME=azureuser
+export MY_VM_IMAGE="RedHat:RHEL:8-LVM:latest"
+ isInteractive=false
+time=2024-07-02T14:56:24-07:00 level=info msg=Command output to stdout:
+ 
+time=2024-07-02T14:56:24-07:00 level=info msg=Command output to stderr:
+ 
+time=2024-07-02T14:56:24-07:00 level=info msg=Executing command: az group create --name $MY_RESOURCE_GROUP_NAME --location $REGION
+ isInteractive=false
+time=2024-07-02T14:56:29-07:00 level=info msg=Command output to stdout:
+ {
+  "id": "/subscriptions/d1aa957b-94f5-49ef-b29a-0178c58a7132/resourceGroups/myVMResourceGroup9360cb",
+  "location": "westeurope",
+  "managedBy": null,
+  "name": "myVMResourceGroup9360cb",
+  "properties": {
+    "provisioningState": "Succeeded"
+  },
+  "tags": null,
+  "type": "Microsoft.Resources/resourceGroups"
+}
+
+time=2024-07-02T14:56:29-07:00 level=info msg=Command output to stderr:
+ 
+time=2024-07-02T14:56:29-07:00 level=debug msg=Comparing JSON strings:
+Expected: {
+  "id": "/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/myVMResourceGroup",
+  "location": "eastus",
+  "managedBy": null,
+  "name": "myVMResourceGroup",
+  "properties": {
+    "provisioningState": "Succeeded"
+  },
+  "tags": null,
+  "type": "Microsoft.Resources/resourceGroups"
+}
+
+Actual{
+  "id": "/subscriptions/d1aa957b-94f5-49ef-b29a-0178c58a7132/resourceGroups/myVMResourceGroup9360cb",
+  "location": "westeurope",
+  "managedBy": null,
+  "name": "myVMResourceGroup9360cb",
+  "properties": {
+    "provisioningState": "Succeeded"
+  },
+  "tags": null,
+  "type": "Microsoft.Resources/resourceGroups"
+}
+
+time=2024-07-02T14:56:29-07:00 level=debug msg=Expected Similarity: 0.300000, Actual Similarity: 0.760481
+time=2024-07-02T14:56:29-07:00 level=info msg=Attempting to extract resource group name from command output
+time=2024-07-02T14:56:29-07:00 level=info msg=Found resource group resourceGroup=myVMResourceGroup9360cb
+time=2024-07-02T14:56:29-07:00 level=info msg=Executing command: az vm create \
+    --resource-group $MY_RESOURCE_GROUP_NAME \
+    --name $MY_VM_NAME \
+    --image $MY_VM_IMAGE \
+    --admin-username $MY_USERNAME \
+    --assign-identity \
+    --generate-ssh-keys \
+    --public-ip-sku Standard
+ isInteractive=false
+time=2024-07-02T14:57:46-07:00 level=info msg=Command output to stdout:
+ {
+  "fqdns": "",
+  "id": "/subscriptions/d1aa957b-94f5-49ef-b29a-0178c58a7132/resourceGroups/myVMResourceGroup9360cb/providers/Microsoft.Compute/virtualMachines/myVM9360cb",
+  "identity": {
+    "systemAssignedIdentity": "a8c009f1-c34a-4abc-9e37-3d26af79d2a0",
+    "userAssignedIdentities": {}
+  },
+  "location": "westeurope",
+  "macAddress": "00-0D-3A-21-84-33",
+  "powerState": "VM running",
+  "privateIpAddress": "10.0.0.4",
+  "publicIpAddress": "13.81.71.226",
+  "resourceGroup": "myVMResourceGroup9360cb",
+  "zones": ""
+}
+
+time=2024-07-02T14:57:46-07:00 level=info msg=Command output to stderr:
+ WARNING: Selecting "uksouth" may reduce your costs. The region you've selected may cost more for the same services. You can disable this message in the future with the command "az config set core.display_region_identified=false". Learn more at https://go.microsoft.com/fwlink/?linkid=222571 
+WARNING: Ignite (November) 2023 onwards "az vm/vmss create" command will deploy Gen2-Trusted Launch VM by default. To know more about the default change and Trusted Launch, please visit https://aka.ms/TLaD
+WARNING: No access was given yet to the 'myVM9360cb', because '--scope' was not provided. You should setup by creating a role assignment, e.g. 'az role assignment create --assignee <principal-id> --role contributor -g myVMResourceGroup9360cb' would let it access the current resource group. To get the pricipal id, run 'az vm show -g myVMResourceGroup9360cb -n myVM9360cb --query "identity.principalId" -otsv'
+
+time=2024-07-02T14:57:46-07:00 level=debug msg=Comparing JSON strings:
+Expected: {
+  "fqdns": "",
+  "id": "/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/myVMResourceGroup/providers/Microsoft.Compute/virtualMachines/myVM",
+  "location": "eastus",
+  "macAddress": "00-0D-3A-10-4F-70",
+  "powerState": "VM running",
+  "privateIpAddress": "10.0.0.4",
+  "publicIpAddress": "52.147.208.85",
+  "resourceGroup": "myVMResourceGroup",
+  "zones": ""
+}
+
+Actual{
+  "fqdns": "",
+  "id": "/subscriptions/d1aa957b-94f5-49ef-b29a-0178c58a7132/resourceGroups/myVMResourceGroup9360cb/providers/Microsoft.Compute/virtualMachines/myVM9360cb",
+  "identity": {
+    "systemAssignedIdentity": "a8c009f1-c34a-4abc-9e37-3d26af79d2a0",
+    "userAssignedIdentities": {}
+  },
+  "location": "westeurope",
+  "macAddress": "00-0D-3A-21-84-33",
+  "powerState": "VM running",
+  "privateIpAddress": "10.0.0.4",
+  "publicIpAddress": "13.81.71.226",
+  "resourceGroup": "myVMResourceGroup9360cb",
+  "zones": ""
+}
+
+time=2024-07-02T14:57:46-07:00 level=debug msg=Expected Similarity: 0.300000, Actual Similarity: 0.710846
+time=2024-07-02T14:57:46-07:00 level=info msg=Executing command: az vm extension set \
+    --publisher Microsoft.Azure.ActiveDirectory \
+    --name AADSSHLoginForLinux \
+    --resource-group $MY_RESOURCE_GROUP_NAME \
+    --vm-name $MY_VM_NAME
+ isInteractive=false
+time=2024-07-02T14:59:55-07:00 level=info msg=Command output to stdout:
+ {
+  "autoUpgradeMinorVersion": true,
+  "enableAutomaticUpgrade": null,
+  "forceUpdateTag": null,
+  "id": "/subscriptions/d1aa957b-94f5-49ef-b29a-0178c58a7132/resourceGroups/myVMResourceGroup9360cb/providers/Microsoft.Compute/virtualMachines/myVM9360cb/extensions/AADSSHLoginForLinux",
+  "instanceView": null,
+  "location": "westeurope",
+  "name": "AADSSHLoginForLinux",
+  "protectedSettings": null,
+  "protectedSettingsFromKeyVault": null,
+  "provisioningState": "Succeeded",
+  "publisher": "Microsoft.Azure.ActiveDirectory",
+  "resourceGroup": "myVMResourceGroup9360cb",
+  "settings": null,
+  "suppressFailures": null,
+  "tags": null,
+  "type": "Microsoft.Compute/virtualMachines/extensions",
+  "typeHandlerVersion": "1.0",
+  "typePropertiesType": "AADSSHLoginForLinux"
+}
+
+time=2024-07-02T14:59:55-07:00 level=info msg=Command output to stderr:
+ 
+time=2024-07-02T14:59:56-07:00 level=info msg=Executing command: export IP_ADDRESS=$(az vm show --show-details --resource-group $MY_RESOURCE_GROUP_NAME --name $MY_VM_NAME --query publicIps --output tsv)
+ isInteractive=false
+time=2024-07-02T14:59:59-07:00 level=info msg=Command output to stdout:
+ 
+time=2024-07-02T14:59:59-07:00 level=info msg=Command output to stderr:
+ 
+time=2024-07-02T14:59:59-07:00 level=info msg=Executing command: ssh -o StrictHostKeyChecking=no $MY_USERNAME@$IP_ADDRESS
+ isInteractive=true
+time=2024-07-02T14:59:59-07:00 level=info msg=Not fetching resource URIs because we're not in the OCD environment.
+time=2024-07-02T15:00:00-07:00 level=info msg=Found deployed resources. resourceURIs=[/subscriptions/d1aa957b-94f5-49ef-b29a-0178c58a7132/resourceGroups/myVMResourceGroup9360cb/providers/Microsoft.Network/networkSecurityGroups/myVM9360cbNSG /subscriptions/d1aa957b-94f5-49ef-b29a-0178c58a7132/resourceGroups/myVMResourceGroup9360cb/providers/Microsoft.Network/publicIPAddresses/myVM9360cbPublicIP /subscriptions/d1aa957b-94f5-49ef-b29a-0178c58a7132/resourceGroups/myVMResourceGroup9360cb/providers/Microsoft.Network/virtualNetworks/myVM9360cbVNET /subscriptions/d1aa957b-94f5-49ef-b29a-0178c58a7132/resourceGroups/myVMResourceGroup9360cb/providers/Microsoft.Network/networkInterfaces/myVM9360cbVMNic /subscriptions/d1aa957b-94f5-49ef-b29a-0178c58a7132/resourceGroups/myVMResourceGroup9360cb/providers/Microsoft.Compute/virtualMachines/myVM9360cb /subscriptions/d1aa957b-94f5-49ef-b29a-0178c58a7132/resourceGroups/MYVMRESOURCEGROUP9360CB/providers/Microsoft.Compute/disks/myVM9360cb_OsDisk_1_2fd4d46880b34d7d85d79235268440d3 /subscriptions/d1aa957b-94f5-49ef-b29a-0178c58a7132/resourceGroups/myVMResourceGroup9360cb/providers/Microsoft.Compute/virtualMachines/myVM9360cb/extensions/AADSSHLoginForLinux]
+time=2024-07-02T15:00:19-07:00 level=info msg=Not fetching resource URIs because we're not in the OCD environment.
+time=2024-07-02T15:00:20-07:00 level=info msg=Found deployed resources. resourceURIs=[/subscriptions/d1aa957b-94f5-49ef-b29a-0178c58a7132/resourceGroups/myVMResourceGroup9360cb/providers/Microsoft.Network/networkSecurityGroups/myVM9360cbNSG /subscriptions/d1aa957b-94f5-49ef-b29a-0178c58a7132/resourceGroups/myVMResourceGroup9360cb/providers/Microsoft.Network/publicIPAddresses/myVM9360cbPublicIP /subscriptions/d1aa957b-94f5-49ef-b29a-0178c58a7132/resourceGroups/myVMResourceGroup9360cb/providers/Microsoft.Network/virtualNetworks/myVM9360cbVNET /subscriptions/d1aa957b-94f5-49ef-b29a-0178c58a7132/resourceGroups/myVMResourceGroup9360cb/providers/Microsoft.Network/networkInterfaces/myVM9360cbVMNic /subscriptions/d1aa957b-94f5-49ef-b29a-0178c58a7132/resourceGroups/myVMResourceGroup9360cb/providers/Microsoft.Compute/virtualMachines/myVM9360cb /subscriptions/d1aa957b-94f5-49ef-b29a-0178c58a7132/resourceGroups/MYVMRESOURCEGROUP9360CB/providers/Microsoft.Compute/disks/myVM9360cb_OsDisk_1_2fd4d46880b34d7d85d79235268440d3 /subscriptions/d1aa957b-94f5-49ef-b29a-0178c58a7132/resourceGroups/myVMResourceGroup9360cb/providers/Microsoft.Compute/virtualMachines/myVM9360cb/extensions/AADSSHLoginForLinux]
+time=2024-07-02T15:00:20-07:00 level=info msg=Changed directory to /home/naman10parikh/NamanCode/executable-docs
