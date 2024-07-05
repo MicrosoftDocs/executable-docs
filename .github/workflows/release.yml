@@ -19,6 +19,8 @@ jobs:
       security-events: write
     steps:
     - uses: actions/checkout@v2
+      with:
+        fetch-depth: 2
     - name: Prepare scenarios to be released.
       run: |
         sudo apt install zip
@@ -36,7 +38,6 @@ jobs:
     - name: Check for changes in 'Scenarios' folder
       id: check_changes
       run: |
-        git fetch origin ${{ github.base_ref }} --depth=1
         CHANGED=$(git diff --name-only HEAD^  HEAD -- scenarios)
         if [ -n "$CHANGED" ]; then
           echo "Changes detected in Scenarios folder."
