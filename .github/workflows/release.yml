@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - naman-code
   workflow_dispatch:
 
 jobs:
@@ -32,8 +33,20 @@ jobs:
           # Change to the source directory and create the zip file
           (cd "$src_dir" && zip -r "../../$zip_file" scenarios)
         done
-        
+    - name: Check for changes in 'Scenarios' folder
+      id: check_changes
+      run: |
+        git fetch origin ${{ github.base_ref }} --depth=1
+        CHANGED=$(git diff --name-only origin/${{ github.base_ref }}...HEAD Scenarios)
+        if [ -n "$CHANGED" ]; then
+          echo "Changes detected in Scenarios folder."
+          echo "scenarios_changed=true" >> $GITHUB_ENV
+        else
+          echo "No changes detected in Scenarios folder."
+          echo "scenarios_changed=false" >> $GITHUB_ENV
+        fi
     - name: Setup release
+      if: env.scenarios_changed == 'true'
       id: create_release
       uses: actions/create-release@v1
       env:
@@ -44,6 +57,7 @@ jobs:
         draft: false
         prerelease: false
     - name: Upload Release Asset
+      if: env.scenarios_changed == 'true'
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -53,6 +67,7 @@ jobs:
         asset_name: scenarios.zip
         asset_content_type: application/zip
     - name: Upload Release Asset
+      if: env.scenarios_changed == 'true'
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -62,6 +77,7 @@ jobs:
         asset_name: cs-cz-scenarios.zip
         asset_content_type: application/zip
     - name: Upload Release Asset
+      if: env.scenarios_changed == 'true'
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -71,6 +87,7 @@ jobs:
         asset_name: de-de-scenarios.zip
         asset_content_type: application/zip
     - name: Upload Release Asset
+      if: env.scenarios_changed == 'true'
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -80,6 +97,7 @@ jobs:
         asset_name: es-es-scenarios.zip
         asset_content_type: application/zip
     - name: Upload Release Asset
+      if: env.scenarios_changed == 'true'
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -89,6 +107,7 @@ jobs:
         asset_name: fr-fr-scenarios.zip
         asset_content_type: application/zip
     - name: Upload Release Asset
+      if: env.scenarios_changed == 'true'
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -98,6 +117,7 @@ jobs:
         asset_name: hu-hu-scenarios.zip
         asset_content_type: application/zip
     - name: Upload Release Asset
+      if: env.scenarios_changed == 'true'
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -107,6 +127,7 @@ jobs:
         asset_name: id-id-scenarios.zip
         asset_content_type: application/zip
     - name: Upload Release Asset
+      if: env.scenarios_changed == 'true'
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -116,6 +137,7 @@ jobs:
         asset_name: it-it-scenarios.zip
         asset_content_type: application/zip
     - name: Upload Release Asset
+      if: env.scenarios_changed == 'true'
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -125,6 +147,7 @@ jobs:
         asset_name: ja-jp-scenarios.zip
         asset_content_type: application/zip
     - name: Upload Release Asset
+      if: env.scenarios_changed == 'true'
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -134,6 +157,7 @@ jobs:
         asset_name: ko-kr-scenarios.zip
         asset_content_type: application/zip
     - name: Upload Release Asset
+      if: env.scenarios_changed == 'true'
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -143,6 +167,7 @@ jobs:
         asset_name: nl-nl-scenarios.zip
         asset_content_type: application/zip
     - name: Upload Release Asset
+      if: env.scenarios_changed == 'true'
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -152,6 +177,7 @@ jobs:
         asset_name: pl-pl-scenarios.zip
         asset_content_type: application/zip
     - name: Upload Release Asset
+      if: env.scenarios_changed == 'true'
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -161,6 +187,7 @@ jobs:
         asset_name: pt-br-scenarios.zip
         asset_content_type: application/zip
     - name: Upload Release Asset
+      if: env.scenarios_changed == 'true'
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -170,6 +197,7 @@ jobs:
         asset_name: pt-pt-scenarios.zip
         asset_content_type: application/zip
     - name: Upload Release Asset
+      if: env.scenarios_changed == 'true'
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -179,6 +207,7 @@ jobs:
         asset_name: ru-ru-scenarios.zip
         asset_content_type: application/zip
     - name: Upload Release Asset
+      if: env.scenarios_changed == 'true'
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -188,6 +217,7 @@ jobs:
         asset_name: sv-se-scenarios.zip
         asset_content_type: application/zip
     - name: Upload Release Asset
+      if: env.scenarios_changed == 'true'
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -197,6 +227,7 @@ jobs:
         asset_name: tr-tr-scenarios.zip
         asset_content_type: application/zip
     - name: Upload Release Asset
+      if: env.scenarios_changed == 'true'
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -206,6 +237,7 @@ jobs:
         asset_name: zh-cn-scenarios.zip
         asset_content_type: application/zip
     - name: Upload Release Asset
+      if: env.scenarios_changed == 'true'
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
