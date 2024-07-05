@@ -1,6 +1,6 @@
 [
     {
-        "status": "active",
+        "status": "inactive",
         "key": "azure-docs/articles/aks/learn/quick-kubernetes-deploy-cli.md",
         "title": "Bereitstellen eines skalierbaren und sicheren Azure Kubernetes Service-Clusters \u00fcber die Azure CLI",
         "description": "In diesem Tutorial wird Schritt f\u00fcr Schritt erl\u00e4utert, wie Sie eine Azure Kubernetes-Webanwendung erstellen, die \u00fcber HTTPS gesch\u00fctzt ist.",
