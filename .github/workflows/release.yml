@@ -37,7 +37,7 @@ jobs:
       id: check_changes
       run: |
         git fetch origin ${{ github.base_ref }} --depth=1
-        CHANGED=$(git diff --name-only refs/remotes/origin/${{ github.base_ref }} HEAD -- Scenarios)
+        CHANGED=$(git diff --name-only HEAD^  HEAD -- scenarios)
         if [ -n "$CHANGED" ]; then
           echo "Changes detected in Scenarios folder."
           echo "scenarios_changed=true" >> $GITHUB_ENV
