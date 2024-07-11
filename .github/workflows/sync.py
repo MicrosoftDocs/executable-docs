@@ -7,6 +7,7 @@ import tempfile
 import re
 import json
 import yaml
+from datetime import datetime
 
 GITHUB_TOKEN = os.getenv('GITHUB_TOKEN')
 g = github.Github(GITHUB_TOKEN)
@@ -99,7 +100,14 @@ def get_latest_error_log():
             return f"{message.group(1)}"
         else:
             return " ".join(lines_from_error)
-    
+
+def author_has_commented(issue, author):
+    comments = issue.get_comments()
+    for comment in comments:
+        if comment.user.login == author:
+            return True
+    return False
+
 def run_tests():
     repo = g.get_repo("MicrosoftDocs/executable-docs")
 
@@ -129,7 +137,28 @@ def run_tests():
                             issue_title = f"DOC FAILING TESTS: {'/'.join(file_path.split('/')[1:])}"
                             issue_body = f"Hey @{author}! Your executable document is not working. Please fix the errors given below. And reply to this issue with any questions.\n\nLink to Doc: {doc_link} \n\nAuthors: {ms_author}, {author}\n\n{get_latest_error_log()}"
 
-                            repo.create_issue(title=issue_title, body=issue_body, assignees=[author, 'naman-msft'])
+                            open_issues = repo.get_issues(state='open')
+                            issue_exists = False
+                            for issue in open_issues:
+                                if issue.title == issue_title:
+                                    issue_exists = True
+                                    existing_issue = issue
+                                    break
+
+                            if issue_exists:
+                                if not author_has_commented(existing_issue, author):
+                                    issue_creation_date = existing_issue.created_at
+                                    current_date = datetime.now(issue_creation_date.tzinfo)
+                                    days_since_opened = (current_date - issue_creation_date).days
+
+                                    comment_body = f"Reminder: @{author}, it's been {days_since_opened} days since the issue was opened. Please fix the doc as previously mentioned."
+                                    existing_issue.create_comment(comment_body)
+                            else:
+                                try:
+                                    repo.create_issue(title=issue_title, body=issue_body, assignees=[author, 'naman-msft'])
+                                except Exception as e:
+                                    print(f"Error creating issue with author {author}: {e}")
+                                    repo.create_issue(title=issue_title, body=issue_body, assignees=['naman-msft'])
 
 def find_region_value(markdown_text):
     match = re.search(r'REGION="?([^"\n]+)"?', markdown_text, re.IGNORECASE)
@@ -218,8 +247,8 @@ def update_metadata():
             json.dump(metadata, f, indent=4)
 
 if __name__ == "__main__":
-    # sync_markdown_files()
-    # update_metadata()
+    sync_markdown_files()
+    update_metadata()
     install_ie()
     run_tests()
 
