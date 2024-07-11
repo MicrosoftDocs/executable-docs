@@ -143,7 +143,7 @@
             }
         ],
         "configurations": {
-            "region": "westeurope"
+            "region": "EastUS2"
         }
     },
     {
@@ -169,7 +169,7 @@
             }
         ],
         "configurations": {
-            "region": "westeurope"
+            "region": "EastUS"
         }
     },
     {
@@ -216,7 +216,7 @@
                 "Microsoft.Network/publicIPAddresses/read",
                 "Microsoft.Compute/virtualMachines/instanceView/read"
             ],
-            "region": "westeurope"
+            "region": "EastUS"
         }
     },
     {
@@ -254,7 +254,7 @@
             }
         ],
         "configurations": {
-            "region": "westeurope"
+            "region": "eastus"
         }
     },
     {
@@ -282,10 +282,61 @@
                 "title": "Update your application in AKS",
                 "url": "https://learn.microsoft.com/azure/aks/tutorial-kubernetes-app-update?tabs=azure-cli"
             }
-
         ],
         "configurations": {
             "region": "westeurope"
+        }
+    },
+    {
+        "status": "active",
+        "key": "BlobVisionOnAKS/README.md"
+    },
+    {
+        "status": "active",
+        "key": "CreateAKSDeployment/README.md",
+        "title": "Quickstart: Deploy an Azure Kubernetes Service (AKS) cluster using Azure CLI",
+        "description": "Learn how to quickly deploy a Kubernetes cluster and deploy an application in Azure Kubernetes Service (AKS) using Azure CLI.",
+        "stackDetails": "",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/CreateAKSDeployment/README.md",
+        "documentationUrl": "",
+        "configurations": {
+            "region": "westeurope"
+        }
+    },
+    {
+        "status": "active",
+        "key": "CreateContainerAppDeploymentFromSource/README.md",
+        "title": "Create a Container App leveraging Blob Store, SQL, and Computer Vision",
+        "description": "This tutorial shows how to create a Container App leveraging Blob Store, SQL, and Computer Vision",
+        "stackDetails": "",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/CreateContainerAppDeploymentFromSource/README.md",
+        "documentationUrl": "",
+        "configurations": {
+            "region": "westus"
+        }
+    },
+    {
+        "status": "active",
+        "key": "CreateRHELVMAndSSH/README.md",
+        "title": "Quickstart: Use the Azure CLI to create a Red Hat Enterprise Linux Virtual Machine",
+        "description": "In this quickstart, you learn how to use the Azure CLI to create a Red Hat Enterprise Linux virtual machine",
+        "stackDetails": "",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/CreateRHELVMAndSSH/README.md",
+        "documentationUrl": "",
+        "configurations": {
+            "region": "westeurope"
+        }
+    },
+    {
+        "status": "active",
+        "key": "DeployHAPGonARO/README.md",
+        "title": "Create a Highly Available PostgreSQL Cluster on Azure Red Hat OpenShift",
+        "description": "This tutorial shows how to create a Highly Available PostgreSQL cluster on Azure Red Hat OpenShift (ARO) using the CloudNativePG operator",
+        "stackDetails": "",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/DeployHAPGonARO/README.md",
+        "documentationUrl": "",
+        "configurations": {
+            "region": ""
         }
     }
 ]
