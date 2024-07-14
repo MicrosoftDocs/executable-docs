@@ -1,4 +1,3 @@
-# sync exec docs every day, metadata.json gets updated as soon as exec docs are synced, ie test runs on all docs as soon as it is selective localization happens as soon as the localization goes through main (which is 2-3 hours post sync), portal tests every monday with all exec docs from previous week and pushes changes to be reflected the next week
 import os
 import github
 import shutil
@@ -115,6 +114,7 @@ def run_tests():
         for file in files:
             if file.endswith('.md'):
                 file_path = os.path.join(root, file)
+                print('/'.join(file_path.split('/')[1:]))
                 result = subprocess.run(['ie', 'test', file_path, '--environment', 'github-action'])
 
                 if result.returncode != 0:
@@ -159,6 +159,22 @@ def run_tests():
                                 except Exception as e:
                                     print(f"Error creating issue with author {author}: {e}")
                                     repo.create_issue(title=issue_title, body=issue_body, assignees=['naman-msft'])
+
+                else:
+                    key = '/'.join(file_path.split('/')[1:])
+                    print(key)
+                    if os.path.isfile('scenarios/metadata.json'):
+                        with open('scenarios/metadata.json', 'r') as f:
+                            metadata = json.load(f)
+
+                        # Find the item in metadata with this key
+                        if metadata:
+                            for item in metadata:
+                                if item['key'] == key:
+                                    item['status'] = 'active'
+                            
+                        with open('scenarios/metadata.json', 'w') as f:
+                            json.dump(metadata, f, indent=4)
 
 def find_region_value(markdown_text):
     match = re.search(r'REGION="?([^"\n]+)"?', markdown_text, re.IGNORECASE)
@@ -206,10 +222,10 @@ def update_base_metadata(directory, metadata):
                                 break
                         else:
                             # If the key was not found, add a new item to metadata
-                            item = {'status': 'active', 'key': key}
+                            item = {'status': 'inactive', 'key': key}
                             metadata.append(item)
                     else:
-                        item = {'status': 'active', 'key': key}
+                        item = {'status': 'inactive', 'key': key}
                         metadata.append(item)
                     if item is not None and readme_metadata is not None:
                         # Update the item with the metadata from the README file
