@@ -114,7 +114,6 @@ def run_tests():
         for file in files:
             if file.endswith('.md'):
                 file_path = os.path.join(root, file)
-                print('/'.join(file_path.split('/')[1:]))
                 result = subprocess.run(['ie', 'test', file_path, '--environment', 'github-action'])
 
                 if result.returncode != 0:
@@ -162,7 +161,6 @@ def run_tests():
 
                 else:
                     key = '/'.join(file_path.split('/')[1:])
-                    print(key)
                     if os.path.isfile('scenarios/metadata.json'):
                         with open('scenarios/metadata.json', 'r') as f:
                             metadata = json.load(f)
