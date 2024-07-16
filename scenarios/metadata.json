@@ -340,11 +340,7 @@
         }
     },
     {
-<<<<<<< HEAD
         "status": "inactive",
-=======
-        "status": "active",
->>>>>>> e9ca01e540cdcd64d7d9346fc30e4286e76421e4
         "key": "azure-docs/articles/aks/create-postgresql-ha.md",
         "title": "Create infrastructure for deploying a highly available PostgreSQL database on AKS",
         "description": "Create the infrastructure needed to deploy a highly available PostgreSQL database on AKS using the CloudNativePG operator.",
@@ -356,11 +352,7 @@
         }
     },
     {
-<<<<<<< HEAD
         "status": "inactive",
-=======
-        "status": "active",
->>>>>>> e9ca01e540cdcd64d7d9346fc30e4286e76421e4
         "key": "azure-docs/articles/aks/deploy-postgresql-ha.md",
         "title": "Deploy a highly available PostgreSQL database on AKS with Azure CLI",
         "description": "In this article, you deploy a highly available PostgreSQL database on AKS using the CloudNativePG operator.",
@@ -372,11 +364,7 @@
         }
     },
     {
-<<<<<<< HEAD
         "status": "inactive",
-=======
-        "status": "active",
->>>>>>> e9ca01e540cdcd64d7d9346fc30e4286e76421e4
         "key": "azure-docs/articles/aks/postgresql-ha-overview.md",
         "title": "Overview of deploying a highly available PostgreSQL database on AKS with Azure CLI",
         "description": "Learn how to deploy a highly available PostgreSQL database on AKS using the CloudNativePG operator.",
