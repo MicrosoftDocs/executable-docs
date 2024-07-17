@@ -31,38 +31,14 @@ Antes de começar, verifique se você está conectado à CLI do Azure e selecion
 > [!NOTE]
 > Se você estiver executando os comandos neste tutorial localmente em vez do Azure Cloud Shell, execute os comandos como administrador.
 
-## Definir variáveis de ambiente
-
-O primeiro passo neste tutorial é definir variáveis de ambiente.
-
-```bash
-export SSL_EMAIL_ADDRESS="$(az account show --query user.name --output tsv)"
-export NETWORK_PREFIX="$(($RANDOM % 253 + 1))"
-export RANDOM_ID="$(openssl rand -hex 3)"
-export MY_RESOURCE_GROUP_NAME="myWordPressAKSResourceGroup$RANDOM_ID"
-export REGION="westeurope"
-export MY_AKS_CLUSTER_NAME="myAKSCluster$RANDOM_ID"
-export MY_PUBLIC_IP_NAME="myPublicIP$RANDOM_ID"
-export MY_DNS_LABEL="mydnslabel$RANDOM_ID"
-export MY_VNET_NAME="myVNet$RANDOM_ID"
-export MY_VNET_PREFIX="10.$NETWORK_PREFIX.0.0/16"
-export MY_SN_NAME="mySN$RANDOM_ID"
-export MY_SN_PREFIX="10.$NETWORK_PREFIX.0.0/22"
-export MY_MYSQL_DB_NAME="mydb$RANDOM_ID"
-export MY_MYSQL_ADMIN_USERNAME="dbadmin$RANDOM_ID"
-export MY_MYSQL_ADMIN_PW="$(openssl rand -base64 32)"
-export MY_MYSQL_SN_NAME="myMySQLSN$RANDOM_ID"
-export MY_MYSQL_HOSTNAME="$MY_MYSQL_DB_NAME.mysql.database.azure.com"
-export MY_WP_ADMIN_PW="$(openssl rand -base64 32)"
-export MY_WP_ADMIN_USER="wpcliadmin"
-export FQDN="${MY_DNS_LABEL}.${REGION}.cloudapp.azure.com"
-```
-
 ## Criar um grupo de recursos
 
 Um grupo de recursos do Azure é um grupo lógico, no qual os recursos do Azure são implementados e geridos. Todos os recursos devem ser colocados em um grupo de recursos. O comando a seguir cria um grupo de recursos com os parâmetros e `$REGION` definidos anteriormente`$MY_RESOURCE_GROUP_NAME`.
 
 ```bash
+export RANDOM_ID="$(openssl rand -hex 3)"
+export MY_RESOURCE_GROUP_NAME="myWordPressAKSResourceGroup$RANDOM_ID"
+export REGION="westeurope"
 az group create \
     --name $MY_RESOURCE_GROUP_NAME \
     --location $REGION
@@ -92,6 +68,11 @@ Resultados:
 Uma rede virtual é o bloco de construção fundamental para redes privadas no Azure. A Rede Virtual do Azure permite que recursos do Azure, como VMs, se comuniquem com segurança entre si e com a Internet.
 
 ```bash
+export NETWORK_PREFIX="$(($RANDOM % 253 + 1))"
+export MY_VNET_PREFIX="10.$NETWORK_PREFIX.0.0/16"
+export MY_SN_PREFIX="10.$NETWORK_PREFIX.0.0/22"
+export MY_VNET_NAME="myVNet$RANDOM_ID"
+export MY_SN_NAME="mySN$RANDOM_ID"
 az network vnet create \
     --resource-group $MY_RESOURCE_GROUP_NAME \
     --location $REGION \
@@ -141,10 +122,16 @@ Resultados:
 O servidor flexível do Banco de Dados do Azure para MySQL é um serviço gerenciado que você pode usar para executar, gerenciar e dimensionar servidores MySQL altamente disponíveis na nuvem. Crie um Banco de Dados do Azure para instância de servidor flexível do MySQL com o [comando az mysql flexible-server create](/cli/azure/mysql/flexible-server) . Cada servidor pode conter várias bases de dados. O comando a seguir cria um servidor usando padrões de serviço e valores variáveis do contexto local da CLI do Azure:
 
 ```bash
+export MY_MYSQL_ADMIN_USERNAME="dbadmin$RANDOM_ID"
+export MY_WP_ADMIN_PW="$(openssl rand -base64 32)"
 echo "Your MySQL user $MY_MYSQL_ADMIN_USERNAME password is: $MY_WP_ADMIN_PW" 
 ```
 
 ```bash
+export MY_DNS_LABEL="mydnslabel$RANDOM_ID"
+export MY_MYSQL_DB_NAME="mydb$RANDOM_ID"
+export MY_MYSQL_ADMIN_PW="$(openssl rand -base64 32)"
+export MY_MYSQL_SN_NAME="myMySQLSN$RANDOM_ID"
 az mysql flexible-server create \
     --admin-password $MY_MYSQL_ADMIN_PW \
     --admin-user $MY_MYSQL_ADMIN_USERNAME \
@@ -248,6 +235,7 @@ Esta ação leva alguns minutos.
 
 ```bash
 export MY_SN_ID=$(az network vnet subnet list --resource-group $MY_RESOURCE_GROUP_NAME --vnet-name $MY_VNET_NAME --query "[0].id" --output tsv)
+export MY_AKS_CLUSTER_NAME="myAKSCluster$RANDOM_ID"
 
 az aks create \
     --resource-group $MY_RESOURCE_GROUP_NAME \
@@ -300,6 +288,7 @@ Você pode configurar seu controlador de entrada com um endereço IP público es
 Ao atualizar seu controlador de entrada, você deve passar um parâmetro para a liberação do Helm para garantir que o serviço do controlador de entrada esteja ciente do balanceador de carga que será alocado a ele. Para que os certificados HTTPS funcionem corretamente, use um rótulo DNS para configurar um nome de domínio totalmente qualificado (FQDN) para o endereço IP do controlador de entrada. Seu FQDN deve seguir este formulário: $MY_DNS_LABEL. AZURE_REGION_NAME.cloudapp.azure.com.
 
 ```bash
+export MY_PUBLIC_IP_NAME="myPublicIP$RANDOM_ID"
 export MY_STATIC_IP=$(az network public-ip create --resource-group MC_${MY_RESOURCE_GROUP_NAME}_${MY_AKS_CLUSTER_NAME}_${REGION} --location ${REGION} --name ${MY_PUBLIC_IP_NAME} --dns-name ${MY_DNS_LABEL} --sku Standard --allocation-method static --version IPv4 --zone 1 2 3 --query publicIp.ipAddress -o tsv)
 ```
 
@@ -374,6 +363,7 @@ O Cert-manager fornece gráficos Helm como um método de instalação de primeir
 4. Aplique o arquivo YAML do emissor do certificado. ClusterIssuers são recursos do Kubernetes que representam autoridades de certificação (CAs) que podem gerar certificados assinados honrando solicitações de assinatura de certificado. Todos os certificados de gestor de certificados requerem um emissor referenciado que esteja em condições de estar pronto para tentar honrar o pedido. Você pode encontrar o emissor em que estamos no `cluster-issuer-prod.yml file`.
 
     ```bash
+    export SSL_EMAIL_ADDRESS="$(az account show --query user.name --output tsv)"
     cluster_issuer_variables=$(<cluster-issuer-prod.yaml)
     echo "${cluster_issuer_variables//\$SSL_EMAIL_ADDRESS/$SSL_EMAIL_ADDRESS}" | kubectl apply -f -
     ```
@@ -406,6 +396,9 @@ Para este tutorial, estamos usando um gráfico Helm existente para WordPress con
 3. Instale a carga de trabalho do Wordpress via Helm.
 
     ```bash
+    export MY_MYSQL_HOSTNAME="$MY_MYSQL_DB_NAME.mysql.database.azure.com"
+    export MY_WP_ADMIN_USER="wpcliadmin"
+    export FQDN="${MY_DNS_LABEL}.${REGION}.cloudapp.azure.com"
     helm upgrade --install --cleanup-on-fail \
         --wait --timeout 10m0s \
         --namespace wordpress \
