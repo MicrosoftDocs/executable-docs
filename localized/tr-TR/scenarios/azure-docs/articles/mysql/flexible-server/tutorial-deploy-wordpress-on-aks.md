@@ -31,38 +31,14 @@ Başlamadan önce Azure CLI'da oturum açtığınızdan ve CLI ile kullanmak üz
 > [!NOTE]
 > Bu öğreticideki komutları Azure Cloud Shell yerine yerel olarak çalıştırıyorsanız, komutları yönetici olarak çalıştırın.
 
-## Ortam Değişkenlerini Tanımlama
-
-Bu öğreticinin ilk adımı ortam değişkenlerini tanımlamaktır.
-
-```bash
-export SSL_EMAIL_ADDRESS="$(az account show --query user.name --output tsv)"
-export NETWORK_PREFIX="$(($RANDOM % 253 + 1))"
-export RANDOM_ID="$(openssl rand -hex 3)"
-export MY_RESOURCE_GROUP_NAME="myWordPressAKSResourceGroup$RANDOM_ID"
-export REGION="westeurope"
-export MY_AKS_CLUSTER_NAME="myAKSCluster$RANDOM_ID"
-export MY_PUBLIC_IP_NAME="myPublicIP$RANDOM_ID"
-export MY_DNS_LABEL="mydnslabel$RANDOM_ID"
-export MY_VNET_NAME="myVNet$RANDOM_ID"
-export MY_VNET_PREFIX="10.$NETWORK_PREFIX.0.0/16"
-export MY_SN_NAME="mySN$RANDOM_ID"
-export MY_SN_PREFIX="10.$NETWORK_PREFIX.0.0/22"
-export MY_MYSQL_DB_NAME="mydb$RANDOM_ID"
-export MY_MYSQL_ADMIN_USERNAME="dbadmin$RANDOM_ID"
-export MY_MYSQL_ADMIN_PW="$(openssl rand -base64 32)"
-export MY_MYSQL_SN_NAME="myMySQLSN$RANDOM_ID"
-export MY_MYSQL_HOSTNAME="$MY_MYSQL_DB_NAME.mysql.database.azure.com"
-export MY_WP_ADMIN_PW="$(openssl rand -base64 32)"
-export MY_WP_ADMIN_USER="wpcliadmin"
-export FQDN="${MY_DNS_LABEL}.${REGION}.cloudapp.azure.com"
-```
-
 ## Kaynak grubu oluşturma
 
 Azure kaynak grubu, Azure kaynaklarının dağıtıldığı ve yönetildiği mantıksal bir gruptur. Tüm kaynaklar bir kaynak grubuna yerleştirilmelidir. Aşağıdaki komut, önceden tanımlanmış `$MY_RESOURCE_GROUP_NAME` ve `$REGION` parametreleriyle bir kaynak grubu oluşturur.
 
 ```bash
+export RANDOM_ID="$(openssl rand -hex 3)"
+export MY_RESOURCE_GROUP_NAME="myWordPressAKSResourceGroup$RANDOM_ID"
+export REGION="westeurope"
 az group create \
     --name $MY_RESOURCE_GROUP_NAME \
     --location $REGION
@@ -92,6 +68,11 @@ Sonuçlar:
 Sanal ağ, Azure'daki özel ağlar için temel yapı taşıdır. Azure Sanal Ağ, VM'ler gibi Azure kaynaklarının birbirleriyle ve İnternet ile güvenli bir şekilde iletişim kurmasını sağlar.
 
 ```bash
+export NETWORK_PREFIX="$(($RANDOM % 253 + 1))"
+export MY_VNET_PREFIX="10.$NETWORK_PREFIX.0.0/16"
+export MY_SN_PREFIX="10.$NETWORK_PREFIX.0.0/22"
+export MY_VNET_NAME="myVNet$RANDOM_ID"
+export MY_SN_NAME="mySN$RANDOM_ID"
 az network vnet create \
     --resource-group $MY_RESOURCE_GROUP_NAME \
     --location $REGION \
@@ -141,10 +122,16 @@ Sonuçlar:
 MySQL için Azure Veritabanı esnek sunucu, bulutta yüksek oranda kullanılabilir MySQL sunucularını çalıştırmak, yönetmek ve ölçeklendirmek için kullanabileceğiniz yönetilen bir hizmettir. az mysql flexible-server create komutuyla [MySQL için Azure Veritabanı esnek sunucu örneği oluşturun](/cli/azure/mysql/flexible-server). Bir sunucu birden çok veritabanı içerebilir. Aşağıdaki komut, Azure CLI'nızın yerel bağlamındaki hizmet varsayılanlarını ve değişken değerlerini kullanarak bir sunucu oluşturur:
 
 ```bash
+export MY_MYSQL_ADMIN_USERNAME="dbadmin$RANDOM_ID"
+export MY_WP_ADMIN_PW="$(openssl rand -base64 32)"
 echo "Your MySQL user $MY_MYSQL_ADMIN_USERNAME password is: $MY_WP_ADMIN_PW" 
 ```
 
 ```bash
+export MY_DNS_LABEL="mydnslabel$RANDOM_ID"
+export MY_MYSQL_DB_NAME="mydb$RANDOM_ID"
+export MY_MYSQL_ADMIN_PW="$(openssl rand -base64 32)"
+export MY_MYSQL_SN_NAME="myMySQLSN$RANDOM_ID"
 az mysql flexible-server create \
     --admin-password $MY_MYSQL_ADMIN_PW \
     --admin-user $MY_MYSQL_ADMIN_USERNAME \
@@ -242,12 +229,13 @@ Sonuçlar:
 
 ## AKS kümesi oluşturma
 
-Container Analizler ile aks kümesi oluşturmak için az aks create[ komutunu --enable-addons** monitoring parametresiyle **kullanın](/cli/azure/aks#az-aks-create). Aşağıdaki örnek myAKSCluster** adlı **otomatik ölçeklendirme, kullanılabilirlik alanı etkin bir küme oluşturur:
+Container Insights ile aks kümesi oluşturmak için az aks create[ komutunu --enable-addons** monitoring parametresiyle **kullanın](/cli/azure/aks#az-aks-create). Aşağıdaki örnek myAKSCluster** adlı **otomatik ölçeklendirme, kullanılabilirlik alanı etkin bir küme oluşturur:
 
 Bu işlem birkaç dakika sürer.
 
 ```bash
 export MY_SN_ID=$(az network vnet subnet list --resource-group $MY_RESOURCE_GROUP_NAME --vnet-name $MY_VNET_NAME --query "[0].id" --output tsv)
+export MY_AKS_CLUSTER_NAME="myAKSCluster$RANDOM_ID"
 
 az aks create \
     --resource-group $MY_RESOURCE_GROUP_NAME \
@@ -300,6 +288,7 @@ Giriş denetleyicinizi statik genel IP adresiyle yapılandırabilirsiniz. Giriş
 Giriş denetleyicinizi yükselttiğinizde, giriş denetleyicisi hizmetinin ona ayrılacak yük dengeleyiciyi tanımasını sağlamak için Helm sürümüne bir parametre geçirmeniz gerekir. HTTPS sertifikalarının düzgün çalışması için, giriş denetleyicisi IP adresi için tam etki alanı adı (FQDN) yapılandırmak üzere bir DNS etiketi kullanın. FQDN'niz şu formu izlemelidir: $MY_DNS_LABEL. AZURE_REGION_NAME.cloudapp.azure.com.
 
 ```bash
+export MY_PUBLIC_IP_NAME="myPublicIP$RANDOM_ID"
 export MY_STATIC_IP=$(az network public-ip create --resource-group MC_${MY_RESOURCE_GROUP_NAME}_${MY_AKS_CLUSTER_NAME}_${REGION} --location ${REGION} --name ${MY_PUBLIC_IP_NAME} --dns-name ${MY_DNS_LABEL} --sku Standard --allocation-method static --version IPv4 --zone 1 2 3 --query publicIp.ipAddress -o tsv)
 ```
 
@@ -374,6 +363,7 @@ Cert-manager, Kubernetes'te birinci sınıf bir yükleme yöntemi olarak Helm gr
 4. Sertifika veren YAML dosyasını uygulayın. ClusterIssuers, sertifika imzalama isteklerine göre imzalı sertifikalar oluşturabilen sertifika yetkililerini (CA) temsil eden Kubernetes kaynaklarıdır. Tüm sertifika yöneticisi sertifikaları, isteği yerine getirme girişiminde bulunmak için hazır durumda olan, başvuruda bulunu olan bir veren gerektirir. içinde olduğumuz vereni `cluster-issuer-prod.yml file`bulabilirsiniz.
 
     ```bash
+    export SSL_EMAIL_ADDRESS="$(az account show --query user.name --output tsv)"
     cluster_issuer_variables=$(<cluster-issuer-prod.yaml)
     echo "${cluster_issuer_variables//\$SSL_EMAIL_ADDRESS/$SSL_EMAIL_ADDRESS}" | kubectl apply -f -
     ```
@@ -406,6 +396,9 @@ Bu öğreticide, Bitnami tarafından oluşturulan WordPress için mevcut bir Hel
 3. Helm aracılığıyla Wordpress iş yükünü yükleyin.
 
     ```bash
+    export MY_MYSQL_HOSTNAME="$MY_MYSQL_DB_NAME.mysql.database.azure.com"
+    export MY_WP_ADMIN_USER="wpcliadmin"
+    export FQDN="${MY_DNS_LABEL}.${REGION}.cloudapp.azure.com"
     helm upgrade --install --cleanup-on-fail \
         --wait --timeout 10m0s \
         --namespace wordpress \
