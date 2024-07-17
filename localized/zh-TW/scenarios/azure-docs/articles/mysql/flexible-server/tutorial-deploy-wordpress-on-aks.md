@@ -31,38 +31,14 @@ ms.custom: 'vc, devx-track-azurecli, innovation-engine, linux-related-content'
 > [!NOTE]
 > 如果您在本教學課程中執行命令，而不是 Azure Cloud Shell，請以系統管理員身分執行命令。
 
-## 定義環境變數
+## 建立資源群組
 
-本教學課程的第一個步驟是定義環境變數。
+Azure 資源群組是部署及管理 Azure 資源所在的邏輯群組。 所有資源都必須放置在資源群組中。 下列命令會使用先前定義的 `$MY_RESOURCE_GROUP_NAME` 和 `$REGION` 參數來建立資源群組。
 
 ```bash
-export SSL_EMAIL_ADDRESS="$(az account show --query user.name --output tsv)"
-export NETWORK_PREFIX="$(($RANDOM % 253 + 1))"
 export RANDOM_ID="$(openssl rand -hex 3)"
 export MY_RESOURCE_GROUP_NAME="myWordPressAKSResourceGroup$RANDOM_ID"
 export REGION="westeurope"
-export MY_AKS_CLUSTER_NAME="myAKSCluster$RANDOM_ID"
-export MY_PUBLIC_IP_NAME="myPublicIP$RANDOM_ID"
-export MY_DNS_LABEL="mydnslabel$RANDOM_ID"
-export MY_VNET_NAME="myVNet$RANDOM_ID"
-export MY_VNET_PREFIX="10.$NETWORK_PREFIX.0.0/16"
-export MY_SN_NAME="mySN$RANDOM_ID"
-export MY_SN_PREFIX="10.$NETWORK_PREFIX.0.0/22"
-export MY_MYSQL_DB_NAME="mydb$RANDOM_ID"
-export MY_MYSQL_ADMIN_USERNAME="dbadmin$RANDOM_ID"
-export MY_MYSQL_ADMIN_PW="$(openssl rand -base64 32)"
-export MY_MYSQL_SN_NAME="myMySQLSN$RANDOM_ID"
-export MY_MYSQL_HOSTNAME="$MY_MYSQL_DB_NAME.mysql.database.azure.com"
-export MY_WP_ADMIN_PW="$(openssl rand -base64 32)"
-export MY_WP_ADMIN_USER="wpcliadmin"
-export FQDN="${MY_DNS_LABEL}.${REGION}.cloudapp.azure.com"
-```
-
-## 建立資源群組
-
-Azure 資源群組是部署及管理 Azure 資源所在的邏輯群組。 所有資源都必須放在資源群組中。 下列命令會使用先前定義的 `$MY_RESOURCE_GROUP_NAME` 和 `$REGION` 參數來建立資源群組。
-
-```bash
 az group create \
     --name $MY_RESOURCE_GROUP_NAME \
     --location $REGION
@@ -92,6 +68,11 @@ az group create \
 虛擬網路是 Azure 中私人網路的基礎建置區塊。 Azure 虛擬網路可讓 Azure 資源 (例如 VM) 彼此安全地通訊，以及與網際網路安全地通訊。
 
 ```bash
+export NETWORK_PREFIX="$(($RANDOM % 253 + 1))"
+export MY_VNET_PREFIX="10.$NETWORK_PREFIX.0.0/16"
+export MY_SN_PREFIX="10.$NETWORK_PREFIX.0.0/22"
+export MY_VNET_NAME="myVNet$RANDOM_ID"
+export MY_SN_NAME="mySN$RANDOM_ID"
 az network vnet create \
     --resource-group $MY_RESOURCE_GROUP_NAME \
     --location $REGION \
@@ -141,10 +122,16 @@ az network vnet create \
 適用於 MySQL 的 Azure 資料庫彈性伺服器是一個受管理的服務，可用來在雲端執行、管理及調整高可用性 MySQL 伺服器。 使用 [az mysql flexible-server create](/cli/azure/mysql/flexible-server) 命令建立適用於 MySQL 的 Azure 資料庫彈性伺服器執行個體。 一部伺服器可以包含多個資料庫。 下列命令會使用 Azure CLI 本機內容中的服務預設值和變數值來建立伺服器：
 
 ```bash
+export MY_MYSQL_ADMIN_USERNAME="dbadmin$RANDOM_ID"
+export MY_WP_ADMIN_PW="$(openssl rand -base64 32)"
 echo "Your MySQL user $MY_MYSQL_ADMIN_USERNAME password is: $MY_WP_ADMIN_PW" 
 ```
 
 ```bash
+export MY_DNS_LABEL="mydnslabel$RANDOM_ID"
+export MY_MYSQL_DB_NAME="mydb$RANDOM_ID"
+export MY_MYSQL_ADMIN_PW="$(openssl rand -base64 32)"
+export MY_MYSQL_SN_NAME="myMySQLSN$RANDOM_ID"
 az mysql flexible-server create \
     --admin-password $MY_MYSQL_ADMIN_PW \
     --admin-user $MY_MYSQL_ADMIN_USERNAME \
@@ -204,7 +191,7 @@ runtime="10 minute"; endtime=$(date -ud "$runtime" +%s); while [[ $(date -u +%s)
 
 ## 在 適用於 MySQL 的 Azure 資料庫 中設定伺服器參數 - 彈性伺服器
 
-您可以使用伺服器參數來管理 適用於 MySQL 的 Azure 資料庫 - 彈性伺服器設定。 當您建立伺服器時，伺服器參數會設定為預設值和建議值。
+您可以使用伺服器參數來管理 適用於 MySQL 的 Azure 資料庫 - 彈性伺服器組態。 當您建立伺服器時，伺服器參數會設定為預設值和建議值。
 
 若要顯示伺服器特定參數的詳細數據，請執行 [az mysql flexible-server parameter show](/cli/azure/mysql/flexible-server/parameter) 命令。
 
@@ -248,6 +235,7 @@ az mysql flexible-server parameter set \
 
 ```bash
 export MY_SN_ID=$(az network vnet subnet list --resource-group $MY_RESOURCE_GROUP_NAME --vnet-name $MY_VNET_NAME --query "[0].id" --output tsv)
+export MY_AKS_CLUSTER_NAME="myAKSCluster$RANDOM_ID"
 
 az aks create \
     --resource-group $MY_RESOURCE_GROUP_NAME \
@@ -300,6 +288,7 @@ kubectl get nodes
 當您升級輸入控制器時，必須將參數傳遞至 Helm 版本，確保輸入控制器服務知道將對其進行配置的負載平衡器。 若要讓 HTTPS 憑證正常運作，請使用 DNS 標籤來設定輸入控制器 IP 位址的完整功能變數名稱 （FQDN）。 您的 FQDN 應遵循下列格式：$MY_DNS_LABEL。AZURE_REGION_NAME.cloudapp.azure.com。
 
 ```bash
+export MY_PUBLIC_IP_NAME="myPublicIP$RANDOM_ID"
 export MY_STATIC_IP=$(az network public-ip create --resource-group MC_${MY_RESOURCE_GROUP_NAME}_${MY_AKS_CLUSTER_NAME}_${REGION} --location ${REGION} --name ${MY_PUBLIC_IP_NAME} --dns-name ${MY_DNS_LABEL} --sku Standard --allocation-method static --version IPv4 --zone 1 2 3 --query publicIp.ipAddress -o tsv)
 ```
 
@@ -323,7 +312,7 @@ export MY_STATIC_IP=$(az network public-ip create --resource-group MC_${MY_RESOU
 
 ### 設定 Cert Manager
 
-若要新增 HTTPS，我們將使用 Cert Manager。 Cert Manager 是一種 開放原始碼 工具來取得和管理 Kubernetes 部署的 SSL 憑證。 Cert Manager 會從熱門的公用簽發者和私人簽發者取得憑證、確保憑證有效且最新，並嘗試在到期前的設定時間更新憑證。
+若要新增 HTTPS，我們將使用 Cert Manager。 Cert Manager 是 開放原始碼 工具來取得和管理 Kubernetes 部署的 SSL 憑證。 Cert Manager 會從熱門的公用簽發者和私人簽發者取得憑證、確保憑證有效且最新，並嘗試在到期前的設定時間更新憑證。
 
 1. 若要安裝 cert-manager，我們必須先建立命名空間來執行它。 本教學課程會將 cert-manager 安裝至 cert-manager 命名空間。 您可以在不同的命名空間中執行 cert-manager，但您必須修改部署指令清單。
 
@@ -374,6 +363,7 @@ Cert-manager 提供 Helm 圖表作為 Kubernetes 上安裝的一流方法。
 4. 套用憑證簽發者 YAML 檔案。 ClusterIssuers 是 Kubernetes 資源，代表可藉由接受憑證簽署要求來產生已簽署憑證的證書頒發機構單位 （CA）。 所有憑證管理員憑證都需要處於就緒條件的參考簽發者，才能嘗試接受要求。 您可以在 中找到我們在 中的 `cluster-issuer-prod.yml file`簽發者。
 
     ```bash
+    export SSL_EMAIL_ADDRESS="$(az account show --query user.name --output tsv)"
     cluster_issuer_variables=$(<cluster-issuer-prod.yaml)
     echo "${cluster_issuer_variables//\$SSL_EMAIL_ADDRESS/$SSL_EMAIL_ADDRESS}" | kubectl apply -f -
     ```
@@ -406,6 +396,9 @@ kubectl apply -f wp-azurefiles-sc.yaml
 3. 透過 Helm 安裝 Wordpress 工作負載。
 
     ```bash
+    export MY_MYSQL_HOSTNAME="$MY_MYSQL_DB_NAME.mysql.database.azure.com"
+    export MY_WP_ADMIN_USER="wpcliadmin"
+    export FQDN="${MY_DNS_LABEL}.${REGION}.cloudapp.azure.com"
     helm upgrade --install --cleanup-on-fail \
         --wait --timeout 10m0s \
         --namespace wordpress \
