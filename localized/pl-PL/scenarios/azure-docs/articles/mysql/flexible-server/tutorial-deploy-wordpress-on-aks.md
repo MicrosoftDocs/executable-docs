@@ -31,38 +31,14 @@ Przed rozpoczęciem upewnij się, że zalogowano się do interfejsu wiersza pole
 > [!NOTE]
 > Jeśli uruchamiasz polecenia w tym samouczku lokalnie zamiast usługi Azure Cloud Shell, uruchom polecenia jako administrator.
 
-## Definiowanie zmiennych środowiskowych
-
-Pierwszym krokiem w tym samouczku jest zdefiniowanie zmiennych środowiskowych.
-
-```bash
-export SSL_EMAIL_ADDRESS="$(az account show --query user.name --output tsv)"
-export NETWORK_PREFIX="$(($RANDOM % 253 + 1))"
-export RANDOM_ID="$(openssl rand -hex 3)"
-export MY_RESOURCE_GROUP_NAME="myWordPressAKSResourceGroup$RANDOM_ID"
-export REGION="westeurope"
-export MY_AKS_CLUSTER_NAME="myAKSCluster$RANDOM_ID"
-export MY_PUBLIC_IP_NAME="myPublicIP$RANDOM_ID"
-export MY_DNS_LABEL="mydnslabel$RANDOM_ID"
-export MY_VNET_NAME="myVNet$RANDOM_ID"
-export MY_VNET_PREFIX="10.$NETWORK_PREFIX.0.0/16"
-export MY_SN_NAME="mySN$RANDOM_ID"
-export MY_SN_PREFIX="10.$NETWORK_PREFIX.0.0/22"
-export MY_MYSQL_DB_NAME="mydb$RANDOM_ID"
-export MY_MYSQL_ADMIN_USERNAME="dbadmin$RANDOM_ID"
-export MY_MYSQL_ADMIN_PW="$(openssl rand -base64 32)"
-export MY_MYSQL_SN_NAME="myMySQLSN$RANDOM_ID"
-export MY_MYSQL_HOSTNAME="$MY_MYSQL_DB_NAME.mysql.database.azure.com"
-export MY_WP_ADMIN_PW="$(openssl rand -base64 32)"
-export MY_WP_ADMIN_USER="wpcliadmin"
-export FQDN="${MY_DNS_LABEL}.${REGION}.cloudapp.azure.com"
-```
-
 ## Tworzenie grupy zasobów
 
 Grupa zasobów platformy Azure to logiczna grupa przeznaczona do wdrażania zasobów platformy Azure i zarządzania nimi. Wszystkie zasoby należy umieścić w grupie zasobów. Następujące polecenie tworzy grupę zasobów z wcześniej zdefiniowanymi `$MY_RESOURCE_GROUP_NAME` parametrami i `$REGION` .
 
 ```bash
+export RANDOM_ID="$(openssl rand -hex 3)"
+export MY_RESOURCE_GROUP_NAME="myWordPressAKSResourceGroup$RANDOM_ID"
+export REGION="westeurope"
 az group create \
     --name $MY_RESOURCE_GROUP_NAME \
     --location $REGION
@@ -92,6 +68,11 @@ Wyniki:
 Sieć wirtualna to podstawowy blok konstrukcyjny dla sieci prywatnych na platformie Azure. Usługa Azure Virtual Network umożliwia zasobom platformy Azure, takich jak maszyny wirtualne, bezpieczne komunikowanie się ze sobą i Internetem.
 
 ```bash
+export NETWORK_PREFIX="$(($RANDOM % 253 + 1))"
+export MY_VNET_PREFIX="10.$NETWORK_PREFIX.0.0/16"
+export MY_SN_PREFIX="10.$NETWORK_PREFIX.0.0/22"
+export MY_VNET_NAME="myVNet$RANDOM_ID"
+export MY_SN_NAME="mySN$RANDOM_ID"
 az network vnet create \
     --resource-group $MY_RESOURCE_GROUP_NAME \
     --location $REGION \
@@ -141,10 +122,16 @@ Wyniki:
 Serwer elastyczny usługi Azure Database for MySQL to usługa zarządzana, której można używać do uruchamiania serwerów MySQL o wysokiej dostępności i zarządzania nimi w chmurze. Utwórz wystąpienie serwera elastycznego usługi Azure Database for MySQL za [pomocą polecenia az mysql flexible-server create](/cli/azure/mysql/flexible-server) . Serwer może zawierać wiele baz danych. Następujące polecenie tworzy serwer przy użyciu wartości domyślnych usługi i zmiennych z lokalnego kontekstu interfejsu wiersza polecenia platformy Azure:
 
 ```bash
+export MY_MYSQL_ADMIN_USERNAME="dbadmin$RANDOM_ID"
+export MY_WP_ADMIN_PW="$(openssl rand -base64 32)"
 echo "Your MySQL user $MY_MYSQL_ADMIN_USERNAME password is: $MY_WP_ADMIN_PW" 
 ```
 
 ```bash
+export MY_DNS_LABEL="mydnslabel$RANDOM_ID"
+export MY_MYSQL_DB_NAME="mydb$RANDOM_ID"
+export MY_MYSQL_ADMIN_PW="$(openssl rand -base64 32)"
+export MY_MYSQL_SN_NAME="myMySQLSN$RANDOM_ID"
 az mysql flexible-server create \
     --admin-password $MY_MYSQL_ADMIN_PW \
     --admin-user $MY_MYSQL_ADMIN_USERNAME \
@@ -242,12 +229,13 @@ Wyniki:
 
 ## Tworzenie klastra AKS
 
-Aby utworzyć klaster usługi AKS przy użyciu usługi Container Szczegółowe informacje, użyj [polecenia az aks create](/cli/azure/aks#az-aks-create) z parametrem **monitorowania --enable-addons**. Poniższy przykład tworzy klaster z obsługą skalowania automatycznego z obsługą strefy dostępności o nazwie **myAKSCluster**:
+Aby utworzyć klaster usługi AKS za pomocą usługi Container Insights, użyj [polecenia az aks create](/cli/azure/aks#az-aks-create) z parametrem **monitorowania --enable-addons** . Poniższy przykład tworzy klaster z obsługą skalowania automatycznego z obsługą strefy dostępności o nazwie **myAKSCluster**:
 
 Ta akcja trwa kilka minut.
 
 ```bash
 export MY_SN_ID=$(az network vnet subnet list --resource-group $MY_RESOURCE_GROUP_NAME --vnet-name $MY_VNET_NAME --query "[0].id" --output tsv)
+export MY_AKS_CLUSTER_NAME="myAKSCluster$RANDOM_ID"
 
 az aks create \
     --resource-group $MY_RESOURCE_GROUP_NAME \
@@ -300,6 +288,7 @@ Kontroler ruchu przychodzącego można skonfigurować przy użyciu statycznego p
 Podczas uaktualniania kontrolera ruchu przychodzącego należy przekazać parametr do wydania programu Helm, aby upewnić się, że usługa kontrolera ruchu przychodzącego jest świadoma modułu równoważenia obciążenia, który zostanie mu przydzielony. Aby certyfikaty HTTPS działały poprawnie, użyj etykiety DNS, aby skonfigurować w pełni kwalifikowaną nazwę domeny (FQDN) dla adresu IP kontrolera ruchu przychodzącego. Nazwa FQDN powinna mieć następującą postać: $MY_DNS_LABEL. AZURE_REGION_NAME.cloudapp.azure.com.
 
 ```bash
+export MY_PUBLIC_IP_NAME="myPublicIP$RANDOM_ID"
 export MY_STATIC_IP=$(az network public-ip create --resource-group MC_${MY_RESOURCE_GROUP_NAME}_${MY_AKS_CLUSTER_NAME}_${REGION} --location ${REGION} --name ${MY_PUBLIC_IP_NAME} --dns-name ${MY_DNS_LABEL} --sku Standard --allocation-method static --version IPv4 --zone 1 2 3 --query publicIp.ipAddress -o tsv)
 ```
 
@@ -374,6 +363,7 @@ Narzędzie Cert-manager udostępnia wykresy Helm jako pierwszą klasę instalacj
 4. Zastosuj plik YAML wystawcy certyfikatu. Klastry są zasobami Kubernetes reprezentującymi urzędy certyfikacji, które mogą generować podpisane certyfikaty, honorując żądania podpisywania certyfikatów. Wszystkie certyfikaty menedżera certyfikatów wymagają wystawcy, do którego odwołuje się odwołanie, który jest w stanie gotowości, aby spróbować rozpoznać żądanie. Możesz znaleźć wystawcę, którego używamy w elemencie `cluster-issuer-prod.yml file`.
 
     ```bash
+    export SSL_EMAIL_ADDRESS="$(az account show --query user.name --output tsv)"
     cluster_issuer_variables=$(<cluster-issuer-prod.yaml)
     echo "${cluster_issuer_variables//\$SSL_EMAIL_ADDRESS/$SSL_EMAIL_ADDRESS}" | kubectl apply -f -
     ```
@@ -406,6 +396,9 @@ W tym samouczku używamy istniejącego wykresu Helm dla platformy WordPress utwo
 3. Zainstaluj obciążenie Wordpress za pośrednictwem programu Helm.
 
     ```bash
+    export MY_MYSQL_HOSTNAME="$MY_MYSQL_DB_NAME.mysql.database.azure.com"
+    export MY_WP_ADMIN_USER="wpcliadmin"
+    export FQDN="${MY_DNS_LABEL}.${REGION}.cloudapp.azure.com"
     helm upgrade --install --cleanup-on-fail \
         --wait --timeout 10m0s \
         --namespace wordpress \
