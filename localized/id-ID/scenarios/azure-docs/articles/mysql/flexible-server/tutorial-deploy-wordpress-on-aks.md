@@ -31,38 +31,14 @@ Sebelum memulai, pastikan Anda masuk ke Azure CLI dan telah memilih langganan un
 > [!NOTE]
 > Jika Anda menjalankan perintah dalam tutorial ini secara lokal alih-alih Azure Cloud Shell, jalankan perintah sebagai administrator.
 
-## Tentukan Variabel Lingkungan
-
-Langkah pertama dalam tutorial ini adalah menentukan variabel lingkungan.
-
-```bash
-export SSL_EMAIL_ADDRESS="$(az account show --query user.name --output tsv)"
-export NETWORK_PREFIX="$(($RANDOM % 253 + 1))"
-export RANDOM_ID="$(openssl rand -hex 3)"
-export MY_RESOURCE_GROUP_NAME="myWordPressAKSResourceGroup$RANDOM_ID"
-export REGION="westeurope"
-export MY_AKS_CLUSTER_NAME="myAKSCluster$RANDOM_ID"
-export MY_PUBLIC_IP_NAME="myPublicIP$RANDOM_ID"
-export MY_DNS_LABEL="mydnslabel$RANDOM_ID"
-export MY_VNET_NAME="myVNet$RANDOM_ID"
-export MY_VNET_PREFIX="10.$NETWORK_PREFIX.0.0/16"
-export MY_SN_NAME="mySN$RANDOM_ID"
-export MY_SN_PREFIX="10.$NETWORK_PREFIX.0.0/22"
-export MY_MYSQL_DB_NAME="mydb$RANDOM_ID"
-export MY_MYSQL_ADMIN_USERNAME="dbadmin$RANDOM_ID"
-export MY_MYSQL_ADMIN_PW="$(openssl rand -base64 32)"
-export MY_MYSQL_SN_NAME="myMySQLSN$RANDOM_ID"
-export MY_MYSQL_HOSTNAME="$MY_MYSQL_DB_NAME.mysql.database.azure.com"
-export MY_WP_ADMIN_PW="$(openssl rand -base64 32)"
-export MY_WP_ADMIN_USER="wpcliadmin"
-export FQDN="${MY_DNS_LABEL}.${REGION}.cloudapp.azure.com"
-```
-
 ## Buat grup sumber daya
 
 Grup sumber daya Azure adalah grup logis tempat sumber daya Azure disebarkan dan dikelola. Semua sumber daya harus ditempatkan dalam grup sumber daya. Perintah berikut membuat grup sumber daya dengan parameter dan `$REGION` yang ditentukan `$MY_RESOURCE_GROUP_NAME` sebelumnya.
 
 ```bash
+export RANDOM_ID="$(openssl rand -hex 3)"
+export MY_RESOURCE_GROUP_NAME="myWordPressAKSResourceGroup$RANDOM_ID"
+export REGION="westeurope"
 az group create \
     --name $MY_RESOURCE_GROUP_NAME \
     --location $REGION
@@ -92,6 +68,11 @@ Hasil:
 Jaringan virtual adalah blok penyusun dasar untuk jaringan privat di Azure. Azure Virtual Network memungkinkan sumber daya Azure seperti VM untuk berkomunikasi satu sama lain dengan aman dan internet.
 
 ```bash
+export NETWORK_PREFIX="$(($RANDOM % 253 + 1))"
+export MY_VNET_PREFIX="10.$NETWORK_PREFIX.0.0/16"
+export MY_SN_PREFIX="10.$NETWORK_PREFIX.0.0/22"
+export MY_VNET_NAME="myVNet$RANDOM_ID"
+export MY_SN_NAME="mySN$RANDOM_ID"
 az network vnet create \
     --resource-group $MY_RESOURCE_GROUP_NAME \
     --location $REGION \
@@ -141,10 +122,16 @@ Hasil:
 Server fleksibel Azure Database for MySQL adalah layanan terkelola yang dapat Anda gunakan untuk menjalankan, mengelola, dan menskalakan server MySQL yang sangat tersedia di cloud. Buat instans server fleksibel Azure Database for MySQL dengan [perintah az mysql flexible-server create](/cli/azure/mysql/flexible-server) . Server bisa berisi beberapa database. Perintah berikut membuat server menggunakan default layanan dan nilai variabel dari konteks lokal Azure CLI Anda:
 
 ```bash
+export MY_MYSQL_ADMIN_USERNAME="dbadmin$RANDOM_ID"
+export MY_WP_ADMIN_PW="$(openssl rand -base64 32)"
 echo "Your MySQL user $MY_MYSQL_ADMIN_USERNAME password is: $MY_WP_ADMIN_PW" 
 ```
 
 ```bash
+export MY_DNS_LABEL="mydnslabel$RANDOM_ID"
+export MY_MYSQL_DB_NAME="mydb$RANDOM_ID"
+export MY_MYSQL_ADMIN_PW="$(openssl rand -base64 32)"
+export MY_MYSQL_SN_NAME="myMySQLSN$RANDOM_ID"
 az mysql flexible-server create \
     --admin-password $MY_MYSQL_ADMIN_PW \
     --admin-user $MY_MYSQL_ADMIN_USERNAME \
@@ -248,6 +235,7 @@ Tindakan ini membutuhkan waktu beberapa menit.
 
 ```bash
 export MY_SN_ID=$(az network vnet subnet list --resource-group $MY_RESOURCE_GROUP_NAME --vnet-name $MY_VNET_NAME --query "[0].id" --output tsv)
+export MY_AKS_CLUSTER_NAME="myAKSCluster$RANDOM_ID"
 
 az aks create \
     --resource-group $MY_RESOURCE_GROUP_NAME \
@@ -300,6 +288,7 @@ Anda dapat mengonfigurasi pengontrol ingress Anda dengan alamat IP publik statis
 Saat meningkatkan pengontrol ingress, Anda harus meneruskan parameter ke rilis Helm untuk memastikan layanan pengontrol ingress dibuat mengetahui load balancer yang akan dialokasikan untuk itu. Agar sertifikat HTTPS berfungsi dengan benar, gunakan label DNS untuk mengonfigurasi nama domain yang sepenuhnya memenuhi syarat (FQDN) untuk alamat IP pengontrol ingress. FQDN Anda harus mengikuti formulir ini: $MY_DNS_LABEL. AZURE_REGION_NAME.cloudapp.azure.com.
 
 ```bash
+export MY_PUBLIC_IP_NAME="myPublicIP$RANDOM_ID"
 export MY_STATIC_IP=$(az network public-ip create --resource-group MC_${MY_RESOURCE_GROUP_NAME}_${MY_AKS_CLUSTER_NAME}_${REGION} --location ${REGION} --name ${MY_PUBLIC_IP_NAME} --dns-name ${MY_DNS_LABEL} --sku Standard --allocation-method static --version IPv4 --zone 1 2 3 --query publicIp.ipAddress -o tsv)
 ```
 
@@ -374,6 +363,7 @@ Cert-manager menyediakan bagan Helm sebagai metode penginstalan kelas satu di Ku
 4. Terapkan file YAML penerbit sertifikat. ClusterIssuers adalah sumber daya Kubernetes yang mewakili otoritas sertifikat (CA) yang dapat menghasilkan sertifikat yang ditandatangani dengan mematuhi permintaan penandatanganan sertifikat. Semua sertifikat cert-manager memerlukan pengeluar sertifikat yang direferensikan dalam kondisi siap untuk mencoba memenuhi permintaan. Anda dapat menemukan pengeluar sertifikat tempat kami berada di `cluster-issuer-prod.yml file`.
 
     ```bash
+    export SSL_EMAIL_ADDRESS="$(az account show --query user.name --output tsv)"
     cluster_issuer_variables=$(<cluster-issuer-prod.yaml)
     echo "${cluster_issuer_variables//\$SSL_EMAIL_ADDRESS/$SSL_EMAIL_ADDRESS}" | kubectl apply -f -
     ```
@@ -406,6 +396,9 @@ Untuk tutorial ini, kami menggunakan bagan Helm yang ada untuk WordPress yang di
 3. Instal beban kerja Wordpress melalui Helm.
 
     ```bash
+    export MY_MYSQL_HOSTNAME="$MY_MYSQL_DB_NAME.mysql.database.azure.com"
+    export MY_WP_ADMIN_USER="wpcliadmin"
+    export FQDN="${MY_DNS_LABEL}.${REGION}.cloudapp.azure.com"
     helm upgrade --install --cleanup-on-fail \
         --wait --timeout 10m0s \
         --namespace wordpress \
