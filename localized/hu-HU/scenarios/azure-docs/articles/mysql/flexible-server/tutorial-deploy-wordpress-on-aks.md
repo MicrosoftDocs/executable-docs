@@ -31,38 +31,14 @@ Az első lépések előtt győződjön meg arról, hogy bejelentkezett az Azure 
 > [!NOTE]
 > Ha az oktatóanyagban szereplő parancsokat az Azure Cloud Shell helyett helyileg futtatja, futtassa a parancsokat rendszergazdaként.
 
-## Környezeti változók definiálása
-
-Az oktatóanyag első lépése a környezeti változók definiálása.
-
-```bash
-export SSL_EMAIL_ADDRESS="$(az account show --query user.name --output tsv)"
-export NETWORK_PREFIX="$(($RANDOM % 253 + 1))"
-export RANDOM_ID="$(openssl rand -hex 3)"
-export MY_RESOURCE_GROUP_NAME="myWordPressAKSResourceGroup$RANDOM_ID"
-export REGION="westeurope"
-export MY_AKS_CLUSTER_NAME="myAKSCluster$RANDOM_ID"
-export MY_PUBLIC_IP_NAME="myPublicIP$RANDOM_ID"
-export MY_DNS_LABEL="mydnslabel$RANDOM_ID"
-export MY_VNET_NAME="myVNet$RANDOM_ID"
-export MY_VNET_PREFIX="10.$NETWORK_PREFIX.0.0/16"
-export MY_SN_NAME="mySN$RANDOM_ID"
-export MY_SN_PREFIX="10.$NETWORK_PREFIX.0.0/22"
-export MY_MYSQL_DB_NAME="mydb$RANDOM_ID"
-export MY_MYSQL_ADMIN_USERNAME="dbadmin$RANDOM_ID"
-export MY_MYSQL_ADMIN_PW="$(openssl rand -base64 32)"
-export MY_MYSQL_SN_NAME="myMySQLSN$RANDOM_ID"
-export MY_MYSQL_HOSTNAME="$MY_MYSQL_DB_NAME.mysql.database.azure.com"
-export MY_WP_ADMIN_PW="$(openssl rand -base64 32)"
-export MY_WP_ADMIN_USER="wpcliadmin"
-export FQDN="${MY_DNS_LABEL}.${REGION}.cloudapp.azure.com"
-```
-
 ## Erőforráscsoport létrehozása
 
 Az Azure-erőforráscsoport olyan logikai csoport, amelyben az Azure-erőforrások üzembe helyezése és kezelése zajlik. Minden erőforrást egy erőforráscsoportba kell helyezni. Az alábbi parancs létrehoz egy erőforráscsoportot a korábban definiált `$MY_RESOURCE_GROUP_NAME` és `$REGION` paraméterekkel.
 
 ```bash
+export RANDOM_ID="$(openssl rand -hex 3)"
+export MY_RESOURCE_GROUP_NAME="myWordPressAKSResourceGroup$RANDOM_ID"
+export REGION="westeurope"
 az group create \
     --name $MY_RESOURCE_GROUP_NAME \
     --location $REGION
@@ -92,6 +68,11 @@ Eredmények:
 A virtuális hálózat az Azure-beli magánhálózatok alapvető építőeleme. Az Azure Virtual Network lehetővé teszi, hogy az Azure-erőforrások, például a virtuális gépek biztonságosan kommunikáljanak egymással és az internettel.
 
 ```bash
+export NETWORK_PREFIX="$(($RANDOM % 253 + 1))"
+export MY_VNET_PREFIX="10.$NETWORK_PREFIX.0.0/16"
+export MY_SN_PREFIX="10.$NETWORK_PREFIX.0.0/22"
+export MY_VNET_NAME="myVNet$RANDOM_ID"
+export MY_SN_NAME="mySN$RANDOM_ID"
 az network vnet create \
     --resource-group $MY_RESOURCE_GROUP_NAME \
     --location $REGION \
@@ -141,10 +122,16 @@ Eredmények:
 A rugalmas Azure Database for MySQL-kiszolgáló egy felügyelt szolgáltatás, amellyel magas rendelkezésre állású MySQL-kiszolgálókat futtathat, kezelhet és méretezhet a felhőben. Hozzon létre egy rugalmas Azure Database for MySQL-kiszolgálópéldányt az az [mysql flexible-server create](/cli/azure/mysql/flexible-server) paranccsal. Egy kiszolgáló több adatbázist tartalmazhat. A következő parancs létrehoz egy kiszolgálót az Azure CLI helyi környezetéből származó szolgáltatás alapértelmezései és változó értékei alapján:
 
 ```bash
+export MY_MYSQL_ADMIN_USERNAME="dbadmin$RANDOM_ID"
+export MY_WP_ADMIN_PW="$(openssl rand -base64 32)"
 echo "Your MySQL user $MY_MYSQL_ADMIN_USERNAME password is: $MY_WP_ADMIN_PW" 
 ```
 
 ```bash
+export MY_DNS_LABEL="mydnslabel$RANDOM_ID"
+export MY_MYSQL_DB_NAME="mydb$RANDOM_ID"
+export MY_MYSQL_ADMIN_PW="$(openssl rand -base64 32)"
+export MY_MYSQL_SN_NAME="myMySQLSN$RANDOM_ID"
 az mysql flexible-server create \
     --admin-password $MY_MYSQL_ADMIN_PW \
     --admin-user $MY_MYSQL_ADMIN_USERNAME \
@@ -242,12 +229,13 @@ Eredmények:
 
 ## AKS-fürt létrehozása
 
-Ha AKS-fürtöt szeretne létrehozni a Container Elemzések használatával, használja az az aks [create](/cli/azure/aks#az-aks-create) parancsot az **--enable-addons monitorozási** paraméterrel. Az alábbi példa egy myAKSCluster** nevű **automatikus skálázási, rendelkezésre állási zóna-kompatibilis fürtöt hoz létre:
+Ha AKS-fürtöt szeretne létrehozni a Container Insights használatával, használja az az aks [create](/cli/azure/aks#az-aks-create) parancsot az **--enable-addons monitorozási** paraméterrel. Az alábbi példa egy myAKSCluster** nevű **automatikus skálázási, rendelkezésre állási zóna-kompatibilis fürtöt hoz létre:
 
 Ez a művelet néhány percet vesz igénybe.
 
 ```bash
 export MY_SN_ID=$(az network vnet subnet list --resource-group $MY_RESOURCE_GROUP_NAME --vnet-name $MY_VNET_NAME --query "[0].id" --output tsv)
+export MY_AKS_CLUSTER_NAME="myAKSCluster$RANDOM_ID"
 
 az aks create \
     --resource-group $MY_RESOURCE_GROUP_NAME \
@@ -300,6 +288,7 @@ A bejövőforgalom-vezérlőt statikus nyilvános IP-címmel konfigurálhatja. A
 A bejövőforgalom-vezérlő frissítésekor egy paramétert kell átadnia a Helm-kiadásnak, hogy a bejövőforgalom-vezérlő szolgáltatás értesüljön a terheléselosztóról, amely hozzá lesz rendelve. Ahhoz, hogy a HTTPS-tanúsítványok megfelelően működjenek, egy DNS-címkével konfiguráljon egy teljes tartománynevet (FQDN) a bejövőforgalom-vezérlő IP-címéhez. A teljes tartománynévnek a következő űrlapot kell követnie: $MY_DNS_LABEL. AZURE_REGION_NAME.cloudapp.azure.com.
 
 ```bash
+export MY_PUBLIC_IP_NAME="myPublicIP$RANDOM_ID"
 export MY_STATIC_IP=$(az network public-ip create --resource-group MC_${MY_RESOURCE_GROUP_NAME}_${MY_AKS_CLUSTER_NAME}_${REGION} --location ${REGION} --name ${MY_PUBLIC_IP_NAME} --dns-name ${MY_DNS_LABEL} --sku Standard --allocation-method static --version IPv4 --zone 1 2 3 --query publicIp.ipAddress -o tsv)
 ```
 
@@ -374,6 +363,7 @@ A Cert-manager a Helm-diagramokat első osztályú telepítési módszerként bi
 4. A tanúsítványkibocsátó YAML-fájljának alkalmazása. A ClusterIssuers olyan Kubernetes-erőforrások, amelyek olyan hitelesítésszolgáltatókat (CA-kat) képviselnek, amelyek tanúsítvány-aláírási kérések teljesítésével létrehozhatnak aláírt tanúsítványokat. Minden tanúsítványkezelő tanúsítványhoz szükség van egy hivatkozott kiállítóra, amely készen áll a kérés teljesítésére. Megtalálhatja a kiállítót, akiben `cluster-issuer-prod.yml file`a .
 
     ```bash
+    export SSL_EMAIL_ADDRESS="$(az account show --query user.name --output tsv)"
     cluster_issuer_variables=$(<cluster-issuer-prod.yaml)
     echo "${cluster_issuer_variables//\$SSL_EMAIL_ADDRESS/$SSL_EMAIL_ADDRESS}" | kubectl apply -f -
     ```
@@ -406,6 +396,9 @@ Ebben az oktatóanyagban egy meglévő Helm-diagramot használunk a Bitnami ált
 3. Telepítse a Wordpress számítási feladatait a Helmen keresztül.
 
     ```bash
+    export MY_MYSQL_HOSTNAME="$MY_MYSQL_DB_NAME.mysql.database.azure.com"
+    export MY_WP_ADMIN_USER="wpcliadmin"
+    export FQDN="${MY_DNS_LABEL}.${REGION}.cloudapp.azure.com"
     helm upgrade --install --cleanup-on-fail \
         --wait --timeout 10m0s \
         --namespace wordpress \
