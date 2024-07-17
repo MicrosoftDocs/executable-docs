@@ -31,38 +31,14 @@ Prima di iniziare, assicurarsi di aver eseguito l'accesso all'interfaccia della 
 > [!NOTE]
 > Se si eseguono i comandi in questa esercitazione in locale anziché Azure Cloud Shell, eseguire i comandi come amministratore.
 
-## Definire le variabili di ambiente
+## Creare un gruppo di risorse
 
-Il primo passaggio di questa esercitazione consiste nel definire le variabili di ambiente.
+Un gruppo di risorse di Azure è un gruppo logico in cui le risorse di Azure vengono distribuite e gestite. Tutte le risorse devono essere posizionate in un gruppo di risorse. Il comando seguente crea un gruppo di risorse con i parametri e `$REGION` definiti `$MY_RESOURCE_GROUP_NAME` in precedenza.
 
 ```bash
-export SSL_EMAIL_ADDRESS="$(az account show --query user.name --output tsv)"
-export NETWORK_PREFIX="$(($RANDOM % 253 + 1))"
 export RANDOM_ID="$(openssl rand -hex 3)"
 export MY_RESOURCE_GROUP_NAME="myWordPressAKSResourceGroup$RANDOM_ID"
 export REGION="westeurope"
-export MY_AKS_CLUSTER_NAME="myAKSCluster$RANDOM_ID"
-export MY_PUBLIC_IP_NAME="myPublicIP$RANDOM_ID"
-export MY_DNS_LABEL="mydnslabel$RANDOM_ID"
-export MY_VNET_NAME="myVNet$RANDOM_ID"
-export MY_VNET_PREFIX="10.$NETWORK_PREFIX.0.0/16"
-export MY_SN_NAME="mySN$RANDOM_ID"
-export MY_SN_PREFIX="10.$NETWORK_PREFIX.0.0/22"
-export MY_MYSQL_DB_NAME="mydb$RANDOM_ID"
-export MY_MYSQL_ADMIN_USERNAME="dbadmin$RANDOM_ID"
-export MY_MYSQL_ADMIN_PW="$(openssl rand -base64 32)"
-export MY_MYSQL_SN_NAME="myMySQLSN$RANDOM_ID"
-export MY_MYSQL_HOSTNAME="$MY_MYSQL_DB_NAME.mysql.database.azure.com"
-export MY_WP_ADMIN_PW="$(openssl rand -base64 32)"
-export MY_WP_ADMIN_USER="wpcliadmin"
-export FQDN="${MY_DNS_LABEL}.${REGION}.cloudapp.azure.com"
-```
-
-## Creare un gruppo di risorse
-
-Un gruppo di risorse di Azure è un gruppo logico in cui le risorse di Azure vengono distribuite e gestite. Tutte le risorse devono essere inserite in un gruppo di risorse. Il comando seguente crea un gruppo di risorse con i parametri e `$REGION` definiti `$MY_RESOURCE_GROUP_NAME` in precedenza.
-
-```bash
 az group create \
     --name $MY_RESOURCE_GROUP_NAME \
     --location $REGION
@@ -89,9 +65,14 @@ Risultati:
 
 ## Creare una rete virtuale e una subnet
 
-Una rete virtuale è il blocco predefinito fondamentale per le reti private in Azure. Il servizio Rete virtuale di Microsoft Azure consente alle risorse di Azure, come le VM, di comunicare in modo sicuro tra loro e con Internet.
+Una rete virtuale rappresenta il blocco costitutivo fondamentale per le reti private di Azure. Il servizio Rete virtuale di Microsoft Azure consente alle risorse di Azure, come le VM, di comunicare in modo sicuro tra loro e con Internet.
 
 ```bash
+export NETWORK_PREFIX="$(($RANDOM % 253 + 1))"
+export MY_VNET_PREFIX="10.$NETWORK_PREFIX.0.0/16"
+export MY_SN_PREFIX="10.$NETWORK_PREFIX.0.0/22"
+export MY_VNET_NAME="myVNet$RANDOM_ID"
+export MY_SN_NAME="mySN$RANDOM_ID"
 az network vnet create \
     --resource-group $MY_RESOURCE_GROUP_NAME \
     --location $REGION \
@@ -141,10 +122,16 @@ Risultati:
 Database di Azure per MySQL server flessibile è un servizio gestito che è possibile usare per eseguire, gestire e ridimensionare server MySQL a disponibilità elevata nel cloud. Creare un'istanza del server flessibile Database di Azure per MySQL con il [comando az mysql flexible-server create](/cli/azure/mysql/flexible-server). Un server può contenere più database. Il comando seguente crea un server usando le impostazioni predefinite del servizio e i valori delle variabili dal contesto locale dell'interfaccia della riga di comando di Azure:
 
 ```bash
+export MY_MYSQL_ADMIN_USERNAME="dbadmin$RANDOM_ID"
+export MY_WP_ADMIN_PW="$(openssl rand -base64 32)"
 echo "Your MySQL user $MY_MYSQL_ADMIN_USERNAME password is: $MY_WP_ADMIN_PW" 
 ```
 
 ```bash
+export MY_DNS_LABEL="mydnslabel$RANDOM_ID"
+export MY_MYSQL_DB_NAME="mydb$RANDOM_ID"
+export MY_MYSQL_ADMIN_PW="$(openssl rand -base64 32)"
+export MY_MYSQL_SN_NAME="myMySQLSN$RANDOM_ID"
 az mysql flexible-server create \
     --admin-password $MY_MYSQL_ADMIN_PW \
     --admin-user $MY_MYSQL_ADMIN_USERNAME \
@@ -204,7 +191,7 @@ runtime="10 minute"; endtime=$(date -ud "$runtime" +%s); while [[ $(date -u +%s)
 
 ## Configurare i parametri del server in Database di Azure per MySQL - Server flessibile
 
-È possibile gestire Database di Azure per MySQL - Configurazione del server flessibile usando i parametri del server. I parametri del server vengono configurati con il valore predefinito e consigliato quando si crea il server.
+È possibile gestire Database di Azure per MySQL - Configurazione del server flessibile usando i parametri del server. I parametri del server vengono configurati con il valore predefinito e consigliato in fase di creazione del server.
 
 Per visualizzare informazioni dettagliate su un determinato parametro per un server, eseguire il [comando az mysql flexible-server parameter show](/cli/azure/mysql/flexible-server/parameter) .
 
@@ -248,6 +235,7 @@ Questa azione richiede alcuni minuti.
 
 ```bash
 export MY_SN_ID=$(az network vnet subnet list --resource-group $MY_RESOURCE_GROUP_NAME --vnet-name $MY_VNET_NAME --query "[0].id" --output tsv)
+export MY_AKS_CLUSTER_NAME="myAKSCluster$RANDOM_ID"
 
 az aks create \
     --resource-group $MY_RESOURCE_GROUP_NAME \
@@ -279,7 +267,7 @@ Per gestire un cluster Kubernetes, usare [kubectl](https://kubernetes.io/docs/re
     if ! [ -x "$(command -v kubectl)" ]; then az aks install-cli; fi
 ```
 
-Configurare `kubectl` quindi per connettersi al cluster Kubernetes usando il [comando az aks get-credentials](/cli/azure/aks#az-aks-get-credentials) . Questo comando scarica le credenziali e configura l'interfaccia della riga di comando di Kubernetes per usarli. Il comando usa `~/.kube/config`, il percorso predefinito per il [file](https://kubernetes.io/docs/concepts/configuration/organize-cluster-access-kubeconfig/) di configurazione kubernetes. È possibile specificare un percorso diverso per il file di configurazione di Kubernetes usando l'argomento **--file** .
+Configurare `kubectl` quindi per connettersi al cluster Kubernetes usando il [comando az aks get-credentials](/cli/azure/aks#az-aks-get-credentials) . Questo comando scarica le credenziali e configura l'interfaccia della riga di comando di Kubernetes per usarli. Il comando usa `~/.kube/config`, il percorso predefinito per il [file](https://kubernetes.io/docs/concepts/configuration/organize-cluster-access-kubeconfig/) di configurazione kubernetes. È possibile specificare un percorso diverso per il file di configurazione di Kubernetes usando l'argomento **--file**.
 
 > [!WARNING]
 > Questo comando sovrascriverà le credenziali esistenti con la stessa voce.
@@ -300,6 +288,7 @@ kubectl get nodes
 Quando si aggiorna il controller in ingresso, è necessario passare un parametro alla versione Helm per assicurarsi che il servizio del controller in ingresso sia informato del servizio di bilanciamento del carico che verrà allocato. Per il corretto funzionamento dei certificati HTTPS, usare un'etichetta DNS per configurare un nome di dominio completo (FQDN) per l'indirizzo IP del controller in ingresso. Il nome di dominio completo deve seguire questo formato: $MY_DNS_LABEL. AZURE_REGION_NAME.cloudapp.azure.com.
 
 ```bash
+export MY_PUBLIC_IP_NAME="myPublicIP$RANDOM_ID"
 export MY_STATIC_IP=$(az network public-ip create --resource-group MC_${MY_RESOURCE_GROUP_NAME}_${MY_AKS_CLUSTER_NAME}_${REGION} --location ${REGION} --name ${MY_PUBLIC_IP_NAME} --dns-name ${MY_DNS_LABEL} --sku Standard --allocation-method static --version IPv4 --zone 1 2 3 --query publicIp.ipAddress -o tsv)
 ```
 
@@ -374,6 +363,7 @@ Cert-manager fornisce grafici Helm come metodo di installazione di prima classe 
 4. Applicare il file YAML dell'autorità di certificazione. I clusterIssuers sono risorse Kubernetes che rappresentano le autorità di certificazione (CA) che possono generare certificati firmati rispettando le richieste di firma dei certificati. Tutti i certificati cert-manager richiedono un'autorità di certificazione di riferimento in una condizione pronta per tentare di rispettare la richiesta. È possibile trovare l'autorità emittente in `cluster-issuer-prod.yml file`.
 
     ```bash
+    export SSL_EMAIL_ADDRESS="$(az account show --query user.name --output tsv)"
     cluster_issuer_variables=$(<cluster-issuer-prod.yaml)
     echo "${cluster_issuer_variables//\$SSL_EMAIL_ADDRESS/$SSL_EMAIL_ADDRESS}" | kubectl apply -f -
     ```
@@ -406,6 +396,9 @@ Per questa esercitazione viene usato un grafico Helm esistente per WordPress com
 3. Installare il carico di lavoro Wordpress tramite Helm.
 
     ```bash
+    export MY_MYSQL_HOSTNAME="$MY_MYSQL_DB_NAME.mysql.database.azure.com"
+    export MY_WP_ADMIN_USER="wpcliadmin"
+    export FQDN="${MY_DNS_LABEL}.${REGION}.cloudapp.azure.com"
     helm upgrade --install --cleanup-on-fail \
         --wait --timeout 10m0s \
         --namespace wordpress \
