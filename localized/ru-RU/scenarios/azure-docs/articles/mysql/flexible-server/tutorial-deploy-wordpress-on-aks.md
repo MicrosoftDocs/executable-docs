@@ -31,38 +31,14 @@ ms.custom: 'vc, devx-track-azurecli, innovation-engine, linux-related-content'
 > [!NOTE]
 > Если вы выполняете команды в этом руководстве локально вместо Azure Cloud Shell, выполните команды от имени администратора.
 
-## Определение переменных среды
-
-Первым шагом в этом руководстве является определение переменных среды.
-
-```bash
-export SSL_EMAIL_ADDRESS="$(az account show --query user.name --output tsv)"
-export NETWORK_PREFIX="$(($RANDOM % 253 + 1))"
-export RANDOM_ID="$(openssl rand -hex 3)"
-export MY_RESOURCE_GROUP_NAME="myWordPressAKSResourceGroup$RANDOM_ID"
-export REGION="westeurope"
-export MY_AKS_CLUSTER_NAME="myAKSCluster$RANDOM_ID"
-export MY_PUBLIC_IP_NAME="myPublicIP$RANDOM_ID"
-export MY_DNS_LABEL="mydnslabel$RANDOM_ID"
-export MY_VNET_NAME="myVNet$RANDOM_ID"
-export MY_VNET_PREFIX="10.$NETWORK_PREFIX.0.0/16"
-export MY_SN_NAME="mySN$RANDOM_ID"
-export MY_SN_PREFIX="10.$NETWORK_PREFIX.0.0/22"
-export MY_MYSQL_DB_NAME="mydb$RANDOM_ID"
-export MY_MYSQL_ADMIN_USERNAME="dbadmin$RANDOM_ID"
-export MY_MYSQL_ADMIN_PW="$(openssl rand -base64 32)"
-export MY_MYSQL_SN_NAME="myMySQLSN$RANDOM_ID"
-export MY_MYSQL_HOSTNAME="$MY_MYSQL_DB_NAME.mysql.database.azure.com"
-export MY_WP_ADMIN_PW="$(openssl rand -base64 32)"
-export MY_WP_ADMIN_USER="wpcliadmin"
-export FQDN="${MY_DNS_LABEL}.${REGION}.cloudapp.azure.com"
-```
-
 ## Создание или изменение группы ресурсов
 
 Группа ресурсов Azure — это логическая группа, в которой развертываются и управляются ресурсы Azure. Все ресурсы должны быть помещены в группу ресурсов. Следующая команда создает группу ресурсов с ранее определенными `$MY_RESOURCE_GROUP_NAME` и `$REGION` параметрами.
 
 ```bash
+export RANDOM_ID="$(openssl rand -hex 3)"
+export MY_RESOURCE_GROUP_NAME="myWordPressAKSResourceGroup$RANDOM_ID"
+export REGION="westeurope"
 az group create \
     --name $MY_RESOURCE_GROUP_NAME \
     --location $REGION
@@ -92,6 +68,11 @@ az group create \
 Виртуальная сеть — это базовый стандартный блок для частных сетей в Azure. Azure виртуальная сеть позволяет ресурсам Azure, таким как виртуальные машины, безопасно взаимодействовать друг с другом и Интернетом.
 
 ```bash
+export NETWORK_PREFIX="$(($RANDOM % 253 + 1))"
+export MY_VNET_PREFIX="10.$NETWORK_PREFIX.0.0/16"
+export MY_SN_PREFIX="10.$NETWORK_PREFIX.0.0/22"
+export MY_VNET_NAME="myVNet$RANDOM_ID"
+export MY_SN_NAME="mySN$RANDOM_ID"
 az network vnet create \
     --resource-group $MY_RESOURCE_GROUP_NAME \
     --location $REGION \
@@ -141,10 +122,16 @@ az network vnet create \
 База данных Azure для MySQL гибкий сервер — это управляемая служба, которую можно использовать для запуска, управления и масштабирования высокодоступных серверов MySQL в облаке. Создайте База данных Azure для MySQL гибкий экземпляр сервера с [помощью команды az mysql flexible-server create](/cli/azure/mysql/flexible-server). Сервер может управлять несколькими базами данных. Следующая команда создает сервер с помощью значений по умолчанию службы и переменных из локального контекста Azure CLI:
 
 ```bash
+export MY_MYSQL_ADMIN_USERNAME="dbadmin$RANDOM_ID"
+export MY_WP_ADMIN_PW="$(openssl rand -base64 32)"
 echo "Your MySQL user $MY_MYSQL_ADMIN_USERNAME password is: $MY_WP_ADMIN_PW" 
 ```
 
 ```bash
+export MY_DNS_LABEL="mydnslabel$RANDOM_ID"
+export MY_MYSQL_DB_NAME="mydb$RANDOM_ID"
+export MY_MYSQL_ADMIN_PW="$(openssl rand -base64 32)"
+export MY_MYSQL_SN_NAME="myMySQLSN$RANDOM_ID"
 az mysql flexible-server create \
     --admin-password $MY_MYSQL_ADMIN_PW \
     --admin-user $MY_MYSQL_ADMIN_USERNAME \
@@ -242,12 +229,13 @@ az mysql flexible-server parameter set \
 
 ## Создание кластера AKS
 
-Чтобы создать кластер AKS с помощью контейнера Аналитика, используйте [команду az aks create](/cli/azure/aks#az-aks-create) с параметром **мониторинга --enable-addons**. В следующем примере создается кластер с поддержкой автомасштабирования с поддержкой зоны доступности с именем **myAKSCluster**:
+Чтобы создать кластер AKS с помощью Container Insights, используйте [команду az aks create](/cli/azure/aks#az-aks-create) с параметром **мониторинга --enable-addons** . В следующем примере создается кластер с поддержкой автомасштабирования с поддержкой зоны доступности с именем **myAKSCluster**:
 
 Это действие занимает несколько минут.
 
 ```bash
 export MY_SN_ID=$(az network vnet subnet list --resource-group $MY_RESOURCE_GROUP_NAME --vnet-name $MY_VNET_NAME --query "[0].id" --output tsv)
+export MY_AKS_CLUSTER_NAME="myAKSCluster$RANDOM_ID"
 
 az aks create \
     --resource-group $MY_RESOURCE_GROUP_NAME \
@@ -300,6 +288,7 @@ kubectl get nodes
 При обновлении контроллера входящего трафика необходимо передать параметр в выпуск Helm, чтобы служба контроллера входящего трафика была осведомлена о подсистеме балансировки нагрузки, которая будет выделена для него. Чтобы сертификаты HTTPS работали правильно, используйте метку DNS для настройки полного доменного имени (FQDN) для IP-адреса контроллера входящего трафика. Полное доменное имя должно соответствовать этой форме: $MY_DNS_LABEL. AZURE_REGION_NAME.cloudapp.azure.com.
 
 ```bash
+export MY_PUBLIC_IP_NAME="myPublicIP$RANDOM_ID"
 export MY_STATIC_IP=$(az network public-ip create --resource-group MC_${MY_RESOURCE_GROUP_NAME}_${MY_AKS_CLUSTER_NAME}_${REGION} --location ${REGION} --name ${MY_PUBLIC_IP_NAME} --dns-name ${MY_DNS_LABEL} --sku Standard --allocation-method static --version IPv4 --zone 1 2 3 --query publicIp.ipAddress -o tsv)
 ```
 
@@ -349,7 +338,7 @@ Helm — это средство развертывания Kubernetes для а
 
 Cert-manager предоставляет диаграммы Helm в качестве первого класса метода установки в Kubernetes.
 
-1. Добавьте репозиторий Helm Jetstack. Этот репозиторий является единственным поддерживаемым источником диаграмм cert-manager. Существуют другие зеркало и копии через Интернет, но они являются неофициальными и могут представлять угрозу безопасности.
+1. Добавьте репозиторий Helm Jetstack. Этот репозиторий является единственным поддерживаемым источником диаграмм cert-manager. Существуют другие зеркала и копии через Интернет, но они являются неофициальными и могут представлять угрозу безопасности.
 
     ```bash
     helm repo add jetstack https://charts.jetstack.io
@@ -374,6 +363,7 @@ Cert-manager предоставляет диаграммы Helm в качест�
 4. Примените файл YAML издателя сертификатов. ClusterIssuers — это ресурсы Kubernetes, представляющие центры сертификации (ЦС), которые могут создавать подписанные сертификаты, выполняя запросы на подписывание сертификатов. Для всех сертификатов диспетчера сертификатов требуется указанный издатель, который находится в состоянии готовности, чтобы попытаться выполнить запрос. Вы можете найти издателя, в который `cluster-issuer-prod.yml file`мы находимся.
 
     ```bash
+    export SSL_EMAIL_ADDRESS="$(az account show --query user.name --output tsv)"
     cluster_issuer_variables=$(<cluster-issuer-prod.yaml)
     echo "${cluster_issuer_variables//\$SSL_EMAIL_ADDRESS/$SSL_EMAIL_ADDRESS}" | kubectl apply -f -
     ```
@@ -406,6 +396,9 @@ kubectl apply -f wp-azurefiles-sc.yaml
 3. Установите рабочую нагрузку Wordpress через Helm.
 
     ```bash
+    export MY_MYSQL_HOSTNAME="$MY_MYSQL_DB_NAME.mysql.database.azure.com"
+    export MY_WP_ADMIN_USER="wpcliadmin"
+    export FQDN="${MY_DNS_LABEL}.${REGION}.cloudapp.azure.com"
     helm upgrade --install --cleanup-on-fail \
         --wait --timeout 10m0s \
         --namespace wordpress \
@@ -466,7 +459,7 @@ To access your WordPress site from outside the cluster follow the steps below:
 Выполните следующую команду, чтобы получить конечную точку HTTPS для приложения:
 
 > [!NOTE]
-> Часто требуется 2–3 минуты для распространения SSL-сертификата и около 5 минут, чтобы все реплика POD WordPress были готовы и сайт полностью доступен через https.
+> Часто требуется 2–3 минуты для распространения SSL-сертификата и около 5 минут, чтобы все реплики POD WordPress были готовы, и сайт будет полностью доступен через https.
 
 ```bash
 runtime="5 minute"
