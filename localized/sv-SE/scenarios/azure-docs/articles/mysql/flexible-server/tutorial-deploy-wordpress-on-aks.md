@@ -31,38 +31,14 @@ Innan du kommer igång kontrollerar du att du är inloggad i Azure CLI och har v
 > [!NOTE]
 > Om du kör kommandona i den här självstudien lokalt i stället för Azure Cloud Shell kör du kommandona som administratör.
 
-## Definiera miljövariabler
-
-Det första steget i den här självstudien är att definiera miljövariabler.
-
-```bash
-export SSL_EMAIL_ADDRESS="$(az account show --query user.name --output tsv)"
-export NETWORK_PREFIX="$(($RANDOM % 253 + 1))"
-export RANDOM_ID="$(openssl rand -hex 3)"
-export MY_RESOURCE_GROUP_NAME="myWordPressAKSResourceGroup$RANDOM_ID"
-export REGION="westeurope"
-export MY_AKS_CLUSTER_NAME="myAKSCluster$RANDOM_ID"
-export MY_PUBLIC_IP_NAME="myPublicIP$RANDOM_ID"
-export MY_DNS_LABEL="mydnslabel$RANDOM_ID"
-export MY_VNET_NAME="myVNet$RANDOM_ID"
-export MY_VNET_PREFIX="10.$NETWORK_PREFIX.0.0/16"
-export MY_SN_NAME="mySN$RANDOM_ID"
-export MY_SN_PREFIX="10.$NETWORK_PREFIX.0.0/22"
-export MY_MYSQL_DB_NAME="mydb$RANDOM_ID"
-export MY_MYSQL_ADMIN_USERNAME="dbadmin$RANDOM_ID"
-export MY_MYSQL_ADMIN_PW="$(openssl rand -base64 32)"
-export MY_MYSQL_SN_NAME="myMySQLSN$RANDOM_ID"
-export MY_MYSQL_HOSTNAME="$MY_MYSQL_DB_NAME.mysql.database.azure.com"
-export MY_WP_ADMIN_PW="$(openssl rand -base64 32)"
-export MY_WP_ADMIN_USER="wpcliadmin"
-export FQDN="${MY_DNS_LABEL}.${REGION}.cloudapp.azure.com"
-```
-
 ## Skapa en resursgrupp
 
 En Azure-resursgrupp är en logisk grupp där Azure-resurser distribueras och hanteras. Alla resurser måste placeras i en resursgrupp. Följande kommando skapar en resursgrupp med de tidigare definierade `$MY_RESOURCE_GROUP_NAME` parametrarna och `$REGION` parametrarna.
 
 ```bash
+export RANDOM_ID="$(openssl rand -hex 3)"
+export MY_RESOURCE_GROUP_NAME="myWordPressAKSResourceGroup$RANDOM_ID"
+export REGION="westeurope"
 az group create \
     --name $MY_RESOURCE_GROUP_NAME \
     --location $REGION
@@ -92,6 +68,11 @@ Resultat:
 Ett virtuellt nätverk är den grundläggande byggstenen för privata nätverk i Azure. Med Azure Virtual Network kan Azure-resurser som virtuella datorer kommunicera säkert med varandra och Internet.
 
 ```bash
+export NETWORK_PREFIX="$(($RANDOM % 253 + 1))"
+export MY_VNET_PREFIX="10.$NETWORK_PREFIX.0.0/16"
+export MY_SN_PREFIX="10.$NETWORK_PREFIX.0.0/22"
+export MY_VNET_NAME="myVNet$RANDOM_ID"
+export MY_SN_NAME="mySN$RANDOM_ID"
 az network vnet create \
     --resource-group $MY_RESOURCE_GROUP_NAME \
     --location $REGION \
@@ -141,10 +122,16 @@ Resultat:
 Azure Database for MySQL – flexibel server är en hanterad tjänst som du kan använda för att köra, hantera och skala MySQL-servrar med hög tillgänglighet i molnet. Skapa en flexibel Azure Database for MySQL-serverinstans med [kommandot az mysql flexible-server create](/cli/azure/mysql/flexible-server) . En server kan innehålla flera databaser. Följande kommando skapar en server med tjänstens standardvärden och variabelvärden från azure CLI:s lokala kontext:
 
 ```bash
+export MY_MYSQL_ADMIN_USERNAME="dbadmin$RANDOM_ID"
+export MY_WP_ADMIN_PW="$(openssl rand -base64 32)"
 echo "Your MySQL user $MY_MYSQL_ADMIN_USERNAME password is: $MY_WP_ADMIN_PW" 
 ```
 
 ```bash
+export MY_DNS_LABEL="mydnslabel$RANDOM_ID"
+export MY_MYSQL_DB_NAME="mydb$RANDOM_ID"
+export MY_MYSQL_ADMIN_PW="$(openssl rand -base64 32)"
+export MY_MYSQL_SN_NAME="myMySQLSN$RANDOM_ID"
 az mysql flexible-server create \
     --admin-password $MY_MYSQL_ADMIN_PW \
     --admin-user $MY_MYSQL_ADMIN_USERNAME \
@@ -248,6 +235,7 @@ Den här åtgärden tar några minuter.
 
 ```bash
 export MY_SN_ID=$(az network vnet subnet list --resource-group $MY_RESOURCE_GROUP_NAME --vnet-name $MY_VNET_NAME --query "[0].id" --output tsv)
+export MY_AKS_CLUSTER_NAME="myAKSCluster$RANDOM_ID"
 
 az aks create \
     --resource-group $MY_RESOURCE_GROUP_NAME \
@@ -300,6 +288,7 @@ Du kan konfigurera ingresskontrollanten med en statisk offentlig IP-adress. Den 
 När du uppgraderar ingresskontrollanten måste du skicka en parameter till Helm-versionen för att säkerställa att ingresskontrollanttjänsten blir medveten om lastbalanseraren som ska allokeras till den. För att HTTPS-certifikaten ska fungera korrekt använder du en DNS-etikett för att konfigurera ett fullständigt kvalificerat domännamn (FQDN) för ingresskontrollantens IP-adress. Ditt FQDN bör följa det här formuläret: $MY_DNS_LABEL. AZURE_REGION_NAME.cloudapp.azure.com.
 
 ```bash
+export MY_PUBLIC_IP_NAME="myPublicIP$RANDOM_ID"
 export MY_STATIC_IP=$(az network public-ip create --resource-group MC_${MY_RESOURCE_GROUP_NAME}_${MY_AKS_CLUSTER_NAME}_${REGION} --location ${REGION} --name ${MY_PUBLIC_IP_NAME} --dns-name ${MY_DNS_LABEL} --sku Standard --allocation-method static --version IPv4 --zone 1 2 3 --query publicIp.ipAddress -o tsv)
 ```
 
@@ -323,7 +312,7 @@ Nu i självstudien har du en AKS-webbapp med NGINX som ingresskontrollant och en
 
 ### Konfigurera Cert Manager
 
-För att lägga till HTTPS använder vi Cert Manager. Cert Manager är ett öppen källkod verktyg för att hämta och hantera SSL-certifikat för Kubernetes-distributioner. Cert Manager hämtar certifikat från populära offentliga utfärdare och privata utfärdare, säkerställer att certifikaten är giltiga och uppdaterade och försöker förnya certifikat vid en konfigurerad tidpunkt innan de upphör att gälla.
+För att lägga till HTTPS använder vi Cert Manager. Cert Manager är ett verktyg med öppen källkod för att hämta och hantera SSL-certifikat för Kubernetes-distributioner. Cert Manager hämtar certifikat från populära offentliga utfärdare och privata utfärdare, säkerställer att certifikaten är giltiga och uppdaterade och försöker förnya certifikat vid en konfigurerad tidpunkt innan de upphör att gälla.
 
 1. För att kunna installera cert-manager måste vi först skapa ett namnområde för att köra det i. I den här självstudien installeras cert-manager i certifikathanterarens namnområde. Du kan köra cert-manager i ett annat namnområde, men du måste göra ändringar i distributionsmanifesten.
 
@@ -374,6 +363,7 @@ Cert-manager tillhandahåller Helm-diagram som en förstklassig installationsmet
 4. Tillämpa YAML-filen för certifikatutfärdaren. ClusterIssuers är Kubernetes-resurser som representerar certifikatutfärdare som kan generera signerade certifikat genom att uppfylla begäranden om certifikatsignering. Alla cert-manager-certifikat kräver en refererad utfärdare som är i ett redo villkor för att försöka uppfylla begäran. Du hittar utfärdaren som vi är i `cluster-issuer-prod.yml file`.
 
     ```bash
+    export SSL_EMAIL_ADDRESS="$(az account show --query user.name --output tsv)"
     cluster_issuer_variables=$(<cluster-issuer-prod.yaml)
     echo "${cluster_issuer_variables//\$SSL_EMAIL_ADDRESS/$SSL_EMAIL_ADDRESS}" | kubectl apply -f -
     ```
@@ -406,6 +396,9 @@ I den här självstudien använder vi ett befintligt Helm-diagram för WordPress
 3. Installera Wordpress-arbetsbelastningen via Helm.
 
     ```bash
+    export MY_MYSQL_HOSTNAME="$MY_MYSQL_DB_NAME.mysql.database.azure.com"
+    export MY_WP_ADMIN_USER="wpcliadmin"
+    export FQDN="${MY_DNS_LABEL}.${REGION}.cloudapp.azure.com"
     helm upgrade --install --cleanup-on-fail \
         --wait --timeout 10m0s \
         --namespace wordpress \
