@@ -31,38 +31,14 @@ Bevor Sie beginnen, stellen Sie sicher, dass Sie bei der Azure CLI angemeldet si
 > [!NOTE]
 > Wenn Sie die Befehle in diesem Tutorial lokal anstatt in Azure Cloud Shell ausführen, stellen Sie sicher, dass Sie sie als Administrator ausführen.
 
-## Umgebungsvariablen definieren
-
-Der erste Schritt in diesem Tutorial besteht darin, Umgebungsvariablen zu definieren.
-
-```bash
-export SSL_EMAIL_ADDRESS="$(az account show --query user.name --output tsv)"
-export NETWORK_PREFIX="$(($RANDOM % 253 + 1))"
-export RANDOM_ID="$(openssl rand -hex 3)"
-export MY_RESOURCE_GROUP_NAME="myWordPressAKSResourceGroup$RANDOM_ID"
-export REGION="westeurope"
-export MY_AKS_CLUSTER_NAME="myAKSCluster$RANDOM_ID"
-export MY_PUBLIC_IP_NAME="myPublicIP$RANDOM_ID"
-export MY_DNS_LABEL="mydnslabel$RANDOM_ID"
-export MY_VNET_NAME="myVNet$RANDOM_ID"
-export MY_VNET_PREFIX="10.$NETWORK_PREFIX.0.0/16"
-export MY_SN_NAME="mySN$RANDOM_ID"
-export MY_SN_PREFIX="10.$NETWORK_PREFIX.0.0/22"
-export MY_MYSQL_DB_NAME="mydb$RANDOM_ID"
-export MY_MYSQL_ADMIN_USERNAME="dbadmin$RANDOM_ID"
-export MY_MYSQL_ADMIN_PW="$(openssl rand -base64 32)"
-export MY_MYSQL_SN_NAME="myMySQLSN$RANDOM_ID"
-export MY_MYSQL_HOSTNAME="$MY_MYSQL_DB_NAME.mysql.database.azure.com"
-export MY_WP_ADMIN_PW="$(openssl rand -base64 32)"
-export MY_WP_ADMIN_USER="wpcliadmin"
-export FQDN="${MY_DNS_LABEL}.${REGION}.cloudapp.azure.com"
-```
-
 ## Erstellen einer Ressourcengruppe
 
 Eine Azure-Ressourcengruppe ist eine logische Gruppe, in der Azure-Ressourcen bereitgestellt und verwaltet werden. Alle Ressourcen müssen in einer Ressourcengruppe platziert werden. Mit dem folgenden Befehl wird eine Ressourcengruppe mit den zuvor definierten `$MY_RESOURCE_GROUP_NAME`- und `$REGION`-Parametern erstellt.
 
 ```bash
+export RANDOM_ID="$(openssl rand -hex 3)"
+export MY_RESOURCE_GROUP_NAME="myWordPressAKSResourceGroup$RANDOM_ID"
+export REGION="westeurope"
 az group create \
     --name $MY_RESOURCE_GROUP_NAME \
     --location $REGION
@@ -92,6 +68,11 @@ Ergebnisse:
 Ein virtuelles Netzwerk ist der grundlegende Baustein für private Netzwerke in Azure. Über Azure Virtual Network können Azure-Ressourcen wie etwa VMs sicher miteinander und mit dem Internet kommunizieren.
 
 ```bash
+export NETWORK_PREFIX="$(($RANDOM % 253 + 1))"
+export MY_VNET_PREFIX="10.$NETWORK_PREFIX.0.0/16"
+export MY_SN_PREFIX="10.$NETWORK_PREFIX.0.0/22"
+export MY_VNET_NAME="myVNet$RANDOM_ID"
+export MY_SN_NAME="mySN$RANDOM_ID"
 az network vnet create \
     --resource-group $MY_RESOURCE_GROUP_NAME \
     --location $REGION \
@@ -141,10 +122,16 @@ Ergebnisse:
 Azure Database for MySQL Flexible Server ist ein verwalteter Dienst, mit dem Sie hochverfügbare MySQL-Serverinstanzen in der Cloud ausführen, verwalten und skalieren können. Erstellen Sie mithilfe des Befehls [az mysql flexible-server create](/cli/azure/mysql/flexible-server) eine Instanz von Azure Database for MySQL – Flexible Server. Ein Server kann mehrere Datenbanken enthalten. Mit dem folgenden Befehl wird ein Server mit Dienststandardwerten und Variablenwerten aus dem lokalen Kontext Ihrer Azure CLI erstellt:
 
 ```bash
+export MY_MYSQL_ADMIN_USERNAME="dbadmin$RANDOM_ID"
+export MY_WP_ADMIN_PW="$(openssl rand -base64 32)"
 echo "Your MySQL user $MY_MYSQL_ADMIN_USERNAME password is: $MY_WP_ADMIN_PW" 
 ```
 
 ```bash
+export MY_DNS_LABEL="mydnslabel$RANDOM_ID"
+export MY_MYSQL_DB_NAME="mydb$RANDOM_ID"
+export MY_MYSQL_ADMIN_PW="$(openssl rand -base64 32)"
+export MY_MYSQL_SN_NAME="myMySQLSN$RANDOM_ID"
 az mysql flexible-server create \
     --admin-password $MY_MYSQL_ADMIN_PW \
     --admin-user $MY_MYSQL_ADMIN_USERNAME \
@@ -248,6 +235,7 @@ Dieser Vorgang dauert einige Minuten.
 
 ```bash
 export MY_SN_ID=$(az network vnet subnet list --resource-group $MY_RESOURCE_GROUP_NAME --vnet-name $MY_VNET_NAME --query "[0].id" --output tsv)
+export MY_AKS_CLUSTER_NAME="myAKSCluster$RANDOM_ID"
 
 az aks create \
     --resource-group $MY_RESOURCE_GROUP_NAME \
@@ -300,6 +288,7 @@ Sie können Ihren Eingangsdatencontroller mit einer statischen öffentlichen IP-
 Wenn Sie Ihren Eingangsdatencontroller aktualisieren, müssen Sie einen Parameter an den Helm-Release übergeben. So können Sie sicherstellen, dass der Dienst des Eingangsdatencontrollers auf den Lastenausgleich aufmerksam gemacht wird, der ihm zugeordnet wird. Damit die HTTPS-Zertifikate ordnungsgemäß funktionieren, wird eine DNS-Bezeichnung verwendet, um einen vollqualifizierten Domänennamen (FQDN) für die IP-Adresse des Eingangsdatencontrollers zu konfigurieren. Ihr FQDN sollte diesem Formular folgen: $MY_DNS_LABEL. AZURE_REGION_NAME.cloudapp.azure.com.
 
 ```bash
+export MY_PUBLIC_IP_NAME="myPublicIP$RANDOM_ID"
 export MY_STATIC_IP=$(az network public-ip create --resource-group MC_${MY_RESOURCE_GROUP_NAME}_${MY_AKS_CLUSTER_NAME}_${REGION} --location ${REGION} --name ${MY_PUBLIC_IP_NAME} --dns-name ${MY_DNS_LABEL} --sku Standard --allocation-method static --version IPv4 --zone 1 2 3 --query publicIp.ipAddress -o tsv)
 ```
 
@@ -374,6 +363,7 @@ Cert Manager stellt Helm-Diagramme als erstklassige Methode zur Installation in 
 4. Wenden Sie die YAML-Datei des Zertifikatausstellers an. ClusterIssuers sind Kubernetes-Ressourcen, die Zertifizierungsstellen darstellen, die signierte Zertifikate generieren können, indem Zertifikatsignaturanforderungen berücksichtigt werden. Alle Cert Manager-Zertifikate erfordern einen referenzierten Zertifikataussteller, der in der Lage ist, die Anforderung zu berücksichtigen. Sie finden den Aussteller in `cluster-issuer-prod.yml file`.
 
     ```bash
+    export SSL_EMAIL_ADDRESS="$(az account show --query user.name --output tsv)"
     cluster_issuer_variables=$(<cluster-issuer-prod.yaml)
     echo "${cluster_issuer_variables//\$SSL_EMAIL_ADDRESS/$SSL_EMAIL_ADDRESS}" | kubectl apply -f -
     ```
@@ -406,6 +396,9 @@ Für dieses Tutorial verwenden wir ein vorhandenes Helm-Diagramm für WordPress,
 3. Installieren Sie die Wordpress-Workload über Helm.
 
     ```bash
+    export MY_MYSQL_HOSTNAME="$MY_MYSQL_DB_NAME.mysql.database.azure.com"
+    export MY_WP_ADMIN_USER="wpcliadmin"
+    export FQDN="${MY_DNS_LABEL}.${REGION}.cloudapp.azure.com"
     helm upgrade --install --cleanup-on-fail \
         --wait --timeout 10m0s \
         --namespace wordpress \
