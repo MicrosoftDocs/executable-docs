@@ -31,11 +31,11 @@ The first step is to define the environment variables. Environment variables are
 ```bash
 export RANDOM_ID="$(openssl rand -hex 3)"
 export MY_RESOURCE_GROUP_NAME="LinuxRG-$RANDOM_ID"
-export REGION="westus3"
+export REGION="australiaeast"
 export ZONE="1"
 export MY_VM_NAME="myVM$RANDOM_ID"
 export MY_VM_USERNAME="azureadmin"
-export MY_VM_SIZE='Standard_D4s_v3'
+export MY_VM_SIZE='Standard_D2s_v3'
 export MY_VM_IMAGE='Canonical:ubuntu-24_04-lts:server:latest'
 export MY_DNS_LABEL="mydnslabel$RANDOM_ID"
 export MY_AZURE_USER=$(az account show --query user.name --output tsv)
@@ -326,6 +326,7 @@ Results:
   "sku": {
     "name": "PremiumV2_LRS",
     "tier": "Premium"
+  }
 }
 ```
 
@@ -409,7 +410,7 @@ Results:
 You can now SSH into the VM by running the following command in your ssh client of choice:
 
 ```bash
-ssh $MY_VM_USERNAME@$FQDN
+ssh -o StrictHostKeyChecking=no $MY_VM_USERNAME@$FQDN
 ```
 
 ## Next Steps
