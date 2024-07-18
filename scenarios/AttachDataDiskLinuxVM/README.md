@@ -176,8 +176,8 @@ In this scenario the LUN0 our first data disk is going to be formatted and mount
 ssh -o StrictHostKeyChecking=no $MY_VM_USERNAME@$FQDN -- "sudo parted -s -a optimal -- /dev/disk/azure/scsi1/lun0 mklabel gpt mkpart primary xfs 0% 100%"
 ssh -o StrictHostKeyChecking=no $MY_VM_USERNAME@$FQDN -- "sudo partprobe -s /dev/disk/azure/scsi1/lun0"
 ssh -o StrictHostKeyChecking=no $MY_VM_USERNAME@$FQDN -- "sudo mkfs.xfs /dev/disk/azure/scsi1/lun0-part1"
-ssh -o StrictHostKeyChecking=no $MY_VM_USERNAME@$FQDN -- "sudo mkdir -v /srv/LUN0"
-ssh -o StrictHostKeyChecking=no $MY_VM_USERNAME@$FQDN -- "sudo mount -v /dev/disk/azure/scsi1/lun0-part1 /srv/LUN0"
+ssh -o StrictHostKeyChecking=no $MY_VM_USERNAME@$FQDN -- "sudo mkdir -v /datadisk01"
+ssh -o StrictHostKeyChecking=no $MY_VM_USERNAME@$FQDN -- "sudo mount -v /dev/disk/azure/scsi1/lun0-part1 /datadisk01"
 ```
 
 Results:
@@ -198,22 +198,22 @@ Writing inode tables: done
 Creating journal (131072 blocks): done
 Writing superblocks and filesystem accounting information: done
 
-mkdir: created directory '/srv/LUN0'
-mount: /dev/sdc1 mounted on /srv/LUN0.
+mkdir: created directory '/datadisk01'
+mount: /dev/sdc1 mounted on /datadisk01.
 ```
 
 In oder to update the /etc/fstab file, you can use the following command, and mount the LUN1 using it's unique identifier (UUID) together with the discard mount option:
 
 ```bash
 ssh $MY_VM_USERNAME@$FQDN -- \
-    'echo UUID=$(sudo blkid -s UUID -o value /dev/disk/azure/scsi1/lun0-part1) /srv/LUN0 xfs defaults,discard 0 0 | sudo tee -a /etc/fstab'
+    'echo UUID=$(sudo blkid -s UUID -o value /dev/disk/azure/scsi1/lun0-part1) /datadisk01 xfs defaults,discard 0 0 | sudo tee -a /etc/fstab'
 ```
 
 Results:
 
 <!-- expected_similarity=0.3 -->
 ```text
-UUID=1095e29c-07db-47ec-8b19-1ffcaf4f5628 /srv/LUN0 xfs defaults,discard 0 0
+UUID=1095e29c-07db-47ec-8b19-1ffcaf4f5628 /datadisk01 xfs defaults,discard 0 0
 ```
 
 ## Attach a new disk to a VM
@@ -238,8 +238,8 @@ In this second possible scenario the LUN1 is going to be our data disk, the foll
 ssh -o StrictHostKeyChecking=no $MY_VM_USERNAME@$FQDN -- "sudo parted -s -a optimal -- /dev/disk/azure/scsi1/lun1 mklabel gpt mkpart primary xfs 0% 100%"
 ssh -o StrictHostKeyChecking=no $MY_VM_USERNAME@$FQDN -- "sudo partprobe -s /dev/disk/azure/scsi1/lun1"
 ssh -o StrictHostKeyChecking=no $MY_VM_USERNAME@$FQDN -- "sudo mkfs.xfs /dev/disk/azure/scsi1/lun1-part1"
-ssh -o StrictHostKeyChecking=no $MY_VM_USERNAME@$FQDN -- "sudo mkdir -v /srv/LUN1"
-ssh -o StrictHostKeyChecking=no $MY_VM_USERNAME@$FQDN -- "sudo mount -v /dev/disk/azure/scsi1/lun1-part1 /srv/LUN1"
+ssh -o StrictHostKeyChecking=no $MY_VM_USERNAME@$FQDN -- "sudo mkdir -v /datadisk02"
+ssh -o StrictHostKeyChecking=no $MY_VM_USERNAME@$FQDN -- "sudo mount -v /dev/disk/azure/scsi1/lun1-part1 /datadisk02"
 ```
 
 Results:
@@ -260,22 +260,22 @@ Writing inode tables: done
 Creating journal (65536 blocks): done
 Writing superblocks and filesystem accounting information: done
 
-mkdir: created directory '/srv/LUN1'
-mount: /dev/sdd1 mounted on /srv/LUN1.
+mkdir: created directory '/datadisk02'
+mount: /dev/sdd1 mounted on /datadisk02.
 ```
 
 In oder to update the /etc/fstab file, you can use the following command, and mount the LUN1 using it's unique identifier (UUID) together with the discard mount option:
 
 ```bash
 ssh $MY_VM_USERNAME@$FQDN -- \
-    'echo "UUID=$(sudo blkid -s UUID -o value /dev/disk/azure/scsi1/lun1-part1) /srv/LUN1 xfs defaults,discard 0 0" | sudo tee -a /etc/fstab'
+    'echo "UUID=$(sudo blkid -s UUID -o value /dev/disk/azure/scsi1/lun1-part1) /datadisk02 xfs defaults,discard 0 0" | sudo tee -a /etc/fstab'
 ```
 
 Results:
 
 <!-- expected_similarity=0.3 -->
 ```text
-UUID=0b1629d5-0cd5-41fd-9050-b2ed7e3f1028 /srv/LUN1 xfs defaults,discard 0 0
+UUID=0b1629d5-0cd5-41fd-9050-b2ed7e3f1028 /datadisk02 xfs defaults,discard 0 0
 ```
 
 ## Attach an existing data disk to a VM
@@ -349,8 +349,8 @@ In this third scenario the LUN2 is going to be our data disk, the following exam
 ssh -o StrictHostKeyChecking=no $MY_VM_USERNAME@$FQDN -- "sudo parted -s -a optimal -- /dev/disk/azure/scsi1/lun2 mklabel gpt mkpart primary xfs 0% 100%"
 ssh -o StrictHostKeyChecking=no $MY_VM_USERNAME@$FQDN -- "sudo partprobe -s /dev/disk/azure/scsi1/lun2"
 ssh -o StrictHostKeyChecking=no $MY_VM_USERNAME@$FQDN -- "sudo mkfs.xfs /dev/disk/azure/scsi1/lun2-part1"
-ssh -o StrictHostKeyChecking=no $MY_VM_USERNAME@$FQDN -- "sudo mkdir -v /srv/LUN2"
-ssh -o StrictHostKeyChecking=no $MY_VM_USERNAME@$FQDN -- "sudo mount -v /dev/disk/azure/scsi1/lun2-part1 /srv/LUN2"
+ssh -o StrictHostKeyChecking=no $MY_VM_USERNAME@$FQDN -- "sudo mkdir -v /datadisk03"
+ssh -o StrictHostKeyChecking=no $MY_VM_USERNAME@$FQDN -- "sudo mount -v /dev/disk/azure/scsi1/lun2-part1 /datadisk03"
 ```
 
 Results:
@@ -370,22 +370,22 @@ Writing inode tables: done
 Creating journal (131072 blocks): done
 Writing superblocks and filesystem accounting information: done
 
-mkdir: created directory '/srv/LUN2'
-mount: /dev/sde1 mounted on /srv/LUN2.
+mkdir: created directory '/datadisk03'
+mount: /dev/sde1 mounted on /datadisk03.
 ```
 
 In oder to update the /etc/fstab file, you can use the following command, and mount the LUN1 using it's unique identifier (UUID) together with the discard mount option:
 
 ```bash
 ssh -o StrictHostKeyChecking=no $MY_VM_USERNAME@$FQDN -- \
-    'echo "UUID=$(sudo blkid -s UUID -o value /dev/disk/azure/scsi1/lun2-part1) /srv/LUN2 xfs defaults,discard 0 0" | sudo tee -a /etc/fstab'
+    'echo "UUID=$(sudo blkid -s UUID -o value /dev/disk/azure/scsi1/lun2-part1) /datadisk03 xfs defaults,discard 0 0" | sudo tee -a /etc/fstab'
 ```
 
 Results:
 
 <!-- expected_similarity=0.3 -->
 ```text
-UUID=4b54ed3b-2f5e-4fe7-b0e5-c40da6e3b8a8 /srv/LUN2 xfs defaults,discard 0 0
+UUID=4b54ed3b-2f5e-4fe7-b0e5-c40da6e3b8a8 /datadisk03 xfs defaults,discard 0 0
 ```
 
 ## Check all mounted LUNs
@@ -393,16 +393,16 @@ UUID=4b54ed3b-2f5e-4fe7-b0e5-c40da6e3b8a8 /srv/LUN2 xfs defaults,discard 0 0
 To verify the mount points, you can use the following command:
 
 ```bash
-ssh -o StrictHostKeyChecking=no $MY_VM_USERNAME@$FQDN -- mount | egrep '(LUN0|LUN1|LUN2)'
+ssh -o StrictHostKeyChecking=no $MY_VM_USERNAME@$FQDN -- mount | egrep '(datadisk0)'
 ```
 
 Results:
 
 <!-- expected_similarity=0.3 -->
 ```text
-/dev/sdc1 on /srv/LUN0 type xfs (rw,relatime)
-/dev/sdd1 on /srv/LUN1 type xfs (rw,relatime)
-/dev/sde1 on /srv/LUN2 type xfs (rw,relatime)
+/dev/sdc1 on /datadisk01 type xfs (rw,relatime)
+/dev/sdd1 on /datadisk02 xfs (rw,relatime)
+/dev/sde1 on /datadisk03 type xfs (rw,relatime)
 ```
 
 ## SSH into the VM
