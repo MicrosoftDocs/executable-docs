@@ -31,7 +31,7 @@ The first step is to define the environment variables. Environment variables are
 ```bash
 export RANDOM_ID="$(openssl rand -hex 3)"
 export MY_RESOURCE_GROUP_NAME="LinuxRG-$RANDOM_ID"
-export REGION="westus3"
+export REGION="australiaeast"
 export ZONE="1"
 export MY_VM_NAME="myVM$RANDOM_ID"
 export MY_VM_USERNAME="azureadmin"
