@@ -173,11 +173,11 @@ Results:
 In this scenario the LUN0 our first data disk is going to be formatted and mounted using the command below:
 
 ```bash
-ssh $MY_VM_USERNAME@$FQDN -- "sudo parted -s -a optimal -- /dev/disk/azure/scsi1/lun0 mklabel gpt mkpart primary ext4 0% 100%"
-ssh $MY_VM_USERNAME@$FQDN -- "sudo partprobe -s /dev/disk/azure/scsi1/lun0"
-ssh $MY_VM_USERNAME@$FQDN -- "sudo mkfs.ext4 /dev/disk/azure/scsi1/lun0-part1"
-ssh $MY_VM_USERNAME@$FQDN -- "sudo mkdir -v /srv/LUN0"
-ssh $MY_VM_USERNAME@$FQDN -- "sudo mount -v /dev/disk/azure/scsi1/lun0-part1 /srv/LUN0"
+ssh -o StrictHostKeyChecking=no $MY_VM_USERNAME@$FQDN -- "sudo parted -s -a optimal -- /dev/disk/azure/scsi1/lun0 mklabel gpt mkpart primary ext4 0% 100%"
+ssh -o StrictHostKeyChecking=no $MY_VM_USERNAME@$FQDN -- "sudo partprobe -s /dev/disk/azure/scsi1/lun0"
+ssh -o StrictHostKeyChecking=no $MY_VM_USERNAME@$FQDN -- "sudo mkfs.ext4 /dev/disk/azure/scsi1/lun0-part1"
+ssh -o StrictHostKeyChecking=no $MY_VM_USERNAME@$FQDN -- "sudo mkdir -v /srv/LUN0"
+ssh -o StrictHostKeyChecking=no $MY_VM_USERNAME@$FQDN -- "sudo mount -v /dev/disk/azure/scsi1/lun0-part1 /srv/LUN0"
 ```
 
 Results:
@@ -235,11 +235,11 @@ az vm disk attach \
 In this second possible scenario the LUN1 is going to be our data disk, the following example shows how to format and mount the data disk.
 
 ```bash
-ssh $MY_VM_USERNAME@$FQDN -- "sudo parted -s -a optimal -- /dev/disk/azure/scsi1/lun1 mklabel gpt mkpart primary ext4 0% 100%"
-ssh $MY_VM_USERNAME@$FQDN -- "sudo partprobe -s /dev/disk/azure/scsi1/lun1"
-ssh $MY_VM_USERNAME@$FQDN -- "sudo mkfs.ext4 /dev/disk/azure/scsi1/lun1-part1"
-ssh $MY_VM_USERNAME@$FQDN -- "sudo mkdir -v /srv/LUN1"
-ssh $MY_VM_USERNAME@$FQDN -- "sudo mount -v /dev/disk/azure/scsi1/lun1-part1 /srv/LUN1"
+ssh -o StrictHostKeyChecking=no $MY_VM_USERNAME@$FQDN -- "sudo parted -s -a optimal -- /dev/disk/azure/scsi1/lun1 mklabel gpt mkpart primary ext4 0% 100%"
+ssh -o StrictHostKeyChecking=no $MY_VM_USERNAME@$FQDN -- "sudo partprobe -s /dev/disk/azure/scsi1/lun1"
+ssh -o StrictHostKeyChecking=no $MY_VM_USERNAME@$FQDN -- "sudo mkfs.ext4 /dev/disk/azure/scsi1/lun1-part1"
+ssh -o StrictHostKeyChecking=no $MY_VM_USERNAME@$FQDN -- "sudo mkdir -v /srv/LUN1"
+ssh -o StrictHostKeyChecking=no $MY_VM_USERNAME@$FQDN -- "sudo mount -v /dev/disk/azure/scsi1/lun1-part1 /srv/LUN1"
 ```
 
 Results:
@@ -345,11 +345,11 @@ az vm disk attach \
 In this third scenario the LUN2 is going to be our data disk, the following example shows how to format and mount the data disk.
 
 ```bash
-ssh $MY_VM_USERNAME@$FQDN -- "sudo parted -s -a optimal -- /dev/disk/azure/scsi1/lun2 mklabel gpt mkpart primary ext4 0% 100%"
-ssh $MY_VM_USERNAME@$FQDN -- "sudo partprobe -s /dev/disk/azure/scsi1/lun2"
-ssh $MY_VM_USERNAME@$FQDN -- "sudo mkfs.ext4 /dev/disk/azure/scsi1/lun2-part1"
-ssh $MY_VM_USERNAME@$FQDN -- "sudo mkdir -v /srv/LUN2"
-ssh $MY_VM_USERNAME@$FQDN -- "sudo mount -v /dev/disk/azure/scsi1/lun2-part1 /srv/LUN2"
+ssh -o StrictHostKeyChecking=no $MY_VM_USERNAME@$FQDN -- "sudo parted -s -a optimal -- /dev/disk/azure/scsi1/lun2 mklabel gpt mkpart primary ext4 0% 100%"
+ssh -o StrictHostKeyChecking=no $MY_VM_USERNAME@$FQDN -- "sudo partprobe -s /dev/disk/azure/scsi1/lun2"
+ssh -o StrictHostKeyChecking=no $MY_VM_USERNAME@$FQDN -- "sudo mkfs.ext4 /dev/disk/azure/scsi1/lun2-part1"
+ssh -o StrictHostKeyChecking=no $MY_VM_USERNAME@$FQDN -- "sudo mkdir -v /srv/LUN2"
+ssh -o StrictHostKeyChecking=no $MY_VM_USERNAME@$FQDN -- "sudo mount -v /dev/disk/azure/scsi1/lun2-part1 /srv/LUN2"
 ```
 
 Results:
@@ -376,7 +376,7 @@ mount: /dev/sde1 mounted on /srv/LUN2.
 In oder to update the /etc/fstab file, you can use the following command, and mount the LUN1 using it's unique identifier (UUID) together with the discard mount option:
 
 ```bash
-ssh $MY_VM_USERNAME@$FQDN -- \
+ssh -o StrictHostKeyChecking=no $MY_VM_USERNAME@$FQDN -- \
     'echo "UUID=$(sudo blkid -s UUID -o value /dev/disk/azure/scsi1/lun2-part1) /srv/LUN2 ext4 defaults,discard 0 0" | sudo tee -a /etc/fstab'
 ```
 
@@ -392,7 +392,7 @@ UUID=4b54ed3b-2f5e-4fe7-b0e5-c40da6e3b8a8 /srv/LUN2 ext4 defaults,discard 0 0
 To verify the mount points, you can use the following command:
 
 ```bash
-ssh $MY_VM_USERNAME@$FQDN -- mount | egrep '(LUN0|LUN1|LUN2)'
+ssh -o StrictHostKeyChecking=no $MY_VM_USERNAME@$FQDN -- mount | egrep '(LUN0|LUN1|LUN2)'
 ```
 
 Results:
