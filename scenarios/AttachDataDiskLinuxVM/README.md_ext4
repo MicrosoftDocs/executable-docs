@@ -326,7 +326,6 @@ Results:
   "sku": {
     "name": "PremiumV2_LRS",
     "tier": "Premium"
-  }
 }
 ```
 
