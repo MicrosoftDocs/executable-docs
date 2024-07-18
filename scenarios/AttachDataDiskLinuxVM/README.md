@@ -63,10 +63,10 @@ Results:
 <!-- expected_similarity=0.3 -->
 ```json
 {
-  "id": "/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/LinuxRG-d161e6",
-  "location": "westus3",
+  "id": "/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/LinuxRG-xxxxxx",
+  "location": "australiaeast",
   "managedBy": null,
-  "name": "LinuxRG-d161e6",
+  "name": "LinuxRG-xxxxxx",
   "properties": {
     "provisioningState": "Succeeded"
   },
@@ -115,13 +115,13 @@ Results:
 <!-- expected_similarity=0.3 -->
 ```JSON
 {
-  "fqdns": "mydnslabelxxxxxx.westus3.cloudapp.azure.com",
+  "fqdns": "mydnslabelxxxxxx.australiaeast.cloudapp.azure.com",
   "id": "/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/LinuxRG-a36f5d/providers/Microsoft.Compute/virtualMachines/myVMa36f5d",
   "identity": {
     "systemAssignedIdentity": "yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy",
     "userAssignedIdentities": {}
   },
-  "location": "westus3",
+  "location": "australiaeast",
   "macAddress": "7C-1E-52-22-D8-72",
   "powerState": "VM running",
   "privateIpAddress": "10.0.0.4",
@@ -153,7 +153,7 @@ Results:
   "forceUpdateTag": null,
   "id": "/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/LinuxRG-a36f5d/providers/Microsoft.Compute/virtualMachines/myVMa36f5d/extensions/AADSSHLoginForLinux",
   "instanceView": null,
-  "location": "westus3",
+  "location": "australiaeast",
   "name": "AADSSHLoginForLinux",
   "protectedSettings": null,
   "protectedSettingsFromKeyVault": null,
@@ -308,7 +308,7 @@ Results:
   "hyperVGeneration": null,
   "id": "/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/LinuxRG-e4c4b4/providers/Microsoft.Compute/disks/LUN2-e4c4b4",
   "lastOwnershipUpdateTime": null,
-  "location": "westus3",
+  "location": "australiaeast",
   "managedBy": null,
   "managedByExtended": null,
   "maxShares": 1,
@@ -393,7 +393,7 @@ UUID=4b54ed3b-2f5e-4fe7-b0e5-c40da6e3b8a8 /datadisk03 xfs defaults,discard 0 0
 To verify the mount points, you can use the following command:
 
 ```bash
-ssh -o StrictHostKeyChecking=no $MY_VM_USERNAME@$FQDN -- mount | egrep '(datadisk0)'
+ssh -o StrictHostKeyChecking=no $MY_VM_USERNAME@$FQDN -- mount | egrep '(datadisk)'
 ```
 
 Results:
@@ -401,7 +401,7 @@ Results:
 <!-- expected_similarity=0.3 -->
 ```text
 /dev/sdc1 on /datadisk01 type xfs (rw,relatime)
-/dev/sdd1 on /datadisk02 xfs (rw,relatime)
+/dev/sdd1 on /datadisk02 type xfs (rw,relatime)
 /dev/sde1 on /datadisk03 type xfs (rw,relatime)
 ```
 
