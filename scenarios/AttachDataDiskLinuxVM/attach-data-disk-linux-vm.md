@@ -24,26 +24,6 @@ To open the Cloud Shell, just select **Try it** from the upper right corner of a
 
 If you prefer to install and use the CLI locally, this quickstart requires Azure CLI version 2.0.30 or later. Run `az --version` to find the version. If you need to install or upgrade, see [Install Azure CLI]( /cli/azure/install-azure-cli).
 
-## Define environment variables
-
-The first step is to define the environment variables. Environment variables are commonly used in Linux to centralize configuration data to improve consistency and maintainability of the system. Create the following environment variables to specify the names of resources that you create later in this tutorial:
-
-```bash
-export RANDOM_ID="$(openssl rand -hex 3)"
-export MY_RESOURCE_GROUP_NAME="LinuxRG-$RANDOM_ID"
-export REGION="australiaeast"
-export ZONE="1"
-export MY_VM_NAME="myVM$RANDOM_ID"
-export MY_VM_USERNAME="azureadmin"
-export MY_VM_SIZE='Standard_D2s_v3'
-export MY_VM_IMAGE='Canonical:ubuntu-24_04-lts:server:latest'
-export MY_DNS_LABEL="mydnslabel$RANDOM_ID"
-export MY_AZURE_USER=$(az account show --query user.name --output tsv)
-export FQDN="${MY_DNS_LABEL}.${REGION}.cloudapp.azure.com"
-export LUN1_NAME="ZRS-$RANDOM_ID"
-export LUN2_NAME="PSSDV2-$RANDOM_ID"
-```
-
 ## Log in to Azure using the CLI
 
 In order to run commands in Azure using the CLI, you need to log in first. Log in using the `az login` command.
@@ -53,6 +33,9 @@ In order to run commands in Azure using the CLI, you need to log in first. Log i
 A resource group is a container for related resources. All resources must be placed in a resource group. The [az group create](/cli/azure/group) command creates a resource group with the previously defined $MY_RESOURCE_GROUP_NAME and $REGION parameters.
 
 ```bash
+export RANDOM_ID="$(openssl rand -hex 3)"
+export MY_RESOURCE_GROUP_NAME="LinuxRG-$RANDOM_ID"
+export REGION="australiaeast"
 az group create \
     --name $MY_RESOURCE_GROUP_NAME \
     --location $REGION -o JSON
@@ -84,6 +67,12 @@ To improve the security of Linux virtual machines in Azure, you can integrate wi
 Create a VM with the [az vm create](/cli/azure/vm#az-vm-create) command.
 
 ```bash
+export ZONE="1"
+export MY_VM_NAME="myVM$RANDOM_ID"
+export MY_VM_USERNAME="azureadmin"
+export MY_VM_SIZE='Standard_D2s_v3'
+export MY_VM_IMAGE='Canonical:ubuntu-24_04-lts:server:latest'
+export MY_DNS_LABEL="mydnslabel$RANDOM_ID"
 az vm create \
     --name $MY_VM_NAME \
     --resource-group $MY_RESOURCE_GROUP_NAME \
@@ -173,6 +162,7 @@ Results:
 In this scenario the LUN0 our first data disk is going to be formatted and mounted using the command below:
 
 ```bash
+export FQDN="${MY_DNS_LABEL}.${REGION}.cloudapp.azure.com"
 ssh -o StrictHostKeyChecking=no $MY_VM_USERNAME@$FQDN -- "sudo parted -s -a optimal -- /dev/disk/azure/scsi1/lun0 mklabel gpt mkpart primary xfs 0% 100%"
 ssh -o StrictHostKeyChecking=no $MY_VM_USERNAME@$FQDN -- "sudo partprobe -s /dev/disk/azure/scsi1/lun0"
 ssh -o StrictHostKeyChecking=no $MY_VM_USERNAME@$FQDN -- "sudo mkfs.xfs /dev/disk/azure/scsi1/lun0-part1"
@@ -221,6 +211,7 @@ UUID=1095e29c-07db-47ec-8b19-1ffcaf4f5628 /datadisk01 xfs defaults,discard 0 0
 If you want to add a new, empty data disk on your VM, use the [az vm disk attach](/cli/azure/vm/disk) command with the `--new` parameter. If your VM is in an Availability Zone, the disk is automatically created in the same zone as the VM. For more information, see [Overview of Availability Zones](../../availability-zones/az-overview.md). The following example creates a disk named *$LUN2_NAME* that is 50 Gb in size:
 
 ```bash
+export LUN1_NAME="ZRS-$RANDOM_ID"
 az vm disk attach \
     --new \
     --vm-name $MY_VM_NAME \
@@ -285,6 +276,7 @@ Lastly the third scenario is to attach an existing disk to a VM. You can use the
 First lets start by creating a new disk:
 
 ```bash
+export LUN2_NAME="PSSDV2-$RANDOM_ID"
 az disk create \
     --name $LUN2_NAME \
     --resource-group $MY_RESOURCE_GROUP_NAME \

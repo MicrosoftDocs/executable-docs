@@ -233,7 +233,7 @@
     },
     {
         "status": "active",
-        "key": "DeployIGonAKS/README.md",
+        "key": "DeployIGonAKS/deploy-ig-aks.md",
         "title": "Deploy Inspektor Gadget in an Azure Kubernetes Service cluster",
         "description": "This tutorial shows how to deploy Inspektor Gadget in an AKS cluster",
         "stackDetails": "",
@@ -259,7 +259,7 @@
     },
     {
         "status": "active",
-        "key": "CreateAKSWebApp/README.md",
+        "key": "CreateAKSWebApp/create-aks-web-app.md",
         "title": "Deploy a Scalable & Secure Azure Kubernetes Service cluster using the Azure CLI",
         "description": "This tutorial where we will take you step by step in creating an Azure Kubernetes Web Application that is secured via https.",
         "stackDetails": "",
@@ -289,15 +289,15 @@
     },
     {
         "status": "active",
-        "key": "BlobVisionOnAKS/README.md"
+        "key": "BlobVisionOnAKS/blob-vision-aks.md"
     },
     {
         "status": "active",
-        "key": "CreateAKSDeployment/README.md",
+        "key": "CreateAKSDeployment/create-aks-deployment.md",
         "title": "Quickstart: Deploy an Azure Kubernetes Service (AKS) cluster using Azure CLI",
         "description": "Learn how to quickly deploy a Kubernetes cluster and deploy an application in Azure Kubernetes Service (AKS) using Azure CLI.",
         "stackDetails": "",
-        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/CreateAKSDeployment/README.md",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/CreateAKSDeployment/create-aks-deployment.md",
         "documentationUrl": "",
         "configurations": {
             "region": "westeurope"
@@ -305,11 +305,11 @@
     },
     {
         "status": "active",
-        "key": "CreateContainerAppDeploymentFromSource/README.md",
+        "key": "CreateContainerAppDeploymentFromSource/create-container-app-deployment-from-source.md",
         "title": "Create a Container App leveraging Blob Store, SQL, and Computer Vision",
         "description": "This tutorial shows how to create a Container App leveraging Blob Store, SQL, and Computer Vision",
         "stackDetails": "",
-        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/CreateContainerAppDeploymentFromSource/README.md",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/CreateContainerAppDeploymentFromSource/create-container-app-deployment-from-source.md",
         "documentationUrl": "",
         "configurations": {
             "region": "westus"
@@ -317,11 +317,11 @@
     },
     {
         "status": "active",
-        "key": "CreateRHELVMAndSSH/README.md",
+        "key": "CreateRHELVMAndSSH/create-rhel-vm-ssh.md",
         "title": "Quickstart: Use the Azure CLI to create a Red Hat Enterprise Linux Virtual Machine",
         "description": "In this quickstart, you learn how to use the Azure CLI to create a Red Hat Enterprise Linux virtual machine",
         "stackDetails": "",
-        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/CreateRHELVMAndSSH/README.md",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/CreateRHELVMAndSSH/create-rhel-vm-ssh.md",
         "documentationUrl": "",
         "configurations": {
             "region": "westeurope"
@@ -329,11 +329,11 @@
     },
     {
         "status": "active",
-        "key": "DeployHAPGonARO/README.md",
+        "key": "DeployHAPGonARO/deploy-ha-pg-aro.md",
         "title": "Create a Highly Available PostgreSQL Cluster on Azure Red Hat OpenShift",
         "description": "This tutorial shows how to create a Highly Available PostgreSQL cluster on Azure Red Hat OpenShift (ARO) using the CloudNativePG operator",
         "stackDetails": "",
-        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/DeployHAPGonARO/README.md",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/DeployHAPGonARO/deploy-ha-pg-aro.md",
         "documentationUrl": "",
         "configurations": {
             "region": ""
@@ -373,6 +373,37 @@
         "documentationUrl": "",
         "configurations": {
             "region": ""
+        }
+    },
+    {
+        "status": "active",
+        "key": "AttachDataDiskLinuxVM/attach-data-disk-linux-vm.md",
+        "title": "Quickstart: Use the Azure CLI to create an Ubuntu Virtual Machine and attach an Azure Data Disk",
+        "description": "In this quickstart, you learn how to use the Azure CLI to create an Ubuntu Linux virtual machine",
+        "stackDetails": "",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/AttachDataDiskLinuxVM/attach-data-disk-linux-vm.md",
+        "documentationUrl": "",
+        "nextSteps": [
+            {
+                "title": "Learn about virtual machines",
+                "url": "https://learn.microsoft.com/en-us/azure/virtual-machines/"
+            },
+            {
+                "title": "Use Cloud-Init to initialize a Linux VM on first boot",
+                "url": "https://learn.microsoft.com/en-us/azure/virtual-machines/linux/tutorial-automate-vm-deployment"
+            },
+            {
+                "title": "Create custom VM images",
+                "url": "https://learn.microsoft.com/en-us/azure/virtual-machines/linux/tutorial-custom-images"
+            },
+            {
+                "title": "Load Balance VMs",
+                "url": "https://learn.microsoft.com/en-us/azure/load-balancer/quickstart-load-balancer-standard-public-cli"
+            }
+        ],
+        "configurations": {
+            "permissions": [],
+            "region": "westeurope"
         }
     }
 ]
