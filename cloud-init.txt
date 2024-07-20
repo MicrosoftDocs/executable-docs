@@ -33,11 +33,11 @@ write_files:
             listen 80 default_server;
             listen [::]:80 default_server;
             root /var/www/html;
-            server_name mydnslabel13b70c.westeurope.cloudapp.azure.com;
+            server_name mydnslabel6777f4.westeurope.cloudapp.azure.com;
         }
 write_files:
   - owner: www-data:www-data
-    path: /etc/nginx/sites-available/mydnslabel13b70c.westeurope.cloudapp.azure.com.conf
+    path: /etc/nginx/sites-available/mydnslabel6777f4.westeurope.cloudapp.azure.com.conf
     content: |
         upstream php {
             server unix:/run/php/php8.1-fpm.sock;
@@ -45,10 +45,10 @@ write_files:
         server {
             listen 443 ssl http2;
             listen [::]:443 ssl http2;
-            server_name mydnslabel13b70c.westeurope.cloudapp.azure.com;
-            ssl_certificate /etc/letsencrypt/live/mydnslabel13b70c.westeurope.cloudapp.azure.com/fullchain.pem;
-            ssl_certificate_key /etc/letsencrypt/live/mydnslabel13b70c.westeurope.cloudapp.azure.com/privkey.pem;
-            root /var/www/mydnslabel13b70c.westeurope.cloudapp.azure.com;
+            server_name mydnslabel6777f4.westeurope.cloudapp.azure.com;
+            ssl_certificate /etc/letsencrypt/live/mydnslabel6777f4.westeurope.cloudapp.azure.com/fullchain.pem;
+            ssl_certificate_key /etc/letsencrypt/live/mydnslabel6777f4.westeurope.cloudapp.azure.com/privkey.pem;
+            root /var/www/mydnslabel6777f4.westeurope.cloudapp.azure.com;
             index index.php;
             location / {
                 try_files $uri $uri/ /index.php?$args;
@@ -76,8 +76,8 @@ write_files:
         server {
             listen 80;
             listen [::]:80;
-            server_name mydnslabel13b70c.westeurope.cloudapp.azure.com;
-            return 301 https://mydnslabel13b70c.westeurope.cloudapp.azure.com$request_uri;
+            server_name mydnslabel6777f4.westeurope.cloudapp.azure.com;
+            return 301 https://mydnslabel6777f4.westeurope.cloudapp.azure.com$request_uri;
         }
 runcmd:
   - sed -i 's/;cgi.fix_pathinfo.*/cgi.fix_pathinfo = 1/' /etc/php/8.1/fpm/php.ini
@@ -86,20 +86,20 @@ runcmd:
   - sed -i 's/^post_max_size \= .*/post_max_size \= 64M/g' /etc/php/8.1/fpm/php.ini
   - systemctl restart php8.1-fpm
   - systemctl restart nginx
-  - certbot --nginx certonly --non-interactive --agree-tos -d mydnslabel13b70c.westeurope.cloudapp.azure.com -m dummy@dummy.com --redirect
-  - ln -s /etc/nginx/sites-available/mydnslabel13b70c.westeurope.cloudapp.azure.com.conf /etc/nginx/sites-enabled/
+  - certbot --nginx certonly --non-interactive --agree-tos -d mydnslabel6777f4.westeurope.cloudapp.azure.com -m dummy@dummy.com --redirect
+  - ln -s /etc/nginx/sites-available/mydnslabel6777f4.westeurope.cloudapp.azure.com.conf /etc/nginx/sites-enabled/
   - rm /etc/nginx/sites-enabled/default
   - systemctl restart nginx
   - curl --url https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar --output /tmp/wp-cli.phar
   - mv /tmp/wp-cli.phar /usr/local/bin/wp
   - chmod +x /usr/local/bin/wp
   - wp cli update
-  - mkdir -m 0755 -p /var/www/mydnslabel13b70c.westeurope.cloudapp.azure.com
-  - chown -R azureadmin:www-data /var/www/mydnslabel13b70c.westeurope.cloudapp.azure.com
-  - sudo -u azureadmin -i -- wp core download --path=/var/www/mydnslabel13b70c.westeurope.cloudapp.azure.com
-  - sudo -u azureadmin -i -- wp config create --dbhost=mydb13b70c.mysql.database.azure.com --dbname=wp001 --dbuser=dbadmin13b70c --dbpass="EwUCxZcxWN6STAW553ye1mnm7dLJ86l2522cL1EWWsc=" --path=/var/www/mydnslabel13b70c.westeurope.cloudapp.azure.com
-  - sudo -u azureadmin -i -- wp core install --url=mydnslabel13b70c.westeurope.cloudapp.azure.com --title="Azure hosted blog" --admin_user=wpcliadmin --admin_password="DdHCDUwFc1bOlGhHWBiBcPmJUFnaTdzhIz5u/ZBiZtI=" --admin_email=6ab2c105-cbe9-4ecf-971b-20034854fbca --path=/var/www/mydnslabel13b70c.westeurope.cloudapp.azure.com
-  - sudo -u azureadmin -i -- wp plugin update --all --path=/var/www/mydnslabel13b70c.westeurope.cloudapp.azure.com
-  - chmod 600 /var/www/mydnslabel13b70c.westeurope.cloudapp.azure.com/wp-config.php
-  - mkdir -p -m 0775 /var/www/mydnslabel13b70c.westeurope.cloudapp.azure.com/wp-content/uploads
-  - chgrp www-data /var/www/mydnslabel13b70c.westeurope.cloudapp.azure.com/wp-content/uploads
+  - mkdir -m 0755 -p /var/www/mydnslabel6777f4.westeurope.cloudapp.azure.com
+  - chown -R azureadmin:www-data /var/www/mydnslabel6777f4.westeurope.cloudapp.azure.com
+  - sudo -u azureadmin -i -- wp core download --path=/var/www/mydnslabel6777f4.westeurope.cloudapp.azure.com
+  - sudo -u azureadmin -i -- wp config create --dbhost=mydb6777f4.mysql.database.azure.com --dbname=wp001 --dbuser=dbadmin6777f4 --dbpass="ji7uRvJ3enh1bfEBudb9l9sf5vVdz6EQB2sdSPxCLmg=" --path=/var/www/mydnslabel6777f4.westeurope.cloudapp.azure.com
+  - sudo -u azureadmin -i -- wp core install --url=mydnslabel6777f4.westeurope.cloudapp.azure.com --title="Azure hosted blog" --admin_user=wpcliadmin --admin_password="q/EDcoye1s7vpsidRWpeJ/IOQUpR8QBluTRZM6tzr7M=" --admin_email=6ab2c105-cbe9-4ecf-971b-20034854fbca --path=/var/www/mydnslabel6777f4.westeurope.cloudapp.azure.com
+  - sudo -u azureadmin -i -- wp plugin update --all --path=/var/www/mydnslabel6777f4.westeurope.cloudapp.azure.com
+  - chmod 600 /var/www/mydnslabel6777f4.westeurope.cloudapp.azure.com/wp-config.php
+  - mkdir -p -m 0775 /var/www/mydnslabel6777f4.westeurope.cloudapp.azure.com/wp-content/uploads
+  - chgrp www-data /var/www/mydnslabel6777f4.westeurope.cloudapp.azure.com/wp-content/uploads
