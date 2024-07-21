@@ -13,10 +13,10 @@ spec:
   ingressClassName: nginx
   tls:
   - hosts:
-    - mydnslabeled8b39.westeurope.cloudapp.azure.com
+    - mydnslabelbee9e1.westeurope.cloudapp.azure.com
     secretName: azure-vote-nginx-secret
   rules:
-    - host: mydnslabeled8b39.westeurope.cloudapp.azure.com
+    - host: mydnslabelbee9e1.westeurope.cloudapp.azure.com
       http:
         paths:
         - path: /
