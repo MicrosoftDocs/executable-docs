@@ -28,6 +28,43 @@ def sync_markdown_files():
                         if not os.path.exists(dir_path):
                             os.makedirs(dir_path)
                         file_path = os.path.join(dir_path, os.path.basename(file.path))
+
+                        # Check if file_path already exists in the repo and if the content is different
+                        repo = g.get_repo("MicrosoftDocs/executable-docs")
+                        try:
+                            existing_file = repo.get_contents(file_path, ref="main")
+                            existing_content = existing_file.decoded_content.decode('utf-8')
+                            if existing_content == file_content:
+                                print(f"File {file_path} already exists with the same content.")
+                                # continue
+                        except:
+                            # File does not exist, proceed with creating a branch and committing the file
+                            pass
+                        
+                        # Create a new branch and commit the file
+                        repo = g.get_repo("MicrosoftDocs/executable-docs")
+                        source_branch = repo.get_branch("main")
+                        new_branch_name = f"test_{file_path.replace(os.sep, '_')}"
+                        repo.create_git_ref(ref=f"refs/heads/{new_branch_name}", sha=source_branch.commit.sha)
+
+                        # Check if the branch already exists
+                        try:
+                            repo.get_branch(new_branch_name)
+                            branch_exists = True
+                        except:
+                            branch_exists = False
+                        
+                        if not branch_exists:
+                            repo.create_git_ref(ref=f"refs/heads/{new_branch_name}", sha=source_branch.commit.sha)
+
+                        # Create or update the file in the new branch
+                        try:
+                            repo.create_file(file_path, f"Add {file_path}", file_content, branch=new_branch_name)
+                            print("created file")
+                        except:
+                            contents = repo.get_contents(file_path, ref=new_branch_name)
+                            repo.update_file(contents.path, f"Update {file_path}", file_content, contents.sha, branch=new_branch_name)
+                            print("updated file")
                         
                         # base_dir = 'localized'
                         # for locale in sorted(os.listdir(base_dir)):
@@ -36,9 +73,13 @@ def sync_markdown_files():
                         #     import time
                         #     time.sleep(5)
                         
-                        with open(file_path, 'w') as f:
-                            f.write(file_content)
+                        # with open(file_path, 'w') as f:
+                        #     f.write(file_content)
 
+sync_markdown_files()
+print("done")
+import time
+time.sleep(5)
 def install_ie():
     """Installs IE if it is not already on the path."""
     if shutil.which("ie") is not None:

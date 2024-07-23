@@ -76,16 +76,16 @@ jobs:
         asset_path: ./scenarios.zip
         asset_name: scenarios.zip
         asset_content_type: application/zip
-    # - name: Upload Release Asset
-    #   if: env.scenarios_changed == 'true'
-    #   uses: actions/upload-release-asset@v1
-    #   env:
-    #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    #   with:
-    #     upload_url: ${{ steps.create_release.outputs.upload_url }}
-    #     asset_path: ./cs-CZ-scenarios.zip
-    #     asset_name: cs-cz-scenarios.zip
-    #     asset_content_type: application/zip
+    - name: Upload Release Asset
+      if: env.scenarios_changed == 'true'
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./cs-CZ-scenarios.zip
+        asset_name: cs-cz-scenarios.zip
+        asset_content_type: application/zip
     - name: Upload Release Asset
       if: env.scenarios_changed == 'true'
       uses: actions/upload-release-asset@v1
