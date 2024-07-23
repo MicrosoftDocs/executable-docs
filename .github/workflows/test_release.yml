@@ -263,14 +263,14 @@ jobs:
         asset_name: zh-tw-scenarios.zip
         asset_content_type: application/zip
     - name: Create Pull Request
-        if: env.scenarios_changed == 'true' && env.release_exists == 'false'
-        run: |
-            # Replace `branch_name` with the name of your branch
-            BRANCH_NAME=$(git branch --show-current)
-            PR_TITLE="Merge $BRANCH_NAME to main"
-            PR_BODY="This PR merges $BRANCH_NAME branch with main.\n\nURL: https://ms.portal.azure.com/?Microsoft_Azure_CloudNative_clientoptimizations=false&feature.canmodifyextensions=true&feature.scenarioTester=true#view/Microsoft_Azure_CloudNative/TutorialsPage.ReactView/scenariosVersion/${{ env.success_count }}"
-            PR_API_URL="https://api.github.com/repos/${{ github.repository }}/pulls"
-            PR_PAYLOAD="{\"title\":\"$PR_TITLE\",\"body\":\"$PR_BODY\",\"head\":\"$BRANCH_NAME\",\"base\":\"main\"}"
-            PR_RESPONSE=$(curl -X POST -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" -H "Content-Type: application/json" -d "$PR_PAYLOAD" "$PR_API_URL")
-            PR_NUMBER=$(echo $PR_RESPONSE | jq '.number')
-            echo "Pull Request created: #$PR_NUMBER"
+      if: env.scenarios_changed == 'true' 
+      run: |
+        # Replace `branch_name` with the name of your branch
+        BRANCH_NAME=$(git branch --show-current)
+        PR_TITLE="Merge $BRANCH_NAME to main"
+        PR_BODY="This PR merges $BRANCH_NAME branch with main.\n\nURL: https://ms.portal.azure.com/?Microsoft_Azure_CloudNative_clientoptimizations=false&feature.canmodifyextensions=true&feature.scenarioTester=true#view/Microsoft_Azure_CloudNative/TutorialsPage.ReactView/scenariosVersion/${{ env.success_count }}"
+        PR_API_URL="https://api.github.com/repos/${{ github.repository }}/pulls"
+        PR_PAYLOAD="{\"title\":\"$PR_TITLE\",\"body\":\"$PR_BODY\",\"head\":\"$BRANCH_NAME\",\"base\":\"main\"}"
+        PR_RESPONSE=$(curl -X POST -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" -H "Content-Type: application/json" -d "$PR_PAYLOAD" "$PR_API_URL")
+        PR_NUMBER=$(echo $PR_RESPONSE | jq '.number')
+        echo "Pull Request created: #$PR_NUMBER"
