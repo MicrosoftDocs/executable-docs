@@ -62,7 +62,7 @@ jobs:
         "https://api.github.com/repos/${{ github.repository }}/releases/tags/t1.0.${{ env.success_count }}" | jq -r '.id != null')
         echo "release_exists=$RELEASE_EXISTS" >> $GITHUB_ENV
     - name: Setup release
-      if: env.scenarios_changed == 'true' && env.release_exists == 'true'
+      if: env.scenarios_changed == 'true' && env.release_exists == 'false'
       id: create_release
       uses: actions/create-release@v1
       env:
