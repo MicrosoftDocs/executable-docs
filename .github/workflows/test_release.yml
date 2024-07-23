@@ -272,5 +272,6 @@ jobs:
         PR_API_URL="https://api.github.com/repos/${{ github.repository }}/pulls"
         PR_PAYLOAD="{\"title\":\"$PR_TITLE\",\"body\":\"$PR_BODY\",\"head\":\"$BRANCH_NAME\",\"base\":\"main\"}"
         PR_RESPONSE=$(curl -X POST -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" -H "Content-Type: application/json" -d "$PR_PAYLOAD" "$PR_API_URL")
+        echo $PR_RESPONSE
         PR_NUMBER=$(echo $PR_RESPONSE | jq '.number')
         echo "Pull Request created: #$PR_NUMBER"
