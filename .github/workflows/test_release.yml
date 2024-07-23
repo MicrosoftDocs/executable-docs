@@ -51,7 +51,7 @@ jobs:
         # Replace `workflow_id` with your actual workflow file name or ID
         # Replace `your_token` with a GitHub token with appropriate permissions
         WORKFLOW_RUNS=$(curl -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-          "https://api.github.com/repos/${{ github.repository }}/actions/workflows/release.yml/runs?status=success&per_page=1")
+          "https://api.github.com/repos/${{ github.repository }}/actions/workflows/release.yml/runs?per_page=1")
         SUCCESS_COUNT=$(echo $WORKFLOW_RUNS | jq '.total_count')
         echo "Total successful runs: $SUCCESS_COUNT"
         echo "success_count=$SUCCESS_COUNT" >> $GITHUB_ENV
@@ -62,7 +62,7 @@ jobs:
         "https://api.github.com/repos/${{ github.repository }}/releases/tags/t1.0.${{ env.success_count }}" | jq -r '.id != null')
         echo "release_exists=$RELEASE_EXISTS" >> $GITHUB_ENV
     - name: Setup release
-      if: env.scenarios_changed == 'true' && env.release_exists == 'false'
+      if: env.scenarios_changed == 'true' 
       id: create_release
       uses: actions/create-release@v1
       env:
