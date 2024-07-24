@@ -36,7 +36,7 @@ export FQDN="${MY_DNS_LABEL}.${REGION}.cloudapp.azure.com"
 
 ## Creare un gruppo di risorse
 
-Un gruppo di risorse è un contenitore per le risorse correlate. Tutte le risorse devono essere inserite in un gruppo di risorse. Ne verrà creata una per questa esercitazione. Il comando seguente crea un gruppo di risorse con i parametri $MY_RESOURCE_GROUP_NAME definiti in precedenza e $REGION.
+Un gruppo di risorse è un contenitore per risorse corrlate. Tutte le risorse devono essere posizionate in un gruppo di risorse. Ne verrà creata una per questa esercitazione. Il comando seguente crea un gruppo di risorse con i parametri $MY_RESOURCE_GROUP_NAME definiti in precedenza e $REGION.
 
 ```bash
 az group create --name $MY_RESOURCE_GROUP_NAME --location $REGION
@@ -62,7 +62,7 @@ Risultati:
 
 ## Creare una rete virtuale e una subnet
 
-Una rete virtuale è il blocco predefinito fondamentale per le reti private in Azure. Il servizio Rete virtuale di Microsoft Azure consente alle risorse di Azure, come le VM, di comunicare in modo sicuro tra loro e con Internet.
+Una rete virtuale rappresenta il blocco costitutivo fondamentale per le reti private di Azure. Il servizio Rete virtuale di Microsoft Azure consente alle risorse di Azure, come le VM, di comunicare in modo sicuro tra loro e con Internet.
 
 ```bash
 az network vnet create \
