@@ -27,7 +27,7 @@ export MY_AKS_CLUSTER_NAME="myAKSCluster$RANDOM_ID"
 
 ## 建立資源群組
 
-資源群組是相關資源的容器。 所有資源都必須放在資源群組中。 我們將為此教學課程建立一個。 下列命令會使用先前定義的 $MY_RESOURCE_GROUP_NAME 和 $REGION 參數來建立資源群組。
+資源群組是相關資源的容器。 所有資源都必須放置在資源群組中。 我們將為此教學課程建立一個。 下列命令會使用先前定義的 $MY_RESOURCE_GROUP_NAME 和 $REGION 參數來建立資源群組。
 
 ```bash
 az group create --name $MY_RESOURCE_GROUP_NAME --location $REGION
@@ -52,7 +52,7 @@ az group create --name $MY_RESOURCE_GROUP_NAME --location $REGION
 
 ## 建立 AKS 叢集
 
-使用 az aks create 命令建立 AKS 叢集。
+使用 az aks create 命令來建立 AKS 叢集。
 
 這需要幾分鐘的時間。
 
@@ -66,7 +66,7 @@ az aks create \
 
 ## 連線至叢集
 
-若要管理 Kubernetes 叢集，請使用 Kubernetes 命令行用戶端 kubectl。 如果您使用 Azure Cloud Shell，則已安裝 kubectl。
+若要管理 Kubernetes 叢集，請使用 Kubernetes 命令列用戶端 kubectl。 如果您使用 Azure Cloud Shell，則已安裝 kubectl。
 
 1. 使用 az aks install-cli 命令在本機安裝 az aks CLI
 
@@ -75,8 +75,8 @@ az aks create \
     ```
 
 2. 將 kubectl 設定為使用 az aks get-credentials 命令連線到 Kubernetes 叢集。 下列命令：
-    - 下載認證並設定 Kubernetes CLI 以使用認證。
-    - 使用 ~/.kube/config，這是 Kubernetes 組態檔的預設位置。 使用 --file 自變數指定 Kubernetes 組態檔的不同位置。
+    - 下載憑證並設定 Kubernetes CLI 以供使用。
+    - 使用 ~/.kube/config，這是 Kubernetes 組態檔的預設位置。 使用 --file 引數，為您的 Kubernetes 組態檔指定不同的位置。
 
     > [!WARNING]
     > 這會以相同的專案覆寫任何現有的認證
@@ -85,7 +85,7 @@ az aks create \
     az aks get-credentials --resource-group $MY_RESOURCE_GROUP_NAME --name $MY_AKS_CLUSTER_NAME --overwrite-existing
     ```
 
-3. 使用 kubectl get 命令確認叢集的連線。 此命令會傳回叢集節點的清單。
+3. 使用 kubectl get nodes 命令來確認與叢集的連線。 此命令會傳回叢集節點的清單。
 
     ```bash
     kubectl get nodes
