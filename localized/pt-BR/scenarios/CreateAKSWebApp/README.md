@@ -319,7 +319,7 @@ spec:
 EOF
 ```
 
-Para implantar este aplicativo, execute o seguinte comando
+Para implantar esse aplicativo, execute o seguinte comando
 
 ```bash
 kubectl apply -f azure-vote-start.yml
