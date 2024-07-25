@@ -89,9 +89,6 @@ def update_metadata(branch_name):
             # Update the metadata with the README files in the scenarios directory
             metadata = update_base_metadata('scenarios', base_metadata)
 
-            # # Write the updated metadata.json file
-            # with open('scenarios/metadata.json', 'w') as f:
-            #     json.dump(metadata, f, indent=4)
 
         else:
             with open('scenarios/metadata.json', 'w') as f:
@@ -99,10 +96,6 @@ def update_metadata(branch_name):
 
             # Update the metadata with the README files in the scenarios directory
             metadata = update_base_metadata('scenarios', base_metadata)
-
-            # # Write the updated metadata.json file
-            # with open('scenarios/metadata.json', 'w') as f:
-            #     json.dump(metadata, f, indent=4)
 
     finally:
         # Checkout back to the original branch
