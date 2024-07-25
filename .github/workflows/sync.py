@@ -179,11 +179,6 @@ def sync_markdown_files():
                         # with open(file_path, 'w') as f:
                         #     f.write(file_content)
 
-sync_markdown_files()
-print("done")
-import time
-time.sleep(5)
-
 def install_ie():
     """Installs IE if it is not already on the path."""
     if shutil.which("ie") is not None:
@@ -321,9 +316,8 @@ def run_tests():
 
 if __name__ == "__main__":
     sync_markdown_files()
-    update_metadata()
-    install_ie()
-    run_tests()
+    # install_ie()
+    # run_tests()
 
     # run this command in the CLI to close all open issues: gh issue list --state open --json number -q '.[].number' | xargs -I % gh issue close %
 
