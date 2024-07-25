@@ -20,14 +20,12 @@ jobs:
     - uses: actions/checkout@v2
       with:
         fetch-depth: 2
-    - name: Set branch name
-      run: echo "branch_name=${GITHUB_REF#refs/heads/}" >> $GITHUB_ENV
     - name: Prepare scenarios to be released.
       run: |
         sudo apt install zip
         zip -r scenarios.zip scenarios
 
-        languages=("de-DE" "es-ES" "fr-FR" "hu-HU" "id-ID" "it-IT" "ja-JP" "ko-KR" "nl-NL" "pl-PL" "pt-BR" "pt-PT" "ru-RU" "sv-SE" "tr-TR" "zh-CN" "zh-TW")
+        languages=("cs-CZ" "de-DE" "es-ES" "fr-FR" "hu-HU" "id-ID" "it-IT" "ja-JP" "ko-KR" "nl-NL" "pl-PL" "pt-BR" "pt-PT" "ru-RU" "sv-SE" "tr-TR" "zh-CN" "zh-TW")
         for lang in "${languages[@]}"; do
           # Set the source directory
           src_dir="localized/$lang"
@@ -53,12 +51,18 @@ jobs:
         # Replace `workflow_id` with your actual workflow file name or ID
         # Replace `your_token` with a GitHub token with appropriate permissions
         WORKFLOW_RUNS=$(curl -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-          "https://api.github.com/repos/${{ github.repository }}/actions/workflows/release.yml/runs?per_page=1")
+          "https://api.github.com/repos/${{ github.repository }}/actions/workflows/test_release.yml/runs?per_page=1")
         SUCCESS_COUNT=$(echo $WORKFLOW_RUNS | jq '.workflow_runs[0].run_number')
-        echo "Total runs: $SUCCESS_COUNT"
+        echo "Total successful runs: $SUCCESS_COUNT"
         echo "success_count=$SUCCESS_COUNT" >> $GITHUB_ENV
+    - name: Check if release exists
+      id: check_release
+      run: |
+        RELEASE_EXISTS=$(curl -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+        "https://api.github.com/repos/${{ github.repository }}/releases/tags/t1.0.${{ env.success_count }}" | jq -r '.id != null')
+        echo "release_exists=$RELEASE_EXISTS" >> $GITHUB_ENV
     - name: Setup release
-      if: env.scenarios_changed == 'true'
+      if: env.scenarios_changed == 'true' 
       id: create_release
       uses: actions/create-release@v1
       env:
@@ -69,7 +73,7 @@ jobs:
         draft: false
         prerelease: false
     - name: Upload Release Asset
-      if: env.scenarios_changed == 'true'
+      if: env.scenarios_changed == 'true' 
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -259,21 +263,15 @@ jobs:
         asset_name: zh-tw-scenarios.zip
         asset_content_type: application/zip
     - name: Create Pull Request
-      env:
-        GITHUB_TOKEN: ${{ secrets.PAT }}
+      if: env.scenarios_changed == 'true' 
       run: |
-        PR_TITLE="Update from ${{ env.branch_name }} to main "
-        PR_BODY="This PR merges changes from ${{ env.branch_name }} into the main branch. Please review the changes and merge if everything is in order."
-        BASE_BRANCH="main" # The branch you want to merge into
-        HEAD_BRANCH=${{ env.branch_name }} # The branch you want to merge from
-    
-        # Create the Pull Request
-        RESPONSE=$(curl -s -X POST \
-          -H "Authorization: token $PAT" \
-          -H "Accept: application/vnd.github.v3+json" \
-          "https://api.github.com/repos/${{ github.repository }}/pulls" \
-          -d "{\"title\":\"${PR_TITLE}\", \"body\":\"${PR_BODY}\", \"head\":\"${HEAD_BRANCH}\", \"base\":\"${BASE_BRANCH}\"}")
-    
-        # Extract the PR URL and output it
-        PR_URL=$(echo $RESPONSE | jq -r .html_url)
-        echo "Pull Request created: $PR_URL"
+        # Replace `branch_name` with the name of your branch
+        BRANCH_NAME=$(git branch --show-current)
+        PR_TITLE="Merge $BRANCH_NAME to main"
+        PR_BODY="This PR merges $BRANCH_NAME branch with main.\n\nURL: https://ms.portal.azure.com/?Microsoft_Azure_CloudNative_clientoptimizations=false&feature.canmodifyextensions=true&feature.scenarioTester=true#view/Microsoft_Azure_CloudNative/TutorialsPage.ReactView/scenariosVersion/t1.0.${{ env.success_count }}"
+        PR_API_URL="https://api.github.com/repos/${{ github.repository }}/pulls"
+        PR_PAYLOAD="{\"title\":\"$PR_TITLE\",\"body\":\"$PR_BODY\",\"head\":\"$BRANCH_NAME\",\"base\":\"main\"}"
+        PR_RESPONSE=$(curl -X POST -H "Authorization: token ${{ secrets.PAT }}" -H "Content-Type: application/json" -d "$PR_PAYLOAD" "$PR_API_URL")
+        echo $PR_RESPONSE
+        PR_NUMBER=$(echo $PR_RESPONSE | jq '.number')
+        echo "Pull Request created: #$PR_NUMBER"
