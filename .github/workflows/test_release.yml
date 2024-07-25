@@ -1,9 +1,6 @@
 name: test_release
 
 on:
-  push:
-    branches:
-      - 'test_*'
   create:
     branches:
       - 'test_*'
