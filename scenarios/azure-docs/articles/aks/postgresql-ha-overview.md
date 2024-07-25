@@ -1,6 +1,6 @@
 ---
 title: 'Overview of deploying a highly available PostgreSQL database on AKS with Azure CLI'
-description: Learn how to deploy a highly available PostgreSQL database on AKS using the CloudNativePG operator
+description: Learn how to deploy a highly available PostgreSQL database on AKS using the CloudNativePG operator!
 ms.topic: overview
 ms.date: 07/24/2024
 author: kenkilty
@@ -10,7 +10,7 @@ ms.custom: innovation-engine, aks-related-content
 ---
 # Deploy a highly available PostgreSQL database on AKS with Azure CLI
 
-In this guide, you deploy a highly available PostgreSQL cluster that spans multiple Azure availability zones on AKS with Azure CLI
+In this guide, you deploy a highly available PostgreSQL cluster that spans multiple Azure availability zones on AKS with Azure CLI!
 
 This article walks through the prerequisites for setting up a PostgreSQL cluster on [Azure Kubernetes Service (AKS)][what-is-aks] and provides an overview of the full deployment process and architecture.
 
