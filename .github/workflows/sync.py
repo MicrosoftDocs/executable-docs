@@ -6,6 +6,7 @@ import tempfile
 import re
 import json
 import yaml
+import time
 from datetime import datetime
 
 GITHUB_TOKEN = os.getenv('GITHUB_TOKEN')
@@ -77,6 +78,11 @@ def update_metadata(branch_name):
     # Save the current branch name
     current_branch = subprocess.check_output(["git", "branch", "--show-current"]).strip().decode('utf-8')
     
+    time.sleep(3)
+
+    # Fetch the latest state of all branches from the remote
+    subprocess.check_call(["git", "fetch", "--all"])
+
     # Checkout to the specified branch
     subprocess.check_call(["git", "checkout", branch_name])
 
@@ -89,9 +95,6 @@ def update_metadata(branch_name):
             # Update the metadata with the README files in the scenarios directory
             metadata = update_base_metadata('scenarios', base_metadata)
 
-            # # Write the updated metadata.json file
-            # with open('scenarios/metadata.json', 'w') as f:
-            #     json.dump(metadata, f, indent=4)
 
         else:
             with open('scenarios/metadata.json', 'w') as f:
@@ -99,10 +102,6 @@ def update_metadata(branch_name):
 
             # Update the metadata with the README files in the scenarios directory
             metadata = update_base_metadata('scenarios', base_metadata)
-
-            # # Write the updated metadata.json file
-            # with open('scenarios/metadata.json', 'w') as f:
-            #     json.dump(metadata, f, indent=4)
 
     finally:
         # Checkout back to the original branch
@@ -185,11 +184,6 @@ def sync_markdown_files():
                         
                         # with open(file_path, 'w') as f:
                         #     f.write(file_content)
-
-sync_markdown_files()
-print("done")
-import time
-time.sleep(5)
 
 def install_ie():
     """Installs IE if it is not already on the path."""
@@ -328,9 +322,8 @@ def run_tests():
 
 if __name__ == "__main__":
     sync_markdown_files()
-    update_metadata()
-    install_ie()
-    run_tests()
+    # install_ie()
+    # run_tests()
 
     # run this command in the CLI to close all open issues: gh issue list --state open --json number -q '.[].number' | xargs -I % gh issue close %
 
