@@ -7,6 +7,10 @@ on:
   create:
     branches:
       - 'test_*'
+  workflow_run:
+    workflows: ["Sync Markdown Files"]
+    types:
+      - completed
   workflow_dispatch:
 
 jobs:
