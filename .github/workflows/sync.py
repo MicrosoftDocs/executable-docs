@@ -134,7 +134,7 @@ def sync_markdown_files():
                             existing_content = existing_file.decoded_content.decode('utf-8')
                             if existing_content == file_content:
                                 print(f"File {file_path} already exists with the same content.")
-                                # continue
+                                continue
                         except:
                             # File does not exist, proceed with creating a branch and committing the file
                             pass
