@@ -126,7 +126,7 @@ def sync_markdown_files():
                         if not os.path.exists(dir_path):
                             os.makedirs(dir_path)
                         file_path = os.path.join(dir_path, os.path.basename(file.path))
-                        print(file_path)
+                        
                         # Check if file_path already exists in the repo and if the content is different
                         repo = g.get_repo("MicrosoftDocs/executable-docs")
                         try:
@@ -134,7 +134,7 @@ def sync_markdown_files():
                             existing_content = existing_file.decoded_content.decode('utf-8')
                             if existing_content == file_content:
                                 print(f"File {file_path} already exists with the same content.")
-                                # continue
+                                continue
                         except:
                             # File does not exist, proceed with creating a branch and committing the file
                             pass
@@ -143,7 +143,6 @@ def sync_markdown_files():
                         repo = g.get_repo("MicrosoftDocs/executable-docs")
                         source_branch = repo.get_branch("main")
                         new_branch_name = f"test_{file_path.replace(os.sep, '_')}"
-                        repo.create_git_ref(ref=f"refs/heads/{new_branch_name}", sha=source_branch.commit.sha)
 
                         # Check if the branch already exists
                         try:
