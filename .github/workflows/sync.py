@@ -6,6 +6,7 @@ import tempfile
 import re
 import json
 import yaml
+import time
 from datetime import datetime
 
 GITHUB_TOKEN = os.getenv('GITHUB_TOKEN')
@@ -77,6 +78,8 @@ def update_metadata(branch_name):
     # Save the current branch name
     current_branch = subprocess.check_output(["git", "branch", "--show-current"]).strip().decode('utf-8')
     
+    time.sleep(3)
+
     # Checkout to the specified branch
     subprocess.check_call(["git", "checkout", branch_name])
 
