@@ -11,6 +11,105 @@ from datetime import datetime
 GITHUB_TOKEN = os.getenv('GITHUB_TOKEN')
 g = github.Github(GITHUB_TOKEN)
 
+def find_region_value(markdown_text):
+    match = re.search(r'REGION="?([^"\n]+)"?', markdown_text, re.IGNORECASE)
+    if match:
+        region = str(match.group(1))
+        return region
+    else:
+        return ""
+    
+def update_base_metadata(directory, metadata):
+    for name in sorted(os.listdir(directory)):
+        path = os.path.join(directory, name)
+        if os.path.isdir(path):
+            # If it's a directory, process it recursively
+            update_base_metadata(path, metadata)
+        else:
+            # If it's a file, check if it's a README file
+            if '.md' in name.lower():
+                # Process the README file
+                with open(path, 'r') as f:
+                    metadata_lines = []
+                    collecting = False
+                    for line in f:
+                        if line.strip() == '---':
+                            if collecting:
+                                break
+                            else:
+                                collecting = True
+                                continue
+                        if collecting:
+                            metadata_lines.append(line)
+                    # Join the lines together into a single string
+                    metadata_str = '\n'.join(metadata_lines).strip('---').strip('\n')
+
+                    # Parse the metadata from the string
+                    readme_metadata = yaml.safe_load(metadata_str)
+                    readme_metadata = json.loads(json.dumps(readme_metadata, ensure_ascii=False))
+                    # Get the key for this file
+                    key = '/'.join(path.split('/')[1:])
+                    # Find the item in metadata with this key
+                    
+                    if metadata:
+                        for item in metadata:
+                            if item['key'] == key:
+                                break
+                        else:
+                            # If the key was not found, add a new item to metadata
+                            item = {'status': 'inactive', 'key': key}
+                            metadata.append(item)
+                    else:
+                        item = {'status': 'inactive', 'key': key}
+                        metadata.append(item)
+                    if item is not None and readme_metadata is not None:
+                        # Update the item with the metadata from the README file
+                        item['title'] = readme_metadata.get('title', item.get('title', ''))
+                        item['description'] = readme_metadata.get('description', item.get('description', ''))
+                        item['stackDetails'] = readme_metadata.get('stackDetails', item.get('stackDetails', ''))
+                        item['sourceUrl'] = item.get('sourceUrl', "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/"+key)
+                        item['documentationUrl'] = item.get('documentationUrl', '')
+                        item.setdefault('configurations', {})["region"] = find_region_value(f.read())
+
+    return metadata
+
+def update_metadata(branch_name):
+    # Save the current branch name
+    current_branch = subprocess.check_output(["git", "branch", "--show-current"]).strip().decode('utf-8')
+    
+    # Checkout to the specified branch
+    subprocess.check_call(["git", "checkout", branch_name])
+
+    try:
+        # Load the base metadata.json file
+        if os.path.isfile('scenarios/metadata.json'):
+            with open('scenarios/metadata.json', 'r') as f:
+                base_metadata = json.load(f)
+
+            # Update the metadata with the README files in the scenarios directory
+            metadata = update_base_metadata('scenarios', base_metadata)
+
+            # # Write the updated metadata.json file
+            # with open('scenarios/metadata.json', 'w') as f:
+            #     json.dump(metadata, f, indent=4)
+
+        else:
+            with open('scenarios/metadata.json', 'w') as f:
+                base_metadata = []
+
+            # Update the metadata with the README files in the scenarios directory
+            metadata = update_base_metadata('scenarios', base_metadata)
+
+            # # Write the updated metadata.json file
+            # with open('scenarios/metadata.json', 'w') as f:
+            #     json.dump(metadata, f, indent=4)
+
+    finally:
+        # Checkout back to the original branch
+        subprocess.check_call(["git", "checkout", current_branch])  
+
+    return metadata  
+
 def sync_markdown_files():
     query = "innovation-engine in:file language:markdown org:MicrosoftDocs -path:/localized/ -repo:MicrosoftDocs/executable-docs" 
     result = g.search_code(query)
@@ -28,6 +127,54 @@ def sync_markdown_files():
                         if not os.path.exists(dir_path):
                             os.makedirs(dir_path)
                         file_path = os.path.join(dir_path, os.path.basename(file.path))
+                        print(file_path)
+                        # Check if file_path already exists in the repo and if the content is different
+                        repo = g.get_repo("MicrosoftDocs/executable-docs")
+                        try:
+                            existing_file = repo.get_contents(file_path, ref="main")
+                            existing_content = existing_file.decoded_content.decode('utf-8')
+                            if existing_content == file_content:
+                                print(f"File {file_path} already exists with the same content.")
+                                # continue
+                        except:
+                            # File does not exist, proceed with creating a branch and committing the file
+                            pass
+                        
+                        # Create a new branch and commit the file
+                        repo = g.get_repo("MicrosoftDocs/executable-docs")
+                        source_branch = repo.get_branch("main")
+                        new_branch_name = f"test_{file_path.replace(os.sep, '_')}"
+                        repo.create_git_ref(ref=f"refs/heads/{new_branch_name}", sha=source_branch.commit.sha)
+
+                        # Check if the branch already exists
+                        try:
+                            repo.get_branch(new_branch_name)
+                            branch_exists = True
+                        except:
+                            branch_exists = False
+                        
+                        if not branch_exists:
+                            repo.create_git_ref(ref=f"refs/heads/{new_branch_name}", sha=source_branch.commit.sha)
+
+                        # Create or update the file in the new branch
+                        try:
+                            repo.create_file(file_path, f"Add {file_path}", file_content, branch=new_branch_name)
+                            print("created file")
+                        except:
+                            contents = repo.get_contents(file_path, ref=new_branch_name)
+                            repo.update_file(contents.path, f"Update {file_path}", file_content, contents.sha, branch=new_branch_name)
+                            print("updated file")
+
+                        # Create or update the metadata.json file
+                        try:
+                            branch_metadata = update_metadata(new_branch_name)
+                            repo.create_file('scenarios/metadata.json', f"Add metadata.json file", json.dumps(branch_metadata, indent=4), branch=new_branch_name)
+                            print("created metadata")
+                        except:
+                            metadata_contents = repo.get_contents('scenarios/metadata.json', ref=new_branch_name)
+                            branch_metadata = update_metadata(new_branch_name)
+                            repo.update_file(metadata_contents.path, f"Update metadata for {file_path}", json.dumps(branch_metadata, indent=4), metadata_contents.sha, branch=new_branch_name)
+                            print("updated metadata")
                         
                         # base_dir = 'localized'
                         # for locale in sorted(os.listdir(base_dir)):
@@ -36,8 +183,13 @@ def sync_markdown_files():
                         #     import time
                         #     time.sleep(5)
                         
-                        with open(file_path, 'w') as f:
-                            f.write(file_content)
+                        # with open(file_path, 'w') as f:
+                        #     f.write(file_content)
+
+sync_markdown_files()
+print("done")
+import time
+time.sleep(5)
 
 def install_ie():
     """Installs IE if it is not already on the path."""
@@ -173,92 +325,6 @@ def run_tests():
                             
                         with open('scenarios/metadata.json', 'w') as f:
                             json.dump(metadata, f, indent=4)
-
-def find_region_value(markdown_text):
-    match = re.search(r'REGION="?([^"\n]+)"?', markdown_text, re.IGNORECASE)
-    if match:
-        region = str(match.group(1))
-        return region
-    else:
-        return ""
-
-def update_base_metadata(directory, metadata):
-    for name in sorted(os.listdir(directory)):
-        path = os.path.join(directory, name)
-        if os.path.isdir(path):
-            # If it's a directory, process it recursively
-            update_base_metadata(path, metadata)
-        else:
-            # If it's a file, check if it's a README file
-            if '.md' in name.lower():
-                # Process the README file
-                with open(path, 'r') as f:
-                    metadata_lines = []
-                    collecting = False
-                    for line in f:
-                        if line.strip() == '---':
-                            if collecting:
-                                break
-                            else:
-                                collecting = True
-                                continue
-                        if collecting:
-                            metadata_lines.append(line)
-                    # Join the lines together into a single string
-                    metadata_str = '\n'.join(metadata_lines).strip('---').strip('\n')
-
-                    # Parse the metadata from the string
-                    readme_metadata = yaml.safe_load(metadata_str)
-                    readme_metadata = json.loads(json.dumps(readme_metadata, ensure_ascii=False))
-                    # Get the key for this file
-                    key = '/'.join(path.split('/')[1:])
-                    # Find the item in metadata with this key
-                    
-                    if metadata:
-                        for item in metadata:
-                            if item['key'] == key:
-                                break
-                        else:
-                            # If the key was not found, add a new item to metadata
-                            item = {'status': 'inactive', 'key': key}
-                            metadata.append(item)
-                    else:
-                        item = {'status': 'inactive', 'key': key}
-                        metadata.append(item)
-                    if item is not None and readme_metadata is not None:
-                        # Update the item with the metadata from the README file
-                        item['title'] = readme_metadata.get('title', item.get('title', ''))
-                        item['description'] = readme_metadata.get('description', item.get('description', ''))
-                        item['stackDetails'] = readme_metadata.get('stackDetails', item.get('stackDetails', ''))
-                        item['sourceUrl'] = item.get('sourceUrl', "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/"+key)
-                        item['documentationUrl'] = item.get('documentationUrl', '')
-                        item.setdefault('configurations', {})["region"] = find_region_value(f.read())
-
-    return metadata
-
-def update_metadata():
-    # Load the base metadata.json file
-    if os.path.isfile('scenarios/metadata.json'):
-        with open('scenarios/metadata.json', 'r') as f:
-            base_metadata = json.load(f)
-
-        # Update the metadata with the README files in the scenarios directory
-        metadata = update_base_metadata('scenarios', base_metadata)
-
-        # Write the updated metadata.json file
-        with open('scenarios/metadata.json', 'w') as f:
-            json.dump(metadata, f, indent=4)
-
-    else:
-        with open('scenarios/metadata.json', 'w') as f:
-            base_metadata = []
-
-        # Update the metadata with the README files in the scenarios directory
-        metadata = update_base_metadata('scenarios', base_metadata)
-
-        # Write the updated metadata.json file
-        with open('scenarios/metadata.json', 'w') as f:
-            json.dump(metadata, f, indent=4)
 
 if __name__ == "__main__":
     sync_markdown_files()

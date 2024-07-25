@@ -27,7 +27,7 @@ export MY_AKS_CLUSTER_NAME="myAKSCluster$RANDOM_ID"
 
 ## Creare un gruppo di risorse
 
-Un gruppo di risorse è un contenitore per le risorse correlate. Tutte le risorse devono essere inserite in un gruppo di risorse. Ne verrà creata una per questa esercitazione. Il comando seguente crea un gruppo di risorse con i parametri $MY_RESOURCE_GROUP_NAME definiti in precedenza e $REGION.
+Un gruppo di risorse è un contenitore per risorse corrlate. Tutte le risorse devono essere posizionate in un gruppo di risorse. Ne verrà creata una per questa esercitazione. Il comando seguente crea un gruppo di risorse con i parametri $MY_RESOURCE_GROUP_NAME definiti in precedenza e $REGION.
 
 ```bash
 az group create --name $MY_RESOURCE_GROUP_NAME --location $REGION
@@ -52,7 +52,7 @@ Risultati:
 
 ## Creare un cluster del servizio Azure Kubernetes
 
-Creare un cluster del servizio Azure Kubernetes usando il comando az aks create.
+Creare un cluster del servizio Azure Kubernetes usando il comando crare az ask.
 
 L'operazione richiederà qualche minuto.
 
@@ -75,8 +75,8 @@ Per gestire un cluster Kubernetes, usare il client da riga di comando kubernetes
     ```
 
 2. Per configurare kubectl per la connessione al cluster Kubernetes, usare il comando az aks get-credentials. Con il comando seguente:
-    - Scarica le credenziali e configura l'interfaccia della riga di comando di Kubernetes per usarle.
-    - Usa ~/.kube/config, il percorso predefinito per il file di configurazione di Kubernetes. Specificare un percorso diverso per il file di configurazione di Kubernetes usando l'argomento --file.
+    - Scarica le credenziali e configura la CLI di Kubernetes per utilizzarle.
+    - Usa ~/.kube/config, il percorso predefinito per il file di configurazione di Kubernetes. Specificare un percorso diverso per il file di configurazione di Kubernetes usando l’argomento --file.
 
     > [!WARNING]
     > Verrà sovrascritto qualsiasi credenziale esistente con la stessa voce

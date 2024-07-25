@@ -27,13 +27,13 @@ export MY_AKS_CLUSTER_NAME="myAKSCluster$RANDOM_ID"
 
 ## 리소스 그룹 만들기
 
-리소스 그룹은 관련 리소스에 대한 컨테이너입니다. 모든 리소스는 리소스 그룹에 배치해야 합니다. 이 자습서에 대해 만들겠습니다. 다음 명령은 이전에 정의된 $MY_RESOURCE_GROUP_NAME 및 $REGION 매개 변수를 사용하여 리소스 그룹을 만듭니다.
+리소스 그룹은 관련 리소스에 대한 컨테이너입니다. 모든 리소스는 리소스 그룹에 배치되어야 합니다. 이 자습서에 대해 만들겠습니다. 다음 명령은 이전에 정의된 $MY_RESOURCE_GROUP_NAME 및 $REGION 매개 변수를 사용하여 리소스 그룹을 만듭니다.
 
 ```bash
 az group create --name $MY_RESOURCE_GROUP_NAME --location $REGION
 ```
 
-결과:
+Results:
 
 <!-- expected_similarity=0.3 -->
 ```JSON
@@ -99,7 +99,7 @@ Inspektor 가젯 설치는 다음 두 단계로 구성됩니다.
 2. 클러스터에 Inspektor 가젯 설치
 
     > [!NOTE]
-    > 각각 특정 사용 사례 및 요구 사항에 맞게 조정된 Inspektor 가젯을 배포하고 활용하기 위한 추가 메커니즘이 있습니다. 플러그 인을 `kubectl gadget` 사용하면 많은 항목이 포함되지만 전부는 아닙니다. 예를 들어 플러그 인을 사용하여 Inspektor 가젯 `kubectl gadget` 을 배포하는 것은 Kubernetes API 서버의 가용성에 따라 달라집니다. 따라서 가용성이 손상될 수 있으므로 이러한 구성 요소에 의존할 수 없는 경우 배포 메커니즘을 `kubectl gadget`사용하지 않는 것이 좋습니다. ig 설명서를[ 검사 ](https://github.com/inspektor-gadget/inspektor-gadget/blob/main/docs/ig.md)해당 작업 및 기타 사용 사례를 확인하세요.
+    > 각각 특정 사용 사례 및 요구 사항에 맞게 조정된 Inspektor 가젯을 배포하고 활용하기 위한 추가 메커니즘이 있습니다. 플러그 인을 `kubectl gadget` 사용하면 많은 항목이 포함되지만 전부는 아닙니다. 예를 들어 플러그 인을 사용하여 Inspektor 가젯 `kubectl gadget` 을 배포하는 것은 Kubernetes API 서버의 가용성에 따라 달라집니다. 따라서 가용성이 손상될 수 있으므로 이러한 구성 요소에 의존할 수 없는 경우 배포 메커니즘을 `kubectl gadget`사용하지 않는 것이 좋습니다. ig 설명서[에서 수행할 작업 및 기타 사용 사례를 확인](https://github.com/inspektor-gadget/inspektor-gadget/blob/main/docs/ig.md)하세요.
 
 ### kubectl 플러그 인 설치: `gadget`
 
@@ -135,7 +135,7 @@ Server version: not installed
 다음 명령은 DaemonSet을 배포합니다.
 
 > [!NOTE]
-> 배포를 사용자 지정하는 데 사용할 수 있는 몇 가지 옵션은 특정 컨테이너 이미지 사용, 특정 노드에 배포 및 기타 많은 옵션입니다. 이 모든 것을 알고 있으려면 공식 설명서[(클러스터](https://github.com/inspektor-gadget/inspektor-gadget/blob/main/docs/install.md#installing-in-the-cluster)에 설치)를 검사.
+> 배포를 사용자 지정하는 데 사용할 수 있는 몇 가지 옵션은 특정 컨테이너 이미지 사용, 특정 노드에 배포 및 기타 많은 옵션입니다. 이러한 모든 항목을 확인하려면 공식 설명서( [클러스터](https://github.com/inspektor-gadget/inspektor-gadget/blob/main/docs/install.md#installing-in-the-cluster)에 설치)를 확인하세요.
 
 ```bash
 kubectl gadget deploy
