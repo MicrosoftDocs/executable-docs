@@ -80,6 +80,9 @@ def update_metadata(branch_name):
     
     time.sleep(3)
 
+    # Fetch the latest state of all branches from the remote
+    subprocess.check_call(["git", "fetch", "--all"])
+
     # Checkout to the specified branch
     subprocess.check_call(["git", "checkout", branch_name])
 
