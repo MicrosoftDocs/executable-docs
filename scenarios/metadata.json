@@ -49,7 +49,7 @@
                 "Microsoft.ContainerService/managedClusters/GetAccessProfiles/action",
                 "Microsoft.Network/publicIPAddresses/list/action"
             ],
-            "region": "eastus"
+            "region": "centralindia"
         }
     },
     {
@@ -125,7 +125,7 @@
                 "Microsoft.Authorization/roleDefinitions/read",
                 "Microsoft.Authorization/roleDefinitions/write"
             ],
-            "region": "eastus"
+            "region": "centralindia"
         }
     },
     {
@@ -143,7 +143,7 @@
             }
         ],
         "configurations": {
-            "region": "EastUS2"
+            "region": "centralindia"
         }
     },
     {
@@ -169,7 +169,7 @@
             }
         ],
         "configurations": {
-            "region": "EastUS"
+            "region": "centralindia"
         }
     },
     {
@@ -216,7 +216,7 @@
                 "Microsoft.Network/publicIPAddresses/read",
                 "Microsoft.Compute/virtualMachines/instanceView/read"
             ],
-            "region": "EastUS"
+            "region": "centralindia"
         }
     },
     {
@@ -254,7 +254,7 @@
             }
         ],
         "configurations": {
-            "region": "eastus"
+            "region": "centralindia"
         }
     },
     {
@@ -284,7 +284,7 @@
             }
         ],
         "configurations": {
-            "region": "eastus"
+            "region": "centralindia"
         }
     },
     {
