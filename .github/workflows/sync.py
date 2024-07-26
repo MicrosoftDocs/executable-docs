@@ -183,6 +183,10 @@ def sync_markdown_files():
                             print("updated metadata")
 
                         finally:
+                            # Checkout to the specified branch
+                            subprocess.check_call(["git", "add", "."])
+                            subprocess.check_call(["git", "commit", "-m", f"Add {file_path} and metadata.json"])
+                            subprocess.check_call(["git", "push", "origin", new_branch_name])
                             subprocess.check_call(["git", "checkout", current_branch]) 
                         
                         # base_dir = 'localized'
