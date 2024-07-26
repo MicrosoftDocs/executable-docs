@@ -49,7 +49,7 @@
                 "Microsoft.ContainerService/managedClusters/GetAccessProfiles/action",
                 "Microsoft.Network/publicIPAddresses/list/action"
             ],
-            "region": "westeurope"
+            "region": "eastus"
         }
     },
     {
@@ -125,7 +125,7 @@
                 "Microsoft.Authorization/roleDefinitions/read",
                 "Microsoft.Authorization/roleDefinitions/write"
             ],
-            "region": "westeurope"
+            "region": "eastus"
         }
     },
     {
@@ -284,15 +284,15 @@
             }
         ],
         "configurations": {
-            "region": "westeurope"
+            "region": "eastus"
         }
     },
     {
-        "status": "active",
+        "status": "inactive",
         "key": "BlobVisionOnAKS/blob-vision-aks.md"
     },
     {
-        "status": "active",
+        "status": "inactive",
         "key": "CreateAKSDeployment/create-aks-deployment.md",
         "title": "Quickstart: Deploy an Azure Kubernetes Service (AKS) cluster using Azure CLI",
         "description": "Learn how to quickly deploy a Kubernetes cluster and deploy an application in Azure Kubernetes Service (AKS) using Azure CLI.",
@@ -304,7 +304,7 @@
         }
     },
     {
-        "status": "active",
+        "status": "inactive",
         "key": "CreateContainerAppDeploymentFromSource/create-container-app-deployment-from-source.md",
         "title": "Create a Container App leveraging Blob Store, SQL, and Computer Vision",
         "description": "This tutorial shows how to create a Container App leveraging Blob Store, SQL, and Computer Vision",
@@ -328,7 +328,7 @@
         }
     },
     {
-        "status": "active",
+        "status": "inactive",
         "key": "DeployHAPGonARO/deploy-ha-pg-aro.md",
         "title": "Create a Highly Available PostgreSQL Cluster on Azure Red Hat OpenShift",
         "description": "This tutorial shows how to create a Highly Available PostgreSQL cluster on Azure Red Hat OpenShift (ARO) using the CloudNativePG operator",
@@ -364,10 +364,10 @@
         }
     },
     {
-        "status": "active",
+        "status": "inactive",
         "key": "azure-docs/articles/aks/postgresql-ha-overview.md",
         "title": "Overview of deploying a highly available PostgreSQL database on AKS with Azure CLI",
-        "description": "Learn how to deploy a highly available PostgreSQL database on AKS using the CloudNativePG operator with Azure CLI.",
+        "description": "Learn how to deploy a highly available PostgreSQL database on AKS using the CloudNativePG operator.",
         "stackDetails": "",
         "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-docs/articles/aks/postgresql-ha-overview.md",
         "documentationUrl": "",
