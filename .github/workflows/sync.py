@@ -58,10 +58,10 @@ def update_base_metadata(directory, metadata):
                                 break
                         else:
                             # If the key was not found, add a new item to metadata
-                            item = {'status': 'inactive', 'key': key}
+                            item = {'status': 'active', 'key': key}
                             metadata.append(item)
                     else:
-                        item = {'status': 'inactive', 'key': key}
+                        item = {'status': 'active', 'key': key}
                         metadata.append(item)
                     if item is not None and readme_metadata is not None:
                         # Update the item with the metadata from the README file
@@ -173,7 +173,7 @@ def sync_markdown_files():
                             branch_metadata = update_metadata(new_branch_name)
                             repo.update_file(metadata_contents.path, f"Update metadata for {file_path}", json.dumps(branch_metadata, indent=4), metadata_contents.sha, branch=new_branch_name)
                             print("updated metadata")
-                        
+
                         # base_dir = 'localized'
                         # for locale in sorted(os.listdir(base_dir)):
                         #     locale_dir = os.path.join(base_dir, locale, file_path)           
