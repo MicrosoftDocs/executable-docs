@@ -176,7 +176,7 @@ Exec Docs is a deployment vehicle that has different entry points into the exper
 
 ## Exec Docs Publishing Pipeline
 
-<img width="1060" alt="Exec Docs Pipeline" src="https://github.com/MicrosoftDocs/executable-docs/assets/146123940/0cf8844e-94c4-48c0-83bd-ee15dff7e132">
+![Exec Docs Pipeline](https://github.com/user-attachments/assets/f37ef14c-a1bc-467d-8f4e-b4b033127825)
 
 ## Frequently Asked Questions (FAQs)
 
