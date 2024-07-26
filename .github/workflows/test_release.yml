@@ -4,9 +4,6 @@ on:
   push:
     branches:
       - 'test_*'
-  create:
-    branches:
-      - 'test_*'
   workflow_dispatch:
 
 jobs:
@@ -23,6 +20,7 @@ jobs:
     - uses: actions/checkout@v2
       with:
         fetch-depth: 2
+        ref: ${{ github.ref }
     - name: Prepare scenarios to be released.
       run: |
         sudo apt install zip
