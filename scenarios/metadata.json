@@ -49,7 +49,7 @@
                 "Microsoft.ContainerService/managedClusters/GetAccessProfiles/action",
                 "Microsoft.Network/publicIPAddresses/list/action"
             ],
-            "region": "centralindia"
+            "region": "eastus"
         }
     },
     {
@@ -125,7 +125,7 @@
                 "Microsoft.Authorization/roleDefinitions/read",
                 "Microsoft.Authorization/roleDefinitions/write"
             ],
-            "region": "centralindia"
+            "region": "eastus"
         }
     },
     {
@@ -254,7 +254,7 @@
             }
         ],
         "configurations": {
-            "region": "centralindia"
+            "region": "eastus"
         }
     },
     {
@@ -284,7 +284,7 @@
             }
         ],
         "configurations": {
-            "region": "centralindia"
+            "region": "eastus"
         }
     },
     {

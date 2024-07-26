@@ -58,10 +58,10 @@ def update_base_metadata(directory, metadata):
                                 break
                         else:
                             # If the key was not found, add a new item to metadata
-                            item = {'status': 'inactive', 'key': key}
+                            item = {'status': 'active', 'key': key}
                             metadata.append(item)
                     else:
-                        item = {'status': 'inactive', 'key': key}
+                        item = {'status': 'active', 'key': key}
                         metadata.append(item)
                     if item is not None and readme_metadata is not None:
                         # Update the item with the metadata from the README file
