@@ -5,6 +5,7 @@ on:
     - cron: '0 15 * * *' 
   workflow_dispatch:
 
+
 permissions:
     contents: write
     id-token: write
@@ -19,7 +20,7 @@ jobs:
       uses: actions/checkout@v2
       with:
         repository: 'MicrosoftDocs/executable-docs'
-        token: ${{ secrets.GITHUB_TOKEN }} # This line is added
+        token: ${{ secrets.PAT }} # This line is added
 
     - name: 'Az CLI login'
       uses: azure/login@v1
@@ -45,7 +46,7 @@ jobs:
     - name: Sync markdown files
       run: python .github/workflows/sync.py
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Replace with the name of your secret
+        GITHUB_TOKEN: ${{ secrets.PAT }} # Replace with the name of your secret
     
     - name: Check for changes
       id: git-check

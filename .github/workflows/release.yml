@@ -52,11 +52,7 @@ jobs:
         # Replace `your_token` with a GitHub token with appropriate permissions
         WORKFLOW_RUNS=$(curl -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
           "https://api.github.com/repos/${{ github.repository }}/actions/workflows/release.yml/runs?per_page=1")
-<<<<<<< HEAD
-        SUCCESS_COUNT=$(echo $WORKFLOW_RUNS | jq '.total_count')
-=======
         SUCCESS_COUNT=$(echo $WORKFLOW_RUNS | jq '.workflow_runs[0].run_number')
->>>>>>> b61b7e02a0a882ca5e9cefb183d901a1976cbbdc
         echo "Total successful runs: $SUCCESS_COUNT"
         echo "success_count=$SUCCESS_COUNT" >> $GITHUB_ENV
     - name: Setup release
