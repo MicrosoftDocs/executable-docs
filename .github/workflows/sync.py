@@ -154,6 +154,14 @@ def sync_markdown_files():
                         if not branch_exists:
                             repo.create_git_ref(ref=f"refs/heads/{new_branch_name}", sha=source_branch.commit.sha)
 
+                        current_branch = subprocess.check_output(["git", "branch", "--show-current"]).strip().decode('utf-8')
+
+                        # Fetch the latest state of all branches from the remote
+                        subprocess.check_call(["git", "fetch", "--all"])
+
+                        # Checkout to the specified branch
+                        subprocess.check_call(["git", "checkout", new_branch_name])
+
                         # Create or update the file in the new branch
                         try:
                             repo.create_file(file_path, f"Add {file_path}", file_content, branch=new_branch_name)
@@ -173,6 +181,9 @@ def sync_markdown_files():
                             branch_metadata = update_metadata(new_branch_name)
                             repo.update_file(metadata_contents.path, f"Update metadata for {file_path}", json.dumps(branch_metadata, indent=4), metadata_contents.sha, branch=new_branch_name)
                             print("updated metadata")
+
+                        finally:
+                            subprocess.check_call(["git", "checkout", current_branch]) 
                         
                         # base_dir = 'localized'
                         # for locale in sorted(os.listdir(base_dir)):
