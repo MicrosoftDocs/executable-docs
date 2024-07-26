@@ -25,7 +25,7 @@ jobs:
         sudo apt install zip
         zip -r scenarios.zip scenarios
 
-        languages=("de-DE" "es-ES" "fr-FR" "hu-HU" "id-ID" "it-IT" "ja-JP" "ko-KR" "nl-NL" "pl-PL" "pt-BR" "pt-PT" "ru-RU" "sv-SE" "tr-TR" "zh-CN" "zh-TW")
+        languages=("cs-CZ" "de-DE" "es-ES" "fr-FR" "hu-HU" "id-ID" "it-IT" "ja-JP" "ko-KR" "nl-NL" "pl-PL" "pt-BR" "pt-PT" "ru-RU" "sv-SE" "tr-TR" "zh-CN" "zh-TW")
         for lang in "${languages[@]}"; do
           # Set the source directory
           src_dir="localized/$lang"
@@ -51,8 +51,8 @@ jobs:
         # Replace `workflow_id` with your actual workflow file name or ID
         # Replace `your_token` with a GitHub token with appropriate permissions
         WORKFLOW_RUNS=$(curl -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-          "https://api.github.com/repos/${{ github.repository }}/actions/workflows/release.yml/runs?status=success&per_page=1")
-        SUCCESS_COUNT=$(echo $WORKFLOW_RUNS | jq '.total_count')
+          "https://api.github.com/repos/${{ github.repository }}/actions/workflows/release.yml/runs?per_page=1")
+        SUCCESS_COUNT=$(echo $WORKFLOW_RUNS | jq '.workflow_runs[0].run_number')
         echo "Total successful runs: $SUCCESS_COUNT"
         echo "success_count=$SUCCESS_COUNT" >> $GITHUB_ENV
     - name: Setup release
