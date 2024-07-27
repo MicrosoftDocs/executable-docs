@@ -1,15 +1,15 @@
 ---
 title: Omówienie wdrażania bazy danych PostgreSQL o wysokiej dostępności w usłudze AKS przy użyciu interfejsu wiersza polecenia platformy Azure
-description: 'Dowiedz się, jak wdrożyć bazę danych PostgreSQL o wysokiej dostępności w usłudze AKS przy użyciu operatora CloudNativePG!!'
+description: 'Dowiedz się, jak wdrożyć bazę danych PostgreSQL o wysokiej dostępności w usłudze AKS przy użyciu operatora CloudNativePG.'
 ms.topic: overview
-ms.date: 07/24/2024
+ms.date: 06/07/2024
 author: kenkilty
 ms.author: kkilty
 ms.custom: 'innovation-engine, aks-related-content'
 ---
 # Wdrażanie bazy danych PostgreSQL o wysokiej dostępności w usłudze AKS przy użyciu interfejsu wiersza polecenia platformy Azure
 
-W tym przewodniku wdrożysz klaster PostgreSQL o wysokiej dostępności obejmujący wiele stref dostępności platformy Azure w usłudze AKS przy użyciu interfejsu wiersza polecenia platformy Azure.
+W tym przewodniku wdrożysz klaster PostgreSQL o wysokiej dostępności obejmujący wiele stref dostępności platformy Azure w usłudze AKS za pomocą interfejsu wiersza polecenia platformy Azure.
 
 W tym artykule przedstawiono wymagania wstępne dotyczące konfigurowania klastra PostgreSQL w [usłudze Azure Kubernetes Service (AKS)][what-is-aks] oraz omówienie pełnego procesu wdrażania i architektury.
 
