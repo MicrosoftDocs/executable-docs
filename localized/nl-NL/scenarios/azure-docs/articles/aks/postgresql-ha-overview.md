@@ -1,15 +1,15 @@
 ---
 title: Overzicht van het implementeren van een maximaal beschikbare PostgreSQL-database op AKS met Azure CLI
-description: Meer informatie over het implementeren van een maximaal beschikbare PostgreSQL-database op AKS met behulp van de CloudNativePG-operator!!
+description: Meer informatie over het implementeren van een maximaal beschikbare PostgreSQL-database op AKS met behulp van de CloudNativePG-operator.
 ms.topic: overview
-ms.date: 07/24/2024
+ms.date: 06/07/2024
 author: kenkilty
 ms.author: kkilty
 ms.custom: 'innovation-engine, aks-related-content'
 ---
 # Een maximaal beschikbare PostgreSQL-database implementeren in AKS met Azure CLI
 
-In deze handleiding implementeert u een maximaal beschikbaar PostgreSQL-cluster dat meerdere Azure-beschikbaarheidszones omvat op AKS met Azure CLI!
+In deze handleiding implementeert u een maximaal beschikbaar PostgreSQL-cluster dat meerdere Azure-beschikbaarheidszones omvat op AKS met Azure CLI.
 
 In dit artikel worden de vereisten beschreven voor het instellen van een PostgreSQL-cluster in [Azure Kubernetes Service (AKS)][what-is-aks] en vindt u een overzicht van het volledige implementatieproces en de volledige architectuur.
 
