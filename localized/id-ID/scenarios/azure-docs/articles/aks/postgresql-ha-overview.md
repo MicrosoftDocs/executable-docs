@@ -1,15 +1,15 @@
 ---
 title: Gambaran umum penyebaran database PostgreSQL yang sangat tersedia di AKS dengan Azure CLI
-description: Pelajari cara menyebarkan database PostgreSQL yang sangat tersedia di AKS menggunakan operator CloudNativePG!!
+description: Pelajari cara menyebarkan database PostgreSQL yang sangat tersedia di AKS menggunakan operator CloudNativePG.
 ms.topic: overview
-ms.date: 07/24/2024
+ms.date: 06/07/2024
 author: kenkilty
 ms.author: kkilty
 ms.custom: 'innovation-engine, aks-related-content'
 ---
 # Menyebarkan database PostgreSQL yang sangat tersedia di AKS dengan Azure CLI
 
-Dalam panduan ini, Anda menyebarkan kluster PostgreSQL yang sangat tersedia yang mencakup beberapa zona ketersediaan Azure di AKS dengan Azure CLI!
+Dalam panduan ini, Anda menyebarkan kluster PostgreSQL yang sangat tersedia yang mencakup beberapa zona ketersediaan Azure di AKS dengan Azure CLI.
 
 Artikel ini menjelaskan prasyarat untuk menyiapkan kluster PostgreSQL di [Azure Kubernetes Service (AKS)][what-is-aks] dan memberikan gambaran umum tentang proses dan arsitektur penyebaran lengkap.
 
