@@ -1,15 +1,15 @@
 ---
 title: Обзор развертывания высокодоступной базы данных PostgreSQL в AKS с помощью Azure CLI
-description: 'Узнайте, как развернуть высокодоступную базу данных PostgreSQL в AKS с помощью оператора CloudNativePG!!'
+description: 'Узнайте, как развернуть высокодоступную базу данных PostgreSQL в AKS с помощью оператора CloudNativePG.'
 ms.topic: overview
-ms.date: 07/24/2024
+ms.date: 06/07/2024
 author: kenkilty
 ms.author: kkilty
 ms.custom: 'innovation-engine, aks-related-content'
 ---
 # Развертывание высокодоступной базы данных PostgreSQL в AKS с помощью Azure CLI
 
-В этом руководстве вы развернете высокодоступный кластер PostgreSQL, охватывающий несколько зон доступности Azure в AKS с помощью Azure CLI!
+В этом руководстве вы развернете высокодоступный кластер PostgreSQL, охватывающий несколько зон доступности Azure в AKS с помощью Azure CLI.
 
 В этой статье описаны предварительные требования для настройки кластера PostgreSQL на [Служба Azure Kubernetes (AKS)][what-is-aks] и обзор полного процесса развертывания и архитектуры.
 
