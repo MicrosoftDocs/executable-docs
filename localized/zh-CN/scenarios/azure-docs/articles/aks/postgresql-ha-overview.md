@@ -1,15 +1,15 @@
 ---
 title: 使用 Azure CLI 在 AKS 上部署高可用性 PostgreSQL 数据库的概述
-description: 了解如何使用 CloudNativePG 运算符在 AKS 上部署高度可用的 PostgreSQL 数据库！！
+description: 了解如何使用 CloudNativePG operator 在 AKS 上部署高可用性 PostgreSQL 数据库。
 ms.topic: overview
-ms.date: 07/24/2024
+ms.date: 06/07/2024
 author: kenkilty
 ms.author: kkilty
 ms.custom: 'innovation-engine, aks-related-content'
 ---
 # 使用 Azure CLI 在 AKS 上部署高可用性 PostgreSQL 数据库
 
-在本指南中，你将部署一个高度可用的 PostgreSQL 群集，该群集跨 AKS 上的多个 Azure 可用性区域与 Azure CLI！
+在本指南中，你将使用 Azure CLI 在 AKS 上部署跨多个 Azure 可用区的高可用性 PostgreSQL 群集。
 
 本文逐步介绍了在 [Azure Kubernetes 服务 (AKS)][what-is-aks] 上设置 PostgreSQL 群集的先决条件，并概述了完整的部署过程和体系结构。
 
