@@ -1,15 +1,15 @@
 ---
 title: Übersicht über die Bereitstellung einer hochverfügbaren PostgreSQL-Datenbank in AKS mithilfe der Azure CLI
-description: 'Erfahren Sie, wie Sie eine hoch verfügbare PostgreSQL-Datenbank auf AKS mithilfe des CloudNativePG-Operators bereitstellen!!'
+description: 'Hier erfahren Sie, wie Sie mithilfe des CloudNativePG-Operators eine hochverfügbare PostgreSQL-Datenbank in AKS bereitstellen.'
 ms.topic: overview
-ms.date: 07/24/2024
+ms.date: 06/07/2024
 author: kenkilty
 ms.author: kkilty
 ms.custom: 'innovation-engine, aks-related-content'
 ---
 # Bereitstellen einer hochverfügbaren PostgreSQL-Datenbank in AKS mithilfe der Azure CLI
 
-In diesem Leitfaden stellen Sie einen hochgradig verfügbaren PostgreSQL-Cluster bereit, der mehrere Azure-Verfügbarkeitszonen auf AKS mit Azure CLI umfasst!
+In diesem Leitfaden stellen Sie mithilfe der Azure CLI einen hochverfügbaren PostgreSQL-Cluster bereit, der mehrere Azure-Verfügbarkeitszonen in AKS umfasst.
 
 In diesem Artikel werden die Voraussetzungen für das Einrichten eines PostgreSQL-Clusters in [Azure Kubernetes Service (AKS)][what-is-aks] erläutert. Zudem bietet er einen Überblick über den vollständigen Bereitstellungsprozess und die Architektur.
 
