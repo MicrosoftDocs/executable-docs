@@ -1,8 +1,8 @@
 ---
 title: Panoramica della distribuzione di un database PostgreSQL a disponibilità elevata nel servizio Azure Kubernetes con l'interfaccia della riga di comando di Azure
-description: Informazioni su come distribuire un database PostgreSQL a disponibilità elevata nel servizio Azure Kubernetes usando l'operatore CloudNativePG!!
+description: Informazioni su come distribuire un database PostgreSQL a disponibilità elevata nel servizio Azure Kubernetes usando l'operatore CloudNativePG.
 ms.topic: overview
-ms.date: 07/24/2024
+ms.date: 06/07/2024
 author: kenkilty
 ms.author: kkilty
 ms.custom: 'innovation-engine, aks-related-content'
