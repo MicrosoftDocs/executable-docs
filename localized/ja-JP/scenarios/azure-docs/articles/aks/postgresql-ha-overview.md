@@ -1,15 +1,15 @@
 ---
 title: Azure CLI を使用して高可用性 PostgreSQL データベースを AKS にデプロイする方法の概要
-description: CloudNativePG オペレーターを使用して AKS に高可用性 PostgreSQL データベースをデプロイする方法について説明します。
+description: CloudNativePG オペレーターを使用して高可用性 PostgreSQL データベースを AKS 上にデプロイする方法を学習します。
 ms.topic: overview
-ms.date: 07/24/2024
+ms.date: 06/07/2024
 author: kenkilty
 ms.author: kkilty
 ms.custom: 'innovation-engine, aks-related-content'
 ---
 # Azure CLI を使用して高可用性 PostgreSQL データベースを AKS にデプロイする
 
-このガイドでは、Azure CLI を使用して、AKS 上の複数の Azure 可用性ゾーンにまたがる高可用性 PostgreSQL クラスターをデプロイします。
+このガイドでは、Azure CLI を使用して複数の Azure 可用性ゾーンにまたがる高可用性 PostgreSQL クラスターを AKS 上にデプロイします。
 
 この記事では、PostgreSQL クラスターを [Azure Kubernetes Service (AKS)][what-is-aks] 上で設定するための前提条件を示すとともに、デプロイ プロセス全体とアーキテクチャの概要を説明します。
 
