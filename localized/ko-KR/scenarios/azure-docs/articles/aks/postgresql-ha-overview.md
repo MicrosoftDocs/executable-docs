@@ -2,7 +2,7 @@
 title: Azure CLI를 사용하여 AKS에 고가용성 PostgreSQL 데이터베이스 배포 개요
 description: CloudNativePG 연산자를 사용하여 AKS에 고가용성 PostgreSQL 데이터베이스를 배포하는 방법을 알아봅니다.
 ms.topic: overview
-ms.date: 07/24/2024
+ms.date: 06/07/2024
 author: kenkilty
 ms.author: kkilty
 ms.custom: 'innovation-engine, aks-related-content'
