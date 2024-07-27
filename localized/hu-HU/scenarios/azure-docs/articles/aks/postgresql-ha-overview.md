@@ -1,15 +1,15 @@
 ---
 title: Magas rendelkezésre állású PostgreSQL-adatbázis üzembe helyezésének áttekintése az AKS-ben az Azure CLI-vel
-description: 'Ismerje meg, hogyan helyezhet üzembe magas rendelkezésre állású PostgreSQL-adatbázist az AKS-en a CloudNativePG operátor használatával!'
+description: 'Megtudhatja, hogyan helyezhet üzembe magas rendelkezésre állású PostgreSQL-adatbázist az AKS-en a CloudNativePG operátor használatával.'
 ms.topic: overview
-ms.date: 07/24/2024
+ms.date: 06/07/2024
 author: kenkilty
 ms.author: kkilty
 ms.custom: 'innovation-engine, aks-related-content'
 ---
 # Magas rendelkezésre állású PostgreSQL-adatbázis üzembe helyezése az AKS-ben az Azure CLI-vel
 
-Ebben az útmutatóban üzembe helyez egy magas rendelkezésre állású PostgreSQL-fürtöt, amely több Azure rendelkezésre állási zónát is lefed az AKS-ben az Azure CLI-vel!
+Ebben az útmutatóban egy magas rendelkezésre állású PostgreSQL-fürtöt helyez üzembe, amely több Azure rendelkezésre állási zónát is lefed az AKS-ben az Azure CLI-vel.
 
 Ez a cikk bemutatja a PostgreSQL-fürt Azure Kubernetes Service-ben (AKS)[ való ][what-is-aks]beállításának előfeltételeit, és áttekintést nyújt a teljes üzembehelyezési folyamatról és architektúráról.
 
