@@ -1,15 +1,15 @@
 ---
 title: Översikt över distribution av en PostgreSQL-databas med hög tillgänglighet på AKS med Azure CLI
-description: Lär dig hur du distribuerar en PostgreSQL-databas med hög tillgänglighet på AKS med hjälp av CloudNativePG-operatorn!
+description: Lär dig hur du distribuerar en PostgreSQL-databas med hög tillgänglighet på AKS med hjälp av CloudNativePG-operatorn.
 ms.topic: overview
-ms.date: 07/24/2024
+ms.date: 06/07/2024
 author: kenkilty
 ms.author: kkilty
 ms.custom: 'innovation-engine, aks-related-content'
 ---
 # Distribuera en PostgreSQL-databas med hög tillgänglighet på AKS med Azure CLI
 
-I den här guiden distribuerar du ett PostgreSQL-kluster med hög tillgänglighet som omfattar flera Azure-tillgänglighetszoner i AKS med Azure CLI!
+I den här guiden distribuerar du ett PostgreSQL-kluster med hög tillgänglighet som omfattar flera Azure-tillgänglighetszoner i AKS med Azure CLI.
 
 Den här artikeln går igenom kraven för att konfigurera ett PostgreSQL-kluster i [Azure Kubernetes Service (AKS)][what-is-aks] och ger en översikt över den fullständiga distributionsprocessen och arkitekturen.
 
