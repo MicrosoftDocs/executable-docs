@@ -1,15 +1,15 @@
 ---
 title: Přehled nasazení vysoce dostupné databáze PostgreSQL v AKS pomocí Azure CLI
-description: 'Zjistěte, jak nasadit vysoce dostupnou databázi PostgreSQL v AKS pomocí operátoru CloudNativePG!!'
+description: 'Zjistěte, jak nasadit vysoce dostupnou databázi PostgreSQL v AKS pomocí operátoru CloudNativePG.'
 ms.topic: overview
-ms.date: 07/24/2024
+ms.date: 06/07/2024
 author: kenkilty
 ms.author: kkilty
 ms.custom: 'innovation-engine, aks-related-content'
 ---
 # Nasazení vysoce dostupné databáze PostgreSQL v AKS pomocí Azure CLI
 
-V této příručce nasadíte vysoce dostupný cluster PostgreSQL, který zahrnuje více zón dostupnosti Azure v AKS pomocí Azure CLI!
+V této příručce nasadíte vysoce dostupný cluster PostgreSQL, který zahrnuje více zón dostupnosti Azure v AKS pomocí Azure CLI.
 
 Tento článek vás provede požadavky na nastavení clusteru PostgreSQL ve [službě Azure Kubernetes Service (AKS)][what-is-aks] a poskytuje přehled celého procesu nasazení a architektury.
 
