@@ -1,6 +1,6 @@
 ---
 title: Azure CLI を使用して高可用性 PostgreSQL データベースを AKS にデプロイする方法の概要
-description: CloudNativePG オペレーターを使用して高可用性 PostgreSQL データベースを AKS 上にデプロイする方法を学習します。
+description: Azure CLI で CloudNativePG オペレーターを使用して、AKS に高可用性 PostgreSQL データベースをデプロイする方法について説明します。
 ms.topic: overview
 ms.date: 06/07/2024
 author: kenkilty
