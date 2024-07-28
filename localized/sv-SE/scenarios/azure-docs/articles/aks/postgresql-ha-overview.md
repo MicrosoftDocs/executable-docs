@@ -1,6 +1,6 @@
 ---
 title: Översikt över distribution av en PostgreSQL-databas med hög tillgänglighet på AKS med Azure CLI
-description: Lär dig hur du distribuerar en PostgreSQL-databas med hög tillgänglighet på AKS med hjälp av CloudNativePG-operatorn.
+description: Lär dig hur du distribuerar en PostgreSQL-databas med hög tillgänglighet på AKS med hjälp av CloudNativePG-operatorn med Azure CLI.
 ms.topic: overview
 ms.date: 06/07/2024
 author: kenkilty
