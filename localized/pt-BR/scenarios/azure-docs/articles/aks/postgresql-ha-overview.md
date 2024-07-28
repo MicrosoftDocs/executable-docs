@@ -1,6 +1,6 @@
 ---
 title: Visão geral da implantação de um banco de dados PostgreSQL altamente disponível no AKS com a CLI do Azure
-description: Saiba como implantar um banco de dados PostgreSQL altamente disponível no AKS usando o operador CloudNativePG.
+description: Saiba como implantar um banco de dados PostgreSQL altamente disponível no AKS usando o operador CloudNativePG com a CLI do Azure.
 ms.topic: overview
 ms.date: 06/07/2024
 author: kenkilty
