@@ -1,6 +1,6 @@
 ---
 title: Overzicht van het implementeren van een maximaal beschikbare PostgreSQL-database op AKS met Azure CLI
-description: Meer informatie over het implementeren van een maximaal beschikbare PostgreSQL-database op AKS met behulp van de CloudNativePG-operator.
+description: Meer informatie over het implementeren van een maximaal beschikbare PostgreSQL-database op AKS met behulp van de CloudNativePG-operator met Azure CLI.
 ms.topic: overview
 ms.date: 06/07/2024
 author: kenkilty
