@@ -1,6 +1,6 @@
 ---
 title: Introducción a la implementación de una base de datos PostgreSQL de alta disponibilidad en AKS con la CLI de Azure
-description: Aprenda a implementar una base de datos PostgreSQL de alta disponibilidad en AKS mediante el operador CloudNativePG.
+description: Aprenda a implementar una base de datos postgreSQL de alta disponibilidad en AKS mediante el operador CloudNativePG con la CLI de Azure.
 ms.topic: overview
 ms.date: 06/07/2024
 author: kenkilty
