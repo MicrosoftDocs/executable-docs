@@ -1,13 +1,13 @@
 ---
 title: "Vue d’ensemble du déploiement d’une base de données PostgreSQL hautement disponible sur AKS avec Azure\_CLI"
-description: Découvrez comment déployer une base de données PostgreSQL hautement disponible sur AKS en utilisant l’opérateur CloudNativePG.
+description: Découvrez comment déployer une base de données PostgreSQL hautement disponible sur AKS à l’aide de l’opérateur CloudNativePG avec Azure CLI.
 ms.topic: overview
 ms.date: 06/07/2024
 author: kenkilty
 ms.author: kkilty
 ms.custom: 'innovation-engine, aks-related-content'
 ---
-# Déployer une base de données PostgreSQL hautement disponible sur AKS avec Azure CLI
+# Déployer une base de données PostgreSQL à haute disponibilité sur AKS avec Azure CLI
 
 Dans ce guide, vous allez déployer un cluster PostgreSQL hautement disponible qui couvre plusieurs zones de disponibilité Azure sur AKS avec Azure CLI.
 
