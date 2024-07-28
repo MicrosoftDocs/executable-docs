@@ -1,6 +1,6 @@
 ---
 title: Azure CLI ile AKS'de yüksek oranda kullanılabilir bir PostgreSQL veritabanı dağıtmaya genel bakış
-description: CloudNativePG işlecini kullanarak AKS'de yüksek oranda kullanılabilir bir PostgreSQL veritabanı dağıtmayı öğrenin.
+description: Azure CLI ile CloudNativePG işlecini kullanarak AKS üzerinde yüksek oranda kullanılabilir bir PostgreSQL veritabanı dağıtmayı öğrenin.
 ms.topic: overview
 ms.date: 06/07/2024
 author: kenkilty
