@@ -1,6 +1,6 @@
 ---
 title: Magas rendelkezésre állású PostgreSQL-adatbázis üzembe helyezésének áttekintése az AKS-ben az Azure CLI-vel
-description: 'Megtudhatja, hogyan helyezhet üzembe magas rendelkezésre állású PostgreSQL-adatbázist az AKS-en a CloudNativePG operátor használatával.'
+description: 'Megtudhatja, hogyan helyezhet üzembe magas rendelkezésre állású PostgreSQL-adatbázist az AKS-en a CloudNativePG operátorral az Azure CLI-vel.'
 ms.topic: overview
 ms.date: 06/07/2024
 author: kenkilty
