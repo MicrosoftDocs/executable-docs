@@ -1,6 +1,6 @@
 ---
 title: Gambaran umum penyebaran database PostgreSQL yang sangat tersedia di AKS dengan Azure CLI
-description: Pelajari cara menyebarkan database PostgreSQL yang sangat tersedia di AKS menggunakan operator CloudNativePG.
+description: Pelajari cara menyebarkan database PostgreSQL yang sangat tersedia di AKS menggunakan operator CloudNativePG dengan Azure CLI.
 ms.topic: overview
 ms.date: 06/07/2024
 author: kenkilty
