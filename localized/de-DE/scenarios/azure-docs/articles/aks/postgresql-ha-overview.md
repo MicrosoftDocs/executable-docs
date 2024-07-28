@@ -1,6 +1,6 @@
 ---
 title: Übersicht über die Bereitstellung einer hochverfügbaren PostgreSQL-Datenbank in AKS mithilfe der Azure CLI
-description: 'Hier erfahren Sie, wie Sie mithilfe des CloudNativePG-Operators eine hochverfügbare PostgreSQL-Datenbank in AKS bereitstellen.'
+description: 'Erfahren Sie, wie Sie eine hoch verfügbare PostgreSQL-Datenbank auf AKS mithilfe des CloudNativePG-Operators mit Azure CLI bereitstellen.'
 ms.topic: overview
 ms.date: 06/07/2024
 author: kenkilty
