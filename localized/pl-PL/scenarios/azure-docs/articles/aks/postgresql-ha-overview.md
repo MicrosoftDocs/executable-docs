@@ -1,6 +1,6 @@
 ---
 title: Omówienie wdrażania bazy danych PostgreSQL o wysokiej dostępności w usłudze AKS przy użyciu interfejsu wiersza polecenia platformy Azure
-description: 'Dowiedz się, jak wdrożyć bazę danych PostgreSQL o wysokiej dostępności w usłudze AKS przy użyciu operatora CloudNativePG.'
+description: 'Dowiedz się, jak wdrożyć bazę danych PostgreSQL o wysokiej dostępności w usłudze AKS przy użyciu operatora CloudNativePG z interfejsem wiersza polecenia platformy Azure.'
 ms.topic: overview
 ms.date: 06/07/2024
 author: kenkilty
