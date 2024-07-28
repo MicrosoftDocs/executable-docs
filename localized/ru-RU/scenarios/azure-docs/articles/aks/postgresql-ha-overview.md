@@ -1,6 +1,6 @@
 ---
 title: Обзор развертывания высокодоступной базы данных PostgreSQL в AKS с помощью Azure CLI
-description: 'Узнайте, как развернуть высокодоступную базу данных PostgreSQL в AKS с помощью оператора CloudNativePG.'
+description: 'Узнайте, как развернуть высокодоступную базу данных PostgreSQL в AKS с помощью оператора CloudNativePG с помощью Azure CLI.'
 ms.topic: overview
 ms.date: 06/07/2024
 author: kenkilty
