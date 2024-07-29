@@ -8,35 +8,82 @@ These experiences utilize [Innovation Engine](https://github.com/Azure/Innovatio
 
 ## How to Write an Exec Doc
 
+### Prerequisites
+
 Follow these steps to write an Exec Doc either by converting an existing Azure Doc or from scratch:
 
-1. [Set up Windows Subsystem for Linux (WSL)](https://learn.microsoft.com/en-us/windows/wsl/tutorials/wsl-vscode) locally in your IDE like VS Code 
+1. Ensure your Exec Doc is a markdown file. 
 
-2. Set up azure-docs-pr in your local machine 
-    
-    - Fork the [MicrosoftDocs/azure-docs-pr](https://github.com/MicrosoftDocs/azure-docs-pr) repo, which is where docs changes are made internally. Your fork URL would contain the following within: `<your_github_username>/azure-docs-pr` 
+    >**Note:** If you are convering an existing Azure Doc to an Exec Doc, you can either find the Azure Doc in your fork or copy the raw markdown content of the Azure Doc into a new markdown file in your local repo. 
 
-    - Clone a copy of your fork to your local machine 
-
-    - Make any changes to an existing/new Exec Doc in an IDE such as VS Code 
-
-    - Push all changes to your fork as necessary 
-
-3. Ensure your Exec Doc is a markdown file.
-
-    >**Note:** If you are convering an existing Azure Doc to an Exec Doc, you can simply copy the raw markdown content of the Azure Doc into a new markdown file in your local repo
-
-4. Ensure your Exec Doc is written with the LF line break type
+2. Ensure your Exec Doc is written with the LF line break type.
 
     **Example:** 
 
     ![LF VSCode](https://github.com/MicrosoftDocs/executable-docs/assets/146123940/3501cd38-2aa9-4e98-a782-c44ae278fc21)
 
-    >**Note:** It will appear according to the IDE you are using. For the VS Code IDE, it is given at the bottom right corner of the screen. 
+    >**Note:** The will appear according to the IDE you are using. For the VS Code IDE, you can check this by clicking on the LF/CLRF button at the bottom right corner of the screen.
 
-5. Ensure all dependencies that your Exec Doc references live under the same parent folder as your Exec Doc
+3. Ensure all files that your Exec Doc references live under the same parent folder as your Exec Doc
 
-6. Appropriately add metadata at the start of the Exec Doc. Here are some mandatory fields:
+    **Example:** 
+
+    If your Exec Doc ***my-exec-doc.md*** references a script file ***my-script.yaml*** within, the script file should be in the same folder as the Exec Doc. 
+
+    ```bash 
+    ├── master-folder
+    │   └── parent-folder
+    │       ├── my-exec-doc.md 
+    │       └── my-script.yaml 
+    ``` 
+
+4. Ensure that the Exec Doc contains at least 1 code block and every input code block's type in the Exec Doc is taken from this list (this does not apply to [result blocks](https://github.com/Azure/InnovationEngine/blob/main/README.md#result-blocks), explained later in this doc): 
+ 
+    - bash 
+    - terraform 
+    - azurecli
+    - azure-cli-interactive 
+    - azurecli-interactive 
+
+    **Example:** 
+
+    ```bash 
+    az group create --name $MY_RESOURCE_GROUP_NAME --location $REGION 
+    ``` 
+
+    >**Note:** If you are converting an existing Azure Doc to an Exec Doc, it may already have code block(s). 
+
+    >**Note:** While Innovation Engine can _parse_ a code block of any type, given its current features, it can only _execute_ code blocks of the types above. So, it is important to ensure that the code blocks in your Exec Doc are of the types above.
+
+5. Ensure there is a new line before and after every content heading, subheading, description, and code block 
+
+6. Ensure the section headings are appropriate in the Exec Doc 
+
+    - You can have only one h1 heading 
+    - You can have multiple h2s and h3s subheadings  
+    - You should not have any h4 headings 
+
+### Steps to Write an Exec Doc
+
+1. [Set up Windows Subsystem for Linux (WSL)](https://learn.microsoft.com/en-us/windows/wsl/tutorials/wsl-vscode) locally in your IDE like VS Code. 
+
+    >**Note:** Innovation Engine is a Linux-based tool and hence it is recommended to write Exec Docs in a Linux environment. Most doc authors use VS Code in WSL to write Exec Docs.
+
+2. Set up the relevant reository in your local machine. This example covers the **azure-docs-pr** repo.
+    
+    - Get access to the relevant repo in [MicrosoftDocs](https://github.com/MicrosoftDocs) in case it is private and/or you do not have access to it. 
+    
+    - Fork the [MicrosoftDocs/azure-docs-pr](https://github.com/MicrosoftDocs/azure-docs-pr) repo, which is where docs changes are made internally. Your fork URL would contain the following within: `<your_github_username>/azure-docs-pr` 
+
+    - Clone a copy of your fork to your local machine. [Guidance on how to fork and clone a GitHub repo](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/working-with-forks/fork-a-repo) 
+
+    - Make any changes to an existing/new Exec Doc in an IDE, such as VS Code. If it is an existing Azure Doc, you can find its filepath easily by clicking the pencil icon in the public doc and use that filepath to find the doc in your fork.
+
+    - Push all changes to your fork as necessary 
+
+    >**Note:** You are not confined to use VS Code in WSL. You can use any IDE that supports markdown language. However, VS Code in WSL is recommended as it is the most common setup among doc authors.
+
+3. Appropriately add metadata at the start of the Exec Doc. Here are some mandatory fields:
 
     - title = the title of the Exec Doc
     - description = the description of the Exec Doc
@@ -44,7 +91,7 @@ Follow these steps to write an Exec Doc either by converting an existing Azure D
     - ms.date = the date the Exec Doc was last updated by author 
     - author = author's GitHub username 
     - ms.author = author's username (e.g. Microsoft Alias)
-    - ms.custom = comma-separated list of tags to identify the Exec Doc (innovation-engine, linux-related-content are two tags that need to be in this list) 
+    - **ms.custom = comma-separated list of tags to identify the Exec Doc (innovation-engine, linux-related-content are two tags that need to be in this list)**
         
     **Example:** 
 
@@ -53,56 +100,45 @@ Follow these steps to write an Exec Doc either by converting an existing Azure D
     title: 'Quickstart: Deploy an Azure Kubernetes Service (AKS) cluster using Azure CLI' 
     description: Learn how to quickly deploy a Kubernetes cluster and deploy an application in Azure Kubernetes Service (AKS) using Azure CLI. 
     ms.topic: quickstart 
-    ms.date: 04/09/2024 
+    ms.date: 11/11/2021 
     author: namanparikh 
     ms.author: namanaprikh 
     ms.custom: devx-track-azurecli, mode-api, innovation-engine, linux-related-content 
     ---
     ```
 
-7. Ensure that the Exec Doc contains at least 1 code block   
-
-8. Ensure every code block's type in the Exec Doc is taken from this list: 
-
-    - azurecli 
-    - bash 
-    - terraform 
-    - azure-cli-interactive 
-    - azurecli-interactive 
-    - console 
-    - output 
-    - json 
-    - yaml 
-
-    **Example:** 
-
-    ```bash 
-    az group create --name $MY_RESOURCE_GROUP_NAME --location $REGION 
-    ``` 
-
-9. Declare environment variables as they are being used in the Exec Doc and add a random suffix at the end of variable(s) as needed. 
+4. Declare environment variables as they are being used in the Exec Doc. 
 
     **Example:** 
     
-    ### Test Section
+    ***Test Section***
 
-    We are in the middle of the doc and we will now create a resource group on Azure.
+    We are in the middle of the Exec Doc and we will now list the available regions for our Azure subscription.
 
-    ```bash 
-    export RANDOM_ID="$(openssl rand -hex 3)" 
-    export MY_RESOURCE_GROUP_NAME="myAKSResourceGroup$RANDOM_ID" 
-    az group create --name $MY_RESOURCE_GROUP_NAME --location $REGION
+    ```bash  
+    export REGION="eastus"
+    az account list-locations --query "[?name=='$REGION']"
     ``` 
 
-    >**Note:** A major component of Exec Docs is automated infrastructure deployment on the Cloud. \
+    >**Note:** Environment variables are dynamic values that store configuration settings, system paths, and other information that can be accessed throughout a doc. By using environment variables, you can separate configuration details from the code, making it easier to manage and deploy applications in an environment like Exec Docs. \
     \
-    While testing the doc, if you do not update relevant variable names, when it is run more than once it will fail as the resource group or other resources will already exist. \
+    If you are converting an existing Azure Doc to an Exec Doc and the Azure Doc does not contain random suffixes for environment variables or environment variables at all, it is an Exec Doc writing best practice to add them.
+    
+5. Add a random suffix at the end of _relevant_ environment variable(s). The example below shows how this would work when you are creating a resource group.
+
+    **Example:** 
+
+    ```bash  
+    export RANDOM_SUFFIX=$(openssl rand -hex 3)
+    export REGION="eastus"
+    az group create --name "MyResourceGroup$RANDOM_SUFFIX" --location $REGION
+    ```
+
+    >**Note:** A major component of Exec Docs is automated infrastructure deployment on the cloud. While testing the doc, if you do not update relevant environment variable names, the doc will fail when run more than once as the resource group or other resources will already exist from the previous runs. \
     \
-    Hence, it is important to add a random suffix to relevant variables like resource group names, VM names, etc. However, don't add one to variables like region, username, etc. whose values are constant. 
+    Hence, it is important to add a random suffix to variables that are likely to be unique for each deployment, such as resource group names, VM names, and other resources that need to be uniquely identifiable. However, do not add a random suffix to variables that are constant or environment-specific, such as region, username, or configuration settings that do not change between deployments.
 
-    >**Note:** If you are converting an existing Azure Doc to an Exec Doc and the Azure Doc does not contain random suffixes for environment variables or environment variables at all, it is an Exec Doc writing best practice to add them.
-
-10. Add result block(s) below code block(s) whose output you you want Innovation Engine to verify. And ensure it has all the PII (Personal Identifiable Information) stricken out from it and replaced with x’s.
+6. Add result block(s) below code block(s) whose output you want Innovation Engine to verify. Ensure result block(s) have all the PII (Personally Identifiable Information) stricken out from them and replaced with x’s.
 
     **Example:** 
 
@@ -118,26 +154,21 @@ Follow these steps to write an Exec Doc either by converting an existing Azure D
         } 
         ```
     ```
-
-    >**Note:** In Exec Docs, result blocks are distinguished by a custom expected_similarity comment tag followed by a code block. \
+    >**Note:** In Exec Docs, result blocks are distinguished by a custom expected_similarity comment tag followed by a code block \
     \
-    The expected similarity value is a floating point number between 0 and 1 which specifies how closely the output needs to match the results block. 0 being no similarity, 1 being an exact match. \
+    The expected similarity value is a floating point number between 0 and 1 which specifies how closely the output needs to match the results block. 0 being no similarity, 1 being an exact match \
     \
-    These result blocks indicate to Innovation Engine what the minimum degree of similarity should be between the actual and the expected output of a code block (which returns something in the terminal). Learn More: [Result Blocks](#result-blocks)
+    These result blocks indicate to Innovation Engine what the minimum degree of similarity should be between the actual and the expected output of a code block (which returns something in the terminal). Learn More: [Result Blocks](https://github.com/Azure/InnovationEngine/blob/main/README.md#result-blocks)
 
-11. If you are converting an existing Azure Doc to an Exec Doc and if the existing doc contains a “Delete Resources” (or equivalent section) and contains a command to delete resources within, remove that section entirely. 
+    >**Note:** Redacting PII from the output helps protect sensitive information from being inadvertently shared or exposed. This is crucial for maintaining privacy, complying with data protection regulations, and furthering the company's security posture. \
+    \
+    Here are some examples of PII in result blocks: Unique identifiers for resources, Email Addresses, Phone Numbers, IP Addresses, Credit Card Numbers, Social Security Numbers (SSNs), Usernames, Resource Names, Subscription IDs, Resource Group Names, Tenant IDs, Service Principal Names, Client IDs, Secrets and Keys
 
-    >**Note:** If command blocks are retained, Innovation Engine would execute the command(s) and delete the resources, which is something we do not want 
+7. If you are converting an existing Azure Doc to an Exec Doc and if the existing doc contains a “Delete Resources” (or equivalent section) comprising resource/other deletion command(s), remove that section entirely
 
-12. Ensure there is a new line before and after every content heading, subheading, description, and code block 
+    >**Note:** We remove commands from this section ***only*** in Exec Docs. This is because Innovation Engine executes all relevant command(s) that it encounters, inlcuding deleting the resources. That would be counterproductive to automated deployment of cloud infrastructure
 
-13. Ensure the section headings are appropriate in the Exec Doc 
-
-    - You can have only one h1 heading 
-    - You can have multiple h2s and h3s subheadings  
-    - You should not have any h4 headings 
-
-14. Test the Exec Doc using Innovation Engine (IE) inside Azure Cloudshell 
+8. Test the Exec Doc using Innovation Engine (IE) inside Azure Cloudshell 
 
     - [Open Azure Cloudshell](https://ms.portal.azure.com/#cloudshell/) 
     - **[Optional]**: Set your active subscription to the one you are using to test Exec Docs. Ideally, this sub should have permissions to run commands in your tested Exec Docs. Run the following command: 
@@ -156,13 +187,34 @@ Follow these steps to write an Exec Doc either by converting an existing Azure D
         ie execute <URL to the raw Exec Doc markdown that lives in GitHub, etc.>
         ``` 
 
-15. Create a PR in GitHub once a doc is ready to be uploaded, pointing to the upstream repo [MicrosoftDocs/azure-docs-pr](https://github.com/MicrosoftDocs/azure-docs-pr) 
+9. Submit and review the Exec Doc in the upstream repo once the doc passes all Innovation Engine tests
+    - Create a PR in GitHub once the Exec Doc is ready to be uploaded, pointing to the upstream repo from your fork
+    - Assign the original Exec Doc author (if not you) as a reviewer to the PR. In most cases, thia assignment should happen automatically and should also include a reviewer from the Skilling team
+    - Add ***#sign-off***  in the PR comments once the Exec Doc is successfully reviewed. This will trigger the automated pipeline to merge the PR into the public repo
 
-16. Assign the original Exec Doc author (if not you) as a reviewer to the PR 
+10. Test the Exec Doc on the Azure Portal test environment once the PR is merged. An example has been given for the 
+    - The [executable-docs repo](https://github.com/MicrosoftDocs/executable-docs/tree/main) is used to render the experience on Portal. A GitHub Action will sync your published Exec Doc in the executable-docs repo and create a PR to merge it in its main branch. Wait until you receive a notification from that PR: it will tag you and request you to test your Exec Doc in the test environment of our experience before the merge happens
 
-17. Add ***#sign-off***  in the PR comments once the Exec Doc is successfully reviewed  
+        **Example:** 
+        
+    - Click the URL and locate your Exec Doc from the cards page 
 
-18. Confirm that the PR has merged into the public repo after (upto) ~24 hours: [MicrosoftDocs/azure-docs](https://github.com/MicrosoftDocs/azure-docs) 
+        **Example:** 
+    
+    - Click either **Quick deployment** or **Guided deployment** and follow the instructions to test the Exec Doc
+    - If the test fails, update the source doc in your upstream repo so that the GitHub action can sync the updated doc and allow you to test it. 
+    
+        >**Note:** Refer to the [FAQ section](#frequently-asked-questions-faqs) below for troubleshooting tips. If you are unable to resolve the issue, reach out to the [Exec Docs Team](#points-of-contact-for-exec-docs) for help.
+    - Once the test is successful, send a screenshot of the post-deployment success page in the PR where you got tagged to test the Exec Doc. An example has been given below. After doing this, the PR will be merged into the main branch
+
+        **Example:**
+
+11. Add the ***Deploy to Azure*** button to the source doc published on [Microsoft Learn](https://learn.microsoft.com/en-us/) or elsewhere once the PR is merged. The format of the link would be as follows: 
+
+    **Example:**
+    ```markdown
+    [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://ms.portal.azure.com/#view/Microsoft_Azure_CloudNative/SubscriptionSelectionPage.ReactView/isLearnMode~/true/referer/docs/tutorialKey/ **file path to the Exec Doc with / replaced with %2F**)
+    ```
 
 ## Current Exec Docs Experience
 
@@ -179,6 +231,8 @@ Exec Docs is a deployment vehicle that has different entry points into the exper
 ![Exec Docs Pipeline](https://github.com/user-attachments/assets/f37ef14c-a1bc-467d-8f4e-b4b033127825)
 
 ## Frequently Asked Questions (FAQs)
+
+## Points of Contact for Exec Docs
 
 ## Trademarks
 

@@ -269,10 +269,22 @@ jobs:
         # Replace `branch_name` with the name of your branch
         BRANCH_NAME=$(git branch --show-current)
         PR_TITLE="Merge $BRANCH_NAME to main"
-        PR_BODY="This PR merges $BRANCH_NAME branch with main.\n\nURL: https://ms.portal.azure.com/?Microsoft_Azure_CloudNative_clientoptimizations=false&feature.canmodifyextensions=true&feature.scenarioTester=true#view/Microsoft_Azure_CloudNative/TutorialsPage.ReactView/scenariosVersion/t1.0.${{ env.success_count }}"
+        # Extract author information from the file
+        FILE_PATH=$(echo $BRANCH_NAME | sed 's/_/\//g')
+        # Check if the file exists
+        if [ -f "$FILE_PATH" ]; then
+          AUTHOR=$(grep -oP 'author: \K(.+)' $FILE_PATH || echo "")
+          MS_AUTHOR=$(grep -oP 'ms.author: \K(.+)' $FILE_PATH || echo "")
+        else
+          AUTHOR=""
+          MS_AUTHOR=""
+        fi       
+        PR_BODY="This PR attempts to publish your Exec Doc. In order to do that, please test your Exec Doc associated with the branch $BRANCH_NAME in the URL below.\n\nExec Doc Test URL: https://ms.portal.azure.com/?Microsoft_Azure_CloudNative_clientoptimizations=false&feature.canmodifyextensions=true&feature.scenarioTester=true#view/Microsoft_Azure_CloudNative/TutorialsPage.ReactView/scenariosVersion/t1.0.${{ env.success_count }}\n\nAuthors: $AUTHOR, $MS_AUTHOR"
         PR_API_URL="https://api.github.com/repos/${{ github.repository }}/pulls"
         PR_PAYLOAD="{\"title\":\"$PR_TITLE\",\"body\":\"$PR_BODY\",\"head\":\"$BRANCH_NAME\",\"base\":\"main\"}"
         PR_RESPONSE=$(curl -X POST -H "Authorization: token ${{ secrets.PAT }}" -H "Content-Type: application/json" -d "$PR_PAYLOAD" "$PR_API_URL")
         echo $PR_RESPONSE
         PR_NUMBER=$(echo $PR_RESPONSE | jq '.number')
         echo "Pull Request created: #$PR_NUMBER"
+
+        
