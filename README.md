@@ -197,10 +197,12 @@ Follow these steps to write an Exec Doc either by converting an existing Azure D
 
         **Example:** 
         
-    - Click the URL and locate your Exec Doc from the cards page 
+    - Click the URL and locate your Exec Doc from the cards page
+      
+        **Example:**
 
-        **Example:** 
-    
+      ![Exec Docs Test Environment ](https://github.com/user-attachments/assets/50f447f4-fad9-4ec2-8cc0-159aca59eec3)
+
     - Click either **Quick deployment** or **Guided deployment** and follow the instructions to test the Exec Doc
     - If the test fails, update the source doc in your upstream repo so that the GitHub action can sync the updated doc and allow you to test it. 
     
@@ -208,6 +210,8 @@ Follow these steps to write an Exec Doc either by converting an existing Azure D
     - Once the test is successful, send a screenshot of the post-deployment success page in the PR where you got tagged to test the Exec Doc. An example has been given below. After doing this, the PR will be merged into the main branch
 
         **Example:**
+
+      ![Post Deployment Success Page Test Environment](https://github.com/user-attachments/assets/ed97c482-8810-4f0e-8040-cb392e4e9cef)
 
 11. Add the ***Deploy to Azure*** button to the source doc published on [Microsoft Learn](https://learn.microsoft.com/en-us/) or elsewhere once the PR is merged. The format of the link would be as follows: 
 
@@ -228,7 +232,7 @@ Exec Docs is a deployment vehicle that has different entry points into the exper
 
 ## Exec Docs Publishing Pipeline
 
-![Exec Docs Pipeline](https://github.com/user-attachments/assets/f37ef14c-a1bc-467d-8f4e-b4b033127825)
+![Exec Docs Pipeline](https://github.com/user-attachments/assets/8102b631-634a-498c-a3a5-c099380acb07)
 
 ## Frequently Asked Questions (FAQs)
 
