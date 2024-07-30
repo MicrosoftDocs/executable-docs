@@ -201,7 +201,7 @@ Follow these steps to write an Exec Doc either by converting an existing Azure D
       
         **Example:**
 
-      ![Exec Docs Test Environment ](https://github.com/user-attachments/assets/50f447f4-fad9-4ec2-8cc0-159aca59eec3)
+      ![Exec Docs Test Environment ](https://github.com/user-attachments/assets/8ab578a7-8b2f-4099-a34a-8824ba6bf50b)
 
     - Click either **Quick deployment** or **Guided deployment** and follow the instructions to test the Exec Doc
     - If the test fails, update the source doc in your upstream repo so that the GitHub action can sync the updated doc and allow you to test it. 
@@ -211,7 +211,7 @@ Follow these steps to write an Exec Doc either by converting an existing Azure D
 
         **Example:**
 
-      ![Post Deployment Success Page Test Environment](https://github.com/user-attachments/assets/ed97c482-8810-4f0e-8040-cb392e4e9cef)
+      ![Post Deployment Success Page Test Environment](https://github.com/user-attachments/assets/f002cd97-6bab-41a9-8c83-227e9b2da9cf)
 
 11. Add the ***Deploy to Azure*** button to the source doc published on [Microsoft Learn](https://learn.microsoft.com/en-us/) or elsewhere once the PR is merged. Using the example Exec Doc mentioned above, follow these steps to add the button:
 
@@ -234,8 +234,12 @@ Follow these steps to write an Exec Doc either by converting an existing Azure D
         ```
 
         **Example of Button in Live Exec Doc:**
+   
+      
 
         >**Note:** The ***Deploy to Azure*** button is a clickable button that allows users to deploy the architecture described in the Exec Doc directly to their Azure subscription. This button is added to the source doc published on Microsoft Learn or elsewhere.
+        
+      ![Deploy to Azure Button on Live Exec Doc](https://github.com/user-attachments/assets/3bfc1df7-8e33-4f22-b070-c365a6c3e917)
 
 ## Current Exec Docs Experience
 
