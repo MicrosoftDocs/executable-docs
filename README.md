@@ -147,9 +147,9 @@ Follow these steps to write an Exec Doc either by converting an existing Azure D
     ```
     >**Note:** In Exec Docs, result blocks are distinguished by a custom expected_similarity comment tag followed by a code block \
     \
-    The expected similarity value is a floating point number between 0 and 1 which specifies how closely the output needs to match the results block. 0 being no similarity, 1 being an exact match \
+    These result blocks indicate to Innovation Engine what the minimum degree of similarity should be between the actual and the expected output of a code block (which returns something in the terminal). Learn More: [Result Blocks](https://github.com/Azure/InnovationEngine/blob/main/README.md#result-blocks) \
     \
-    These result blocks indicate to Innovation Engine what the minimum degree of similarity should be between the actual and the expected output of a code block (which returns something in the terminal). Learn More: [Result Blocks](https://github.com/Azure/InnovationEngine/blob/main/README.md#result-blocks)
+    >The expected similarity value is a floating point number between 0 and 1 which specifies how closely the output needs to match the results block. 0 being no similarity, 1 being an exact match 
 
     >**Note:** Redacting PII from the output helps protect sensitive information from being inadvertently shared or exposed. This is crucial for maintaining privacy, complying with data protection regulations, and furthering the company's security posture. \
     \
