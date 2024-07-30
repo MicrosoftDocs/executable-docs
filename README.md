@@ -28,7 +28,7 @@ Follow these steps to write an Exec Doc either by converting an existing Azure D
     
     >**Note:** You are not confined to use VS Code in WSL. You can use any IDE that supports markdown language. However, VS Code in WSL is recommended as it is the most common setup among doc authors.
 
-3. Check if all prerequisites below are met before writing the Exec Doc. ***If any of the below prerequisites are not met, then this wouldn't be a valid Exec Doc candidate, in which case do not move to the next step until you find a doc that meets all prerequisite***
+3. Check if all prerequisites below are met before writing the Exec Doc. ***If any of the below prerequisites are not met, then this wouldn't be a valid Exec Doc candidate, in which case do not move to the next step until you find a doc that meets all prerequisites***
 
     - Ensure your Exec Doc is a markdown file. 
 
