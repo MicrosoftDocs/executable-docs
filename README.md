@@ -196,11 +196,11 @@ Follow these steps to write an Exec Doc either by converting an existing Azure D
     - The [executable-docs repo](https://github.com/MicrosoftDocs/executable-docs/tree/main) is used to render the experience on Portal. A GitHub Action will sync your published Exec Doc in the executable-docs repo and create a PR to merge it in its main branch. Wait until you receive a notification from that PR: it will tag you and request you to test your Exec Doc before the merge happens
 
         **Example:**
-
-      ![PR Template for Exec Docs Testing](https://github.com/user-attachments/assets/499e09b1-8b9a-46c9-af28-54478e848fd3)
+      
+      ![PR Template for Exec Docs Testing](https://github.com/user-attachments/assets/860e6153-5f95-4ebc-b774-2f30ef3a6219)
         
     - Click the URL in the PR description, which will take you to the test environment. Locate your Exec Doc from the cards page using doc metadata, etc.
-      
+    
         **Example:**
 
       ![Exec Docs Test Environment ](https://github.com/user-attachments/assets/8ab578a7-8b2f-4099-a34a-8824ba6bf50b)
