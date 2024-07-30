@@ -180,7 +180,7 @@ Follow these steps to write an Exec Doc either by converting an existing Azure D
 
 10. Submit and review the Exec Doc in the upstream repo once the doc passes all Innovation Engine tests
     - Create a PR in GitHub once the Exec Doc is ready to be uploaded, pointing to the upstream repo from your fork
-    - Assign the original Exec Doc author (if not you) as a reviewer to the PR. In most cases, thia assignment should happen automatically and should also include a reviewer from the Skilling team
+    - Assign the original Exec Doc author (if not you) as a reviewer to the PR. In most cases, this assignment should happen automatically and should also include a reviewer from the Skilling team
     - Add ***#sign-off***  in the PR comments once the Exec Doc is successfully reviewed. This will trigger the automated pipeline to merge the PR into the public repo
 
 11. Test the Exec Doc on the Azure Portal test environment once the PR is merged. The steps below explain the process with an example [Exec Doc](https://learn.microsoft.com/en-us/azure/aks/learn/quick-kubernetes-deploy-cli) that deploys an Azure Kubernetes Service (AKS) cluster using Azure CLI.
