@@ -155,7 +155,7 @@ Follow these steps to write an Exec Doc either by converting an existing Azure D
     \
     Here are some examples of PII in result blocks: Unique identifiers for resources, Email Addresses, Phone Numbers, IP Addresses, Credit Card Numbers, Social Security Numbers (SSNs), Usernames, Resource Names, Subscription IDs, Resource Group Names, Tenant IDs, Service Principal Names, Client IDs, Secrets and Keys
 
-7. If you are converting an existing Azure Doc to an Exec Doc and if the existing doc contains a “Delete Resources” (or equivalent section) comprising resource/other deletion command(s), remove that section entirely
+7. If you are converting an existing Azure Doc to an Exec Doc and if the existing doc contains a “Delete Resources” (or equivalent section) comprising resource/other deletion command(s), remove the code blocks in that section or remove that section entirely 
 
     >**Note:** We remove commands from this section ***only*** in Exec Docs. This is because Innovation Engine executes all relevant command(s) that it encounters, inlcuding deleting the resources. That would be counterproductive to automated deployment of cloud infrastructure
 
