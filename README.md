@@ -8,62 +8,7 @@ These experiences utilize [Innovation Engine](https://github.com/Azure/Innovatio
 
 ## How to Write an Exec Doc
 
-### Prerequisites
-
 Follow these steps to write an Exec Doc either by converting an existing Azure Doc or from scratch:
-
-1. Ensure your Exec Doc is a markdown file. 
-
-    >**Note:** If you are converting an existing Azure Doc to an Exec Doc, you can either find the Azure Doc in your fork or copy the raw markdown content of the Azure Doc into a new markdown file in your local repo. 
-
-2. Ensure your Exec Doc is written with the LF line break type.
-
-    **Example:** 
-
-    ![LF VSCode](https://github.com/MicrosoftDocs/executable-docs/assets/146123940/3501cd38-2aa9-4e98-a782-c44ae278fc21)
-
-    >**Note:** The will appear according to the IDE you are using. For the VS Code IDE, you can check this by clicking on the LF/CLRF button at the bottom right corner of the screen.
-
-3. Ensure all files that your Exec Doc references live under the same parent folder as your Exec Doc
-
-    **Example:** 
-
-    If your Exec Doc ***my-exec-doc.md*** references a script file ***my-script.yaml*** within, the script file should be in the same folder as the Exec Doc. 
-
-    ```bash 
-    ├── master-folder
-    │   └── parent-folder
-    │       ├── my-exec-doc.md 
-    │       └── my-script.yaml 
-    ``` 
-
-4. Ensure that the Exec Doc contains at least 1 code block and every input code block's type in the Exec Doc is taken from this list (this does not apply to [result blocks](https://github.com/Azure/InnovationEngine/blob/main/README.md#result-blocks), explained later in this doc): 
- 
-    - bash 
-    - terraform 
-    - azurecli
-    - azure-cli-interactive 
-    - azurecli-interactive 
-
-    **Example:** 
-
-    ```bash 
-    az group create --name $MY_RESOURCE_GROUP_NAME --location $REGION 
-    ``` 
-
-    >**Note:** If you are converting an existing Azure Doc to an Exec Doc, it may already have code block(s). 
-
-    >**Note:** While Innovation Engine can _parse_ a code block of any type, given its current features, it can only _execute_ code blocks of the types above. So, it is important to ensure that the code blocks in your Exec Doc are of the types above.
-
-5. Ensure there is a new line before and after every content heading, subheading, description, and code block 
-
-6. Ensure the section headings are appropriate in the Exec Doc 
-
-    - You can have only one h1 heading 
-    - You can have multiple h2s and h3s subheadings  
-    - You should not have any h4 headings 
-
-### Steps to Write an Exec Doc
 
 1. [Set up Windows Subsystem for Linux (WSL)](https://learn.microsoft.com/en-us/windows/wsl/tutorials/wsl-vscode) locally in your IDE like VS Code. 
 
@@ -82,6 +27,54 @@ Follow these steps to write an Exec Doc either by converting an existing Azure D
     - Push all changes to your fork as necessary 
 
     >**Note:** You are not confined to use VS Code in WSL. You can use any IDE that supports markdown language. However, VS Code in WSL is recommended as it is the most common setup among doc authors.
+
+3. Check if all prerequisites below are met before writing the Exec Doc. ***If any of the above prerequisites are not met, then this wouldn't be a valid Exxec Doc candidate, in which case do not move to the next step until you find a doc that meets all prerequisite***
+
+    - Ensure your Exec Doc is a markdown file. 
+
+        >**Note:** If you are converting an existing Azure Doc to an Exec Doc, you can either find the Azure Doc in your fork or copy the raw markdown content of the Azure Doc into a new markdown file in your local repo. 
+
+    - Ensure your Exec Doc is written with the LF line break type.
+
+        **Example:** 
+
+        ![LF VSCode](https://github.com/MicrosoftDocs/executable-docs/assets/146123940/3501cd38-2aa9-4e98-a782-c44ae278fc21)
+
+        >**Note:** The will appear according to the IDE you are using. For the VS Code IDE, you can check this by clicking on the LF/CLRF button at the bottom right corner of the screen.
+
+    - Ensure all files that your Exec Doc references live under the same parent folder as your Exec Doc
+
+        **Example:** 
+
+        If your Exec Doc ***my-exec-doc.md*** references a script file ***my-script.yaml*** within, the script file should be in the same folder as the Exec Doc. 
+
+        ```bash 
+        ├── master-folder
+        │   └── parent-folder
+        │       ├── my-exec-doc.md 
+        │       └── my-script.yaml 
+        ``` 
+
+    - Ensure that the Exec Doc contains at least 1 code block and every input code block's type in the Exec Doc is taken from this list (this does not apply to [result blocks](https://github.com/Azure/InnovationEngine/blob/main/README.md#result-blocks), explained later in this doc): 
+    
+        - bash 
+        - azurecli
+        - azure-cli-interactive 
+        - azurecli-interactive 
+
+        **Example:** 
+
+        ```bash 
+        az group create --name $MY_RESOURCE_GROUP_NAME --location $REGION 
+        ``` 
+
+        >**Note:** If you are converting an existing Azure Doc to an Exec Doc, it may already have code block(s). 
+
+        >**Note:** While Innovation Engine can _parse_ a code block of any type, given its current features, it can only _execute_ code blocks of the types above. So, it is important to ensure that the code blocks in your Exec Doc are of the types above.
+
+    - Ensure there is a new line before and after every content heading, subheading, description, and code block 
+
+    - Ensure there is at least one h1 heading in the Exec Doc
 
 3. Appropriately add metadata at the start of the Exec Doc. Here are some mandatory fields:
 
