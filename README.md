@@ -113,7 +113,7 @@ Follow these steps to write an Exec Doc either by converting an existing Azure D
 
     >**Note:** Environment variables are dynamic values that store configuration settings, system paths, and other information that can be accessed throughout a doc. By using environment variables, you can separate configuration details from the code, making it easier to manage and deploy applications in an environment like Exec Docs. \
     \
-    If you are converting an existing Azure Doc to an Exec Doc and the Azure Doc does not contain random suffixes for environment variables or environment variables at all, it is an Exec Doc writing best practice to add them.
+    If you are converting an existing Azure Doc to an Exec Doc and the Azure Doc does not environment variables at all, it is an Exec Doc writing best practice to add them.
     
 5. Add a random suffix at the end of _relevant_ environment variable(s). The example below shows how this would work when you are creating a resource group.
 
