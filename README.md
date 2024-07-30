@@ -72,8 +72,6 @@ Follow these steps to write an Exec Doc either by converting an existing Azure D
 
         >**Note:** While Innovation Engine can _parse_ a code block of any type, given its current features, it can only _execute_ code blocks of the types above. So, it is important to ensure that the code blocks in your Exec Doc are of the types above.
 
-    - Ensure there is a new line before and after every content heading, subheading, description, and code block 
-
     - Ensure there is at least one h1 heading in the Exec Doc
 
 3. Appropriately add metadata at the start of the Exec Doc. Here are some mandatory fields:
