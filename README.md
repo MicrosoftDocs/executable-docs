@@ -14,7 +14,7 @@ Follow these steps to write an Exec Doc either by converting an existing Azure D
 
 1. Ensure your Exec Doc is a markdown file. 
 
-    >**Note:** If you are convering an existing Azure Doc to an Exec Doc, you can either find the Azure Doc in your fork or copy the raw markdown content of the Azure Doc into a new markdown file in your local repo. 
+    >**Note:** If you are converting an existing Azure Doc to an Exec Doc, you can either find the Azure Doc in your fork or copy the raw markdown content of the Azure Doc into a new markdown file in your local repo. 
 
 2. Ensure your Exec Doc is written with the LF line break type.
 
