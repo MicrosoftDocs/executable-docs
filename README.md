@@ -74,7 +74,7 @@ Follow these steps to write an Exec Doc either by converting an existing Azure D
 
     - Ensure there is at least one h1 heading in the Exec Doc
 
-3. Appropriately add metadata at the start of the Exec Doc. Here are some mandatory fields:
+4. Appropriately add metadata at the start of the Exec Doc. Here are some mandatory fields:
 
     - title = the title of the Exec Doc
     - description = the description of the Exec Doc
@@ -98,7 +98,7 @@ Follow these steps to write an Exec Doc either by converting an existing Azure D
     ---
     ```
 
-4. Declare environment variables as they are being used in the Exec Doc. 
+5. Declare environment variables as they are being used in the Exec Doc. 
 
     **Example:** 
     
@@ -115,7 +115,7 @@ Follow these steps to write an Exec Doc either by converting an existing Azure D
     \
     If you are converting an existing Azure Doc to an Exec Doc and the Azure Doc does not environment variables at all, it is an Exec Doc writing best practice to add them.
     
-5. Add a random suffix at the end of _relevant_ environment variable(s). The example below shows how this would work when you are creating a resource group.
+6. Add a random suffix at the end of _relevant_ environment variable(s). The example below shows how this would work when you are creating a resource group.
 
     **Example:** 
 
@@ -129,7 +129,7 @@ Follow these steps to write an Exec Doc either by converting an existing Azure D
     \
     Hence, it is important to add a random suffix to variables that are likely to be unique for each deployment, such as resource group names, VM names, and other resources that need to be uniquely identifiable. However, do not add a random suffix to variables that are constant or environment-specific, such as region, username, or configuration settings that do not change between deployments.
 
-6. Add result block(s) below code block(s) whose output you want Innovation Engine to verify. Ensure result block(s) have all the PII (Personally Identifiable Information) stricken out from them and replaced with x’s.
+7. Add result block(s) below code block(s) whose output you want Innovation Engine to verify. Ensure result block(s) have all the PII (Personally Identifiable Information) stricken out from them and replaced with x’s.
 
     **Example:** 
 
@@ -155,11 +155,11 @@ Follow these steps to write an Exec Doc either by converting an existing Azure D
     \
     Here are some examples of PII in result blocks: Unique identifiers for resources, Email Addresses, Phone Numbers, IP Addresses, Credit Card Numbers, Social Security Numbers (SSNs), Usernames, Resource Names, Subscription IDs, Resource Group Names, Tenant IDs, Service Principal Names, Client IDs, Secrets and Keys
 
-7. If you are converting an existing Azure Doc to an Exec Doc and if the existing doc contains a “Delete Resources” (or equivalent section) comprising resource/other deletion command(s), remove the code blocks in that section or remove that section entirely 
+8. If you are converting an existing Azure Doc to an Exec Doc and if the existing doc contains a “Delete Resources” (or equivalent section) comprising resource/other deletion command(s), remove the code blocks in that section or remove that section entirely 
 
     >**Note:** We remove commands from this section ***only*** in Exec Docs. This is because Innovation Engine executes all relevant command(s) that it encounters, inlcuding deleting the resources. That would be counterproductive to automated deployment of cloud infrastructure
 
-8. Test the Exec Doc using Innovation Engine (IE) inside Azure Cloudshell 
+9. Test the Exec Doc using Innovation Engine (IE) inside Azure Cloudshell 
 
     - [Open Azure Cloudshell](https://ms.portal.azure.com/#cloudshell/) 
     - **[Optional]**: Set your active subscription to the one you are using to test Exec Docs. Ideally, this sub should have permissions to run commands in your tested Exec Docs. Run the following command: 
@@ -178,12 +178,12 @@ Follow these steps to write an Exec Doc either by converting an existing Azure D
         ie execute <URL to the raw Exec Doc markdown that lives in GitHub, etc.>
         ``` 
 
-9. Submit and review the Exec Doc in the upstream repo once the doc passes all Innovation Engine tests
+10. Submit and review the Exec Doc in the upstream repo once the doc passes all Innovation Engine tests
     - Create a PR in GitHub once the Exec Doc is ready to be uploaded, pointing to the upstream repo from your fork
     - Assign the original Exec Doc author (if not you) as a reviewer to the PR. In most cases, thia assignment should happen automatically and should also include a reviewer from the Skilling team
     - Add ***#sign-off***  in the PR comments once the Exec Doc is successfully reviewed. This will trigger the automated pipeline to merge the PR into the public repo
 
-10. Test the Exec Doc on the Azure Portal test environment once the PR is merged. The steps below explain the process with an example [Exec Doc](https://learn.microsoft.com/en-us/azure/aks/learn/quick-kubernetes-deploy-cli) that deploys an Azure Kubernetes Service (AKS) cluster using Azure CLI.
+11. Test the Exec Doc on the Azure Portal test environment once the PR is merged. The steps below explain the process with an example [Exec Doc](https://learn.microsoft.com/en-us/azure/aks/learn/quick-kubernetes-deploy-cli) that deploys an Azure Kubernetes Service (AKS) cluster using Azure CLI.
     - The [executable-docs repo](https://github.com/MicrosoftDocs/executable-docs/tree/main) is used to render the experience on Portal. A GitHub Action will sync your published Exec Doc in the executable-docs repo and create a PR to merge it in its main branch. Wait until you receive a notification from that PR: it will tag you and request you to test your Exec Doc before the merge happens
 
         **Example:**
@@ -206,7 +206,7 @@ Follow these steps to write an Exec Doc either by converting an existing Azure D
 
       ![Post Deployment Success Page Test Environment](https://github.com/user-attachments/assets/f002cd97-6bab-41a9-8c83-227e9b2da9cf)
 
-11. Add the ***Deploy to Azure*** button to the source doc published on [Microsoft Learn](https://learn.microsoft.com/en-us/) or elsewhere once the PR is merged. Using the example Exec Doc mentioned above, follow these steps to add the button:
+12. Add the ***Deploy to Azure*** button to the source doc published on [Microsoft Learn](https://learn.microsoft.com/en-us/) or elsewhere once the PR is merged. Using the example Exec Doc mentioned above, follow these steps to add the button:
 
     - Get the file path of your Exec Doc _relative_ to MicrosoftDocs/other GitHub organization. 
     
@@ -227,12 +227,10 @@ Follow these steps to write an Exec Doc either by converting an existing Azure D
         ```
 
         **Example of Button in Live Exec Doc:**
-   
-      
-
-        >**Note:** The ***Deploy to Azure*** button is a clickable button that allows users to deploy the architecture described in the Exec Doc directly to their Azure subscription. This button is added to the source doc published on Microsoft Learn or elsewhere.
         
       ![Deploy to Azure Button on Live Exec Doc](https://github.com/user-attachments/assets/3bfc1df7-8e33-4f22-b070-c365a6c3e917)
+
+        >**Note:** The ***Deploy to Azure*** button is a clickable button that allows users to deploy the architecture described in the Exec Doc directly to their Azure subscription. This button is added to the source doc published on Microsoft Learn or elsewhere.
 
 ## Current Exec Docs Experience
 
