@@ -82,7 +82,7 @@ Follow these steps to write an Exec Doc either by converting an existing Azure D
     - ms.date = the date the Exec Doc was last updated by author 
     - author = author's GitHub username 
     - ms.author = author's username (e.g. Microsoft Alias)
-    - **ms.custom = comma-separated list of tags to identify the Exec Doc (innovation-engine, linux-related-content are two tags that need to be in this list)**
+    - **ms.custom = comma-separated list of tags to identify the Exec Doc (innovation-engine is the one tag that is mandatory in this list)**
         
     **Example:** 
 
