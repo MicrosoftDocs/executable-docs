@@ -279,7 +279,7 @@ jobs:
           AUTHOR=""
           MS_AUTHOR=""
         fi       
-        PR_BODY="This PR attempts to publish your Exec Doc. In order to do that, please test your Exec Doc associated with the branch $BRANCH_NAME in the URL below.\n\nExec Doc Test URL: https://ms.portal.azure.com/?Microsoft_Azure_CloudNative_clientoptimizations=false&feature.canmodifyextensions=true&feature.scenarioTester=true#view/Microsoft_Azure_CloudNative/TutorialsPage.ReactView/scenariosVersion/t1.0.${{ env.success_count }}\n\nAuthors: $AUTHOR, $MS_AUTHOR"
+        PR_BODY="This PR attempts to publish your Exec Doc. In order to do that, please test your Exec Doc associated with the branch $BRANCH_NAME in the URL below.\n\nExec Doc Test URL: https://ms.portal.azure.com/?Microsoft_Azure_CloudNative_clientoptimizations=false&feature.canmodifyextensions=true&feature.scenarioTester=true#view/Microsoft_Azure_CloudNative/TutorialsPage.ReactView/scenariosVersion/t1.0.${{ env.success_count }}\n\nAuthors: @$AUTHOR, @$MS_AUTHOR, @naman-msft"
         PR_API_URL="https://api.github.com/repos/${{ github.repository }}/pulls"
         PR_PAYLOAD="{\"title\":\"$PR_TITLE\",\"body\":\"$PR_BODY\",\"head\":\"$BRANCH_NAME\",\"base\":\"main\"}"
         PR_RESPONSE=$(curl -X POST -H "Authorization: token ${{ secrets.PAT }}" -H "Content-Type: application/json" -d "$PR_PAYLOAD" "$PR_API_URL")

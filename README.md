@@ -192,12 +192,12 @@ Follow these steps to write an Exec Doc either by converting an existing Azure D
     - Assign the original Exec Doc author (if not you) as a reviewer to the PR. In most cases, thia assignment should happen automatically and should also include a reviewer from the Skilling team
     - Add ***#sign-off***  in the PR comments once the Exec Doc is successfully reviewed. This will trigger the automated pipeline to merge the PR into the public repo
 
-10. Test the Exec Doc on the Azure Portal test environment once the PR is merged. An example has been given for the 
-    - The [executable-docs repo](https://github.com/MicrosoftDocs/executable-docs/tree/main) is used to render the experience on Portal. A GitHub Action will sync your published Exec Doc in the executable-docs repo and create a PR to merge it in its main branch. Wait until you receive a notification from that PR: it will tag you and request you to test your Exec Doc in the test environment of our experience before the merge happens
+10. Test the Exec Doc on the Azure Portal test environment once the PR is merged. The steps below explain the process with an example [Exec Doc](https://learn.microsoft.com/en-us/azure/aks/learn/quick-kubernetes-deploy-cli) that deploys an Azure Kubernetes Service (AKS) cluster using Azure CLI.
+    - The [executable-docs repo](https://github.com/MicrosoftDocs/executable-docs/tree/main) is used to render the experience on Portal. A GitHub Action will sync your published Exec Doc in the executable-docs repo and create a PR to merge it in its main branch. Wait until you receive a notification from that PR: it will tag you and request you to test your Exec Doc before the merge happens
 
         **Example:** 
         
-    - Click the URL and locate your Exec Doc from the cards page
+    - Click the URL in the PR description, which will take you to the test environment. Locate your Exec Doc from the cards page using doc metadata, etc.
       
         **Example:**
 
@@ -207,18 +207,35 @@ Follow these steps to write an Exec Doc either by converting an existing Azure D
     - If the test fails, update the source doc in your upstream repo so that the GitHub action can sync the updated doc and allow you to test it. 
     
         >**Note:** Refer to the [FAQ section](#frequently-asked-questions-faqs) below for troubleshooting tips. If you are unable to resolve the issue, reach out to the [Exec Docs Team](#points-of-contact-for-exec-docs) for help.
-    - Once the test is successful, send a screenshot of the post-deployment success page in the PR where you got tagged to test the Exec Doc. An example has been given below. After doing this, the PR will be merged into the main branch
+    - Once the test passes, send a screenshot of the post-deployment success page in the PR where you got tagged to test the Exec Doc. An example of the screenshot has been given below. After this gets approved, the PR will be merged into the main branch
 
         **Example:**
 
       ![Post Deployment Success Page Test Environment](https://github.com/user-attachments/assets/ed97c482-8810-4f0e-8040-cb392e4e9cef)
 
-11. Add the ***Deploy to Azure*** button to the source doc published on [Microsoft Learn](https://learn.microsoft.com/en-us/) or elsewhere once the PR is merged. The format of the link would be as follows: 
+11. Add the ***Deploy to Azure*** button to the source doc published on [Microsoft Learn](https://learn.microsoft.com/en-us/) or elsewhere once the PR is merged. Using the example Exec Doc mentioned above, follow these steps to add the button:
 
-    **Example:**
-    ```markdown
-    [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://ms.portal.azure.com/#view/Microsoft_Azure_CloudNative/SubscriptionSelectionPage.ReactView/isLearnMode~/true/referer/docs/tutorialKey/ **file path to the Exec Doc with / replaced with %2F**)
-    ```
+    - Get the file path of your Exec Doc _relative_ to MicrosoftDocs/other GitHub organization. 
+    
+        **Example:** 
+
+        If your source Exec Doc is located at `MicrosoftDocs/azure-docs/articles/aks/quick-kubernetes-deploy-cli.md` file, the file path for this purpose would be `azure-docs/articles/aks/quick-kubernetes-deploy-cli.md`
+
+    - Add the code snippet (template given below) after the table of contents and before the doc content starts. Replace all ***'/'*** signs in the file path with ***%2f*** for URL. So, for the example above, the file path would be `azure-docs%2farticles%2faks%2fquick-kubernetes-deploy-cli.md`
+
+        **Deeplink Template:**
+        ```markdown
+        [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://ms.portal.azure.com/#view/Microsoft_Azure_CloudNative/SubscriptionSelectionPage.ReactView/isLearnMode~/true/referer/docs/tutorialKey/<file_path_of_Exec_Doc>)
+        ```
+
+        **Deeplink for Example Exec Doc:**
+        ```markdown
+        [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://ms.portal.azure.com/#view/Microsoft_Azure_CloudNative/SubscriptionSelectionPage.ReactView/isLearnMode~/true/referer/docs/tutorialKey/azure-docs%2farticles%2faks%2fquick-kubernetes-deploy-cli.md)
+        ```
+
+        **Example of Button in Live Exec Doc:**
+
+        >**Note:** The ***Deploy to Azure*** button is a clickable button that allows users to deploy the architecture described in the Exec Doc directly to their Azure subscription. This button is added to the source doc published on Microsoft Learn or elsewhere.
 
 ## Current Exec Docs Experience
 
@@ -238,8 +255,13 @@ Exec Docs is a deployment vehicle that has different entry points into the exper
 
 ## Points of Contact for Exec Docs
 
-## Trademarks
+- PM for Exec Docs E2E Experience: [Naman Parikh](mailto:namanparikh@microsoft.com)
+- PM for Exec Docs Portal Experience: [Varun Desai](mailto:varun.desai@microsoft.com)
+- PM for Innovation Engine: [Mitchell Bifeld](mailto:mbifeld@microsoft.com)
+- Devs for Exec Docs: [PJ Singh](mailto:pjsingh@microsoft.com), [Aria Amini](mailto:ariaamini@microsoft.com), [Abhishek Bhombore](mailto:abhishek.bhombore@microsoft.com)
+- Dev for Innovation Engine: [Vincenzo Marcella](mailto:vmarcella@microsoft.com), [Rahul Gupta](mailto:guptar@microsoft.com)
 
+## Trademarks
 This project may contain trademarks or logos for projects, products, or 
 services. Authorized use of Microsoft trademarks or logos is subject to and 
 must follow [Microsoft's Trademark & Brand Guidelines](https://www.microsoft.com/en-us/legal/intellectualproperty/trademarks/usage/general).
