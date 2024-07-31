@@ -1,3 +1,13 @@
+---
+title: 'Inicio rápido: Implementación de un clúster de Azure Kubernetes Service (AKS) con la CLI de Azure'
+description: Aprenda a implementar rápidamente un clúster de Kubernetes e implementar una aplicación en Azure Kubernetes Service (AKS) mediante la CLI de Azure.
+ms.topic: quickstart
+ms.date: 04/09/2024
+author: tamram
+ms.author: tamram
+ms.custom: 'H1Hack27Feb2017, mvc, devcenter, devx-track-azurecli, mode-api, innovation-engine, linux-related-content'
+---
+
 # Inicio rápido: Implementación de un clúster de Azure Kubernetes Service (AKS) con la CLI de Azure
 
 [![Implementación en Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262758)
@@ -14,25 +24,13 @@ Azure Kubernetes Service (AKS) es un servicio de Kubernetes administrado que le 
 
 En esta guía rápida se presupone un conocimiento básico de los conceptos de Kubernetes. Para más información, consulte [Conceptos básicos de Kubernetes de Azure Kubernetes Service (AKS)][kubernetes-concepts].
 
-- [!INCLUDE [quickstarts-free-trial-note](../../../includes/quickstarts-free-trial-note.md)]
+- [!INCLUDE [quickstarts-free-trial-note](~/reusable-content/ce-skilling/azure/includes/quickstarts-free-trial-note.md)]
 
 [!INCLUDE [azure-cli-prepare-your-environment-no-header.md](~/reusable-content/azure-cli/azure-cli-prepare-your-environment-no-header.md)]
 
 - En este artículo se necesita la versión 2.0.64 de la CLI de Azure, o cualquier versión posterior. Si usa Azure Cloud Shell, ya está instalada allí la versión más reciente.
 - Asegúrese de que la identidad que usará para crear el clúster tenga los permisos mínimos adecuados. Para más información sobre el acceso y la identidad en AKS, consulte [Opciones de acceso e identidad en Azure Kubernetes Service (AKS)](../concepts-identity.md).
-- Si tiene varias suscripciones de Azure, seleccione el identificador de suscripción adecuado en el que se deben facturar los recursos con el comando [az account set](/cli/azure/account#az-account-set). Para más información, consulte [Administración de suscripciones de Azure: CLI de Azure](/cli/azure/manage-azure-subscriptions-azure-cli?tabs=bash#change-the-active-subscription).
-
-## Definición de las variables de entorno
-
-Defina las siguientes variables de entorno para usarlas en este inicio rápido:
-
-```azurecli-interactive
-export RANDOM_ID="$(openssl rand -hex 3)"
-export MY_RESOURCE_GROUP_NAME="myAKSResourceGroup$RANDOM_ID"
-export REGION="westeurope"
-export MY_AKS_CLUSTER_NAME="myAKSCluster$RANDOM_ID"
-export MY_DNS_LABEL="mydnslabel$RANDOM_ID"
-```
+- Si tiene varias suscripciones de Azure, seleccione el identificador de suscripción adecuado en el que se deben facturar los recursos con el comando [az account set](/cli/azure/account#az-account-set). Para más información, consulte [Cómo administrar suscripciones de Azure: CLI de Azure](/cli/azure/manage-azure-subscriptions-azure-cli?tabs=bash#change-the-active-subscription).
 
 ## Crear un grupo de recursos
 
@@ -41,6 +39,9 @@ Un [grupo de recursos de Azure][azure-resource-group] es un grupo lógico en el 
 Cree un grupo de recursos con el comando [`az group create`][az-group-create].
 
 ```azurecli-interactive
+export RANDOM_ID="$(openssl rand -hex 3)"
+export MY_RESOURCE_GROUP_NAME="myAKSResourceGroup$RANDOM_ID"
+export REGION="westeurope"
 az group create --name $MY_RESOURCE_GROUP_NAME --location $REGION
 ```
 
@@ -65,6 +66,7 @@ Resultados:
 Cree un clúster de AKS con el comando [`az aks create`][az-aks-create]. En el ejemplo siguiente se crea un clúster con un nodo y se habilita una identidad administrada asignada por el sistema.
 
 ```azurecli-interactive
+export MY_AKS_CLUSTER_NAME="myAKSCluster$RANDOM_ID"
 az aks create \
     --resource-group $MY_RESOURCE_GROUP_NAME \
     --name $MY_AKS_CLUSTER_NAME \
@@ -107,8 +109,7 @@ Para implementar la aplicación, se usa un archivo de manifiesto para crear todo
 
 1. Cree un archivo denominado `aks-store-quickstart.yaml` y cópielo en el siguiente manifiesto:
 
-    ```bash
-    cat << EOF > aks-store-quickstart.yaml
+    ```yaml
     apiVersion: apps/v1
     kind: Deployment
     metadata:
@@ -335,7 +336,6 @@ Para implementar la aplicación, se usa un archivo de manifiesto para crear todo
       selector:
         app: store-front
       type: LoadBalancer
-    EOF
     ```
 
     Para obtener un desglose de los archivos de manifiesto de YAML, consulte [Implementaciones y manifiestos de YAML](../concepts-clusters-workloads.md#deployments-and-yaml-manifests).
