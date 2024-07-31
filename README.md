@@ -116,7 +116,7 @@ Follow these steps to write an Exec Doc either by converting an existing Azure D
     
     ### Environment Variables Section
 
-    We are at the start of the Exec Doc and are declaring environment variables that will be used throughout the doc.
+    We are at the start of the Exec Doc and are declaring environment variables that will be used throughout the doc. 
 
     ```bash
     export REGION="eastus"
@@ -134,7 +134,7 @@ Follow these steps to write an Exec Doc either by converting an existing Azure D
     
     ### Test Section
 
-    We are in the middle of the Exec Doc and we will create a resource group.
+    We are in the middle of the Exec Doc and we will create a resource group. 
 
     ```bash  
     export REGION="eastus"
@@ -145,7 +145,9 @@ Follow these steps to write an Exec Doc either by converting an existing Azure D
     >**Note:** Environment variables are dynamic values that store configuration settings, system paths, and other information that can be accessed throughout a doc. By using environment variables, you can separate configuration details from the code, making it easier to manage and deploy applications in an environment like Exec Docs. 
     
     >**Note:** If you are converting an existing Azure Doc to an Exec Doc and the Azure Doc does not environment variables at all, it is an Exec Doc writing best practice to add them. Additionally, if the Azure Doc has environment variables but they are not declared as they are being used, it is recommended to update them to follow this best practice. 
-    
+
+    >**Note:** Don't have any spaces around the equal sign when declaring environment variables.
+
 6. Add a random suffix at the end of _relevant_ environment variable(s). The example below shows how this would work when you are creating a resource group.
 
     **Example:** 
@@ -162,15 +164,16 @@ Follow these steps to write an Exec Doc either by converting an existing Azure D
     
     >**Note:** You can generate your own random suffix or use the one provided in the example above. The `openssl rand -hex 3` command generates a random 3-character hexadecimal string. This string is then appended to the resource group name to ensure that the resource group name is unique for each deployment.
 
-7. Add result block(s) below code block(s) that produce an output in the terminal that you want Innovation Engine to verify. Follow these steps to add a result block under a code block for the first time (if it does not already have one):
+7. Add result block(s) below code block(s) that you would want Innovation Engine to verify i.e. the code block(s) produce an output in the terminal that is relevant to benchmark against. Follow these steps when adding a result block below a code block for the first time:
 
+    - Check if the code block does not already have a result block below it. If it does, ensure the result block is formatted correctly, as shown in the example below, and move to the next code block.
     - [Open Azure Cloudshell](https://ms.portal.azure.com/#cloudshell/) 
     - **[Optional]**: Set your active subscription to the one you are using to test Exec Docs. Ideally, this sub should have permissions to run commands in your tested Exec Docs. Run the following command: 
 
         ```bash
         az account set --subscription "<subscription name or id>"
         ``` 
-    - Run the command in the code block in cloudshell. If it returns an output that you would want Innovation Engine to verify, copy the output from the terminal and paste it in a new code block below the original code block. How that result code block should be formatted has been shown below, in this case as a result block for the command `az group create --name "MyResourceGroup123" --location eastus`.
+    - Run the command in the code block in cloudshell. If it returns an output that you would want Innovation Engine to verify, copy the output from the terminal and paste it in a new code block below the original code block. The way a result code block should be formatted has been shown below, in this case for the command `az group create --name "MyResourceGroup123" --location eastus`.
 
         **Example:**
         ```markdown            
@@ -180,7 +183,7 @@ Follow these steps to write an Exec Doc either by converting an existing Azure D
 
             ```JSON 
             {
-                "id": "/subscriptions/xxxxx-xxxxx-xxxxx-xxxxx/resourceGroups/MyResourceGroup123",
+                "id": "/subscriptions/abcabc-defdef-ghighi-jkljkl/resourceGroups/MyResourceGroup123",
                 "location": "eastus",
                 "managedBy": null,
                 "name": "MyResourceGroup123",
@@ -192,11 +195,15 @@ Follow these steps to write an Exec Doc either by converting an existing Azure D
             }
             ```
         ```
-    >**Note:** In Exec Docs, result blocks are distinguished by a custom expected_similarity comment tag followed by a code block. These result blocks indicate to Innovation Engine what the minimum degree of similarity should be between the actual and the expected output of a code block (one which returns something in the terminal that is relevant to benchmark against). Learn More: [Result Blocks](https://github.com/Azure/InnovationEngine/blob/main/README.md#result-blocks) 
+    - If you run into an error while executing a code block, update the Exec Doc based on the error stack trace (more guidance given in the [FAQ section](#frequently-asked-questions-faqs) below), restart/clear Cloudshell, and rerun the command block(s) from the start until you reach that command block. This is done to override any potential issues that may have occurred during the initial run.   
     
-    >**Note:** The expected similarity value is a floating point number between 0 and 1 which specifies how closely the output needs to match the results block. 0 being no similarity, 1 being an exact match 
+    >**Note:** In Exec Docs, result blocks are distinguished by a custom expected_similarity comment tag followed by a code block. These result blocks indicate to Innovation Engine what the minimum degree of similarity should be between the actual and the expected output of a code block (one which returns something in the terminal that is relevant to benchmark against). Learn More: [Result Blocks](https://github.com/Azure/InnovationEngine/blob/main/README.md#result-blocks).
+    
+    >**Note:** The expected similarity value is a floating point number between 0 and 1 which specifies how closely the true output needs to match the template output given in the results block - 0 being no similarity, 1 being an exact match. If you are uncertain about the value, it is recommended to set the expected similarity to 0.3 to account for small variations. Once you have run the command multiple times and are confident that the output is consistent, you can adjust the expected similarity value accordingly.
 
-8. Ensure result block(s) have all the PII (Personally Identifiable Information) stricken out from them and replaced with x’s.  
+    >**Note:** Result blocks are not required but recommended for commands that return some output in the terminal. They help Innovation Engine verify the output of a command and act as checkpoints to ensure that the doc is moving in the right direction.
+
+8. Ensure result block(s) have all the PII (Personally Identifiable Information) stricken out from them and replaced with x’s. 
 
     **Example:** 
 
@@ -207,21 +214,30 @@ Follow these steps to write an Exec Doc either by converting an existing Azure D
 
         ```JSON 
         { 
-            "id": "/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/myAKSResourceGroupxxxxxx", 
-            "location": "eastus" 
+            "id": "/subscriptions/xxxxx-xxxxx-xxxxx-xxxxx/resourceGroups/MyResourceGroupxxx",
+                "location": "eastus",
+                "managedBy": null,
+                "name": "MyResourceGroupxxx",
+                "properties": {
+                    "provisioningState": "Succeeded"
+                },
+                "tags": null,
+                "type": "Microsoft.Resources/resourceGroups" 
         } 
         ```
     ```
 
+    >**Note:** The number of x's used to redact PII need not be the same as the number of characters in the original PII. Furthermore, it is recommended not to redact the key names in the output, only the values containing the PII.
+    
     >**Note:** Redacting PII from the output helps protect sensitive information from being inadvertently shared or exposed. This is crucial for maintaining privacy, complying with data protection regulations, and furthering the company's security posture. \
     \
-    Here are some examples of PII in result blocks: Unique identifiers for resources, Email Addresses, Phone Numbers, IP Addresses, Credit Card Numbers, Social Security Numbers (SSNs), Usernames, Resource Names, Subscription IDs, Resource Group Names, Tenant IDs, Service Principal Names, Client IDs, Secrets and Keys
+    Here are some examples of PII in result blocks: Unique identifiers for resources, Email Addresses, Phone Numbers, IP Addresses, Credit Card Numbers, Social Security Numbers (SSNs), Usernames, Resource Names, Subscription IDs, Resource Group Names, Tenant IDs, Service Principal Names, Client IDs, Secrets and Keys.
 
-8. If you are converting an existing Azure Doc to an Exec Doc and if the existing doc contains a “Delete Resources” (or equivalent section) comprising resource/other deletion command(s), remove the code blocks in that section or remove that section entirely 
+9. If you are converting an existing Azure Doc to an Exec Doc and if the existing doc contains a "Delete Resources" (or equivalent section) comprising resource/other deletion command(s), remove the code blocks in that section or remove that section entirely 
 
     >**Note:** We remove commands from this section ***only*** in Exec Docs. This is because Innovation Engine executes all relevant command(s) that it encounters, inlcuding deleting the resources. That would be counterproductive to automated deployment of cloud infrastructure
 
-9. Test the Exec Doc using Innovation Engine (IE) inside Azure Cloudshell 
+10. Test the Exec Doc using Innovation Engine (IE) inside Azure Cloudshell 
 
     - [Open Azure Cloudshell](https://ms.portal.azure.com/#cloudshell/) 
     - **[Optional]**: Set your active subscription to the one you are using to test Exec Docs. Ideally, this sub should have permissions to run commands in your tested Exec Docs. Run the following command: 
@@ -239,13 +255,14 @@ Follow these steps to write an Exec Doc either by converting an existing Azure D
         ```bash
         ie execute <URL to the raw Exec Doc markdown that lives in GitHub, etc.>
         ``` 
+    - If you run into any errors, update the source doc in your upstream repo accordingly and retest it using Innovation Engine. For more guidance on troubleshooting errors, refer to the [FAQ section](#frequently-asked-questions-faqs) below. 
 
-10. Submit and review the Exec Doc in the upstream repo once the doc passes all Innovation Engine tests
+11. Submit and review the Exec Doc in the upstream repo once the doc passes all Innovation Engine tests
     - Create a PR in GitHub once the Exec Doc is ready to be uploaded, pointing to the upstream repo from your fork
     - Assign the original Exec Doc author (if not you) as a reviewer to the PR. In most cases, this assignment should happen automatically and should also include a reviewer from the Skilling team
     - Add ***#sign-off***  in the PR comments once the Exec Doc is successfully reviewed. This will trigger the automated pipeline to merge the PR into the public repo
 
-11. Test the Exec Doc on the Azure Portal test environment once the PR is merged. The steps below explain the process with an example [Exec Doc](https://learn.microsoft.com/en-us/azure/aks/learn/quick-kubernetes-deploy-cli) that deploys an Azure Kubernetes Service (AKS) cluster using Azure CLI.
+12. Test the Exec Doc on the Azure Portal test environment once the PR is merged. The steps below explain the process with an example [Exec Doc](https://learn.microsoft.com/en-us/azure/aks/learn/quick-kubernetes-deploy-cli) that deploys an Azure Kubernetes Service (AKS) cluster using Azure CLI.
     - The [executable-docs repo](https://github.com/MicrosoftDocs/executable-docs/tree/main) is used to render the experience on Portal. A GitHub Action will sync your published Exec Doc in the executable-docs repo and create a PR to merge it in its main branch. Wait until you receive a notification from that PR: it will tag you and request you to test your Exec Doc before the merge happens
 
         **Example:**
@@ -268,7 +285,7 @@ Follow these steps to write an Exec Doc either by converting an existing Azure D
 
       ![Post Deployment Success Page Test Environment](https://github.com/user-attachments/assets/f002cd97-6bab-41a9-8c83-227e9b2da9cf)
 
-12. Add the ***Deploy to Azure*** button to the source doc published on [Microsoft Learn](https://learn.microsoft.com/en-us/) or elsewhere once the PR is merged. Using the example Exec Doc mentioned above, follow these steps to add the button:
+13. Add the ***Deploy to Azure*** button to the source doc published on [Microsoft Learn](https://learn.microsoft.com/en-us/) or elsewhere once the PR is merged. Using the example Exec Doc mentioned above, follow these steps to add the button:
 
     - Get the file path of your Exec Doc _relative_ to MicrosoftDocs/other GitHub organization. 
     

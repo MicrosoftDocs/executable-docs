@@ -405,5 +405,17 @@
             "permissions": [],
             "region": "australiaeast"
         }
+    },
+    {
+        "status": "inactive",
+        "key": "ObtainPerformanceMetricsLinuxSustem/README.md",
+        "title": "Obtaining Performance metrics from a Linux system",
+        "description": "Learn how to obtainer Performance metrics from a Linux system.",
+        "stackDetails": "",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/ObtainPerformanceMetricsLinuxSustem/README.md",
+        "documentationUrl": "",
+        "configurations": {
+            "region": ""
+        }
     }
 ]
