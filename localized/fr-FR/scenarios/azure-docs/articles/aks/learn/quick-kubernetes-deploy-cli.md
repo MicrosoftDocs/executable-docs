@@ -1,3 +1,13 @@
+---
+title: "Démarrage rapide\_: Déployer un cluster AKS (Azure Kubernetes\_Service) avec Azure CLI"
+description: Découvrez comment déployer rapidement un cluster Kubernetes et déployer une application dans Azure Kubernetes Service (AKS) à l’aide d’Azure CLI.
+ms.topic: quickstart
+ms.date: 04/09/2024
+author: tamram
+ms.author: tamram
+ms.custom: 'H1Hack27Feb2017, mvc, devcenter, devx-track-azurecli, mode-api, innovation-engine, linux-related-content'
+---
+
 # Démarrage rapide : Déployer un cluster AKS (Azure Kubernetes Service) avec Azure CLI
 
 [![Déployer dans Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262758)
@@ -14,25 +24,13 @@ AKS (Azure Kubernetes Service) est un service Kubernetes managé qui vous permet
 
 Ce guide de démarrage rapide suppose une compréhension élémentaire des concepts liés à Kubernetes. Pour plus d’informations, consultez [Concepts de base de Kubernetes pour AKS (Azure Kubernetes Service)][kubernetes-concepts].
 
-- [!INCLUDE [quickstarts-free-trial-note](../../../includes/quickstarts-free-trial-note.md)]
+- [!INCLUDE [quickstarts-free-trial-note](~/reusable-content/ce-skilling/azure/includes/quickstarts-free-trial-note.md)]
 
 [!INCLUDE [azure-cli-prepare-your-environment-no-header.md](~/reusable-content/azure-cli/azure-cli-prepare-your-environment-no-header.md)]
 
 - Cet article nécessite la version 2.0.64 ou ultérieure de l’interface Azure CLI. Si vous utilisez Azure Cloud Shell, sachez que la dernière version y est déjà installée.
 - Veillez à ce que l’identité que vous utilisez pour créer votre cluster dispose des autorisations minimales appropriées. Pour plus d’informations sur l’accès et l’identité pour AKS, consultez [Options d’accès et d’identité pour Kubernetes Azure Service (AKS)](../concepts-identity.md).
 - Si vous avez plusieurs abonnements Azure, sélectionnez l’identifiant d’abonnement approprié dans lequel les ressources doivent être facturées avec la commande [az account set](/cli/azure/account#az-account-set). Pour obtenir plus d’informations, consultez [Gérer les abonnements Azure – Azure CLI](/cli/azure/manage-azure-subscriptions-azure-cli?tabs=bash#change-the-active-subscription).
-
-## Définissez des variables d’environnement
-
-Définissez les variables d’environnement suivantes à utiliser dans ce guide de démarrage rapide :
-
-```azurecli-interactive
-export RANDOM_ID="$(openssl rand -hex 3)"
-export MY_RESOURCE_GROUP_NAME="myAKSResourceGroup$RANDOM_ID"
-export REGION="westeurope"
-export MY_AKS_CLUSTER_NAME="myAKSCluster$RANDOM_ID"
-export MY_DNS_LABEL="mydnslabel$RANDOM_ID"
-```
 
 ## Créer un groupe de ressources
 
@@ -41,6 +39,9 @@ Un [groupe de ressources Azure][azure-resource-group] est un groupe logique dans
 Créez un groupe de ressources avec la commande [`az group create`][az-group-create].
 
 ```azurecli-interactive
+export RANDOM_ID="$(openssl rand -hex 3)"
+export MY_RESOURCE_GROUP_NAME="myAKSResourceGroup$RANDOM_ID"
+export REGION="westeurope"
 az group create --name $MY_RESOURCE_GROUP_NAME --location $REGION
 ```
 
@@ -65,6 +66,7 @@ Résultats :
 Créez un cluster AKS avec la commande [`az aks create`][az-aks-create]. L’exemple suivant crée un cluster avec un nœud et active une identité managée affectée par le système.
 
 ```azurecli-interactive
+export MY_AKS_CLUSTER_NAME="myAKSCluster$RANDOM_ID"
 az aks create \
     --resource-group $MY_RESOURCE_GROUP_NAME \
     --name $MY_AKS_CLUSTER_NAME \
@@ -107,8 +109,7 @@ Pour déployer l'application, vous utilisez un fichier manifeste pour créer tou
 
 1. Créez un fichier nommé `aks-store-quickstart.yaml` et copiez-y le manifeste suivant :
 
-    ```bash
-    cat << EOF > aks-store-quickstart.yaml
+    ```yaml
     apiVersion: apps/v1
     kind: Deployment
     metadata:
@@ -335,7 +336,6 @@ Pour déployer l'application, vous utilisez un fichier manifeste pour créer tou
       selector:
         app: store-front
       type: LoadBalancer
-    EOF
     ```
 
     Pour obtenir une décomposition des fichiers manifeste YAML, consultez [Déploiements et manifestes YAML](../concepts-clusters-workloads.md#deployments-and-yaml-manifests).
