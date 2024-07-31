@@ -1,3 +1,13 @@
+---
+title: 'Rychlý start: Nasazení clusteru Azure Kubernetes Service (AKS) pomocí Azure CLI'
+description: 'Zjistěte, jak rychle nasadit cluster Kubernetes a nasadit aplikaci ve službě Azure Kubernetes Service (AKS) pomocí Azure CLI.'
+ms.topic: quickstart
+ms.date: 04/09/2024
+author: tamram
+ms.author: tamram
+ms.custom: 'H1Hack27Feb2017, mvc, devcenter, devx-track-azurecli, mode-api, innovation-engine, linux-related-content'
+---
+
 # Rychlý start: Nasazení clusteru Azure Kubernetes Service (AKS) pomocí Azure CLI
 
 [![Nasazení do Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262758)
@@ -14,25 +24,13 @@ Azure Kubernetes Service (AKS) je spravovaná služba Kubernetes, která umožň
 
 Tento rychlý start předpokládá základní znalosti konceptů Kubernetes. Další informace najdete v tématu [Základní koncepty Kubernetes pro Službu Azure Kubernetes Service (AKS).][kubernetes-concepts]
 
-- [!INCLUDE [quickstarts-free-trial-note](../../../includes/quickstarts-free-trial-note.md)]
+- [!INCLUDE [quickstarts-free-trial-note](~/reusable-content/ce-skilling/azure/includes/quickstarts-free-trial-note.md)]
 
 [!INCLUDE [azure-cli-prepare-your-environment-no-header.md](~/reusable-content/azure-cli/azure-cli-prepare-your-environment-no-header.md)]
 
 - Tento článek vyžaduje verzi 2.0.64 nebo novější azure CLI. Pokud používáte Azure Cloud Shell, je tam už nainstalovaná nejnovější verze.
 - Ujistěte se, že identita, kterou používáte k vytvoření clusteru, má odpovídající minimální oprávnění. Další podrobnosti o přístupu a identitě pro AKS najdete v tématu [Možnosti přístupu a identit pro Službu Azure Kubernetes Service (AKS).](../concepts-identity.md)
 - Pokud máte více předplatných Azure, vyberte odpovídající ID předplatného, ve kterém se mají prostředky fakturovat pomocí [příkazu az account set](/cli/azure/account#az-account-set) . Další informace najdete v tématu [Správa předplatných Azure – Azure CLI](/cli/azure/manage-azure-subscriptions-azure-cli?tabs=bash#change-the-active-subscription).
-
-## Definování proměnných prostředí
-
-V tomto rychlém startu definujte následující proměnné prostředí:
-
-```azurecli-interactive
-export RANDOM_ID="$(openssl rand -hex 3)"
-export MY_RESOURCE_GROUP_NAME="myAKSResourceGroup$RANDOM_ID"
-export REGION="westeurope"
-export MY_AKS_CLUSTER_NAME="myAKSCluster$RANDOM_ID"
-export MY_DNS_LABEL="mydnslabel$RANDOM_ID"
-```
 
 ## Vytvoření skupiny zdrojů
 
@@ -41,6 +39,9 @@ Skupina [][azure-resource-group] prostředků Azure je logická skupina, ve kter
 Pomocí příkazu vytvořte skupinu [`az group create`][az-group-create] prostředků.
 
 ```azurecli-interactive
+export RANDOM_ID="$(openssl rand -hex 3)"
+export MY_RESOURCE_GROUP_NAME="myAKSResourceGroup$RANDOM_ID"
+export REGION="westeurope"
 az group create --name $MY_RESOURCE_GROUP_NAME --location $REGION
 ```
 
@@ -65,6 +66,7 @@ Výsledky:
 Pomocí příkazu vytvořte cluster [`az aks create`][az-aks-create] AKS. Následující příklad vytvoří cluster s jedním uzlem a povolí spravovanou identitu přiřazenou systémem.
 
 ```azurecli-interactive
+export MY_AKS_CLUSTER_NAME="myAKSCluster$RANDOM_ID"
 az aks create \
     --resource-group $MY_RESOURCE_GROUP_NAME \
     --name $MY_AKS_CLUSTER_NAME \
@@ -107,8 +109,7 @@ K nasazení aplikace použijete soubor manifestu k vytvoření všech objektů p
 
 1. Vytvořte soubor s názvem `aks-store-quickstart.yaml` a zkopírujte ho v následujícím manifestu:
 
-    ```bash
-    cat << EOF > aks-store-quickstart.yaml
+    ```yaml
     apiVersion: apps/v1
     kind: Deployment
     metadata:
@@ -335,7 +336,6 @@ K nasazení aplikace použijete soubor manifestu k vytvoření všech objektů p
       selector:
         app: store-front
       type: LoadBalancer
-    EOF
     ```
 
     Rozpis souborů manifestu YAML najdete v tématu [Nasazení a manifesty](../concepts-clusters-workloads.md#deployments-and-yaml-manifests) YAML.
