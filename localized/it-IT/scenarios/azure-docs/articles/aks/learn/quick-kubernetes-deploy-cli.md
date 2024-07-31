@@ -1,3 +1,13 @@
+---
+title: 'Guida introduttiva: distribuire un cluster del servizio Azure Kubernetes (AKS) con l’interfaccia della riga di comando di Azure'
+description: 'Informazioni su come distribuire rapidamente un cluster Kubernetes e un''applicazione nel servizio Azure Kubernetes (AKS), usando l’interfaccia della riga di comando di Azure.'
+ms.topic: quickstart
+ms.date: 04/09/2024
+author: tamram
+ms.author: tamram
+ms.custom: 'H1Hack27Feb2017, mvc, devcenter, devx-track-azurecli, mode-api, innovation-engine, linux-related-content'
+---
+
 # Guida introduttiva: distribuire un cluster del servizio Azure Kubernetes (AKS) con l’interfaccia della riga di comando di Azure
 
 [![Distribuzione in Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262758)
@@ -14,25 +24,13 @@ Il servizio Azure Kubernetes è un servizio Kubernetes gestito che permette di d
 
 Questa guida introduttiva presuppone una comprensione di base dei concetti relativi a Kubernetes. Per altre informazioni, vedere [Concetti di base relativi a Kubernetes per il servizio Azure Kubernetes][kubernetes-concepts].
 
-- [!INCLUDE [quickstarts-free-trial-note](../../../includes/quickstarts-free-trial-note.md)]
+- [!INCLUDE [quickstarts-free-trial-note](~/reusable-content/ce-skilling/azure/includes/quickstarts-free-trial-note.md)]
 
 [!INCLUDE [azure-cli-prepare-your-environment-no-header.md](~/reusable-content/azure-cli/azure-cli-prepare-your-environment-no-header.md)]
 
 - Questo articolo richiede la versione 2.0.64 o successiva dell'interfaccia della riga di comando di Azure. Se si sta usando Azure Cloud Shell, la versione più recente è già installata.
 - Assicurarsi che l'identità usata per creare il cluster disponga delle autorizzazioni minime adeguate. Per maggiori informazioni sull'accesso e l'identità per il servizio Azure Kubernetes, vedere [Opzioni di accesso e identità per il servizio Azure Kubernetes (AKS)](../concepts-identity.md).
-- Se si hanno più sottoscrizioni di Azure, selezionare l'ID sottoscrizione appropriato in cui devono essere fatturate le risorse, usando il comando [set account az](/cli/azure/account#az-account-set). Per altre informazioni, vedere [Come gestire le sottoscrizioni di Azure - Interfaccia della riga di comando](/cli/azure/manage-azure-subscriptions-azure-cli?tabs=bash#change-the-active-subscription) di Azure.
-
-## Definire le variabili di ambiente
-
-Definire le variabili di ambiente seguenti da usare in questa guida introduttiva:
-
-```azurecli-interactive
-export RANDOM_ID="$(openssl rand -hex 3)"
-export MY_RESOURCE_GROUP_NAME="myAKSResourceGroup$RANDOM_ID"
-export REGION="westeurope"
-export MY_AKS_CLUSTER_NAME="myAKSCluster$RANDOM_ID"
-export MY_DNS_LABEL="mydnslabel$RANDOM_ID"
-```
+- Se si hanno più sottoscrizioni di Azure, selezionare l'ID sottoscrizione appropriato in cui devono essere fatturate le risorse, usando il comando [set account az](/cli/azure/account#az-account-set). Per altre informazioni, vedere [Come gestire le sottoscrizioni di Azure - Interfaccia della riga di comando di Azure](/cli/azure/manage-azure-subscriptions-azure-cli?tabs=bash#change-the-active-subscription).
 
 ## Creare un gruppo di risorse
 
@@ -41,6 +39,9 @@ Un [gruppo di risorse][azure-resource-group] di Azure è un gruppo logico in cui
 Creare un gruppo di risorse usando il comando [`az group create`][az-group-create].
 
 ```azurecli-interactive
+export RANDOM_ID="$(openssl rand -hex 3)"
+export MY_RESOURCE_GROUP_NAME="myAKSResourceGroup$RANDOM_ID"
+export REGION="westeurope"
 az group create --name $MY_RESOURCE_GROUP_NAME --location $REGION
 ```
 
@@ -65,6 +66,7 @@ Risultati:
 Creare un cluster del servizio Azure Kubernetes usando il comando [`az aks create`][az-aks-create]. L'esempio seguente crea un cluster con un nodo e abilita un'identità gestita assegnata dal sistema.
 
 ```azurecli-interactive
+export MY_AKS_CLUSTER_NAME="myAKSCluster$RANDOM_ID"
 az aks create \
     --resource-group $MY_RESOURCE_GROUP_NAME \
     --name $MY_AKS_CLUSTER_NAME \
@@ -107,8 +109,7 @@ Per distribuire l'applicazione, usare un file manifesto per creare tutti gli ogg
 
 1. Creare un file denominato `aks-store-quickstart.yaml` e copiarlo nel manifesto seguente:
 
-    ```bash
-    cat << EOF > aks-store-quickstart.yaml
+    ```yaml
     apiVersion: apps/v1
     kind: Deployment
     metadata:
@@ -335,7 +336,6 @@ Per distribuire l'applicazione, usare un file manifesto per creare tutti gli ogg
       selector:
         app: store-front
       type: LoadBalancer
-    EOF
     ```
 
     Per un dettaglio dei file manifesto YAML, vedere [Distribuzioni e manifesti YAML](../concepts-clusters-workloads.md#deployments-and-yaml-manifests).
