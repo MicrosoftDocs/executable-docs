@@ -1,3 +1,13 @@
+---
+title: 'Rövid útmutató: Azure Kubernetes Service- (AKS-) fürt üzembe helyezése az Azure CLI használatával'
+description: 'Megtudhatja, hogyan helyezhet üzembe gyorsan egy Kubernetes-fürtöt, és hogyan helyezhet üzembe alkalmazásokat az Azure Kubernetes Service-ben (AKS) az Azure CLI használatával.'
+ms.topic: quickstart
+ms.date: 04/09/2024
+author: tamram
+ms.author: tamram
+ms.custom: 'H1Hack27Feb2017, mvc, devcenter, devx-track-azurecli, mode-api, innovation-engine, linux-related-content'
+---
+
 # Rövid útmutató: Azure Kubernetes Service- (AKS-) fürt üzembe helyezése az Azure CLI használatával
 
 [![Üzembe helyezés az Azure-ban](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262758)
@@ -14,25 +24,13 @@ Az Azure Kubernetes Service (AKS) egy felügyelt Kubernetes-szolgáltatás, amel
 
 A rövid útmutató feltételezi, hogy rendelkezik a Kubernetes használatára vonatkozó alapvető ismeretekkel. További információkért tekintse meg [az Azure Kubernetes Service (AKS)][kubernetes-concepts] Kubernetes alapfogalmait.
 
-- [!INCLUDE [quickstarts-free-trial-note](../../../includes/quickstarts-free-trial-note.md)]
+- [!INCLUDE [quickstarts-free-trial-note](~/reusable-content/ce-skilling/azure/includes/quickstarts-free-trial-note.md)]
 
 [!INCLUDE [azure-cli-prepare-your-environment-no-header.md](~/reusable-content/azure-cli/azure-cli-prepare-your-environment-no-header.md)]
 
 - Ez a cikk az Azure CLI 2.0.64-es vagy újabb verzióját igényli. Az Azure Cloud Shell használata esetén a legújabb verzió már telepítve van.
 - Győződjön meg arról, hogy a fürt létrehozásához használt identitás rendelkezik a megfelelő minimális engedélyekkel. Az AKS-hez való hozzáféréssel és identitással kapcsolatos további részletekért tekintse meg [az Azure Kubernetes Service (AKS)](../concepts-identity.md) hozzáféréssel és identitással kapcsolatos lehetőségeit.
 - Ha több Azure-előfizetéssel rendelkezik, válassza ki a megfelelő előfizetés-azonosítót, amelyben az erőforrásokat az [az account set](/cli/azure/account#az-account-set) paranccsal kell számlázni. További információ: [Azure-előfizetések kezelése – Azure CLI](/cli/azure/manage-azure-subscriptions-azure-cli?tabs=bash#change-the-active-subscription).
-
-## Környezeti változók definiálása
-
-Adja meg a következő környezeti változókat a rövid útmutatóban való használathoz:
-
-```azurecli-interactive
-export RANDOM_ID="$(openssl rand -hex 3)"
-export MY_RESOURCE_GROUP_NAME="myAKSResourceGroup$RANDOM_ID"
-export REGION="westeurope"
-export MY_AKS_CLUSTER_NAME="myAKSCluster$RANDOM_ID"
-export MY_DNS_LABEL="mydnslabel$RANDOM_ID"
-```
 
 ## Erőforráscsoport létrehozása
 
@@ -41,6 +39,9 @@ Az [Azure-erőforráscsoportok][azure-resource-group] olyan logikai csoportok, a
 Hozzon létre egy erőforráscsoportot a [`az group create`][az-group-create] paranccsal.
 
 ```azurecli-interactive
+export RANDOM_ID="$(openssl rand -hex 3)"
+export MY_RESOURCE_GROUP_NAME="myAKSResourceGroup$RANDOM_ID"
+export REGION="westeurope"
 az group create --name $MY_RESOURCE_GROUP_NAME --location $REGION
 ```
 
@@ -65,6 +66,7 @@ Eredmények:
 Hozzon létre egy AKS-fürtöt a [`az aks create`][az-aks-create] paranccsal. Az alábbi példa egy egy csomóponttal rendelkező fürtöt hoz létre, és engedélyezi a rendszer által hozzárendelt felügyelt identitást.
 
 ```azurecli-interactive
+export MY_AKS_CLUSTER_NAME="myAKSCluster$RANDOM_ID"
 az aks create \
     --resource-group $MY_RESOURCE_GROUP_NAME \
     --name $MY_AKS_CLUSTER_NAME \
@@ -107,8 +109,7 @@ Az alkalmazás üzembe helyezéséhez egy jegyzékfájl használatával hozza l�
 
 1. Hozzon létre egy fájlt, `aks-store-quickstart.yaml` és másolja a következő jegyzékbe:
 
-    ```bash
-    cat << EOF > aks-store-quickstart.yaml
+    ```yaml
     apiVersion: apps/v1
     kind: Deployment
     metadata:
@@ -335,7 +336,6 @@ Az alkalmazás üzembe helyezéséhez egy jegyzékfájl használatával hozza l�
       selector:
         app: store-front
       type: LoadBalancer
-    EOF
     ```
 
     A YAML-jegyzékfájlok lebontásához tekintse meg [az üzembe helyezéseket és a YAML-jegyzékeket](../concepts-clusters-workloads.md#deployments-and-yaml-manifests).
