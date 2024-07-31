@@ -1,3 +1,13 @@
+---
+title: 'Início Rápido: implantar um cluster do AKS (Serviço de Kubernetes do Azure) usando a CLI do Azure'
+description: Saiba como implantar rapidamente um cluster Kubernetes e implantar um aplicativo no Serviço de Kubernetes do Azure (AKS) usando a CLI do Azure.
+ms.topic: quickstart
+ms.date: 04/09/2024
+author: tamram
+ms.author: tamram
+ms.custom: 'H1Hack27Feb2017, mvc, devcenter, devx-track-azurecli, mode-api, innovation-engine, linux-related-content'
+---
+
 # Início Rápido: implantar um cluster do AKS (Serviço de Kubernetes do Azure) usando a CLI do Azure
 
 [![Implantar no Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262758)
@@ -14,25 +24,13 @@ O AKS (Serviço de Kubernetes do Azure) é um serviço de Kubernetes gerenciado 
 
 Este guia de início rápido pressupõe uma compreensão básica dos conceitos do Kubernetes. Para obter mais informações, confira [Principais conceitos do Kubernetes para o AKS (Serviço de Kubernetes do Azure)][kubernetes-concepts].
 
-- [!INCLUDE [quickstarts-free-trial-note](../../../includes/quickstarts-free-trial-note.md)]
+- [!INCLUDE [quickstarts-free-trial-note](~/reusable-content/ce-skilling/azure/includes/quickstarts-free-trial-note.md)]
 
 [!INCLUDE [azure-cli-prepare-your-environment-no-header.md](~/reusable-content/azure-cli/azure-cli-prepare-your-environment-no-header.md)]
 
 - Este artigo exige a versão 2.0.64 ou posterior da CLI do Azure. Se você estiver usando o Azure Cloud Shell, a versão mais recente já está instalada lá.
 - Certifique-se de que a identidade que você está usando para criar seu cluster tenha as permissões mínimas apropriadas. Para obter mais detalhes sobre acesso e identidade do AKS, consulte [Opções de acesso e identidade para o AKS (Serviço de Kubernetes do Azure)](../concepts-identity.md).
-- Se você tiver várias assinaturas do Azure, selecione a ID de assinatura apropriada na qual os recursos devem ser cobrados usando o comando [az account set](/cli/azure/account#az-account-set). Para obter mais informações, veja [Como gerenciar assinaturas do Azure – CLI do Azure](/cli/azure/manage-azure-subscriptions-azure-cli?tabs=bash#change-the-active-subscription).
-
-## Definir variáveis de ambiente
-
-Defina as seguintes variáveis de ambiente para uso ao longo deste início rápido:
-
-```azurecli-interactive
-export RANDOM_ID="$(openssl rand -hex 3)"
-export MY_RESOURCE_GROUP_NAME="myAKSResourceGroup$RANDOM_ID"
-export REGION="westeurope"
-export MY_AKS_CLUSTER_NAME="myAKSCluster$RANDOM_ID"
-export MY_DNS_LABEL="mydnslabel$RANDOM_ID"
-```
+- Se você tiver várias assinaturas do Azure, selecione a ID de assinatura apropriada na qual os recursos devem ser cobrados usando o comando [az account set](/cli/azure/account#az-account-set). Para obter mais informações, consulte [Como gerenciar assinaturas do Azure – CLI do Azure](/cli/azure/manage-azure-subscriptions-azure-cli?tabs=bash#change-the-active-subscription).
 
 ## Criar um grupo de recursos
 
@@ -41,6 +39,9 @@ Um [grupo de recursos do Azure][azure-resource-group] é um grupo lógico no qua
 Crie um grupo de recursos usando o comando [`az group create`][az-group-create].
 
 ```azurecli-interactive
+export RANDOM_ID="$(openssl rand -hex 3)"
+export MY_RESOURCE_GROUP_NAME="myAKSResourceGroup$RANDOM_ID"
+export REGION="westeurope"
 az group create --name $MY_RESOURCE_GROUP_NAME --location $REGION
 ```
 
@@ -65,6 +66,7 @@ Resultados:
 Crie um cluster do AKS usando o comando [`az aks create`][az-aks-create]. O exemplo a seguir cria um cluster com um nó e habilita uma identidade gerenciada atribuída pelo sistema.
 
 ```azurecli-interactive
+export MY_AKS_CLUSTER_NAME="myAKSCluster$RANDOM_ID"
 az aks create \
     --resource-group $MY_RESOURCE_GROUP_NAME \
     --name $MY_AKS_CLUSTER_NAME \
@@ -107,8 +109,7 @@ A fim de implantar o aplicativo, use um arquivo de manifesto para criar todos os
 
 1. Crie um arquivo chamado `aks-store-quickstart.yaml` e copie-o para o manifesto a seguir:
 
-    ```bash
-    cat << EOF > aks-store-quickstart.yaml
+    ```yaml
     apiVersion: apps/v1
     kind: Deployment
     metadata:
@@ -335,7 +336,6 @@ A fim de implantar o aplicativo, use um arquivo de manifesto para criar todos os
       selector:
         app: store-front
       type: LoadBalancer
-    EOF
     ```
 
     Para obter um detalhamento dos arquivos de manifesto YAML, confira [Implantações e manifestos YAML](../concepts-clusters-workloads.md#deployments-and-yaml-manifests).
