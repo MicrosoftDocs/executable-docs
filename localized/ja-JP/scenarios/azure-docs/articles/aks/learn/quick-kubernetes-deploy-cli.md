@@ -1,3 +1,13 @@
+---
+title: 'クイック スタート: Azure CLI を使用して Azure Kubernetes Service (AKS) クラスターをデプロイする'
+description: Azure CLI を使用して Kubernetes クラスターのデプロイ、および Azure Kubernetes Service (AKS) でのアプリケーションのデプロイを、迅速に行う方法を学習します。
+ms.topic: quickstart
+ms.date: 04/09/2024
+author: tamram
+ms.author: tamram
+ms.custom: 'H1Hack27Feb2017, mvc, devcenter, devx-track-azurecli, mode-api, innovation-engine, linux-related-content'
+---
+
 # クイック スタート: Azure CLI を使用して Azure Kubernetes Service (AKS) クラスターをデプロイする
 
 [![Azure に配置する](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262758)
@@ -14,25 +24,13 @@ Azure Kubernetes Service (AKS) は、クラスターをすばやくデプロイ�
 
 このクイックスタートは、Kubernetes の基本的な概念を理解していることを前提としています。 詳細については、「[Azure Kubernetes Services (AKS) における Kubernetes の中心概念][kubernetes-concepts]」を参照してください。
 
-- [!INCLUDE [quickstarts-free-trial-note](../../../includes/quickstarts-free-trial-note.md)]
+- [!INCLUDE [quickstarts-free-trial-note](~/reusable-content/ce-skilling/azure/includes/quickstarts-free-trial-note.md)]
 
 [!INCLUDE [azure-cli-prepare-your-environment-no-header.md](~/reusable-content/azure-cli/azure-cli-prepare-your-environment-no-header.md)]
 
 - この記事では、Azure CLI のバージョン 2.0.64 以降が必要です。 Azure Cloud Shell を使用している場合は、最新バージョンが既にインストールされています。
 - クラスターの作成に使用している ID に、適切な最小限のアクセス許可が与えられていることを確認します。 AKS のアクセスと ID の詳細については、「[Azure Kubernetes Service (AKS) でのアクセスと ID オプション](../concepts-identity.md)」を参照してください。
 - 複数の Azure サブスクリプションをお持ちの場合は、[az account set](/cli/azure/account#az-account-set) コマンドを使用して、リソースが課金の対象となる適切なサブスクリプション ID を選択してください。 詳細については、[Azure CLI で Azure サブスクリプションを管理する方法](/cli/azure/manage-azure-subscriptions-azure-cli?tabs=bash#change-the-active-subscription)に関するページを参照してください。
-
-## 環境変数を定義する
-
-このクイックスタート全体で使用するために、以下の環境変数を定義します。
-
-```azurecli-interactive
-export RANDOM_ID="$(openssl rand -hex 3)"
-export MY_RESOURCE_GROUP_NAME="myAKSResourceGroup$RANDOM_ID"
-export REGION="westeurope"
-export MY_AKS_CLUSTER_NAME="myAKSCluster$RANDOM_ID"
-export MY_DNS_LABEL="mydnslabel$RANDOM_ID"
-```
 
 ## リソース グループを作成する
 
@@ -41,6 +39,9 @@ export MY_DNS_LABEL="mydnslabel$RANDOM_ID"
 [`az group create`][az-group-create] コマンドを使用して、リソース グループを作成します。
 
 ```azurecli-interactive
+export RANDOM_ID="$(openssl rand -hex 3)"
+export MY_RESOURCE_GROUP_NAME="myAKSResourceGroup$RANDOM_ID"
+export REGION="westeurope"
 az group create --name $MY_RESOURCE_GROUP_NAME --location $REGION
 ```
 
@@ -65,6 +66,7 @@ az group create --name $MY_RESOURCE_GROUP_NAME --location $REGION
 [`az aks create`][az-aks-create] コマンドを使用して、AKS クラスターを作成します。 次の例では、1 つのノードを含むクラスターを作成し、システム割り当てマネージド ID を有効にします。
 
 ```azurecli-interactive
+export MY_AKS_CLUSTER_NAME="myAKSCluster$RANDOM_ID"
 az aks create \
     --resource-group $MY_RESOURCE_GROUP_NAME \
     --name $MY_AKS_CLUSTER_NAME \
@@ -107,8 +109,7 @@ Kubernetes クラスターを管理するには、Kubernetes のコマンドラ�
 
 1. `aks-store-quickstart.yaml` という名前のファイルを作成し、そこに次のマニフェストをコピーします。
 
-    ```bash
-    cat << EOF > aks-store-quickstart.yaml
+    ```yaml
     apiVersion: apps/v1
     kind: Deployment
     metadata:
@@ -335,7 +336,6 @@ Kubernetes クラスターを管理するには、Kubernetes のコマンドラ�
       selector:
         app: store-front
       type: LoadBalancer
-    EOF
     ```
 
     YAML マニフェスト ファイルの内訳については、「[デプロイと YAML マニフェスト](../concepts-clusters-workloads.md#deployments-and-yaml-manifests)」を参照してください。
