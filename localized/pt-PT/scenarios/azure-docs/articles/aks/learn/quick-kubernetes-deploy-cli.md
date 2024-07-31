@@ -1,3 +1,13 @@
+---
+title: 'Guia de início rápido: implantar um cluster do Serviço Kubernetes do Azure (AKS) usando a CLI do Azure'
+description: Saiba como implantar rapidamente um cluster Kubernetes e implantar um aplicativo no Serviço Kubernetes do Azure (AKS) usando a CLI do Azure.
+ms.topic: quickstart
+ms.date: 04/09/2024
+author: tamram
+ms.author: tamram
+ms.custom: 'H1Hack27Feb2017, mvc, devcenter, devx-track-azurecli, mode-api, innovation-engine, linux-related-content'
+---
+
 # Guia de início rápido: implantar um cluster do Serviço Kubernetes do Azure (AKS) usando a CLI do Azure
 
 [![Implementar no Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262758)
@@ -14,25 +24,13 @@ O Serviço Kubernetes do Azure (AKS) é um serviço Kubernetes gerenciado que pe
 
 Este guia de introdução parte do princípio de que possui conhecimentos básicos dos conceitos do Kubernetes. Para obter mais informações, consulte [Conceitos principais do Kubernetes para o Serviço Kubernetes do Azure (AKS).][kubernetes-concepts]
 
-- [!INCLUDE [quickstarts-free-trial-note](../../../includes/quickstarts-free-trial-note.md)]
+- [!INCLUDE [quickstarts-free-trial-note](~/reusable-content/ce-skilling/azure/includes/quickstarts-free-trial-note.md)]
 
 [!INCLUDE [azure-cli-prepare-your-environment-no-header.md](~/reusable-content/azure-cli/azure-cli-prepare-your-environment-no-header.md)]
 
 - Este artigo requer a versão 2.0.64 ou posterior da CLI do Azure. Se você estiver usando o Azure Cloud Shell, a versão mais recente já está instalada lá.
 - Verifique se a identidade que você está usando para criar seu cluster tem as permissões mínimas apropriadas. Para obter mais detalhes sobre acesso e identidade para AKS, consulte [Opções de acesso e identidade para o Serviço Kubernetes do Azure (AKS).](../concepts-identity.md)
 - Se você tiver várias assinaturas do Azure, selecione a ID de assinatura apropriada na qual os recursos devem ser cobrados usando o [comando az account set](/cli/azure/account#az-account-set) . Para obter mais informações, consulte [Como gerenciar assinaturas do Azure – CLI](/cli/azure/manage-azure-subscriptions-azure-cli?tabs=bash#change-the-active-subscription) do Azure.
-
-## Definir variáveis de ambiente
-
-Defina as seguintes variáveis de ambiente para uso durante este início rápido:
-
-```azurecli-interactive
-export RANDOM_ID="$(openssl rand -hex 3)"
-export MY_RESOURCE_GROUP_NAME="myAKSResourceGroup$RANDOM_ID"
-export REGION="westeurope"
-export MY_AKS_CLUSTER_NAME="myAKSCluster$RANDOM_ID"
-export MY_DNS_LABEL="mydnslabel$RANDOM_ID"
-```
 
 ## Criar um grupo de recursos
 
@@ -41,6 +39,9 @@ Um [grupo][azure-resource-group] de recursos do Azure é um grupo lógico no qua
 Crie um grupo de recursos usando o [`az group create`][az-group-create] comando.
 
 ```azurecli-interactive
+export RANDOM_ID="$(openssl rand -hex 3)"
+export MY_RESOURCE_GROUP_NAME="myAKSResourceGroup$RANDOM_ID"
+export REGION="westeurope"
 az group create --name $MY_RESOURCE_GROUP_NAME --location $REGION
 ```
 
@@ -65,6 +66,7 @@ Resultados:
 Crie um cluster AKS usando o [`az aks create`][az-aks-create] comando. O exemplo a seguir cria um cluster com um nó e habilita uma identidade gerenciada atribuída ao sistema.
 
 ```azurecli-interactive
+export MY_AKS_CLUSTER_NAME="myAKSCluster$RANDOM_ID"
 az aks create \
     --resource-group $MY_RESOURCE_GROUP_NAME \
     --name $MY_AKS_CLUSTER_NAME \
@@ -107,8 +109,7 @@ Para implantar o aplicativo, use um arquivo de manifesto para criar todos os obj
 
 1. Crie um arquivo nomeado `aks-store-quickstart.yaml` e copie no seguinte manifesto:
 
-    ```bash
-    cat << EOF > aks-store-quickstart.yaml
+    ```yaml
     apiVersion: apps/v1
     kind: Deployment
     metadata:
@@ -335,7 +336,6 @@ Para implantar o aplicativo, use um arquivo de manifesto para criar todos os obj
       selector:
         app: store-front
       type: LoadBalancer
-    EOF
     ```
 
     Para obter um detalhamento dos arquivos de manifesto YAML, consulte [Implantações e manifestos](../concepts-clusters-workloads.md#deployments-and-yaml-manifests) YAML.
