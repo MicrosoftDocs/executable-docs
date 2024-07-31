@@ -1,3 +1,13 @@
+---
+title: 快速入門：使用 Azure CLI 部署 Azure Kubernetes Service (AKS) 叢集
+description: 了解如何使用 Azure CLI 在 Azure Kubernetes Service (AKS) 中快速部署 Kube 叢集並部署應用程式。
+ms.topic: quickstart
+ms.date: 04/09/2024
+author: tamram
+ms.author: tamram
+ms.custom: 'H1Hack27Feb2017, mvc, devcenter, devx-track-azurecli, mode-api, innovation-engine, linux-related-content'
+---
+
 # 快速入門：使用 Azure CLI 部署 Azure Kubernetes Service (AKS) 叢集
 
 [![部署至 Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262758)
@@ -14,25 +24,13 @@ Azure Kubernetes Service (AKS) 是受控 Kubernetes 服務，可讓您快速部�
 
 本快速入門假設您已有 Kubernetes 概念的基本知識。 如需詳細資訊，請參閱 [Azure Kubernetes Services (AKS) 的 Kubernetes 核心概念][kubernetes-concepts]。
 
-- [!INCLUDE [quickstarts-free-trial-note](../../../includes/quickstarts-free-trial-note.md)]
+- [!INCLUDE [quickstarts-free-trial-note](~/reusable-content/ce-skilling/azure/includes/quickstarts-free-trial-note.md)]
 
 [!INCLUDE [azure-cli-prepare-your-environment-no-header.md](~/reusable-content/azure-cli/azure-cli-prepare-your-environment-no-header.md)]
 
 - 本文需要 2.0.64 版或更新版本的 Azure CLI。 若您使用的是 Azure Cloud Shell，即已安裝最新版本。
 - 請確保您用來建立叢集的身分識別擁有適當的最低權限。 如需 AKS 存取和身分識別的詳細資訊，請參閱 [Azure Kubernetes Service (AKS) 的存取與身分識別選項](../concepts-identity.md)。
 - 如果您有多個 Azure 訂用帳戶，請使用 [az account set](/cli/azure/account#az-account-set) 命令來選取應對資源計費的適當訂用帳戶識別碼。 如需詳細資訊，請參閱 [如何管理 Azure 訂用帳戶 – Azure CLI](/cli/azure/manage-azure-subscriptions-azure-cli?tabs=bash#change-the-active-subscription)。
-
-## 定義環境變數
-
-定義下列環境變數，以用於本快速入門：
-
-```azurecli-interactive
-export RANDOM_ID="$(openssl rand -hex 3)"
-export MY_RESOURCE_GROUP_NAME="myAKSResourceGroup$RANDOM_ID"
-export REGION="westeurope"
-export MY_AKS_CLUSTER_NAME="myAKSCluster$RANDOM_ID"
-export MY_DNS_LABEL="mydnslabel$RANDOM_ID"
-```
 
 ## 建立資源群組
 
@@ -41,6 +39,9 @@ export MY_DNS_LABEL="mydnslabel$RANDOM_ID"
 使用 [`az group create`][az-group-create] 命令建立資源群組。
 
 ```azurecli-interactive
+export RANDOM_ID="$(openssl rand -hex 3)"
+export MY_RESOURCE_GROUP_NAME="myAKSResourceGroup$RANDOM_ID"
+export REGION="westeurope"
 az group create --name $MY_RESOURCE_GROUP_NAME --location $REGION
 ```
 
@@ -65,6 +66,7 @@ az group create --name $MY_RESOURCE_GROUP_NAME --location $REGION
 使用 [`az aks create`][az-aks-create] 命令建立 AKS 叢集。 下列範例會建立具有一個節點的叢集，並啟用系統指派的受控識別。
 
 ```azurecli-interactive
+export MY_AKS_CLUSTER_NAME="myAKSCluster$RANDOM_ID"
 az aks create \
     --resource-group $MY_RESOURCE_GROUP_NAME \
     --name $MY_AKS_CLUSTER_NAME \
@@ -77,7 +79,7 @@ az aks create \
 
 ## 連線至叢集
 
-若要管理 Kubernetes 叢集，請使用 Kubernetes 命令列用戶端 [kubectl][kubectl]。 如果您使用 Azure Cloud Shell，則 `kubectl` 已安裝。 若要在本機安裝 `kubectl` ，請使用 [`az aks install-cli`][az-aks-install-cli] 命令。
+若要管理 Kubernetes 叢集，請使用 Kubernetes 命令列用戶端 [kubectl][kubectl]。 如果您使用 Azure Cloud Shell，則 `kubectl` 已安裝。 若要在本機安裝 `kubectl`，請使用 [`az aks install-cli`][az-aks-install-cli] 命令。
 
 1. 使用 [az aks get-credentials][az-aks-get-credentials] 命令，設定 `kubectl` 連線到 Kubernetes 叢集。 此命令會下載憑證並設定 Kubernetes CLI 以供使用。
 
@@ -107,8 +109,7 @@ az aks create \
 
 1. 建立名為 `aks-store-quickstart.yaml` 的檔案，然後將下列資訊清單複製進來：
 
-    ```bash
-    cat << EOF > aks-store-quickstart.yaml
+    ```yaml
     apiVersion: apps/v1
     kind: Deployment
     metadata:
@@ -335,7 +336,6 @@ az aks create \
       selector:
         app: store-front
       type: LoadBalancer
-    EOF
     ```
 
     如需 YAML 資訊清單檔案的詳細資訊，請參閱[部署和 YAML 資訊清單](../concepts-clusters-workloads.md#deployments-and-yaml-manifests)。
