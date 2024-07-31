@@ -1,3 +1,13 @@
+---
+title: 'Szybki start: wdrażanie klastra usługi Azure Kubernetes Service (AKS) przy użyciu interfejsu wiersza polecenia platformy Azure'
+description: 'Dowiedz się, jak szybko wdrożyć klaster Kubernetes i wdrożyć aplikację w usłudze Azure Kubernetes Service (AKS) przy użyciu interfejsu wiersza polecenia platformy Azure.'
+ms.topic: quickstart
+ms.date: 04/09/2024
+author: tamram
+ms.author: tamram
+ms.custom: 'H1Hack27Feb2017, mvc, devcenter, devx-track-azurecli, mode-api, innovation-engine, linux-related-content'
+---
+
 # Szybki start: wdrażanie klastra usługi Azure Kubernetes Service (AKS) przy użyciu interfejsu wiersza polecenia platformy Azure
 
 [![Wdróż na platformie Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262758)
@@ -14,25 +24,13 @@ Azure Kubernetes Service (AKS) to zarządzana usługa platformy Kubernetes, któ
 
 W tym przewodniku Szybki start założono, że masz podstawową wiedzę na temat pojęć związanych z rozwiązaniem Kubernetes. Aby uzyskać więcej informacji, zobacz temat [Kubernetes core concepts for Azure Kubernetes Service (AKS)][kubernetes-concepts] (Kubernetes — podstawowe pojęcia dotyczące usługi Azure Kubernetes Service (AKS)).
 
-- [!INCLUDE [quickstarts-free-trial-note](../../../includes/quickstarts-free-trial-note.md)]
+- [!INCLUDE [quickstarts-free-trial-note](~/reusable-content/ce-skilling/azure/includes/quickstarts-free-trial-note.md)]
 
 [!INCLUDE [azure-cli-prepare-your-environment-no-header.md](~/reusable-content/azure-cli/azure-cli-prepare-your-environment-no-header.md)]
 
 - Ten artykuł wymaga wersji 2.0.64 lub nowszej interfejsu wiersza polecenia platformy Azure. Jeśli używasz usługi Azure Cloud Shell, najnowsza wersja jest już tam zainstalowana.
 - Upewnij się, że tożsamość używana do utworzenia klastra ma odpowiednie minimalne uprawnienia. Aby uzyskać więcej informacji na temat dostępu i tożsamości dla usługi AKS, zobacz [Opcje dostępu i tożsamości dla usługi Azure Kubernetes Service (AKS).](../concepts-identity.md)
 - Jeśli masz wiele subskrypcji platformy Azure, wybierz odpowiedni identyfikator subskrypcji, w którym mają być rozliczane zasoby przy użyciu [polecenia az account set](/cli/azure/account#az-account-set) . Aby uzyskać więcej informacji, zobacz [Jak zarządzać subskrypcjami platformy Azure — interfejs wiersza polecenia](/cli/azure/manage-azure-subscriptions-azure-cli?tabs=bash#change-the-active-subscription) platformy Azure.
-
-## Definiowanie zmiennych środowiskowych
-
-Zdefiniuj następujące zmienne środowiskowe do użycia w tym przewodniku Szybki start:
-
-```azurecli-interactive
-export RANDOM_ID="$(openssl rand -hex 3)"
-export MY_RESOURCE_GROUP_NAME="myAKSResourceGroup$RANDOM_ID"
-export REGION="westeurope"
-export MY_AKS_CLUSTER_NAME="myAKSCluster$RANDOM_ID"
-export MY_DNS_LABEL="mydnslabel$RANDOM_ID"
-```
 
 ## Tworzenie grupy zasobów
 
@@ -41,6 +39,9 @@ export MY_DNS_LABEL="mydnslabel$RANDOM_ID"
 Utwórz grupę zasobów przy użyciu [`az group create`][az-group-create] polecenia .
 
 ```azurecli-interactive
+export RANDOM_ID="$(openssl rand -hex 3)"
+export MY_RESOURCE_GROUP_NAME="myAKSResourceGroup$RANDOM_ID"
+export REGION="westeurope"
 az group create --name $MY_RESOURCE_GROUP_NAME --location $REGION
 ```
 
@@ -65,6 +66,7 @@ Wyniki:
 Utwórz klaster usługi AKS przy użyciu [`az aks create`][az-aks-create] polecenia . Poniższy przykład tworzy klaster z jednym węzłem i włącza tożsamość zarządzaną przypisaną przez system.
 
 ```azurecli-interactive
+export MY_AKS_CLUSTER_NAME="myAKSCluster$RANDOM_ID"
 az aks create \
     --resource-group $MY_RESOURCE_GROUP_NAME \
     --name $MY_AKS_CLUSTER_NAME \
@@ -107,8 +109,7 @@ Aby wdrożyć aplikację, należy użyć pliku manifestu, aby utworzyć wszystki
 
 1. Utwórz plik o nazwie `aks-store-quickstart.yaml` i skopiuj go w następującym manifeście:
 
-    ```bash
-    cat << EOF > aks-store-quickstart.yaml
+    ```yaml
     apiVersion: apps/v1
     kind: Deployment
     metadata:
@@ -335,7 +336,6 @@ Aby wdrożyć aplikację, należy użyć pliku manifestu, aby utworzyć wszystki
       selector:
         app: store-front
       type: LoadBalancer
-    EOF
     ```
 
     Aby uzyskać podział plików manifestu YAML, zobacz [Wdrożenia i manifesty](../concepts-clusters-workloads.md#deployments-and-yaml-manifests) YAML.
