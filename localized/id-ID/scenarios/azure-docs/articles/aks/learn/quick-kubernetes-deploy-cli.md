@@ -1,3 +1,13 @@
+---
+title: 'Mulai cepat: Menyebarkan kluster Azure Kubernetes Service (AKS) menggunakan Azure CLI'
+description: Pelajari cara menyebarkan kluster Kubernetes dengan cepat dan menyebarkan aplikasi di Azure Kubernetes Service (AKS) menggunakan Azure CLI.
+ms.topic: quickstart
+ms.date: 04/09/2024
+author: tamram
+ms.author: tamram
+ms.custom: 'H1Hack27Feb2017, mvc, devcenter, devx-track-azurecli, mode-api, innovation-engine, linux-related-content'
+---
+
 # Mulai cepat: Menyebarkan kluster Azure Kubernetes Service (AKS) menggunakan Azure CLI
 
 [![Sebarkan ke Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262758)
@@ -14,25 +24,13 @@ Azure Kubernetes Service (AKS) merupakan layanan Kube terkelola yang memungkinka
 
 Mulai cepat ini mengasumsikan pemahaman dasar tentang konsep Kube. Untuk informasi lebih, lihat [konsep inti Kubernetes untuk Azure Kubernetes Service (AKS)][kubernetes-concepts].
 
-- [!INCLUDE [quickstarts-free-trial-note](../../../includes/quickstarts-free-trial-note.md)]
+- [!INCLUDE [quickstarts-free-trial-note](~/reusable-content/ce-skilling/azure/includes/quickstarts-free-trial-note.md)]
 
 [!INCLUDE [azure-cli-prepare-your-environment-no-header.md](~/reusable-content/azure-cli/azure-cli-prepare-your-environment-no-header.md)]
 
 - Artikel ini memerlukan versi 2.0.64 atau yang lebih baru dari Azure CLI. Jika Anda menggunakan Azure Cloud Shell, versi terbaru sudah diinstal di sana.
 - Pastikan identitas yang Anda gunakan untuk membuat kluster Anda memiliki izin minimum yang sesuai. Untuk informasi selengkapnya tentang akses dan identitas AKS, lihat [Opsi akses dan identitas untuk Azure Kubernetes Service (AKS)](../concepts-identity.md).
 - Jika Anda memiliki beberapa langganan Azure, pilih ID langganan yang sesuai tempat sumber daya harus ditagih menggunakan [perintah az account set](/cli/azure/account#az-account-set) . Untuk informasi selengkapnya, lihat [Cara mengelola langganan Azure – Azure CLI](/cli/azure/manage-azure-subscriptions-azure-cli?tabs=bash#change-the-active-subscription).
-
-## Menentukan variabel lingkungan
-
-Tentukan variabel lingkungan berikut untuk digunakan di seluruh mulai cepat ini:
-
-```azurecli-interactive
-export RANDOM_ID="$(openssl rand -hex 3)"
-export MY_RESOURCE_GROUP_NAME="myAKSResourceGroup$RANDOM_ID"
-export REGION="westeurope"
-export MY_AKS_CLUSTER_NAME="myAKSCluster$RANDOM_ID"
-export MY_DNS_LABEL="mydnslabel$RANDOM_ID"
-```
 
 ## Buat grup sumber daya
 
@@ -41,6 +39,9 @@ export MY_DNS_LABEL="mydnslabel$RANDOM_ID"
 Buat grup sumber daya menggunakan [`az group create`][az-group-create] perintah .
 
 ```azurecli-interactive
+export RANDOM_ID="$(openssl rand -hex 3)"
+export MY_RESOURCE_GROUP_NAME="myAKSResourceGroup$RANDOM_ID"
+export REGION="westeurope"
 az group create --name $MY_RESOURCE_GROUP_NAME --location $REGION
 ```
 
@@ -65,6 +66,7 @@ Hasil:
 Buat kluster AKS menggunakan [`az aks create`][az-aks-create] perintah . Contoh berikut membuat kluster dengan satu simpul dan mengaktifkan identitas terkelola yang ditetapkan sistem.
 
 ```azurecli-interactive
+export MY_AKS_CLUSTER_NAME="myAKSCluster$RANDOM_ID"
 az aks create \
     --resource-group $MY_RESOURCE_GROUP_NAME \
     --name $MY_AKS_CLUSTER_NAME \
@@ -107,8 +109,7 @@ Untuk menyebarkan aplikasi, Anda menggunakan file manifes untuk membuat semua ob
 
 1. Buat file bernama `aks-store-quickstart.yaml` dan salin dalam manifes berikut:
 
-    ```bash
-    cat << EOF > aks-store-quickstart.yaml
+    ```yaml
     apiVersion: apps/v1
     kind: Deployment
     metadata:
@@ -335,7 +336,6 @@ Untuk menyebarkan aplikasi, Anda menggunakan file manifes untuk membuat semua ob
       selector:
         app: store-front
       type: LoadBalancer
-    EOF
     ```
 
     Untuk perincian file manifes YAML, lihat [Manifes](../concepts-clusters-workloads.md#deployments-and-yaml-manifests) Penyebaran dan YAML.
