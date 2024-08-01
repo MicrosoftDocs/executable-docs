@@ -32,6 +32,18 @@ Tento rychlý start předpokládá základní znalosti konceptů Kubernetes. Dal
 - Ujistěte se, že identita, kterou používáte k vytvoření clusteru, má odpovídající minimální oprávnění. Další podrobnosti o přístupu a identitě pro AKS najdete v tématu [Možnosti přístupu a identit pro Službu Azure Kubernetes Service (AKS).](../concepts-identity.md)
 - Pokud máte více předplatných Azure, vyberte odpovídající ID předplatného, ve kterém se mají prostředky fakturovat pomocí [příkazu az account set](/cli/azure/account#az-account-set) . Další informace najdete v tématu [Správa předplatných Azure – Azure CLI](/cli/azure/manage-azure-subscriptions-azure-cli?tabs=bash#change-the-active-subscription).
 
+## Definování proměnných prostředí
+
+V tomto rychlém startu definujte následující proměnné prostředí:
+
+```azurecli-interactive
+export RANDOM_ID="$(openssl rand -hex 3)"
+export MY_RESOURCE_GROUP_NAME="myAKSResourceGroup$RANDOM_ID"
+export REGION="westeurope"
+export MY_AKS_CLUSTER_NAME="myAKSCluster$RANDOM_ID"
+export MY_DNS_LABEL="mydnslabel$RANDOM_ID"
+```
+
 ## Vytvoření skupiny zdrojů
 
 Skupina [][azure-resource-group] prostředků Azure je logická skupina, ve které se nasazují a spravují prostředky Azure. Při vytváření skupiny prostředků se zobrazí výzva k zadání umístění. Toto umístění je umístění úložiště metadat vaší skupiny prostředků a místo, kde vaše prostředky běží v Azure, pokud během vytváření prostředků nezadáte jinou oblast.
@@ -39,9 +51,6 @@ Skupina [][azure-resource-group] prostředků Azure je logická skupina, ve kter
 Pomocí příkazu vytvořte skupinu [`az group create`][az-group-create] prostředků.
 
 ```azurecli-interactive
-export RANDOM_ID="$(openssl rand -hex 3)"
-export MY_RESOURCE_GROUP_NAME="myAKSResourceGroup$RANDOM_ID"
-export REGION="westeurope"
 az group create --name $MY_RESOURCE_GROUP_NAME --location $REGION
 ```
 
@@ -66,7 +75,6 @@ Výsledky:
 Pomocí příkazu vytvořte cluster [`az aks create`][az-aks-create] AKS. Následující příklad vytvoří cluster s jedním uzlem a povolí spravovanou identitu přiřazenou systémem.
 
 ```azurecli-interactive
-export MY_AKS_CLUSTER_NAME="myAKSCluster$RANDOM_ID"
 az aks create \
     --resource-group $MY_RESOURCE_GROUP_NAME \
     --name $MY_AKS_CLUSTER_NAME \
