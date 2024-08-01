@@ -164,7 +164,7 @@ Follow these steps to write an Exec Doc either by converting an existing Azure D
     
     >**Note:** You can generate your own random suffix or use the one provided in the example above. The `openssl rand -hex 3` command generates a random 3-character hexadecimal string. This string is then appended to the resource group name to ensure that the resource group name is unique for each deployment.
 
-7. Add result block(s) below code block(s) that you would want Innovation Engine to verify i.e. the code block(s) produce an output in the terminal that is relevant to benchmark against. Follow these steps when adding a result block below a code block for the first time:
+7. Add result block(s) below code block(s) that you would want Innovation Engine to verify i.e. code block(s) which produce an output in the terminal that is relevant to benchmark against. Follow these steps when adding a result block below a code block for the first time:
 
     - Check if the code block does not already have a result block below it. If it does, ensure the result block is formatted correctly, as shown in the example below, and move to the next code block.
     - [Open Azure Cloudshell](https://ms.portal.azure.com/#cloudshell/) 
@@ -195,11 +195,13 @@ Follow these steps to write an Exec Doc either by converting an existing Azure D
             }
             ```
         ```
-    - If you run into an error while executing a code block, update the Exec Doc based on the error stack trace (more guidance given in the [FAQ section](#frequently-asked-questions-faqs) below), restart/clear Cloudshell, and rerun the command block(s) from the start until you reach that command block. This is done to override any potential issues that may have occurred during the initial run.   
+    - If you run into an error while executing a code block or the code block is running in an infinite loop, update the Exec Doc based on the error stack trace, restart/clear Cloudshell, and rerun the command block(s) from the start until you reach that command block. This is done to override any potential issues that may have occurred during the initial run. More guidance is given in the [FAQ section](#frequently-asked-questions-faqs) below.
     
     >**Note:** In Exec Docs, result blocks are distinguished by a custom expected_similarity comment tag followed by a code block. These result blocks indicate to Innovation Engine what the minimum degree of similarity should be between the actual and the expected output of a code block (one which returns something in the terminal that is relevant to benchmark against). Learn More: [Result Blocks](https://github.com/Azure/InnovationEngine/blob/main/README.md#result-blocks).
     
     >**Note:** The expected similarity value is a floating point number between 0 and 1 which specifies how closely the true output needs to match the template output given in the results block - 0 being no similarity, 1 being an exact match. If you are uncertain about the value, it is recommended to set the expected similarity to 0.3 to account for small variations. Once you have run the command multiple times and are confident that the output is consistent, you can adjust the expected similarity value accordingly.
+
+    >**Note:** If you are executing a command in Cloudshell which references a yaml/json file, you would need to create the yaml/json file in Cloudshell and then run the command. This is because Cloudshell does not support the execution of commands that reference local files. You can add the file via the cat command or by creating the file in the Cloudshell editor. 
 
     >**Note:** Result blocks are not required but recommended for commands that return some output in the terminal. They help Innovation Engine verify the output of a command and act as checkpoints to ensure that the doc is moving in the right direction.
 
@@ -227,7 +229,7 @@ Follow these steps to write an Exec Doc either by converting an existing Azure D
         ```
     ```
 
-    >**Note:** The number of x's used to redact PII need not be the same as the number of characters in the original PII. Furthermore, it is recommended not to redact the key names in the output, only the values containing the PII.
+    >**Note:** The number of x's used to redact PII need not be the same as the number of characters in the original PII. Furthermore, it is recommended not to redact the key names in the output, only the values containing the PII (which are usually strings).
     
     >**Note:** Redacting PII from the output helps protect sensitive information from being inadvertently shared or exposed. This is crucial for maintaining privacy, complying with data protection regulations, and furthering the company's security posture. \
     \
@@ -245,24 +247,30 @@ Follow these steps to write an Exec Doc either by converting an existing Azure D
         ```bash
         az account set --subscription "<subscription name or id>"
         ``` 
-    - Install and set up the latest stable build of Innovation Engine (currently v0.1.3). Run the following command (ensure it is all run in one line): 
-
+    - Install and set up the latest stable build of [Innovation Engine](https://github.com/Azure/InnovationEngine) (currently v0.1.3). Run the following command (ensure it is all run in one line): 
         ```bash
         curl –Lks https://raw.githubusercontent.com/Azure/InnovationEngine/v0.1.3/scripts/install_from_release.sh | /bin/bash -s -- v0.1.3 
         ``` 
-    - Test your (Work In Progress) Exec Doc using Innovation Engine. Run the following command: 
+    - Test your (Work In Progress) Exec Doc using Innovation Engine. Run the following command **(this command will automatically delete the resources at the end of the test)**: 
 
         ```bash
-        ie execute <URL to the raw Exec Doc markdown that lives in GitHub, etc.>
+        ie test <URL to the raw Exec Doc markdown file>
         ``` 
+
+        >**Note:** The URL to the raw Exec Doc markdown can be found by clicking "Raw" in the GitHub view of the Exec Doc. Also, ensure the GitHub repo is public otherwise Innovation Engine will not be able to access the raw markdown file.
+
+        >**Note:** You can also test the Exec Doc by running the command "ie execute <URL to the raw Exec Doc markdown file>". This command will execute the code blocks in the Exec Doc but will not delete the resources at the end of the test. [Guidance on Innovation Engine's modes of operations](https://github.com/Azure/InnovationEngine?tab=readme-ov-file#modes-of-operation)
+    
     - If you run into any errors, update the source doc in your upstream repo accordingly and retest it using Innovation Engine. For more guidance on troubleshooting errors, refer to the [FAQ section](#frequently-asked-questions-faqs) below. 
 
-11. Submit and review the Exec Doc in the upstream repo once the doc passes all Innovation Engine tests
-    - Create a PR in GitHub once the Exec Doc is ready to be uploaded, pointing to the upstream repo from your fork
-    - Assign the original Exec Doc author (if not you) as a reviewer to the PR. In most cases, this assignment should happen automatically and should also include a reviewer from the Skilling team
-    - Add ***#sign-off***  in the PR comments once the Exec Doc is successfully reviewed. This will trigger the automated pipeline to merge the PR into the public repo
+    >**Note:** Some code blocks may take a while to execute, especially if they are creating resources in Azure. You can finish other tasks while waiting for the code block to complete in the active Cloudshell window.
 
-12. Test the Exec Doc on the Azure Portal test environment once the PR is merged. The steps below explain the process with an example [Exec Doc](https://learn.microsoft.com/en-us/azure/aks/learn/quick-kubernetes-deploy-cli) that deploys an Azure Kubernetes Service (AKS) cluster using Azure CLI.
+11. Submit and review the Exec Doc in the upstream repo once the doc passes all Innovation Engine tests
+    - Create a PR in GitHub once the Exec Doc is ready to be uploaded, pointing to the upstream repo from your fork. [Guidance on creating a PR in GitHub from a fork](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request-from-a-fork)
+    - Assign the original Exec Doc author (if it is not you) as a reviewer to the PR. In most cases, this assignment should happen automatically and should also include a reviewer from the Skilling team.
+    - Add the comment ***#sign-off***  in the PR comments section once the Exec Doc is successfully reviewed. This will trigger the automated pipeline to merge the PR into the public repo.
+
+12. Test the Exec Doc on the Azure Portal test environment once the PR is merged at source. The steps below explain the process with an example [Exec Doc](https://learn.microsoft.com/en-us/azure/aks/learn/quick-kubernetes-deploy-cli) that deploys an Azure Kubernetes Service (AKS) cluster using Azure CLI.
     - The [executable-docs repo](https://github.com/MicrosoftDocs/executable-docs/tree/main) is used to render the experience on Portal. A GitHub Action will sync your published Exec Doc in the executable-docs repo and create a PR to merge it in its main branch. Wait until you receive a notification from that PR: it will tag you and request you to test your Exec Doc before the merge happens
 
         **Example:**
@@ -285,7 +293,7 @@ Follow these steps to write an Exec Doc either by converting an existing Azure D
 
       ![Post Deployment Success Page Test Environment](https://github.com/user-attachments/assets/f002cd97-6bab-41a9-8c83-227e9b2da9cf)
 
-13. Add the ***Deploy to Azure*** button to the source doc published on [Microsoft Learn](https://learn.microsoft.com/en-us/) or elsewhere once the PR is merged. Using the example Exec Doc mentioned above, follow these steps to add the button:
+13. Add the ***Deploy to Azure*** button to the source doc published on [Microsoft Learn](https://learn.microsoft.com/en-us/) or elsewhere once the PR is merged in the [executable-docs repo](https://github.com/MicrosoftDocs/executable-docs/tree/main). Follow these steps to add the button:
 
     - Get the file path of your Exec Doc _relative_ to MicrosoftDocs/other GitHub organization. 
     
@@ -293,11 +301,11 @@ Follow these steps to write an Exec Doc either by converting an existing Azure D
 
         If your source Exec Doc is located at `MicrosoftDocs/azure-docs/articles/aks/quick-kubernetes-deploy-cli.md` file, the file path for this purpose would be `azure-docs/articles/aks/quick-kubernetes-deploy-cli.md`
 
-    - Add the code snippet (template given below) after the table of contents and before the doc content starts. Replace all ***'/'*** signs in the file path with ***%2f*** for URL. So, for the example above, the file path would be `azure-docs%2farticles%2faks%2fquick-kubernetes-deploy-cli.md`
+    - Add the code snippet (template given below) before the doc content starts (and after the table of contents if there is one). Replace all ***'/'*** signs in the file path with ***%2f*** for URL. So, for the example above, the file path would be `azure-docs%2farticles%2faks%2fquick-kubernetes-deploy-cli.md`
 
         **Deeplink Template:**
         ```markdown
-        [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://ms.portal.azure.com/#view/Microsoft_Azure_CloudNative/SubscriptionSelectionPage.ReactView/isLearnMode~/true/referer/docs/tutorialKey/<file_path_of_Exec_Doc>)
+        [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://ms.portal.azure.com/#view/Microsoft_Azure_CloudNative/SubscriptionSelectionPage.ReactView/isLearnMode~/true/referer/docs/tutorialKey/<add_file_path_of_Exec_Doc>)
         ```
 
         **Deeplink for Example Exec Doc:**
@@ -310,6 +318,8 @@ Follow these steps to write an Exec Doc either by converting an existing Azure D
       ![Deploy to Azure Button on Live Exec Doc](https://github.com/user-attachments/assets/3bfc1df7-8e33-4f22-b070-c365a6c3e917)
 
         >**Note:** The ***Deploy to Azure*** button is a clickable button that allows users to deploy the architecture described in the Exec Doc directly to their Azure subscription. This button is added to the source doc published on Microsoft Learn or elsewhere.
+
+        >**Note:** The reason why we replace the '/' signs with '%2f' is because the '/' sign is a reserved character in URLs and needs to be encoded as '%2f' to be used in a URL.
 
 ## Current Exec Docs Experience
 
