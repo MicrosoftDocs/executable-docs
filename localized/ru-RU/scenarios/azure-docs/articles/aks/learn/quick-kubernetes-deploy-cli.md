@@ -32,6 +32,18 @@ ms.custom: 'H1Hack27Feb2017, mvc, devcenter, devx-track-azurecli, mode-api, inno
 - Убедитесь, что удостоверение, которое вы используете для создания кластера, имеет соответствующие минимальные разрешения. Дополнительные сведения о доступе и удостоверении для AKS см. в статье [Возможности контроля доступа и идентификации в Службе Azure Kubernetes (AKS)](../concepts-identity.md).
 - Если у вас несколько подписок Azure, выберите соответствующий идентификатор подписки, в котором необходимо выставлять счета за ресурсы с помощью [команды az account set](/cli/azure/account#az-account-set) . Дополнительные сведения см. в статье ["Управление подписками Azure" — Azure CLI](/cli/azure/manage-azure-subscriptions-azure-cli?tabs=bash#change-the-active-subscription).
 
+## Определение переменных среды
+
+Определите следующие переменные среды для использования в этом кратком руководстве.
+
+```azurecli-interactive
+export RANDOM_ID="$(openssl rand -hex 3)"
+export MY_RESOURCE_GROUP_NAME="myAKSResourceGroup$RANDOM_ID"
+export REGION="westeurope"
+export MY_AKS_CLUSTER_NAME="myAKSCluster$RANDOM_ID"
+export MY_DNS_LABEL="mydnslabel$RANDOM_ID"
+```
+
 ## Создание или изменение группы ресурсов
 
 [Группа ресурсов Azure][azure-resource-group] — это логическая группа, в которой развертываются и управляются ресурсы Azure. При создании группы ресурсов вам будет предложено указать расположение. Это расположение хранилища метаданных группы ресурсов и место, где ресурсы выполняются в Azure, если вы не указываете другой регион во время создания ресурса.
@@ -39,9 +51,6 @@ ms.custom: 'H1Hack27Feb2017, mvc, devcenter, devx-track-azurecli, mode-api, inno
 Создайте группу ресурсов с помощью [`az group create`][az-group-create] команды.
 
 ```azurecli-interactive
-export RANDOM_ID="$(openssl rand -hex 3)"
-export MY_RESOURCE_GROUP_NAME="myAKSResourceGroup$RANDOM_ID"
-export REGION="westeurope"
 az group create --name $MY_RESOURCE_GROUP_NAME --location $REGION
 ```
 
@@ -66,7 +75,6 @@ az group create --name $MY_RESOURCE_GROUP_NAME --location $REGION
 Создайте кластер AKS с помощью [`az aks create`][az-aks-create] команды. В следующем примере создается кластер с одним узлом и включается управляемое удостоверение, назначаемое системой.
 
 ```azurecli-interactive
-export MY_AKS_CLUSTER_NAME="myAKSCluster$RANDOM_ID"
 az aks create \
     --resource-group $MY_RESOURCE_GROUP_NAME \
     --name $MY_AKS_CLUSTER_NAME \
