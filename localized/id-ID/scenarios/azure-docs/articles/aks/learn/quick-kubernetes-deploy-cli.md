@@ -32,6 +32,18 @@ Mulai cepat ini mengasumsikan pemahaman dasar tentang konsep Kube. Untuk informa
 - Pastikan identitas yang Anda gunakan untuk membuat kluster Anda memiliki izin minimum yang sesuai. Untuk informasi selengkapnya tentang akses dan identitas AKS, lihat [Opsi akses dan identitas untuk Azure Kubernetes Service (AKS)](../concepts-identity.md).
 - Jika Anda memiliki beberapa langganan Azure, pilih ID langganan yang sesuai tempat sumber daya harus ditagih menggunakan [perintah az account set](/cli/azure/account#az-account-set) . Untuk informasi selengkapnya, lihat [Cara mengelola langganan Azure – Azure CLI](/cli/azure/manage-azure-subscriptions-azure-cli?tabs=bash#change-the-active-subscription).
 
+## Menentukan variabel lingkungan
+
+Tentukan variabel lingkungan berikut untuk digunakan di seluruh mulai cepat ini:
+
+```azurecli-interactive
+export RANDOM_ID="$(openssl rand -hex 3)"
+export MY_RESOURCE_GROUP_NAME="myAKSResourceGroup$RANDOM_ID"
+export REGION="westeurope"
+export MY_AKS_CLUSTER_NAME="myAKSCluster$RANDOM_ID"
+export MY_DNS_LABEL="mydnslabel$RANDOM_ID"
+```
+
 ## Buat grup sumber daya
 
 [Grup sumber daya Azure][azure-resource-group] adalah grup logis tempat sumber daya Azure disebarkan dan dikelola. Saat membuat grup sumber daya, Anda diminta untuk menentukan lokasi. Lokasi ini adalah lokasi penyimpanan metadata grup sumber daya Anda dan tempat sumber daya Anda berjalan di Azure jika Anda tidak menentukan wilayah lain selama pembuatan sumber daya.
@@ -39,9 +51,6 @@ Mulai cepat ini mengasumsikan pemahaman dasar tentang konsep Kube. Untuk informa
 Buat grup sumber daya menggunakan [`az group create`][az-group-create] perintah .
 
 ```azurecli-interactive
-export RANDOM_ID="$(openssl rand -hex 3)"
-export MY_RESOURCE_GROUP_NAME="myAKSResourceGroup$RANDOM_ID"
-export REGION="westeurope"
 az group create --name $MY_RESOURCE_GROUP_NAME --location $REGION
 ```
 
@@ -66,7 +75,6 @@ Hasil:
 Buat kluster AKS menggunakan [`az aks create`][az-aks-create] perintah . Contoh berikut membuat kluster dengan satu simpul dan mengaktifkan identitas terkelola yang ditetapkan sistem.
 
 ```azurecli-interactive
-export MY_AKS_CLUSTER_NAME="myAKSCluster$RANDOM_ID"
 az aks create \
     --resource-group $MY_RESOURCE_GROUP_NAME \
     --name $MY_AKS_CLUSTER_NAME \
