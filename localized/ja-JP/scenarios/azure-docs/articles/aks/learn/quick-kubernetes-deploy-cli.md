@@ -32,6 +32,18 @@ Azure Kubernetes Service (AKS) は、クラスターをすばやくデプロイ�
 - クラスターの作成に使用している ID に、適切な最小限のアクセス許可が与えられていることを確認します。 AKS のアクセスと ID の詳細については、「[Azure Kubernetes Service (AKS) でのアクセスと ID オプション](../concepts-identity.md)」を参照してください。
 - 複数の Azure サブスクリプションをお持ちの場合は、[az account set](/cli/azure/account#az-account-set) コマンドを使用して、リソースが課金の対象となる適切なサブスクリプション ID を選択してください。 詳細については、[Azure CLI で Azure サブスクリプションを管理する方法](/cli/azure/manage-azure-subscriptions-azure-cli?tabs=bash#change-the-active-subscription)に関するページを参照してください。
 
+## 環境変数を定義する
+
+このクイックスタート全体で使用するために、以下の環境変数を定義します。
+
+```azurecli-interactive
+export RANDOM_ID="$(openssl rand -hex 3)"
+export MY_RESOURCE_GROUP_NAME="myAKSResourceGroup$RANDOM_ID"
+export REGION="westeurope"
+export MY_AKS_CLUSTER_NAME="myAKSCluster$RANDOM_ID"
+export MY_DNS_LABEL="mydnslabel$RANDOM_ID"
+```
+
 ## リソース グループを作成する
 
 [Azure リソース グループ][azure-resource-group]は、Azure リソースが展開され管理される論理グループです。 リソース グループを作成する際は、場所の指定を求めるプロンプトが表示されます。 この場所は、リソース グループのメタデータが格納される場所です。また、リソースの作成時に別のリージョンを指定しない場合は、Azure でリソースが実行される場所でもあります。
@@ -39,9 +51,6 @@ Azure Kubernetes Service (AKS) は、クラスターをすばやくデプロイ�
 [`az group create`][az-group-create] コマンドを使用して、リソース グループを作成します。
 
 ```azurecli-interactive
-export RANDOM_ID="$(openssl rand -hex 3)"
-export MY_RESOURCE_GROUP_NAME="myAKSResourceGroup$RANDOM_ID"
-export REGION="westeurope"
 az group create --name $MY_RESOURCE_GROUP_NAME --location $REGION
 ```
 
@@ -66,7 +75,6 @@ az group create --name $MY_RESOURCE_GROUP_NAME --location $REGION
 [`az aks create`][az-aks-create] コマンドを使用して、AKS クラスターを作成します。 次の例では、1 つのノードを含むクラスターを作成し、システム割り当てマネージド ID を有効にします。
 
 ```azurecli-interactive
-export MY_AKS_CLUSTER_NAME="myAKSCluster$RANDOM_ID"
 az aks create \
     --resource-group $MY_RESOURCE_GROUP_NAME \
     --name $MY_AKS_CLUSTER_NAME \
