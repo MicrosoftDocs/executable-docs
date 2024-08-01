@@ -32,6 +32,18 @@ W tym przewodniku Szybki start założono, że masz podstawową wiedzę na temat
 - Upewnij się, że tożsamość używana do utworzenia klastra ma odpowiednie minimalne uprawnienia. Aby uzyskać więcej informacji na temat dostępu i tożsamości dla usługi AKS, zobacz [Opcje dostępu i tożsamości dla usługi Azure Kubernetes Service (AKS).](../concepts-identity.md)
 - Jeśli masz wiele subskrypcji platformy Azure, wybierz odpowiedni identyfikator subskrypcji, w którym mają być rozliczane zasoby przy użyciu [polecenia az account set](/cli/azure/account#az-account-set) . Aby uzyskać więcej informacji, zobacz [Jak zarządzać subskrypcjami platformy Azure — interfejs wiersza polecenia](/cli/azure/manage-azure-subscriptions-azure-cli?tabs=bash#change-the-active-subscription) platformy Azure.
 
+## Definiowanie zmiennych środowiskowych
+
+Zdefiniuj następujące zmienne środowiskowe do użycia w tym przewodniku Szybki start:
+
+```azurecli-interactive
+export RANDOM_ID="$(openssl rand -hex 3)"
+export MY_RESOURCE_GROUP_NAME="myAKSResourceGroup$RANDOM_ID"
+export REGION="westeurope"
+export MY_AKS_CLUSTER_NAME="myAKSCluster$RANDOM_ID"
+export MY_DNS_LABEL="mydnslabel$RANDOM_ID"
+```
+
 ## Tworzenie grupy zasobów
 
 [Grupa][azure-resource-group] zasobów platformy Azure to grupa logiczna, w której zasoby platformy Azure są wdrażane i zarządzane. Podczas tworzenia grupy zasobów zostanie wyświetlony monit o określenie lokalizacji. Ta lokalizacja to lokalizacja magazynu metadanych grupy zasobów i lokalizacja, w której zasoby są uruchamiane na platformie Azure, jeśli nie określisz innego regionu podczas tworzenia zasobów.
@@ -39,9 +51,6 @@ W tym przewodniku Szybki start założono, że masz podstawową wiedzę na temat
 Utwórz grupę zasobów przy użyciu [`az group create`][az-group-create] polecenia .
 
 ```azurecli-interactive
-export RANDOM_ID="$(openssl rand -hex 3)"
-export MY_RESOURCE_GROUP_NAME="myAKSResourceGroup$RANDOM_ID"
-export REGION="westeurope"
 az group create --name $MY_RESOURCE_GROUP_NAME --location $REGION
 ```
 
@@ -66,7 +75,6 @@ Wyniki:
 Utwórz klaster usługi AKS przy użyciu [`az aks create`][az-aks-create] polecenia . Poniższy przykład tworzy klaster z jednym węzłem i włącza tożsamość zarządzaną przypisaną przez system.
 
 ```azurecli-interactive
-export MY_AKS_CLUSTER_NAME="myAKSCluster$RANDOM_ID"
 az aks create \
     --resource-group $MY_RESOURCE_GROUP_NAME \
     --name $MY_AKS_CLUSTER_NAME \
