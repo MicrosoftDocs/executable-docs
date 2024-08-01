@@ -32,6 +32,18 @@ AKS(Azure Kubernetes Service)는 클러스터를 빠르게 배포하고 관리�
 - 클러스터를 만드는 데 사용하는 ID에 적절한 최소 권한이 있는지 확인합니다. AKS의 액세스 및 ID에 대한 자세한 내용은 [AKS(Azure Kubernetes Service)에 대한 액세스 및 ID 옵션](../concepts-identity.md)을 참조하세요.
 - Azure 구독이 여러 개인 경우 [az account set](/cli/azure/account#az-account-set) 명령을 사용하여 리소스가 청구되어야 하는 적절한 구독 ID를 선택합니다. 자세한 내용은 [Azure 구독 관리 방법 - Azure CLI](/cli/azure/manage-azure-subscriptions-azure-cli?tabs=bash#change-the-active-subscription)를 참조하세요.
 
+## 환경 변수 정의
+
+이 빠른 시작 전체에서 사용할 다음 환경 변수를 정의합니다.
+
+```azurecli-interactive
+export RANDOM_ID="$(openssl rand -hex 3)"
+export MY_RESOURCE_GROUP_NAME="myAKSResourceGroup$RANDOM_ID"
+export REGION="westeurope"
+export MY_AKS_CLUSTER_NAME="myAKSCluster$RANDOM_ID"
+export MY_DNS_LABEL="mydnslabel$RANDOM_ID"
+```
+
 ## 리소스 그룹 만들기
 
 [Azure 리소스 그룹][azure-resource-group]은 Azure 리소스가 배포되고 관리되는 논리 그룹입니다. 리소스 그룹을 만들 때 위치를 지정하라는 메시지가 표시됩니다. 이 위치는 리소스 그룹 메타데이터의 스토리지 위치이며 리소스를 만드는 중에 다른 지역을 지정하지 않은 경우 Azure에서 리소스가 실행되는 위치입니다.
@@ -39,9 +51,6 @@ AKS(Azure Kubernetes Service)는 클러스터를 빠르게 배포하고 관리�
 [`az group create`][az-group-create] 명령을 사용하여 리소스 그룹을 만듭니다.
 
 ```azurecli-interactive
-export RANDOM_ID="$(openssl rand -hex 3)"
-export MY_RESOURCE_GROUP_NAME="myAKSResourceGroup$RANDOM_ID"
-export REGION="westeurope"
 az group create --name $MY_RESOURCE_GROUP_NAME --location $REGION
 ```
 
@@ -66,7 +75,6 @@ Results:
 [`az aks create`][az-aks-create] 명령을 사용하여 AKS 클러스터를 만듭니다. 다음 예에서는 노드가 1개 있는 클러스터를 만들고 시스템 할당 관리 ID를 사용하도록 설정합니다.
 
 ```azurecli-interactive
-export MY_AKS_CLUSTER_NAME="myAKSCluster$RANDOM_ID"
 az aks create \
     --resource-group $MY_RESOURCE_GROUP_NAME \
     --name $MY_AKS_CLUSTER_NAME \
