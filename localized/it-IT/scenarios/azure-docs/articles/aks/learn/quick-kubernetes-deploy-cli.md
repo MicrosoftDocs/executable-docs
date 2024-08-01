@@ -32,6 +32,18 @@ Questa guida introduttiva presuppone una comprensione di base dei concetti relat
 - Assicurarsi che l'identità usata per creare il cluster disponga delle autorizzazioni minime adeguate. Per maggiori informazioni sull'accesso e l'identità per il servizio Azure Kubernetes, vedere [Opzioni di accesso e identità per il servizio Azure Kubernetes (AKS)](../concepts-identity.md).
 - Se si hanno più sottoscrizioni di Azure, selezionare l'ID sottoscrizione appropriato in cui devono essere fatturate le risorse, usando il comando [set account az](/cli/azure/account#az-account-set). Per altre informazioni, vedere [Come gestire le sottoscrizioni di Azure - Interfaccia della riga di comando di Azure](/cli/azure/manage-azure-subscriptions-azure-cli?tabs=bash#change-the-active-subscription).
 
+## Definire le variabili di ambiente
+
+Definire le variabili di ambiente seguenti da usare in questa guida introduttiva:
+
+```azurecli-interactive
+export RANDOM_ID="$(openssl rand -hex 3)"
+export MY_RESOURCE_GROUP_NAME="myAKSResourceGroup$RANDOM_ID"
+export REGION="westeurope"
+export MY_AKS_CLUSTER_NAME="myAKSCluster$RANDOM_ID"
+export MY_DNS_LABEL="mydnslabel$RANDOM_ID"
+```
+
 ## Creare un gruppo di risorse
 
 Un [gruppo di risorse][azure-resource-group] di Azure è un gruppo logico in cui le risorse di Azure vengono distribuite e gestite. Quando si crea un gruppo di risorse, viene richiesto di specificare una posizione. Questa posizione è la posizione di archiviazione dei metadati del gruppo di risorse e dove le risorse vengono eseguite in Azure se non si specifica un'altra regione durante la creazione della risorsa.
@@ -39,9 +51,6 @@ Un [gruppo di risorse][azure-resource-group] di Azure è un gruppo logico in cui
 Creare un gruppo di risorse usando il comando [`az group create`][az-group-create].
 
 ```azurecli-interactive
-export RANDOM_ID="$(openssl rand -hex 3)"
-export MY_RESOURCE_GROUP_NAME="myAKSResourceGroup$RANDOM_ID"
-export REGION="westeurope"
 az group create --name $MY_RESOURCE_GROUP_NAME --location $REGION
 ```
 
@@ -66,7 +75,6 @@ Risultati:
 Creare un cluster del servizio Azure Kubernetes usando il comando [`az aks create`][az-aks-create]. L'esempio seguente crea un cluster con un nodo e abilita un'identità gestita assegnata dal sistema.
 
 ```azurecli-interactive
-export MY_AKS_CLUSTER_NAME="myAKSCluster$RANDOM_ID"
 az aks create \
     --resource-group $MY_RESOURCE_GROUP_NAME \
     --name $MY_AKS_CLUSTER_NAME \
