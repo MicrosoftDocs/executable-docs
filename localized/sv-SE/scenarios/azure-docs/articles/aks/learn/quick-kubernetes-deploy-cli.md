@@ -32,6 +32,18 @@ Den här snabbstarten förutsätter grundläggande kunskaper om Kubernetes-begre
 - Kontrollera att den identitet som du använder för att skapa klustret har lämpliga minimibehörigheter. Mer information om åtkomst och identitet för AKS finns i [Åtkomst- och identitetsalternativ för Azure Kubernetes Service (AKS)](../concepts-identity.md).
 - Om du har flera Azure-prenumerationer väljer du lämpligt prenumerations-ID där resurserna ska faktureras med [kommandot az account set](/cli/azure/account#az-account-set) . Mer information finns i [Hantera Azure-prenumerationer – Azure CLI](/cli/azure/manage-azure-subscriptions-azure-cli?tabs=bash#change-the-active-subscription).
 
+## Definiera miljövariabler
+
+Definiera följande miljövariabler för användning under den här snabbstarten:
+
+```azurecli-interactive
+export RANDOM_ID="$(openssl rand -hex 3)"
+export MY_RESOURCE_GROUP_NAME="myAKSResourceGroup$RANDOM_ID"
+export REGION="westeurope"
+export MY_AKS_CLUSTER_NAME="myAKSCluster$RANDOM_ID"
+export MY_DNS_LABEL="mydnslabel$RANDOM_ID"
+```
+
 ## Skapa en resursgrupp
 
 En [Azure-resursgrupp][azure-resource-group] är en logisk grupp där Azure-resurser distribueras och hanteras. När du skapar en resursgrupp uppmanas du att ange en plats. Den här platsen är lagringsplatsen för dina resursgruppsmetadata och där dina resurser körs i Azure om du inte anger en annan region när du skapar resurser.
@@ -39,9 +51,6 @@ En [Azure-resursgrupp][azure-resource-group] är en logisk grupp där Azure-resu
 Skapa en resursgrupp med kommandot [`az group create`][az-group-create] .
 
 ```azurecli-interactive
-export RANDOM_ID="$(openssl rand -hex 3)"
-export MY_RESOURCE_GROUP_NAME="myAKSResourceGroup$RANDOM_ID"
-export REGION="westeurope"
 az group create --name $MY_RESOURCE_GROUP_NAME --location $REGION
 ```
 
@@ -66,7 +75,6 @@ Resultat:
 Skapa ett AKS-kluster med kommandot [`az aks create`][az-aks-create] . I följande exempel skapas ett kluster med en nod och en systemtilldelad hanterad identitet aktiveras.
 
 ```azurecli-interactive
-export MY_AKS_CLUSTER_NAME="myAKSCluster$RANDOM_ID"
 az aks create \
     --resource-group $MY_RESOURCE_GROUP_NAME \
     --name $MY_AKS_CLUSTER_NAME \
