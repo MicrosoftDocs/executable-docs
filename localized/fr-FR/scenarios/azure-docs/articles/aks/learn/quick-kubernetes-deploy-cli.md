@@ -32,6 +32,18 @@ Ce guide de démarrage rapide suppose une compréhension élémentaire des conce
 - Veillez à ce que l’identité que vous utilisez pour créer votre cluster dispose des autorisations minimales appropriées. Pour plus d’informations sur l’accès et l’identité pour AKS, consultez [Options d’accès et d’identité pour Kubernetes Azure Service (AKS)](../concepts-identity.md).
 - Si vous avez plusieurs abonnements Azure, sélectionnez l’identifiant d’abonnement approprié dans lequel les ressources doivent être facturées avec la commande [az account set](/cli/azure/account#az-account-set). Pour obtenir plus d’informations, consultez [Gérer les abonnements Azure – Azure CLI](/cli/azure/manage-azure-subscriptions-azure-cli?tabs=bash#change-the-active-subscription).
 
+## Définissez des variables d’environnement
+
+Définissez les variables d’environnement suivantes à utiliser dans ce guide de démarrage rapide :
+
+```azurecli-interactive
+export RANDOM_ID="$(openssl rand -hex 3)"
+export MY_RESOURCE_GROUP_NAME="myAKSResourceGroup$RANDOM_ID"
+export REGION="westeurope"
+export MY_AKS_CLUSTER_NAME="myAKSCluster$RANDOM_ID"
+export MY_DNS_LABEL="mydnslabel$RANDOM_ID"
+```
+
 ## Créer un groupe de ressources
 
 Un [groupe de ressources Azure][azure-resource-group] est un groupe logique dans lequel des ressources Azure sont déployées et gérées. Lorsque vous créez un groupe de ressources, vous êtes invité à spécifier un emplacement. Cet emplacement est l'emplacement de stockage des métadonnées de votre groupe de ressources et l'endroit où vos ressources s'exécutent dans Azure si vous ne spécifiez pas une autre région lors de la création de la ressource.
@@ -39,9 +51,6 @@ Un [groupe de ressources Azure][azure-resource-group] est un groupe logique dans
 Créez un groupe de ressources avec la commande [`az group create`][az-group-create].
 
 ```azurecli-interactive
-export RANDOM_ID="$(openssl rand -hex 3)"
-export MY_RESOURCE_GROUP_NAME="myAKSResourceGroup$RANDOM_ID"
-export REGION="westeurope"
 az group create --name $MY_RESOURCE_GROUP_NAME --location $REGION
 ```
 
@@ -66,7 +75,6 @@ Résultats :
 Créez un cluster AKS avec la commande [`az aks create`][az-aks-create]. L’exemple suivant crée un cluster avec un nœud et active une identité managée affectée par le système.
 
 ```azurecli-interactive
-export MY_AKS_CLUSTER_NAME="myAKSCluster$RANDOM_ID"
 az aks create \
     --resource-group $MY_RESOURCE_GROUP_NAME \
     --name $MY_AKS_CLUSTER_NAME \
