@@ -32,6 +32,18 @@ Azure Kubernetes Service (AKS) 是受控 Kubernetes 服務，可讓您快速部�
 - 請確保您用來建立叢集的身分識別擁有適當的最低權限。 如需 AKS 存取和身分識別的詳細資訊，請參閱 [Azure Kubernetes Service (AKS) 的存取與身分識別選項](../concepts-identity.md)。
 - 如果您有多個 Azure 訂用帳戶，請使用 [az account set](/cli/azure/account#az-account-set) 命令來選取應對資源計費的適當訂用帳戶識別碼。 如需詳細資訊，請參閱 [如何管理 Azure 訂用帳戶 – Azure CLI](/cli/azure/manage-azure-subscriptions-azure-cli?tabs=bash#change-the-active-subscription)。
 
+## 定義環境變數
+
+定義下列環境變數，以用於本快速入門：
+
+```azurecli-interactive
+export RANDOM_ID="$(openssl rand -hex 3)"
+export MY_RESOURCE_GROUP_NAME="myAKSResourceGroup$RANDOM_ID"
+export REGION="westeurope"
+export MY_AKS_CLUSTER_NAME="myAKSCluster$RANDOM_ID"
+export MY_DNS_LABEL="mydnslabel$RANDOM_ID"
+```
+
 ## 建立資源群組
 
 [Azure 資源群組][azure-resource-group]是部署及管理 Azure 資源所在的邏輯群組。 建立資源群組時，系統會提示您指定位置。 此位置是資源群組中繼資料的儲存位置，如果未在資源建立期間指定另一個區域，此位置也會是您在 Azure 中執行資源的位置。
@@ -39,9 +51,6 @@ Azure Kubernetes Service (AKS) 是受控 Kubernetes 服務，可讓您快速部�
 使用 [`az group create`][az-group-create] 命令建立資源群組。
 
 ```azurecli-interactive
-export RANDOM_ID="$(openssl rand -hex 3)"
-export MY_RESOURCE_GROUP_NAME="myAKSResourceGroup$RANDOM_ID"
-export REGION="westeurope"
 az group create --name $MY_RESOURCE_GROUP_NAME --location $REGION
 ```
 
@@ -66,7 +75,6 @@ az group create --name $MY_RESOURCE_GROUP_NAME --location $REGION
 使用 [`az aks create`][az-aks-create] 命令建立 AKS 叢集。 下列範例會建立具有一個節點的叢集，並啟用系統指派的受控識別。
 
 ```azurecli-interactive
-export MY_AKS_CLUSTER_NAME="myAKSCluster$RANDOM_ID"
 az aks create \
     --resource-group $MY_RESOURCE_GROUP_NAME \
     --name $MY_AKS_CLUSTER_NAME \
