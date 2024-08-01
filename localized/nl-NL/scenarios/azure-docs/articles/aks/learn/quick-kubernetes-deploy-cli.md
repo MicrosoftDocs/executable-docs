@@ -32,6 +32,18 @@ In deze snelstart wordt ervan uitgegaan dat u een basisbegrip hebt van Kubernete
 - Zorg ervoor dat de identiteit die u gebruikt om uw cluster te maken de juiste minimale machtigingen heeft. Zie Toegangs- en identiteitsopties voor Azure Kubernetes Service (AKS)[ voor meer informatie over toegang en identiteit voor AKS](../concepts-identity.md).
 - Als u meerdere Azure-abonnementen hebt, selecteert u de juiste abonnements-id waarin de resources moeten worden gefactureerd met behulp van de [opdracht az account set](/cli/azure/account#az-account-set) . Zie [Azure-abonnementen beheren - Azure CLI](/cli/azure/manage-azure-subscriptions-azure-cli?tabs=bash#change-the-active-subscription) voor meer informatie.
 
+## Omgevingsvariabelen definiëren
+
+Definieer de volgende omgevingsvariabelen voor gebruik in deze quickstart:
+
+```azurecli-interactive
+export RANDOM_ID="$(openssl rand -hex 3)"
+export MY_RESOURCE_GROUP_NAME="myAKSResourceGroup$RANDOM_ID"
+export REGION="westeurope"
+export MY_AKS_CLUSTER_NAME="myAKSCluster$RANDOM_ID"
+export MY_DNS_LABEL="mydnslabel$RANDOM_ID"
+```
+
 ## Een brongroep maken
 
 Een [Azure-resourcegroep][azure-resource-group] is een logische groep waarin Azure-resources worden geïmplementeerd en beheerd. Wanneer u een resourcegroep maakt, wordt u gevraagd een locatie op te geven. Deze locatie is de opslaglocatie van de metagegevens van uw resourcegroep en waar uw resources worden uitgevoerd in Azure als u geen andere regio opgeeft tijdens het maken van de resource.
@@ -39,9 +51,6 @@ Een [Azure-resourcegroep][azure-resource-group] is een logische groep waarin Azu
 Maak een resourcegroep met behulp van de [`az group create`][az-group-create] opdracht.
 
 ```azurecli-interactive
-export RANDOM_ID="$(openssl rand -hex 3)"
-export MY_RESOURCE_GROUP_NAME="myAKSResourceGroup$RANDOM_ID"
-export REGION="westeurope"
 az group create --name $MY_RESOURCE_GROUP_NAME --location $REGION
 ```
 
@@ -66,7 +75,6 @@ Resultaten:
 Maak een AKS-cluster met behulp van de [`az aks create`][az-aks-create] opdracht. In het volgende voorbeeld wordt een cluster met één knooppunt gemaakt en wordt een door het systeem toegewezen beheerde identiteit ingeschakeld.
 
 ```azurecli-interactive
-export MY_AKS_CLUSTER_NAME="myAKSCluster$RANDOM_ID"
 az aks create \
     --resource-group $MY_RESOURCE_GROUP_NAME \
     --name $MY_AKS_CLUSTER_NAME \
