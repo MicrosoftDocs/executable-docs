@@ -28,19 +28,6 @@ Cloud Shell を開くには、コード ブロックの右上隅にある **[使
 
 CLI をローカルにインストールして使用する場合、このクイック スタートでは、Azure CLI バージョン 2.0.30 以降が必要です。 バージョンを確認するには、`az --version` を実行します。 インストールまたはアップグレードする必要がある場合は、[Azure CLI のインストール]( /cli/azure/install-azure-cli)に関するページを参照してください。
 
-## 環境変数を定義する
-
-最初のステップは、環境変数を定義することです。 Linux で環境変数は通常、構成データを一元化してシステムの一貫性と保守容易性を向上させるために使用します。 このチュートリアルで後ほど作成するリソースの名前を指定するための、次の環境変数を作成します。
-
-```bash
-export RANDOM_ID="$(openssl rand -hex 3)"
-export MY_RESOURCE_GROUP_NAME="myVMResourceGroup$RANDOM_ID"
-export REGION=EastUS
-export MY_VM_NAME="myVM$RANDOM_ID"
-export MY_USERNAME=azureuser
-export MY_VM_IMAGE="Canonical:0001-com-ubuntu-minimal-jammy:minimal-22_04-lts-gen2:latest"
-```
-
 ## CLI を使用して Azure にログインする
 
 CLI を使用して Azure でコマンドを実行するには、まず、ログインする必要があります。 `az login` コマンドを使ってログインします。
@@ -50,6 +37,9 @@ CLI を使用して Azure でコマンドを実行するには、まず、ログ
 リソース グループとは、関連リソース用のコンテナーです。 すべてのリソースをリソース グループに配置する必要があります。 [az group create](/cli/azure/group) コマンドは、前に定義した $MY_RESOURCE_GROUP_NAME と $REGION パラメーターを使ってリソース グループを作成します。
 
 ```bash
+export RANDOM_ID="$(openssl rand -hex 3)"
+export MY_RESOURCE_GROUP_NAME="myVMResourceGroup$RANDOM_ID"
+export REGION=EastUS
 az group create --name $MY_RESOURCE_GROUP_NAME --location $REGION
 ```
 
@@ -79,6 +69,9 @@ az group create --name $MY_RESOURCE_GROUP_NAME --location $REGION
 その他のすべての値は、環境変数を使用して構成されます。
 
 ```bash
+export MY_VM_NAME="myVM$RANDOM_ID"
+export MY_USERNAME=azureuser
+export MY_VM_IMAGE="Canonical:0001-com-ubuntu-minimal-jammy:minimal-22_04-lts-gen2:latest"
 az vm create \
     --resource-group $MY_RESOURCE_GROUP_NAME \
     --name $MY_VM_NAME \
