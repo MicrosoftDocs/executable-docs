@@ -28,19 +28,6 @@ Om du vill öppna Cloud Shell väljer du bara **Prova** från det övre högra h
 
 Om du föredrar att installera och använda detta CLI lokalt måste du köra Azure CLI version 2.0.30 eller senare. Kör `az --version` för att hitta versionen. Om du behöver installera eller uppgradera kan du läsa [Installera Azure CLI]( /cli/azure/install-azure-cli).
 
-## Definiera miljövariabler
-
-Det första steget är att definiera miljövariablerna. Miljövariabler används ofta i Linux för att centralisera konfigurationsdata för att förbättra systemets konsekvens och underhåll. Skapa följande miljövariabler för att ange namnen på de resurser som du skapar senare i den här självstudien:
-
-```bash
-export RANDOM_ID="$(openssl rand -hex 3)"
-export MY_RESOURCE_GROUP_NAME="myVMResourceGroup$RANDOM_ID"
-export REGION=EastUS
-export MY_VM_NAME="myVM$RANDOM_ID"
-export MY_USERNAME=azureuser
-export MY_VM_IMAGE="Canonical:0001-com-ubuntu-minimal-jammy:minimal-22_04-lts-gen2:latest"
-```
-
 ## Logga in på Azure med hjälp av CLI
 
 För att kunna köra kommandon i Azure med hjälp av CLI måste du logga in först. Logga in med kommandot `az login` .
@@ -50,6 +37,9 @@ För att kunna köra kommandon i Azure med hjälp av CLI måste du logga in för
 En resursgrupp är en container för relaterade resurser. Alla resurser måste placeras i en resursgrupp. Kommandot [az group create](/cli/azure/group) skapar en resursgrupp med de tidigare definierade parametrarna $MY_RESOURCE_GROUP_NAME och $REGION.
 
 ```bash
+export RANDOM_ID="$(openssl rand -hex 3)"
+export MY_RESOURCE_GROUP_NAME="myVMResourceGroup$RANDOM_ID"
+export REGION=EastUS
 az group create --name $MY_RESOURCE_GROUP_NAME --location $REGION
 ```
 
@@ -79,6 +69,9 @@ I följande exempel skapas en virtuell dator och ett användarkonto läggs till.
 Alla andra värden konfigureras med hjälp av miljövariabler.
 
 ```bash
+export MY_VM_NAME="myVM$RANDOM_ID"
+export MY_USERNAME=azureuser
+export MY_VM_IMAGE="Canonical:0001-com-ubuntu-minimal-jammy:minimal-22_04-lts-gen2:latest"
 az vm create \
     --resource-group $MY_RESOURCE_GROUP_NAME \
     --name $MY_VM_NAME \
