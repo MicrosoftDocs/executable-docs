@@ -28,19 +28,6 @@ Cloud Shell'i açmak için kod bloğunun sağ üst köşesinden **Deneyin**'i se
 
 CLI'yi yerel olarak yükleyip kullanmayı tercih ediyorsanız bu hızlı başlangıç için Azure CLI 2.0.30 veya sonraki bir sürümü gerekir. Sürümü bulmak için `az --version` komutunu çalıştırın. Yüklemeniz veya yükseltmeniz gerekirse, bkz. [Azure CLI yükleme]( /cli/azure/install-azure-cli).
 
-## Ortam değişkenlerini tanımlama
-
-İlk adım, ortam değişkenlerini tanımlamaktır. Ortam değişkenleri, sistemin tutarlılığını ve sürdürülebilirliğini geliştirmek üzere yapılandırma verilerini merkezileştirmek için Linux'ta yaygın olarak kullanılır. Bu öğreticinin ilerleyen bölümlerinde oluşturduğunuz kaynakların adlarını belirtmek için aşağıdaki ortam değişkenlerini oluşturun:
-
-```bash
-export RANDOM_ID="$(openssl rand -hex 3)"
-export MY_RESOURCE_GROUP_NAME="myVMResourceGroup$RANDOM_ID"
-export REGION=EastUS
-export MY_VM_NAME="myVM$RANDOM_ID"
-export MY_USERNAME=azureuser
-export MY_VM_IMAGE="Canonical:0001-com-ubuntu-minimal-jammy:minimal-22_04-lts-gen2:latest"
-```
-
 ## CLI kullanarak Azure'da oturum açma
 
 CLI kullanarak Azure'da komutları çalıştırmak için önce oturum açmanız gerekir. komutunu kullanarak `az login` oturum açın.
@@ -50,6 +37,9 @@ CLI kullanarak Azure'da komutları çalıştırmak için önce oturum açmanız 
 Kaynak grubu, ilgili kaynaklar için bir kapsayıcıdır. Tüm kaynaklar bir kaynak grubuna yerleştirilmelidir. [az group create](/cli/azure/group) komutu, önceden tanımlanmış $MY_RESOURCE_GROUP_NAME ve $REGION parametreleriyle bir kaynak grubu oluşturur.
 
 ```bash
+export RANDOM_ID="$(openssl rand -hex 3)"
+export MY_RESOURCE_GROUP_NAME="myVMResourceGroup$RANDOM_ID"
+export REGION=EastUS
 az group create --name $MY_RESOURCE_GROUP_NAME --location $REGION
 ```
 
@@ -79,6 +69,9 @@ Aşağıdaki örnek bir VM oluşturur ve bir kullanıcı hesabı ekler. parametr
 Diğer tüm değerler ortam değişkenleri kullanılarak yapılandırılır.
 
 ```bash
+export MY_VM_NAME="myVM$RANDOM_ID"
+export MY_USERNAME=azureuser
+export MY_VM_IMAGE="Canonical:0001-com-ubuntu-minimal-jammy:minimal-22_04-lts-gen2:latest"
 az vm create \
     --resource-group $MY_RESOURCE_GROUP_NAME \
     --name $MY_VM_NAME \
