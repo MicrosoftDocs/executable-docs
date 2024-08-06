@@ -28,19 +28,6 @@ Para abrir Cloud Shell, seleccione **Pruébelo** en la esquina superior derecha 
 
 Si prefiere instalar y usar la CLI en un entorno local, para esta guía de inicio rápido se requiere la versión 2.0.30 de la CLI de Azure o una versión posterior. Ejecute `az --version` para encontrar la versión. Si necesita instalarla o actualizarla, vea [Instalación de la CLI de Azure]( /cli/azure/install-azure-cli).
 
-## Definición de las variables de entorno
-
-El primer paso es definir las variables de entorno. Las variables de entorno se usan normalmente en Linux para centralizar los datos de configuración para mejorar la coherencia y el mantenimiento del sistema. Cree las siguientes variables de entorno para especificar los nombres de los recursos que creará más adelante en este tutorial:
-
-```bash
-export RANDOM_ID="$(openssl rand -hex 3)"
-export MY_RESOURCE_GROUP_NAME="myVMResourceGroup$RANDOM_ID"
-export REGION=EastUS
-export MY_VM_NAME="myVM$RANDOM_ID"
-export MY_USERNAME=azureuser
-export MY_VM_IMAGE="Canonical:0001-com-ubuntu-minimal-jammy:minimal-22_04-lts-gen2:latest"
-```
-
 ## Inicie sesión en Azure mediante la CLI
 
 Para ejecutar comandos en Azure utilizando la CLI, primero debe iniciar sesión. Inicie sesión con el comando `az login`.
@@ -50,6 +37,9 @@ Para ejecutar comandos en Azure utilizando la CLI, primero debe iniciar sesión.
 Un grupo de recursos es un contenedor para los recursos relacionados. Todos los recursos se deben colocar en un grupo de recursos. El comando [az group create](/cli/azure/group) crea un grupo de recursos con los parámetros $MY_RESOURCE_GROUP_NAME y $REGION definidos anteriormente.
 
 ```bash
+export RANDOM_ID="$(openssl rand -hex 3)"
+export MY_RESOURCE_GROUP_NAME="myVMResourceGroup$RANDOM_ID"
+export REGION=EastUS
 az group create --name $MY_RESOURCE_GROUP_NAME --location $REGION
 ```
 
@@ -79,6 +69,9 @@ En el ejemplo siguiente se crea una máquina virtual y se agrega una cuenta de u
 Todos los demás valores se configuran mediante variables de entorno.
 
 ```bash
+export MY_VM_NAME="myVM$RANDOM_ID"
+export MY_USERNAME=azureuser
+export MY_VM_IMAGE="Canonical:0001-com-ubuntu-minimal-jammy:minimal-22_04-lts-gen2:latest"
 az vm create \
     --resource-group $MY_RESOURCE_GROUP_NAME \
     --name $MY_VM_NAME \
