@@ -28,28 +28,18 @@ Per aprire Cloud Shell, basta selezionare **Prova** nell'angolo superiore destro
 
 Se si preferisce installare e usare l'interfaccia della riga di comando in locale, per questa guida introduttiva è necessaria l'interfaccia della riga di comando di Azure versione 2.0.30 o successiva. Eseguire `az --version` per trovare la versione. Se è necessario eseguire l'installazione o l'aggiornamento, vedere [Installare l'interfaccia della riga di comando di Azure]( /cli/azure/install-azure-cli).
 
-## Definire le variabili di ambiente
+## Accedere ad Azure tramite l'interfaccia della riga di comando
 
-Il primo passaggio consiste nel definire le variabili di ambiente. Le variabili di ambiente vengono comunemente usate in Linux per centralizzare i dati di configurazione per migliorare la coerenza e la gestibilità del sistema. Creare le variabili di ambiente seguenti per specificare i nomi delle risorse create più avanti in questa esercitazione:
+Per eseguire i comandi in Azure usando l'interfaccia della riga di comando, è prima necessario eseguire l'accesso. Accedere usando il comando `az login` .
+
+## Creare un gruppo di risorse
+
+Un gruppo di risorse è un contenitore per risorse corrlate. Tutte le risorse devono essere posizionate in un gruppo di risorse. Il [comando az group create](/cli/azure/group) crea un gruppo di risorse con i parametri definiti in precedenza $MY_RESOURCE_GROUP_NAME e $REGION.
 
 ```bash
 export RANDOM_ID="$(openssl rand -hex 3)"
 export MY_RESOURCE_GROUP_NAME="myVMResourceGroup$RANDOM_ID"
 export REGION=EastUS
-export MY_VM_NAME="myVM$RANDOM_ID"
-export MY_USERNAME=azureuser
-export MY_VM_IMAGE="Canonical:0001-com-ubuntu-minimal-jammy:minimal-22_04-lts-gen2:latest"
-```
-
-## Accedere ad Azure usando l'interfaccia della riga di comando
-
-Per eseguire i comandi in Azure usando l'interfaccia della riga di comando, è prima necessario eseguire l'accesso. Accedere usando il `az login` comando .
-
-## Creare un gruppo di risorse
-
-Un gruppo di risorse è un contenitore per le risorse correlate. Tutte le risorse devono essere inserite in un gruppo di risorse. Il [comando az group create](/cli/azure/group) crea un gruppo di risorse con i parametri definiti in precedenza $MY_RESOURCE_GROUP_NAME e $REGION.
-
-```bash
 az group create --name $MY_RESOURCE_GROUP_NAME --location $REGION
 ```
 
@@ -79,6 +69,9 @@ Nell'esempio seguente viene creata una macchina virtuale e aggiunto un account u
 Tutti gli altri valori vengono configurati usando le variabili di ambiente.
 
 ```bash
+export MY_VM_NAME="myVM$RANDOM_ID"
+export MY_USERNAME=azureuser
+export MY_VM_IMAGE="Canonical:0001-com-ubuntu-minimal-jammy:minimal-22_04-lts-gen2:latest"
 az vm create \
     --resource-group $MY_RESOURCE_GROUP_NAME \
     --name $MY_VM_NAME \
