@@ -18,7 +18,7 @@ ms.custom: 'mvc, devx-track-azurecli, mode-api, innovation-engine, linux-related
 
 이 빠른 시작에서는 Azure CLI를 사용하여 Azure에서 Linux VM(가상 머신)을 배포하는 방법을 보여줍니다. Azure CLI는 명령줄 또는 스크립트를 통해 Azure 리소스를 만들고 관리하는 데 사용됩니다.
 
-Azure 구독이 아직 없는 경우 시작하기 전에 [체험 계정](https://azure.microsoft.com/free/?WT.mc_id=A261C142F)을 만듭니다.
+Azure 구독이 없는 경우 시작하기 전에 [체험 계정](https://azure.microsoft.com/free/?WT.mc_id=A261C142F)을 만듭니다.
 
 ## Azure Cloud Shell 시작
 
@@ -28,28 +28,18 @@ Cloud Shell을 열려면 코드 블록의 오른쪽 위 모서리에 있는 **�
 
 CLI를 로컬에서 설치하여 사용하려면, 빠른 시작에 Azure CLI 버전 2.0.30 이상이 필요합니다. `az --version`을 실행하여 버전을 찾습니다. 설치 또는 업그레이드해야 하는 경우 [Azure CLI 설치]( /cli/azure/install-azure-cli)를 참조하세요.
 
-## 환경 변수 정의
-
-첫 번째 단계는 환경 변수를 정의하는 것입니다. 환경 변수는 일반적으로 Linux에서 구성 데이터를 중앙 집중화하여 시스템의 일관성과 유지 관리를 개선하는 데 사용됩니다. 다음 환경 변수를 만들어 이 자습서의 뒷부분에서 만드는 리소스의 이름을 지정합니다.
-
-```bash
-export RANDOM_ID="$(openssl rand -hex 3)"
-export MY_RESOURCE_GROUP_NAME="myVMResourceGroup$RANDOM_ID"
-export REGION=EastUS
-export MY_VM_NAME="myVM$RANDOM_ID"
-export MY_USERNAME=azureuser
-export MY_VM_IMAGE="Canonical:0001-com-ubuntu-minimal-jammy:minimal-22_04-lts-gen2:latest"
-```
-
 ## CLI를 사용하여 Azure에 로그인
 
-CLI를 사용하여 Azure에서 명령을 실행하려면 먼저 로그인해야 합니다. 명령을 사용하여 로그인합니다 `az login` .
+CLI를 사용하여 Azure에서 명령을 실행하려면 먼저 로그인해야 합니다. `az login` 명령을 사용하여 로그인합니다.
 
 ## 리소스 그룹 만들기
 
 리소스 그룹은 관련 리소스에 대한 컨테이너입니다. 모든 리소스는 리소스 그룹에 배치되어야 합니다. [az group create](/cli/azure/group) 명령은 이전에 정의된 $MY_RESOURCE_GROUP_NAME 및 $REGION 매개 변수를 사용하여 리소스 그룹을 만듭니다.
 
 ```bash
+export RANDOM_ID="$(openssl rand -hex 3)"
+export MY_RESOURCE_GROUP_NAME="myVMResourceGroup$RANDOM_ID"
+export REGION=EastUS
 az group create --name $MY_RESOURCE_GROUP_NAME --location $REGION
 ```
 
@@ -79,6 +69,9 @@ Results:
 다른 모든 값은 환경 변수를 사용하여 구성됩니다.
 
 ```bash
+export MY_VM_NAME="myVM$RANDOM_ID"
+export MY_USERNAME=azureuser
+export MY_VM_IMAGE="Canonical:0001-com-ubuntu-minimal-jammy:minimal-22_04-lts-gen2:latest"
 az vm create \
     --resource-group $MY_RESOURCE_GROUP_NAME \
     --name $MY_VM_NAME \
