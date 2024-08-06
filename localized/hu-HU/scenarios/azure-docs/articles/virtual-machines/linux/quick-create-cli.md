@@ -28,19 +28,6 @@ A Cloud Shell megnyitásához válassza a **Kipróbálás** lehetőséget egy k�
 
 Ha a parancssori felület helyi telepítését és használatát választja, akkor ehhez a rövid útmutatóhoz az Azure CLI 2.0.30-es vagy újabb verziójára lesz szükség. A verzió azonosításához futtassa a következőt: `az --version`. Ha telepíteni vagy frissíteni szeretne: [Az Azure CLI telepítése]( /cli/azure/install-azure-cli).
 
-## Környezeti változók definiálása
-
-Az első lépés a környezeti változók definiálása. A környezeti változókat a Linuxban gyakran használják a konfigurációs adatok központosítására a rendszer konzisztenciájának és karbantarthatóságának javítása érdekében. Az oktatóanyag későbbi részében létrehozott erőforrások nevének megadásához hozza létre a következő környezeti változókat:
-
-```bash
-export RANDOM_ID="$(openssl rand -hex 3)"
-export MY_RESOURCE_GROUP_NAME="myVMResourceGroup$RANDOM_ID"
-export REGION=EastUS
-export MY_VM_NAME="myVM$RANDOM_ID"
-export MY_USERNAME=azureuser
-export MY_VM_IMAGE="Canonical:0001-com-ubuntu-minimal-jammy:minimal-22_04-lts-gen2:latest"
-```
-
 ## Bejelentkezés az Azure-ba a parancssori felület használatával
 
 Ahhoz, hogy parancsokat futtasson az Azure-ban a parancssori felület használatával, először be kell jelentkeznie. Jelentkezzen be a `az login` parancs használatával.
@@ -50,6 +37,9 @@ Ahhoz, hogy parancsokat futtasson az Azure-ban a parancssori felület használat
 Az erőforráscsoportok a kapcsolódó erőforrások tárolói. Minden erőforrást egy erőforráscsoportba kell helyezni. Az [az group create](/cli/azure/group) parancs létrehoz egy erőforráscsoportot a korábban definiált $MY_RESOURCE_GROUP_NAME és $REGION paraméterekkel.
 
 ```bash
+export RANDOM_ID="$(openssl rand -hex 3)"
+export MY_RESOURCE_GROUP_NAME="myVMResourceGroup$RANDOM_ID"
+export REGION=EastUS
 az group create --name $MY_RESOURCE_GROUP_NAME --location $REGION
 ```
 
@@ -79,6 +69,9 @@ Az alábbi példa létrehoz egy virtuális gépet, és hozzáad egy felhasznál�
 Minden más érték környezeti változók használatával van konfigurálva.
 
 ```bash
+export MY_VM_NAME="myVM$RANDOM_ID"
+export MY_USERNAME=azureuser
+export MY_VM_IMAGE="Canonical:0001-com-ubuntu-minimal-jammy:minimal-22_04-lts-gen2:latest"
 az vm create \
     --resource-group $MY_RESOURCE_GROUP_NAME \
     --name $MY_VM_NAME \
