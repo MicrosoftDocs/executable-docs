@@ -28,19 +28,6 @@ Untuk membuka Cloud Shell, cukup pilih **Cobalah** dari sudut kanan atas blok ko
 
 Jika Anda lebih suka menginstal dan menggunakan CLI secara lokal, mulai cepat ini memerlukan Azure CLI versi 2.0.30 atau yang lebih baru. Jalankan `az --version` untuk menemukan versinya. Jika Anda perlu memasang atau meningkatkan, lihat [Memasang Azure CLI]( /cli/azure/install-azure-cli).
 
-## Menentukan variabel lingkungan
-
-Langkah pertama adalah menentukan variabel lingkungan. Variabel lingkungan umumnya digunakan di Linux untuk memusatkan data konfigurasi untuk meningkatkan konsistensi dan pemeliharaan sistem. Buat variabel lingkungan berikut untuk menentukan nama sumber daya yang Anda buat nanti dalam tutorial ini:
-
-```bash
-export RANDOM_ID="$(openssl rand -hex 3)"
-export MY_RESOURCE_GROUP_NAME="myVMResourceGroup$RANDOM_ID"
-export REGION=EastUS
-export MY_VM_NAME="myVM$RANDOM_ID"
-export MY_USERNAME=azureuser
-export MY_VM_IMAGE="Canonical:0001-com-ubuntu-minimal-jammy:minimal-22_04-lts-gen2:latest"
-```
-
 ## Masuk ke Azure menggunakan CLI
 
 Untuk menjalankan perintah di Azure menggunakan CLI, Anda perlu masuk terlebih dahulu. Masuk menggunakan `az login` perintah .
@@ -50,6 +37,9 @@ Untuk menjalankan perintah di Azure menggunakan CLI, Anda perlu masuk terlebih d
 Grup sumber daya adalah kontainer untuk sumber daya terkait. Semua sumber daya harus ditempatkan dalam grup sumber daya. [Perintah az group create](/cli/azure/group) membuat grup sumber daya dengan parameter $MY_RESOURCE_GROUP_NAME dan $REGION yang ditentukan sebelumnya.
 
 ```bash
+export RANDOM_ID="$(openssl rand -hex 3)"
+export MY_RESOURCE_GROUP_NAME="myVMResourceGroup$RANDOM_ID"
+export REGION=EastUS
 az group create --name $MY_RESOURCE_GROUP_NAME --location $REGION
 ```
 
@@ -79,6 +69,9 @@ Contoh berikut membuat VM dan menambahkan akun pengguna. Parameter `--generate-s
 Semua nilai lain dikonfigurasi menggunakan variabel lingkungan.
 
 ```bash
+export MY_VM_NAME="myVM$RANDOM_ID"
+export MY_USERNAME=azureuser
+export MY_VM_IMAGE="Canonical:0001-com-ubuntu-minimal-jammy:minimal-22_04-lts-gen2:latest"
 az vm create \
     --resource-group $MY_RESOURCE_GROUP_NAME \
     --name $MY_VM_NAME \
