@@ -28,19 +28,6 @@ Pokud chcete otevřít Cloud Shell, vyberte položku **Vyzkoušet** v pravém ho
 
 Pokud dáváte přednost místní instalaci a používání rozhraní příkazového řádku, musíte mít Azure CLI verze 2.0.30 nebo novější. Verzi zjistíte spuštěním příkazu `az --version`. Pokud potřebujete instalaci nebo upgrade, přečtěte si téma [Instalace Azure CLI]( /cli/azure/install-azure-cli).
 
-## Definování proměnných prostředí
-
-Prvním krokem je definování proměnných prostředí. Proměnné prostředí se v Linuxu běžně používají k centralizaci konfiguračních dat, aby se zlepšila konzistence a udržovatelnost systému. Vytvořte následující proměnné prostředí pro zadání názvů prostředků, které vytvoříte později v tomto kurzu:
-
-```bash
-export RANDOM_ID="$(openssl rand -hex 3)"
-export MY_RESOURCE_GROUP_NAME="myVMResourceGroup$RANDOM_ID"
-export REGION=EastUS
-export MY_VM_NAME="myVM$RANDOM_ID"
-export MY_USERNAME=azureuser
-export MY_VM_IMAGE="Canonical:0001-com-ubuntu-minimal-jammy:minimal-22_04-lts-gen2:latest"
-```
-
 ## Přihlášení k Azure pomocí rozhraní příkazového řádku
 
 Abyste mohli spouštět příkazy v Azure pomocí rozhraní příkazového řádku, musíte se nejdřív přihlásit. Přihlaste se pomocí `az login` příkazu.
@@ -50,6 +37,9 @@ Abyste mohli spouštět příkazy v Azure pomocí rozhraní příkazového řád
 Skupina prostředků je kontejner pro související prostředky. Všechny prostředky musí být umístěné ve skupině prostředků. Příkaz [az group create](/cli/azure/group) vytvoří skupinu prostředků s dříve definovanými parametry $MY_RESOURCE_GROUP_NAME a $REGION.
 
 ```bash
+export RANDOM_ID="$(openssl rand -hex 3)"
+export MY_RESOURCE_GROUP_NAME="myVMResourceGroup$RANDOM_ID"
+export REGION=EastUS
 az group create --name $MY_RESOURCE_GROUP_NAME --location $REGION
 ```
 
@@ -79,6 +69,9 @@ Následující příklad vytvoří virtuální počítač a přidá uživatelsk�
 Všechny ostatní hodnoty se konfigurují pomocí proměnných prostředí.
 
 ```bash
+export MY_VM_NAME="myVM$RANDOM_ID"
+export MY_USERNAME=azureuser
+export MY_VM_IMAGE="Canonical:0001-com-ubuntu-minimal-jammy:minimal-22_04-lts-gen2:latest"
 az vm create \
     --resource-group $MY_RESOURCE_GROUP_NAME \
     --name $MY_VM_NAME \
