@@ -24,22 +24,9 @@ Jeśli nie masz subskrypcji platformy Azure, przed rozpoczęciem utwórz [bezpł
 
 Usługa Azure Cloud Shell to bezpłatna interaktywna powłoka, której możesz używać do wykonywania kroków opisanych w tym artykule. Udostępnia ona wstępnie zainstalowane i najczęściej używane narzędzia platformy Azure, które są skonfigurowane do użycia na koncie. 
 
-Aby otworzyć usługę Cloud Shell, wybierz pozycję **Wypróbuj** w prawym górnym rogu bloku kodu. Możesz również otworzyć usługę Cloud Shell na osobnej karcie przeglądarki, przechodząc do .[https://shell.azure.com/bash](https://shell.azure.com/bash) Wybierz pozycję **Kopiuj** , aby skopiować bloki kodu, wklej go w usłudze Cloud Shell, a następnie wybierz klawisz **Enter** , aby go uruchomić.
+Aby otworzyć usługę Cloud Shell, wybierz pozycję **Wypróbuj** w prawym górnym rogu bloku kodu. Możesz również otworzyć usługę Cloud Shell na osobnej karcie przeglądarki, przechodząc do .[https://shell.azure.com/bash](https://shell.azure.com/bash) Wybierz pozycję **Kopiuj** , aby skopiować bloki kodu, wklej go w usłudze Cloud Shell, a następnie wybierz **Enter** , aby go uruchomić.
 
 Jeśli wolisz zainstalować interfejs wiersza polecenia i korzystać z niego lokalnie, ten przewodnik Szybki start wymaga interfejsu wiersza polecenia platformy Azure w wersji 2.0.30 lub nowszej. Uruchom polecenie `az --version`, aby dowiedzieć się, jaka wersja jest używana. Jeśli konieczna będzie instalacja lub uaktualnienie, zobacz [Instalowanie interfejsu wiersza polecenia platformy Azure]( /cli/azure/install-azure-cli).
-
-## Definiowanie zmiennych środowiskowych
-
-Pierwszym krokiem jest zdefiniowanie zmiennych środowiskowych. Zmienne środowiskowe są często używane w systemie Linux, aby scentralizować dane konfiguracji w celu poprawy spójności i utrzymania systemu. Utwórz następujące zmienne środowiskowe, aby określić nazwy zasobów utworzonych w dalszej części tego samouczka:
-
-```bash
-export RANDOM_ID="$(openssl rand -hex 3)"
-export MY_RESOURCE_GROUP_NAME="myVMResourceGroup$RANDOM_ID"
-export REGION=EastUS
-export MY_VM_NAME="myVM$RANDOM_ID"
-export MY_USERNAME=azureuser
-export MY_VM_IMAGE="Canonical:0001-com-ubuntu-minimal-jammy:minimal-22_04-lts-gen2:latest"
-```
 
 ## Logowanie się do platformy Azure przy użyciu interfejsu wiersza polecenia
 
@@ -50,6 +37,9 @@ Aby uruchamiać polecenia na platformie Azure przy użyciu interfejsu wiersza po
 Grupa zasobów to kontener powiązanych zasobów. Wszystkie zasoby należy umieścić w grupie zasobów. Polecenie [az group create](/cli/azure/group) tworzy grupę zasobów z wcześniej zdefiniowanymi parametrami $MY_RESOURCE_GROUP_NAME i $REGION.
 
 ```bash
+export RANDOM_ID="$(openssl rand -hex 3)"
+export MY_RESOURCE_GROUP_NAME="myVMResourceGroup$RANDOM_ID"
+export REGION=EastUS
 az group create --name $MY_RESOURCE_GROUP_NAME --location $REGION
 ```
 
@@ -79,6 +69,9 @@ Poniższy przykład tworzy maszynę wirtualną i dodaje konto użytkownika. Para
 Wszystkie inne wartości są konfigurowane przy użyciu zmiennych środowiskowych.
 
 ```bash
+export MY_VM_NAME="myVM$RANDOM_ID"
+export MY_USERNAME=azureuser
+export MY_VM_IMAGE="Canonical:0001-com-ubuntu-minimal-jammy:minimal-22_04-lts-gen2:latest"
 az vm create \
     --resource-group $MY_RESOURCE_GROUP_NAME \
     --name $MY_VM_NAME \
