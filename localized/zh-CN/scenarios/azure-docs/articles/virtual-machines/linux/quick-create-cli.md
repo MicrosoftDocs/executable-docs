@@ -28,19 +28,6 @@ Azure Cloud Shell 是免费的交互式 shell，可以使用它运行本文中�
 
 如果希望在本地安装并使用 CLI，则本快速入门需要 Azure CLI version 2.0.30 或更高版本。 运行 `az --version` 即可查找版本。 如果需要进行安装或升级，请参阅[安装 Azure CLI]( /cli/azure/install-azure-cli)。
 
-## 定义环境变量
-
-第一步是定义环境变量。 环境变量通常用于在 Linux 中集中配置数据，以提高系统的一致性和可维护性。 创建以下环境变量，以指定本教程稍后创建的资源的名称：
-
-```bash
-export RANDOM_ID="$(openssl rand -hex 3)"
-export MY_RESOURCE_GROUP_NAME="myVMResourceGroup$RANDOM_ID"
-export REGION=EastUS
-export MY_VM_NAME="myVM$RANDOM_ID"
-export MY_USERNAME=azureuser
-export MY_VM_IMAGE="Canonical:0001-com-ubuntu-minimal-jammy:minimal-22_04-lts-gen2:latest"
-```
-
 ## 使用 CLI 登录到 Azure
 
 要使用 CLI 在 Azure 中运行命令，首先需要登录。 使用 `az login` 命令登录。
@@ -50,6 +37,9 @@ export MY_VM_IMAGE="Canonical:0001-com-ubuntu-minimal-jammy:minimal-22_04-lts-ge
 资源组是相关资源的容器。 所有资源都必须在资源组中部署。 [az group create](/cli/azure/group) 命令创建具有前面定义的 $MY_RESOURCE_GROUP_NAME 和 $REGION 参数的资源组。
 
 ```bash
+export RANDOM_ID="$(openssl rand -hex 3)"
+export MY_RESOURCE_GROUP_NAME="myVMResourceGroup$RANDOM_ID"
+export REGION=EastUS
 az group create --name $MY_RESOURCE_GROUP_NAME --location $REGION
 ```
 
@@ -79,6 +69,9 @@ az group create --name $MY_RESOURCE_GROUP_NAME --location $REGION
 所有其他值都使用环境变量进行配置。
 
 ```bash
+export MY_VM_NAME="myVM$RANDOM_ID"
+export MY_USERNAME=azureuser
+export MY_VM_IMAGE="Canonical:0001-com-ubuntu-minimal-jammy:minimal-22_04-lts-gen2:latest"
 az vm create \
     --resource-group $MY_RESOURCE_GROUP_NAME \
     --name $MY_VM_NAME \
