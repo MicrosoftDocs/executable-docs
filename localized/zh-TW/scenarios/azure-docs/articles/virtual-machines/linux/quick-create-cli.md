@@ -18,7 +18,7 @@ ms.custom: 'mvc, devx-track-azurecli, mode-api, innovation-engine, linux-related
 
 本快速入門示範如何使用 Azure CLI 在 Azure 中部署 Linux 虛擬機器 (VM)。 Azure CLI 可用來透過命令列或指令碼建立和管理 Azure 資源。
 
-如果您沒有 Azure 訂用帳戶，請在開始前建立[免費帳戶](https://azure.microsoft.com/free/?WT.mc_id=A261C142F)。
+如尚未擁有 Azure 訂用帳戶，請在開始之前先建立[免費帳戶](https://azure.microsoft.com/free/?WT.mc_id=A261C142F)。
 
 ## 啟動 Azure Cloud Shell
 
@@ -28,28 +28,18 @@ Azure Cloud Shell 是免費的互動式 Shell，可讓您用來執行本文中�
 
 如果您偏好在本機安裝和使用 CLI，本快速入門需要有 Azure CLI 2.0.30 版或更新版本。 執行 `az --version` 以尋找版本。 如果您需要安裝或升級，請參閱[安裝 Azure CLI]( /cli/azure/install-azure-cli)。
 
-## 定義環境變數
+## 使用 CLI 登入 Azure
 
-第一個步驟是定義環境變數。 環境變數通常用於 Linux，以集中設定設定，以改善系統的一致性和可維護性。 建立下列環境變數，以指定您稍後在本教學課程中建立的資源名稱：
+為了使用 CLI 在 Azure 中執行命令，您需要先登入。 使用 `az login` 命令登入。
+
+## 建立資源群組
+
+資源群組是相關資源的容器。 所有資源都必須放置在資源群組中。 [az group create](/cli/azure/group) 命令會使用先前定義的 $MY_RESOURCE_GROUP_NAME 和 $REGION 參數來建立資源群組。
 
 ```bash
 export RANDOM_ID="$(openssl rand -hex 3)"
 export MY_RESOURCE_GROUP_NAME="myVMResourceGroup$RANDOM_ID"
 export REGION=EastUS
-export MY_VM_NAME="myVM$RANDOM_ID"
-export MY_USERNAME=azureuser
-export MY_VM_IMAGE="Canonical:0001-com-ubuntu-minimal-jammy:minimal-22_04-lts-gen2:latest"
-```
-
-## 使用 CLI 登入 Azure
-
-若要使用 CLI 在 Azure 中執行命令，您必須先登入。 使用 `az login` 命令登入。
-
-## 建立資源群組
-
-資源群組是相關資源的容器。 所有資源都必須放在資源群組中。 [az group create](/cli/azure/group) 命令會使用先前定義的 $MY_RESOURCE_GROUP_NAME 和 $REGION 參數來建立資源群組。
-
-```bash
 az group create --name $MY_RESOURCE_GROUP_NAME --location $REGION
 ```
 
@@ -79,6 +69,9 @@ az group create --name $MY_RESOURCE_GROUP_NAME --location $REGION
 所有其他值都是使用環境變數來設定。
 
 ```bash
+export MY_VM_NAME="myVM$RANDOM_ID"
+export MY_USERNAME=azureuser
+export MY_VM_IMAGE="Canonical:0001-com-ubuntu-minimal-jammy:minimal-22_04-lts-gen2:latest"
 az vm create \
     --resource-group $MY_RESOURCE_GROUP_NAME \
     --name $MY_VM_NAME \
