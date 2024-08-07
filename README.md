@@ -16,11 +16,11 @@ Follow these steps in sequence to write an Exec Doc either by converting an exis
 
     >**Note:** Innovation Engine is a Linux-based tool and hence it is recommended to write Exec Docs in a Linux environment. Most doc authors use WSL in VS Code to write Exec Docs.
 
-2. Set up the relevant repository in your local machine. This example covers the **azure-docs-pr** repo.
+2. Set up the relevant repository in your local machine. This example covers the **azure-aks-docs-pr** repo.
     
     - Get access to the relevant repo in [MicrosoftDocs](https://github.com/MicrosoftDocs) in case it is private and/or you do not have access to it. 
     
-    - Fork the [MicrosoftDocs/azure-docs-pr](https://github.com/MicrosoftDocs/azure-docs-pr) repo, which is where docs changes are made internally. Your fork URL would contain the following within: `<your_github_username>/azure-docs-pr`. [Guidance on how to fork a GitHub repo](https://review.learn.microsoft.com/en-us/help/common/contribute-fork-and-clone?branch=main#fork-the-repository)  
+    - Fork the [MicrosoftDocs/azure-aks-docs-pr](https://github.com/MicrosoftDocs/azure-aks-docs-pr) repo, which is where docs changes are made internally. Your fork URL would contain the following within: `<your_github_username>/azure-docs-pr`. [Guidance on how to fork a GitHub repo](https://review.learn.microsoft.com/en-us/help/common/contribute-fork-and-clone?branch=main#fork-the-repository)  
 
     - Clone a copy of your fork to your local machine. [Guidance on how to clone a forked GitHub repo](https://review.learn.microsoft.com/en-us/help/common/contribute-fork-and-clone?branch=main#clone-the-repository)
 
@@ -257,9 +257,9 @@ Check if all prerequisites below are met before writing the Exec Doc. ***If any 
         ```bash
         az account set --subscription "<subscription name or id>"
         ``` 
-    - Install and set up the latest stable build of [Innovation Engine](https://github.com/Azure/InnovationEngine) (currently v0.1.3). Run the following command (ensure it is all run in one line): 
+    - Install and set up the latest stable build of [Innovation Engine](https://github.com/Azure/InnovationEngine) (currently v0.2.0). Run the following command (ensure it is all run in one line): 
         ```bash
-        curl –Lks https://raw.githubusercontent.com/Azure/InnovationEngine/v0.1.3/scripts/install_from_release.sh | /bin/bash -s -- v0.1.3 
+        curl –Lks https://raw.githubusercontent.com/Azure/InnovationEngine/v0.2.0/scripts/install_from_release.sh | /bin/bash -s -- v0.2.0 
         ``` 
     - Test your (Work In Progress) Exec Doc using Innovation Engine. Run the following command **(this command will automatically delete the resources at the end of the test)**: 
 
