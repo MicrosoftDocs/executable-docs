@@ -226,7 +226,7 @@ def sync_markdown_files():
                             print("Created metadata.json")
                         except:
                             metadata_contents = repo.get_contents('scenarios/metadata.json', ref=new_branch_name)
-                            repo.update_file(metadata_contents.path, f"Update metadata for {file_path}", json.dumps(branch_metadata, indent=4), metadata_contents.sha, branch=new_branch_name)
+                            repo.update_file(metadata_contents.path, f"Update metadata for all files", json.dumps(branch_metadata, indent=4), metadata_contents.sha, branch=new_branch_name)
                             print("Updated metadata.json")
 
                         # Create or update the localized metadata.json files altogether
@@ -240,7 +240,7 @@ def sync_markdown_files():
                         except:
                             for locale in branch_localized_metadata_dict:
                                 locale_metadata_path = repo.get_contents(f'localized/{locale}/scenarios/metadata.json', ref=new_branch_name)
-                                repo.update_file(locale_metadata_path.path, f"Update metadata for {file_path}", json.dumps(branch_localized_metadata_dict[locale], indent=4), locale_metadata_path.sha, branch=new_branch_name)
+                                repo.update_file(locale_metadata_path.path, f"Updated localized metadata for all files", json.dumps(branch_localized_metadata_dict[locale], indent=4), locale_metadata_path.sha, branch=new_branch_name)
                                 print("updated localized metadata")
                                 with open(f'localized/{locale}/scenarios/metadata.json', 'w') as f:
                                     json.dump(branch_localized_metadata_dict[locale], f, indent=4)

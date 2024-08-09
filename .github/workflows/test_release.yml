@@ -16,6 +16,7 @@ jobs:
       packages: none
       pull-requests: write
       security-events: write
+    if: startsWith(github.ref, 'refs/heads/test_')
     steps:
     - uses: actions/checkout@v2
       with:
