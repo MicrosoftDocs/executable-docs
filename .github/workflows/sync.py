@@ -144,8 +144,6 @@ def update_metadata(branch_name, localize=False):
     if localize == False:
         return metadata   
     else:
-        print(localized_metadata_dict)
-        print('\n\n\n\n\n\n\n\n\n\n\n')
         return localized_metadata_dict
                             
 def sync_markdown_files():
@@ -245,8 +243,11 @@ def sync_markdown_files():
                                 locale_metadata_path = repo.get_contents(f'localized/{locale}/scenarios/metadata.json', ref=new_branch_name)
                                 # repo.update_file(locale_metadata_path.path, f"Updated localized metadata for all files", json.dumps(branch_localized_metadata_dict[locale], indent=4), locale_metadata_path.sha, branch=new_branch_name)
                                 print("updated localized metadata")
+                                print(branch_localized_metadata_dict[locale])
                                 with open(f'localized/{locale}/scenarios/metadata.json', 'w') as f:
                                     json.dump(branch_localized_metadata_dict[locale], f, indent=4)
+
+                        subprocess.check_call(["git", "checkout", "main"])
 
 def install_ie():
     """Installs IE if it is not already on the path."""
