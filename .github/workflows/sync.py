@@ -139,7 +139,9 @@ def update_metadata(branch_name, localize=False):
 
     finally:
         # Checkout back to the original branch
+        print(f"Current branch: {current_branch}\n\n\n\n\n\n\n\n\n\n\n\n\n")
         subprocess.check_call(["git", "checkout", current_branch])  
+
 
     if localize == False:
         return metadata   
