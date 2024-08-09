@@ -1,3 +1,5 @@
+# sync exec docs every day, metadata.json gets updated as soon as exec docs are synced, ie test runs on all docs as soon as it is selective localization happens as soon as the localization goes through main (which is 2-3 hours post sync), portal tests every monday with all exec docs from previous week and pushes changes to be reflected the next week
+
 import os
 import github
 import shutil
@@ -6,8 +8,8 @@ import tempfile
 import re
 import json
 import yaml
-import time
 from datetime import datetime
+import time
 
 GITHUB_TOKEN = os.getenv('GITHUB_TOKEN')
 g = github.Github(GITHUB_TOKEN)
@@ -48,10 +50,14 @@ def update_base_metadata(directory, metadata):
                     # Parse the metadata from the string
                     readme_metadata = yaml.safe_load(metadata_str)
                     readme_metadata = json.loads(json.dumps(readme_metadata, ensure_ascii=False))
-                    # Get the key for this file
-                    key = '/'.join(path.split('/')[1:])
-                    # Find the item in metadata with this key
                     
+                    # Get the key for this file
+                    if 'localized' not in path:
+                        key = '/'.join(path.split('/')[1:])
+                    else:
+                        key = '/'.join(path.split('/')[3:]) 
+                        locale = path.split('/')[1]               
+                    # Find the item in metadata with this key
                     if metadata:
                         for item in metadata:
                             if item['key'] == key:
@@ -64,17 +70,27 @@ def update_base_metadata(directory, metadata):
                         item = {'status': 'active', 'key': key}
                         metadata.append(item)
                     if item is not None and readme_metadata is not None:
-                        # Update the item with the metadata from the README file
-                        item['title'] = readme_metadata.get('title', item.get('title', ''))
-                        item['description'] = readme_metadata.get('description', item.get('description', ''))
-                        item['stackDetails'] = readme_metadata.get('stackDetails', item.get('stackDetails', ''))
-                        item['sourceUrl'] = item.get('sourceUrl', "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/"+key)
-                        item['documentationUrl'] = item.get('documentationUrl', '')
-                        item.setdefault('configurations', {})["region"] = find_region_value(f.read())
+                        if 'localized' not in path:
+                            # Update the item with the metadata from the README file
+                            item['title'] = readme_metadata.get('title', item.get('title', ''))
+                            item['description'] = readme_metadata.get('description', item.get('description', ''))
+                            item['stackDetails'] = readme_metadata.get('stackDetails', item.get('stackDetails', ''))
+                            item['sourceUrl'] = "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/"+key
+                            item['documentationUrl'] = readme_metadata.get('documentationUrl', item.get('documentationUrl', ''))
+                            item['configurations'] = item.get('configurations', {})
+                            item['configurations']["region"] = find_region_value(f.read())
+                        else:
+                            item['title'] = readme_metadata.get('title', item.get('title', ''))
+                            item['description'] = readme_metadata.get('description', item.get('description', ''))
+                            item['stackDetails'] = readme_metadata.get('stackDetails', item.get('stackDetails', ''))
+                            item['sourceUrl'] = f"https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/localized/{locale}/scenarios/{key}"
+                            item['documentationUrl'] = readme_metadata.get('documentationUrl', item.get('documentationUrl'.replace('learn.microsoft.com/azure', f'learn.microsoft.com/{locale}/azure'), ''))
+                            item['configurations'] = item.get('configurations', {})
+                            item['configurations']["region"] = find_region_value(f.read())
 
     return metadata
 
-def update_metadata(branch_name):
+def update_metadata(branch_name, localize=False):
     # Save the current branch name
     current_branch = subprocess.check_output(["git", "branch", "--show-current"]).strip().decode('utf-8')
     
@@ -87,102 +103,144 @@ def update_metadata(branch_name):
     subprocess.check_call(["git", "checkout", branch_name])
 
     try:
-        # Load the base metadata.json file
-        if os.path.isfile('scenarios/metadata.json'):
-            with open('scenarios/metadata.json', 'r') as f:
-                base_metadata = json.load(f)
-
-            # Update the metadata with the README files in the scenarios directory
-            metadata = update_base_metadata('scenarios', base_metadata)
-
-
-        else:
-            with open('scenarios/metadata.json', 'w') as f:
-                base_metadata = []
-
-            # Update the metadata with the README files in the scenarios directory
-            metadata = update_base_metadata('scenarios', base_metadata)
+        if localize == False:
+            # Load the base metadata.json file
+            if os.path.isfile('scenarios/metadata.json'):
+                with open('scenarios/metadata.json', 'r') as f:
+                    base_metadata = json.load(f)
+                # Update the metadata with the README files in the scenarios directory
+                metadata = update_base_metadata('scenarios', base_metadata)
+            else:
+                with open('scenarios/metadata.json', 'w') as f:
+                    base_metadata = []
+                # Update the metadata with the README files in the scenarios directory
+                metadata = update_base_metadata('scenarios', base_metadata)
+        elif localize == True:
+            # Initialize an emty list to store the localized metadata
+            localized_metadata_dict = {}
+            # Load the base metadata.json file
+            if os.path.isfile('scenarios/metadata.json'):
+                with open('scenarios/metadata.json', 'r') as f:
+                    base_metadata = json.load(f)
+                # Update the metadata with the README files in the scenarios directory
+                for locale in sorted(os.listdir('localized')):
+                    locale_dir = os.path.join('localized', locale, 'scenarios')
+                    metadata = update_base_metadata(locale_dir, base_metadata)
+                    localized_metadata_dict[locale] = metadata
+            else:
+                with open('scenarios/metadata.json', 'w') as f:
+                    base_metadata = []
+                # Update the metadata with the README files in the scenarios directory
+                for locale in sorted(os.listdir('localized')):
+                    locale_dir = os.path.join('localized', locale, 'scenarios')
+                    metadata = update_base_metadata('localized', base_metadata)
+                    localized_metadata_dict[locale] = metadata
 
     finally:
         # Checkout back to the original branch
         subprocess.check_call(["git", "checkout", current_branch])  
 
-    return metadata  
-
+    if localize == False:
+        return metadata   
+    else:
+        print(localized_metadata_dict)
+        return localized_metadata_dict
+                            
 def sync_markdown_files():
     query = "innovation-engine in:file language:markdown org:MicrosoftDocs -path:/localized/ -repo:MicrosoftDocs/executable-docs" 
     result = g.search_code(query)
     for file in result:
-         if '-pr' not in file.repository.name:
-            content_file = file.repository.get_contents(file.path)
-            file_content = content_file.decoded_content.decode('utf-8')
+        if '-pr' not in file.repository.name:
+            file_content = file.repository.get_contents(file.path).decoded_content.decode('utf-8')
             if '---' in file_content:
                 metadata = file_content.split('---')[1]
                 if 'ms.custom:' in metadata:
                     custom_values = metadata.split('ms.custom:')[1].split(',')
                     custom_values = [value.strip() for value in custom_values]
                     if 'innovation-engine' in custom_values:
-                        dir_path = f'scenarios/{file.repository.name}/{os.path.dirname(file.path)}'
-                        if not os.path.exists(dir_path):
-                            os.makedirs(dir_path)
-                        file_path = os.path.join(dir_path, os.path.basename(file.path))
-                        
-                        # Check if file_path already exists in the repo and if the content is different
-                        repo = g.get_repo("MicrosoftDocs/executable-docs")
-                        try:
-                            existing_file = repo.get_contents(file_path, ref="main")
-                            existing_content = existing_file.decoded_content.decode('utf-8')
-                            if existing_content == file_content:
-                                print(f"File {file_path} already exists with the same content.")
+                        # Construct the directory path for storing the file in the 'scenarios' directory
+                        source_file_path = os.path.join('scenarios', file.repository.name, os.path.dirname(file.path), os.path.basename(file.path))
+                        print(f"Processing file: {source_file_path}")
+
+                        # Get the directory path of the file
+                        all_files = g.search_code(f'repo:{file.repository.full_name} path:{os.path.dirname(file.path)}')
+                        relevant_files = [f for f in all_files if not f.path.endswith('.md')]
+                        if file not in relevant_files:
+                            relevant_files.append(file)
+
+                        for relevant_file in relevant_files:
+                            relevant_file_content = relevant_file.repository.get_contents(relevant_file.path).decoded_content.decode('utf-8')
+                            
+                            dir_path = os.path.join('scenarios', relevant_file.repository.name, os.path.dirname(relevant_file.path))
+                            os.makedirs(dir_path, exist_ok=True)
+                            file_path = os.path.join(dir_path, os.path.basename(relevant_file.path))
+
+                            # Check if file_path already exists in the repo and if the content is different
+                            repo = g.get_repo("MicrosoftDocs/executable-docs")
+                            try:
+                                existing_file = repo.get_contents(file_path, ref="main")
+                                existing_content = existing_file.decoded_content.decode('utf-8')
+                                if existing_content == relevant_file_content:
+                                    print(f"File {file_path} already exists with the same content.")
+                                    continue
+                            except:
+                                # File does not exist, proceed with creating a branch and committing the file
+                                pass
+                            
+                            print(f"Processing relevant file: {relevant_file.path}")
+                            print(f"Creating or relevant file at: {file_path}")
+                            
+                            # Create a new branch and commit the file
+                            source_branch = repo.get_branch("main")
+                            new_branch_name = f"test_{source_file_path.replace(os.sep, '_')}"
+
+                            # Check if the branch already exists
+                            try:
+                                repo.get_branch(new_branch_name)
+                                branch_exists = True
+                            except:
+                                branch_exists = False
+                            
+                            if not branch_exists:
+                                repo.create_git_ref(ref=f"refs/heads/{new_branch_name}", sha=source_branch.commit.sha)
+
+                            # Checkout the new branch
+                            try:
+                                subprocess.check_call(["git", "checkout", new_branch_name])
+                            except subprocess.CalledProcessError:
+                                print(f"Error checking out branch {new_branch_name}")
                                 continue
-                        except:
-                            # File does not exist, proceed with creating a branch and committing the file
-                            pass
-                        
-                        # Create a new branch and commit the file
-                        repo = g.get_repo("MicrosoftDocs/executable-docs")
-                        source_branch = repo.get_branch("main")
-                        new_branch_name = f"test_{file_path.replace(os.sep, '_')}"
 
-                        # Check if the branch already exists
-                        try:
-                            repo.get_branch(new_branch_name)
-                            branch_exists = True
-                        except:
-                            branch_exists = False
-                        
-                        if not branch_exists:
-                            repo.create_git_ref(ref=f"refs/heads/{new_branch_name}", sha=source_branch.commit.sha)
+                            # Create or update the file in the new branch
+                            try:
+                                repo.create_file(file_path, f"Add {file_path}", relevant_file_content, branch=new_branch_name)
+                                print(f"Created file: {file_path}")
+                            except:
+                                contents = repo.get_contents(file_path, ref=new_branch_name)
+                                repo.update_file(contents.path, f"Update {file_path}", relevant_file_content, contents.sha, branch=new_branch_name)
+                                print(f"Updated file: {file_path}")
 
-                        # Create or update the file in the new branch
+                        # Create or update the base metadata.json file
+                        branch_metadata = update_metadata(new_branch_name, localize=False)
                         try:
-                            repo.create_file(file_path, f"Add {file_path}", file_content, branch=new_branch_name)
-                            print("created file")
-                        except:
-                            contents = repo.get_contents(file_path, ref=new_branch_name)
-                            repo.update_file(contents.path, f"Update {file_path}", file_content, contents.sha, branch=new_branch_name)
-                            print("updated file")
-
-                        # Create or update the metadata.json file
-                        try:
-                            branch_metadata = update_metadata(new_branch_name)
                             repo.create_file('scenarios/metadata.json', f"Add metadata.json file", json.dumps(branch_metadata, indent=4), branch=new_branch_name)
-                            print("created metadata")
+                            print("Created metadata.json")
                         except:
                             metadata_contents = repo.get_contents('scenarios/metadata.json', ref=new_branch_name)
-                            branch_metadata = update_metadata(new_branch_name)
                             repo.update_file(metadata_contents.path, f"Update metadata for {file_path}", json.dumps(branch_metadata, indent=4), metadata_contents.sha, branch=new_branch_name)
-                            print("updated metadata")
+                            print("Updated metadata.json")
 
-                        # base_dir = 'localized'
-                        # for locale in sorted(os.listdir(base_dir)):
-                        #     locale_dir = os.path.join(base_dir, locale, file_path)           
-                        #     print(locale_dir)
-                        #     import time
-                        #     time.sleep(5)
-                        
-                        # with open(file_path, 'w') as f:
-                        #     f.write(file_content)
+                        # Create or update the localized metadata.json files altogether
+                        branch_localized_metadata_dict = update_metadata(new_branch_name, localize=True)
+                        try:
+                            for locale in branch_localized_metadata_dict:
+                                repo.create_file(f'localized/{locale}/scenarios/metadata.json', f"Add metadata.json file", json.dumps(branch_localized_metadata_dict[locale], indent=4), branch=new_branch_name)
+                                print("created localized metadata")
+                        except:
+                            for locale in branch_localized_metadata_dict:
+                                locale_metadata_path = repo.get_contents(f'localized/{locale}/scenarios/metadata.json', ref=new_branch_name)
+                                repo.update_file(locale_metadata_path.path, f"Update metadata for {file_path}", json.dumps(branch_localized_metadata_dict[locale], indent=4), locale_metadata_path.sha, branch=new_branch_name)
+                                print("updated localized metadata")
 
 def install_ie():
     """Installs IE if it is not already on the path."""
@@ -325,7 +383,3 @@ if __name__ == "__main__":
     # run_tests()
 
     # run this command in the CLI to close all open issues: gh issue list --state open --json number -q '.[].number' | xargs -I % gh issue close %
-
-        
-    
-
