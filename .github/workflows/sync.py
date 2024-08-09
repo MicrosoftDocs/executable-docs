@@ -247,8 +247,6 @@ def sync_markdown_files():
                                 with open(f'localized/{locale}/scenarios/metadata.json', 'w') as f:
                                     json.dump(branch_localized_metadata_dict[locale], f, indent=4)
 
-                        subprocess.check_call(["git", "checkout", "main"])
-
 def install_ie():
     """Installs IE if it is not already on the path."""
     if shutil.which("ie") is not None:
