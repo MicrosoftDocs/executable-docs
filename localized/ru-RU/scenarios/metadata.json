@@ -1,0 +1,569 @@
+[
+    {
+        "status": "active",
+        "key": "azure-docs/articles/aks/learn/quick-kubernetes-deploy-cli.md",
+        "title": "\u5feb\u901f\u5165\u9580\uff1a\u4f7f\u7528 Azure CLI \u90e8\u7f72 Azure Kubernetes Service (AKS) \u53e2\u96c6",
+        "description": "\u4e86\u89e3\u5982\u4f55\u4f7f\u7528 Azure CLI \u5728 Azure Kubernetes Service (AKS) \u4e2d\u5feb\u901f\u90e8\u7f72 Kube \u53e2\u96c6\u4e26\u90e8\u7f72\u61c9\u7528\u7a0b\u5f0f\u3002",
+        "stackDetails": "",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/localized/zh-TW/scenarios/azure-docs/articles/aks/learn/quick-kubernetes-deploy-cli.md",
+        "documentationUrl": "https://learn.microsoft.com/en-us/azure/aks/learn/quick-kubernetes-deploy-cli",
+        "nextSteps": [
+            {
+                "title": "Prepare an application for AKS",
+                "url": "https://learn.microsoft.com/en-us/azure/aks/tutorial-kubernetes-prepare-app"
+            },
+            {
+                "title": "AKS solution guidance",
+                "url": "https://learn.microsoft.com/en-us/azure/architecture/reference-architectures/containers/aks-start-here?toc=/azure/aks/toc.json&bc=/azure/aks/breadcrumb/toc.json"
+            }
+        ],
+        "configurations": {
+            "permissions": [
+                "Microsoft.Resources/resourceGroups/write",
+                "Microsoft.Resources/resourceGroups/read",
+                "Microsoft.Network/virtualNetworks/write",
+                "Microsoft.Network/virtualNetworks/read",
+                "Microsoft.Network/publicIPAddresses/write",
+                "Microsoft.Network/publicIPAddresses/read",
+                "Microsoft.Network/networkSecurityGroups/write",
+                "Microsoft.Network/networkSecurityGroups/read",
+                "Microsoft.Network/networkSecurityGroups/securityRules/write",
+                "Microsoft.Network/networkSecurityGroups/securityRules/read",
+                "Microsoft.Network/networkInterfaces/write",
+                "Microsoft.Network/networkInterfaces/read",
+                "Microsoft.Network/networkInterfaces/ipConfigurations/write",
+                "Microsoft.Network/networkInterfaces/ipConfigurations/read",
+                "Microsoft.Network/networkInterfaces/ipConfigurations/dnsSettings/update",
+                "Microsoft.Network/networkInterfaces/ipConfigurations/dnsSettings/delete",
+                "Microsoft.Storage/storageAccounts/write",
+                "Microsoft.Storage/storageAccounts/read",
+                "Microsoft.Provider/register",
+                "Microsoft.Compute/virtualMachines/write",
+                "Microsoft.Compute/virtualMachines/read",
+                "Microsoft.Compute/virtualMachines/extensions/write",
+                "Microsoft.Compute/virtualMachines/extensions/read",
+                "Microsoft.ContainerService/managedClusters/write",
+                "Microsoft.ContainerService/managedClusters/read",
+                "Microsoft.ContainerService/managedClusters/listClusterUserCredential/action",
+                "Microsoft.ContainerService/managedClusters/listClusterAdminCredential/action",
+                "Microsoft.ContainerService/managedClusters/GetAccessProfiles/action",
+                "Microsoft.Network/publicIPAddresses/list/action"
+            ],
+            "region": "westeurope"
+        }
+    },
+    {
+        "status": "active",
+        "key": "azure-docs/articles/mysql/flexible-server/tutorial-deploy-wordpress-on-aks.md",
+        "title": "\u6559\u5b78\u8ab2\u7a0b\uff1a\u4f7f\u7528 Azure CLI \u5728 AKS \u53e2\u96c6\u4e0a\u90e8\u7f72 WordPress",
+        "description": "\u77ad\u89e3\u5982\u4f55\u4f7f\u7528\u300c\u9069\u7528\u65bc MySQL \u7684 Azure \u8cc7\u6599\u5eab - \u5f48\u6027\u4f3a\u670d\u5668\u300d\u5728 AKS \u4e0a\u5feb\u901f\u5efa\u7f6e\u548c\u90e8\u7f72 WordPress\u3002",
+        "stackDetails": [
+            "An Ubuntu 22.04 Linux VM (Standard DS2_v2)",
+            "Azure Database for MySQL - Flexible Server: 8.0.21",
+            "NGINX web server",
+            "PHP version 8.1-fpm",
+            "Latest WordPress",
+            "Network interface with public IP and network security group",
+            "Azure Private DNS Zone for Azure MySQL Flexible Server",
+            "Use port 22 for SSH and ports 80, 443 for web traffic"
+        ],
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/localized/zh-TW/scenarios/azure-docs/articles/mysql/flexible-server/tutorial-deploy-wordpress-on-aks.md",
+        "documentationUrl": "https://learn.microsoft.com/en-us/azure/mysql/flexible-server/tutorial-deploy-wordpress-on-aks",
+        "nextSteps": [
+            {
+                "title": "Access the Kubernetes web dashboard",
+                "url": "https://learn.microsoft.com/en-us/azure/aks/kubernetes-dashboard"
+            },
+            {
+                "title": "Scale your AKS cluster",
+                "url": "https://learn.microsoft.com/en-us/azure/aks/tutorial-kubernetes-scale"
+            },
+            {
+                "title": "Manage your Azure Database for MySQL flexible server instance",
+                "url": "https://learn.microsoft.com/en-us/azure/mysql/flexible-server/quickstart-create-server-cli"
+            },
+            {
+                "title": "Configure server parameters for your database server",
+                "url": "https://learn.microsoft.com/en-us/azure/mysql/flexible-server/how-to-configure-server-parameters-cli"
+            }
+        ],
+        "configurations": {
+            "permissions": [
+                "Microsoft.Resources/resourceGroups/write",
+                "Microsoft.Network/virtualNetworks/write",
+                "Microsoft.Network/publicIPAddresses/write",
+                "Microsoft.Network/networkSecurityGroups/write",
+                "Microsoft.Network/networkSecurityGroups/securityRules/write",
+                "Microsoft.Network/networkInterfaces/write",
+                "Microsoft.Network/networkInterfaces/ipConfigurations/write",
+                "Microsoft.Storage/storageAccounts/write",
+                "Microsoft.Network/privateDnsZones/write",
+                "Microsoft.Network/privateDnsZones/virtualNetworkLinks/write",
+                "Microsoft.Network/privateDnsZones/privateDnsRecordSets/write",
+                "Microsoft.Network/privateDnsZones/privateDnsRecordSets/A/write",
+                "Microsoft.Network/privateDnsZones/privateDnsRecordSets/TXT/write",
+                "Microsoft.Network/privateDnsZones/privateDnsRecordSets/SRV/write",
+                "Microsoft.Network/privateDnsZones/privateDnsRecordSets/CNAME/write",
+                "Microsoft.Network/privateDnsZones/privateDnsRecordSets/MX/write",
+                "Microsoft.Network/privateDnsZones/privateDnsRecordSets/AAAA/write",
+                "Microsoft.Network/privateDnsZones/privateDnsRecordSets/PTR/write",
+                "Microsoft.Network/privateDnsZones/privateDnsRecordSets/CERT/write",
+                "Microsoft.Network/privateDnsZones/privateDnsRecordSets/NS/write",
+                "Microsoft.Network/privateDnsZones/privateDnsRecordSets/SOA/write",
+                "Microsoft.Network/privateDnsZones/privateDnsRecordSets/CAA/write",
+                "Microsoft.Network/privateDnsZones/privateDnsRecordSets/ANY/write",
+                "Microsoft.Network/privateDnsZones/privateDnsRecordSets/SSHFP/write",
+                "Microsoft.Network/privateDnsZones/privateDnsRecordSets/SPF/write",
+                "Microsoft.Network/privateDnsZones/privateDnsRecordSets/DNSKEY/write",
+                "Microsoft.Network/privateDnsZones/privateDnsRecordSets/DS/write",
+                "Microsoft.Network/privateDnsZones/privateDnsRecordSets/NAPTR/write",
+                "Microsoft.Compute/virtualMachines/write",
+                "Microsoft.Compute/virtualMachines/extensions/write",
+                "Microsoft.Compute/virtualMachines/read",
+                "Microsoft.Authorization/roleAssignments/write",
+                "Microsoft.Authorization/roleAssignments/read",
+                "Microsoft.Authorization/roleDefinitions/read",
+                "Microsoft.Authorization/roleDefinitions/write"
+            ],
+            "region": "westeurope"
+        }
+    },
+    {
+        "status": "active",
+        "key": "azure-docs/articles/static-web-apps/get-started-cli.md",
+        "title": "\u5feb\u901f\u5165\u9580\uff1a\u4f7f\u7528 CLI \u4f7f\u7528 Azure Static Web Apps \u5efa\u7f6e\u60a8\u7684\u7b2c\u4e00\u500b\u975c\u614b\u7db2\u7ad9",
+        "description": "\u77ad\u89e3\u5982\u4f55\u4f7f\u7528 Azure CLI \u5c07\u975c\u614b\u7db2\u7ad9\u90e8\u7f72\u81f3 Azure Static Web Apps\u3002",
+        "stackDetails": "",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/localized/zh-TW/scenarios/azure-docs/articles/static-web-apps/get-started-cli.md",
+        "documentationUrl": "https://learn.microsoft.com/en-us/azure/static-web-apps/get-started-cli",
+        "nextSteps": [
+            {
+                "title": "Add an API via Azure functions to your static site",
+                "url": "https://learn.microsoft.com/en-us/azure/static-web-apps/add-api"
+            }
+        ],
+        "configurations": {
+            "region": "EastUS2"
+        }
+    },
+    {
+        "status": "active",
+        "key": "azure-docs/articles/virtual-machine-scale-sets/flexible-virtual-machine-scale-sets-cli.md",
+        "title": "\u4f7f\u7528 Azure CLI \u5728\u5f48\u6027\u64f4\u5c55\u96c6\u4e2d\u5efa\u7acb\u865b\u64ec\u6a5f\u5668",
+        "description": "\u4e86\u89e3\u5982\u4f55\u4f7f\u7528 Azure CLI \u4ee5\u5f48\u6027\u5354\u8abf\u6d41\u7a0b\u6a21\u5f0f\u4f86\u5efa\u7acb\u865b\u64ec\u6a5f\u5668\u64f4\u5c55\u96c6\u3002",
+        "stackDetails": "",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/localized/zh-TW/scenarios/azure-docs/articles/virtual-machine-scale-sets/flexible-virtual-machine-scale-sets-cli.md",
+        "documentationUrl": "https://learn.microsoft.com/en-us/azure/virtual-machine-scale-sets/flexible-virtual-machine-scale-sets-cli",
+        "nextSteps": [
+            {
+                "title": "Learn how to create a scale set in the Azure portal",
+                "url": "https://learn.microsoft.com/en-us/azure/virtual-machine-scale-sets/flexible-virtual-machine-scale-sets-portal"
+            },
+            {
+                "title": "Learn about Virtual Machine Scale Sets",
+                "url": "https://learn.microsoft.com/en-us/azure/virtual-machine-scale-sets/overview"
+            },
+            {
+                "title": "Automatically scale a Virtual Machine Scale Set with the Azure CLI",
+                "url": "https://learn.microsoft.com/en-us/azure/virtual-machine-scale-sets/tutorial-autoscale-cli"
+            }
+        ],
+        "configurations": {
+            "region": "EastUS"
+        }
+    },
+    {
+        "status": "active",
+        "key": "azure-docs/articles/virtual-machines/linux/quick-create-cli.md",
+        "title": "\u5feb\u901f\u5165\u9580\uff1a\u4f7f\u7528 Azure CLI \u5efa\u7acb Linux \u865b\u64ec\u6a5f",
+        "description": "\u5728\u672c\u5feb\u901f\u5165\u9580\u4e2d\uff0c\u60a8\u5c07\u4e86\u89e3\u5982\u4f55\u4f7f\u7528 Azure CLI \u5efa\u7acb Linux \u865b\u64ec\u6a5f\u5668",
+        "stackDetails": [
+            "An Ubuntu 22.04 Linux VM (Standard DS1_v2)",
+            "30 GB Premium SSD (120 IOPS, 25 MBps)",
+            "Network interface with public IP and network security group",
+            "Port 22 will be opened"
+        ],
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/localized/zh-TW/scenarios/azure-docs/articles/virtual-machines/linux/quick-create-cli.md",
+        "documentationUrl": "https://learn.microsoft.com/en-us/azure/virtual-machines/linux/quick-create-cli",
+        "nextSteps": [
+            {
+                "title": "Learn about virtual machines",
+                "url": "https://learn.microsoft.com/en-us/azure/virtual-machines/"
+            },
+            {
+                "title": "Use Cloud-Init to initialize a Linux VM on first boot",
+                "url": "https://learn.microsoft.com/en-us/azure/virtual-machines/linux/tutorial-automate-vm-deployment"
+            },
+            {
+                "title": "Create custom VM images",
+                "url": "https://learn.microsoft.com/en-us/azure/virtual-machines/linux/tutorial-custom-images"
+            },
+            {
+                "title": "Load Balance VMs",
+                "url": "https://learn.microsoft.com/en-us/azure/load-balancer/quickstart-load-balancer-standard-public-cli"
+            }
+        ],
+        "configurations": {
+            "permissions": [
+                "Microsoft.Resources/resourceGroups/write",
+                "Microsoft.Compute/virtualMachines/write",
+                "Microsoft.Network/publicIPAddresses/write",
+                "Microsoft.Network/networkInterfaces/write",
+                "Microsoft.Storage/storageAccounts/listKeys/action",
+                "Microsoft.Authorization/roleAssignments/write",
+                "Microsoft.Compute/virtualMachines/extensions/write",
+                "Microsoft.Compute/virtualMachines/read",
+                "Microsoft.Network/publicIPAddresses/read",
+                "Microsoft.Compute/virtualMachines/instanceView/read"
+            ],
+            "region": "EastUS"
+        }
+    },
+    {
+        "status": "active",
+        "key": "azure-docs/articles/virtual-machines/linux/tutorial-lemp-stack.md",
+        "title": "\u6559\u5b78\u8ab2\u7a0b - \u5728 VM \u4e0a\u4f7f\u7528 WordPress \u90e8\u7f72 LEMP \u5806\u68e7",
+        "description": "\u5728\u672c\u6559\u5b78\u8ab2\u7a0b\u4e2d\uff0c\u60a8\u5c07\u77ad\u89e3\u5982\u4f55\u5728 Azure \u4e2d\u7684 Linux \u865b\u64ec\u6a5f\u4e0a\u5b89\u88dd LEMP \u5806\u758a\u548c WordPress\u3002",
+        "stackDetails": "",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/localized/zh-TW/scenarios/azure-docs/articles/virtual-machines/linux/tutorial-lemp-stack.md",
+        "documentationUrl": "https://learn.microsoft.com/en-us/azure/virtual-machines/linux/tutorial-lemp-stack",
+        "configurations": {
+            "region": "westeurope"
+        }
+    },
+    {
+        "status": "active",
+        "key": "DeployIGonAKS/README.md",
+        "title": "\u5728 Azure Kubernetes Service \u53e2\u96c6\u4e2d\u90e8\u7f72 Inspektor \u5c0f\u5de5\u5177",
+        "description": "\u672c\u6559\u5b78\u8ab2\u7a0b\u793a\u7bc4\u5982\u4f55\u5728 AKS \u53e2\u96c6\u4e2d\u90e8\u7f72 Inspektor \u5c0f\u5de5\u5177",
+        "stackDetails": "",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/localized/zh-TW/scenarios/DeployIGonAKS/README.md",
+        "documentationUrl": "",
+        "nextSteps": [
+            {
+                "title": "Real-world scenarios where Inspektor Gadget can help you",
+                "url": "https://go.microsoft.com/fwlink/p/?linkid=2260402#use-cases"
+            },
+            {
+                "title": "Explore the available gadgets",
+                "url": "https://go.microsoft.com/fwlink/p/?linkid=2260070"
+            },
+            {
+                "title": "Run your own eBPF program",
+                "url": "https://go.microsoft.com/fwlink/p/?linkid=2259865"
+            }
+        ],
+        "configurations": {
+            "region": "eastus"
+        }
+    },
+    {
+        "status": "active",
+        "key": "CreateAKSWebApp/README.md",
+        "title": "\u4f7f\u7528 Azure CLI \u90e8\u7f72\u53ef\u8abf\u6574\u4e14\u5b89\u5168\u7684 Azure Kubernetes Service \u53e2\u96c6",
+        "description": "\u672c\u6559\u5b78\u8ab2\u7a0b\u5c07\u9010\u6b65\u5e36\u60a8\u5efa\u7acb\u900f\u904e HTTPs \u4fdd\u8b77\u7684 Azure Kubernetes Web \u61c9\u7528\u7a0b\u5f0f\u3002",
+        "stackDetails": "",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/localized/zh-TW/scenarios/CreateAKSWebApp/README.md",
+        "documentationUrl": "",
+        "nextSteps": [
+            {
+                "title": "Azure Kubernetes Service Documentation",
+                "url": "https://learn.microsoft.com/azure/aks/"
+            },
+            {
+                "title": "Create an Azure Container Registry",
+                "url": "https://learn.microsoft.com/azure/aks/tutorial-kubernetes-prepare-acr?tabs=azure-cli"
+            },
+            {
+                "title": "Scale your Applciation in AKS",
+                "url": "https://learn.microsoft.com/azure/aks/tutorial-kubernetes-scale?tabs=azure-cli"
+            },
+            {
+                "title": "Update your application in AKS",
+                "url": "https://learn.microsoft.com/azure/aks/tutorial-kubernetes-app-update?tabs=azure-cli"
+            }
+        ],
+        "configurations": {
+            "region": "westeurope"
+        }
+    },
+    {
+        "status": "inactive",
+        "key": "BlobVisionOnAKS/blob-vision-aks.md"
+    },
+    {
+        "status": "inactive",
+        "key": "CreateAKSDeployment/create-aks-deployment.md",
+        "title": "\u5feb\u901f\u5165\u9580\uff1a\u4f7f\u7528 Azure CLI \u90e8\u7f72 Azure Kubernetes Service (AKS) \u53e2\u96c6",
+        "description": "\u4e86\u89e3\u5982\u4f55\u4f7f\u7528 Azure CLI \u5728 Azure Kubernetes Service (AKS) \u4e2d\u5feb\u901f\u90e8\u7f72 Kube \u53e2\u96c6\u4e26\u90e8\u7f72\u61c9\u7528\u7a0b\u5f0f\u3002",
+        "stackDetails": "",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/localized/zh-TW/scenarios/CreateAKSDeployment/create-aks-deployment.md",
+        "documentationUrl": "",
+        "configurations": {
+            "region": "westeurope"
+        }
+    },
+    {
+        "status": "inactive",
+        "key": "CreateContainerAppDeploymentFromSource/create-container-app-deployment-from-source.md",
+        "title": "\u5229\u7528 Blob \u5b58\u653e\u5340\u3001SQL \u548c \u96fb\u8166\u8996\u89ba \u5efa\u7acb\u5bb9\u5668\u61c9\u7528\u7a0b\u5f0f",
+        "description": "\u672c\u6559\u5b78\u8ab2\u7a0b\u793a\u7bc4\u5982\u4f55\u4f7f\u7528 Blob \u5b58\u653e\u5340\u3001SQL \u548c \u96fb\u8166\u8996\u89ba \u5efa\u7acb\u5bb9\u5668\u61c9\u7528\u7a0b\u5f0f",
+        "stackDetails": "",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/localized/zh-TW/scenarios/CreateContainerAppDeploymentFromSource/create-container-app-deployment-from-source.md",
+        "documentationUrl": "",
+        "configurations": {
+            "region": "westus"
+        }
+    },
+    {
+        "status": "active",
+        "key": "CreateRHELVMAndSSH/create-rhel-vm-ssh.md",
+        "title": "\u5feb\u901f\u5165\u9580\uff1a\u4f7f\u7528 Azure CLI \u5efa\u7acb Red Hat Enterprise Linux \u865b\u64ec\u6a5f",
+        "description": "\u5728\u672c\u5feb\u901f\u5165\u9580\u4e2d\uff0c\u60a8\u5c07\u77ad\u89e3\u5982\u4f55\u4f7f\u7528 Azure CLI \u4f86\u5efa\u7acb Red Hat Enterprise Linux \u865b\u64ec\u6a5f",
+        "stackDetails": "",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/localized/zh-TW/scenarios/CreateRHELVMAndSSH/create-rhel-vm-ssh.md",
+        "documentationUrl": "",
+        "configurations": {
+            "region": "westeurope"
+        }
+    },
+    {
+        "status": "inactive",
+        "key": "DeployHAPGonARO/deploy-ha-pg-aro.md",
+        "title": "\u5728 Azure Red Hat OpenShift \u4e0a\u5efa\u7acb\u9ad8\u53ef\u7528\u6027 PostgreSQL \u53e2\u96c6",
+        "description": "\u672c\u6559\u5b78\u8ab2\u7a0b\u8aaa\u660e\u5982\u4f55\u4f7f\u7528 CloudNativePG \u64cd\u4f5c\u54e1\u5728 Azure Red Hat OpenShift \uff08ARO\uff09 \u4e0a\u5efa\u7acb\u9ad8\u53ef\u7528\u6027 PostgreSQL \u53e2\u96c6",
+        "stackDetails": "",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/localized/zh-TW/scenarios/DeployHAPGonARO/deploy-ha-pg-aro.md",
+        "documentationUrl": "",
+        "configurations": {
+            "region": ""
+        }
+    },
+    {
+        "status": "inactive",
+        "key": "azure-docs/articles/aks/create-postgresql-ha.md",
+        "title": "Create infrastructure for deploying a highly available PostgreSQL database on AKS",
+        "description": "Create the infrastructure needed to deploy a highly available PostgreSQL database on AKS using the CloudNativePG operator.",
+        "stackDetails": "",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-docs/articles/aks/create-postgresql-ha.md",
+        "documentationUrl": "",
+        "configurations": {
+            "region": "westus3"
+        }
+    },
+    {
+        "status": "inactive",
+        "key": "azure-docs/articles/aks/deploy-postgresql-ha.md",
+        "title": "Deploy a highly available PostgreSQL database on AKS with Azure CLI",
+        "description": "In this article, you deploy a highly available PostgreSQL database on AKS using the CloudNativePG operator.",
+        "stackDetails": "",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-docs/articles/aks/deploy-postgresql-ha.md",
+        "documentationUrl": "",
+        "configurations": {
+            "region": ""
+        }
+    },
+    {
+        "status": "inactive",
+        "key": "azure-docs/articles/aks/postgresql-ha-overview.md",
+        "title": "\u4f7f\u7528 Azure CLI \u5728 AKS \u4e0a\u90e8\u7f72\u9ad8\u53ef\u7528\u6027 PostgreSQL \u8cc7\u6599\u5eab\u7684\u6982\u89c0",
+        "description": "\u77ad\u89e3\u5982\u4f55\u4f7f\u7528 CloudNativePG \u904b\u7b97\u5b50\u642d\u914d Azure CLI\uff0c\u5728 AKS \u4e0a\u90e8\u7f72\u9ad8\u53ef\u7528\u6027 PostgreSQL \u8cc7\u6599\u5eab\u3002",
+        "stackDetails": "",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/localized/zh-TW/scenarios/azure-docs/articles/aks/postgresql-ha-overview.md",
+        "documentationUrl": "",
+        "configurations": {
+            "region": ""
+        }
+    },
+    {
+        "status": "active",
+        "key": "AttachDataDiskLinuxVM/attach-data-disk-linux-vm.md",
+        "title": "\u5feb\u901f\u5165\u9580\uff1a\u4f7f\u7528 Azure CLI \u5efa\u7acb Ubuntu \u865b\u64ec\u6a5f\u4e26\u9023\u7d50 Azure \u6578\u64da\u78c1\u789f",
+        "description": "\u5728\u672c\u5feb\u901f\u5165\u9580\u4e2d\uff0c\u60a8\u5c07\u77ad\u89e3\u5982\u4f55\u4f7f\u7528 Azure CLI \u4f86\u5efa\u7acb Ubuntu Linux \u865b\u64ec\u6a5f",
+        "stackDetails": "",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/localized/zh-TW/scenarios/AttachDataDiskLinuxVM/attach-data-disk-linux-vm.md",
+        "documentationUrl": "",
+        "nextSteps": [
+            {
+                "title": "Learn about virtual machines",
+                "url": "https://learn.microsoft.com/en-us/azure/virtual-machines/"
+            },
+            {
+                "title": "Use Cloud-Init to initialize a Linux VM on first boot",
+                "url": "https://learn.microsoft.com/en-us/azure/virtual-machines/linux/tutorial-automate-vm-deployment"
+            },
+            {
+                "title": "Create custom VM images",
+                "url": "https://learn.microsoft.com/en-us/azure/virtual-machines/linux/tutorial-custom-images"
+            },
+            {
+                "title": "Load Balance VMs",
+                "url": "https://learn.microsoft.com/en-us/azure/load-balancer/quickstart-load-balancer-standard-public-cli"
+            }
+        ],
+        "configurations": {
+            "permissions": [],
+            "region": "australiaeast"
+        }
+    },
+    {
+        "status": "inactive",
+        "key": "ObtainPerformanceMetricsLinuxSustem/README.md",
+        "title": "\u5f9e Linux \u7cfb\u7d71\u53d6\u5f97\u6548\u80fd\u8a08\u91cf",
+        "description": "\u77ad\u89e3\u5982\u4f55\u5f9eLinux\u7cfb\u7d71\u53d6\u5f97\u6548\u80fd\u8a08\u91cf\u3002",
+        "stackDetails": "",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/localized/zh-TW/scenarios/ObtainPerformanceMetricsLinuxSustem/README.md",
+        "documentationUrl": "",
+        "configurations": {
+            "region": ""
+        }
+    },
+    {
+        "status": "active",
+        "key": "BlobVisionOnAKS/README.md"
+    },
+    {
+        "status": "active",
+        "key": "CreateAKSDeployment/README.md",
+        "title": "\u5feb\u901f\u5165\u9580\uff1a\u4f7f\u7528 Azure CLI \u90e8\u7f72 Azure Kubernetes Service (AKS) \u53e2\u96c6",
+        "description": "\u4e86\u89e3\u5982\u4f55\u4f7f\u7528 Azure CLI \u5728 Azure Kubernetes Service (AKS) \u4e2d\u5feb\u901f\u90e8\u7f72 Kube \u53e2\u96c6\u4e26\u90e8\u7f72\u61c9\u7528\u7a0b\u5f0f\u3002",
+        "stackDetails": "",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/localized/zh-TW/scenarios/CreateAKSDeployment/README.md",
+        "documentationUrl": "",
+        "configurations": {
+            "region": "westeurope"
+        }
+    },
+    {
+        "status": "active",
+        "key": "CreateAKSWebApp/create-aks-web-app.md",
+        "title": "\u4f7f\u7528 Azure CLI \u90e8\u7f72\u53ef\u8abf\u6574\u4e14\u5b89\u5168\u7684 Azure Kubernetes Service \u53e2\u96c6",
+        "description": "\u672c\u6559\u5b78\u8ab2\u7a0b\u5c07\u9010\u6b65\u5e36\u60a8\u5efa\u7acb\u900f\u904e HTTPs \u4fdd\u8b77\u7684 Azure Kubernetes Web \u61c9\u7528\u7a0b\u5f0f\u3002",
+        "stackDetails": "",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/localized/zh-TW/scenarios/CreateAKSWebApp/create-aks-web-app.md",
+        "documentationUrl": "",
+        "configurations": {
+            "region": "westeurope"
+        }
+    },
+    {
+        "status": "active",
+        "key": "CreateContainerAppDeploymentFromSource/README.md",
+        "title": "\u5229\u7528 Blob \u5b58\u653e\u5340\u3001SQL \u548c\u96fb\u8166\u8996\u89ba\u5efa\u7acb\u5bb9\u5668\u61c9\u7528\u7a0b\u5f0f",
+        "description": "\u672c\u6559\u5b78\u8ab2\u7a0b\u793a\u7bc4\u5982\u4f55\u5229\u7528 Blob \u5b58\u653e\u5340\u3001SQL \u548c\u96fb\u8166\u8996\u89ba\u5efa\u7acb\u5bb9\u5668\u61c9\u7528\u7a0b\u5f0f",
+        "stackDetails": "",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/localized/zh-TW/scenarios/CreateContainerAppDeploymentFromSource/README.md",
+        "documentationUrl": "",
+        "configurations": {
+            "region": "westus"
+        }
+    },
+    {
+        "status": "active",
+        "key": "CreateLinuxVMAndSSH/README.md",
+        "title": "\u5feb\u901f\u5165\u9580\uff1a\u4f7f\u7528 Azure CLI \u5efa\u7acb Linux \u865b\u64ec\u6a5f",
+        "description": "\u5728\u672c\u5feb\u901f\u5165\u9580\u4e2d\uff0c\u60a8\u5c07\u4e86\u89e3\u5982\u4f55\u4f7f\u7528 Azure CLI \u5efa\u7acb Linux \u865b\u64ec\u6a5f\u5668",
+        "stackDetails": "",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/localized/zh-TW/scenarios/CreateLinuxVMAndSSH/README.md",
+        "documentationUrl": "",
+        "configurations": {
+            "region": "EastUS"
+        }
+    },
+    {
+        "status": "active",
+        "key": "CreateLinuxVMLAMP/README.md",
+        "title": "\u6559\u5b78\u8ab2\u7a0b - \u5728 VM \u4e0a\u4f7f\u7528 WordPress \u90e8\u7f72 LEMP \u5806\u68e7",
+        "description": "\u5728\u672c\u6559\u5b78\u8ab2\u7a0b\u4e2d\uff0c\u60a8\u5c07\u77ad\u89e3\u5982\u4f55\u5728 Azure \u4e2d\u7684 Linux \u865b\u64ec\u6a5f\u4e0a\u5b89\u88dd LEMP \u5806\u758a\u548c WordPress\u3002",
+        "stackDetails": "",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/localized/zh-TW/scenarios/CreateLinuxVMLAMP/README.md",
+        "documentationUrl": "",
+        "configurations": {
+            "region": "westeurope"
+        }
+    },
+    {
+        "status": "active",
+        "key": "CreateLinuxVMSSwithAppGW/README.md",
+        "title": "\u4f7f\u7528 Azure CLI \u5728\u5f48\u6027\u64f4\u5c55\u96c6\u4e2d\u5efa\u7acb\u865b\u64ec\u6a5f\u5668",
+        "description": "\u4e86\u89e3\u5982\u4f55\u4f7f\u7528 Azure CLI \u4ee5\u5f48\u6027\u5354\u8abf\u6d41\u7a0b\u6a21\u5f0f\u4f86\u5efa\u7acb\u865b\u64ec\u6a5f\u5668\u64f4\u5c55\u96c6\u3002",
+        "stackDetails": "",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/localized/zh-TW/scenarios/CreateLinuxVMSSwithAppGW/README.md",
+        "documentationUrl": "",
+        "configurations": {
+            "region": "EastUS"
+        }
+    },
+    {
+        "status": "active",
+        "key": "CreateLinuxVMSecureWebServer/README.md",
+        "title": "\u5efa\u7acb\u900f\u904e HTTPS \u4fdd\u8b77\u7684 NGINX Web \u670d\u52d9\u5668",
+        "description": "\u672c\u6559\u5b78\u8ab2\u7a0b\u793a\u7bc4\u5982\u4f55\u5efa\u7acb\u900f\u904e HTTPS \u4fdd\u8b77\u7684 NGINX Web \u670d\u52d9\u5668\u3002",
+        "stackDetails": "",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/localized/zh-TW/scenarios/CreateLinuxVMSecureWebServer/README.md",
+        "documentationUrl": "",
+        "configurations": {
+            "region": "eastus"
+        }
+    },
+    {
+        "status": "active",
+        "key": "CreateRHELVMAndSSH/README.md",
+        "title": "\u5feb\u901f\u5165\u9580\uff1a\u4f7f\u7528 Azure CLI \u5efa\u7acb Red Hat Enterprise Linux \u865b\u64ec\u6a5f",
+        "description": "\u5728\u672c\u5feb\u901f\u5165\u9580\u4e2d\uff0c\u60a8\u5c07\u77ad\u89e3\u5982\u4f55\u4f7f\u7528 Azure CLI \u4f86\u5efa\u7acb Red Hat Enterprise Linux \u865b\u64ec\u6a5f",
+        "stackDetails": "",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/localized/zh-TW/scenarios/CreateRHELVMAndSSH/README.md",
+        "documentationUrl": "",
+        "configurations": {
+            "region": "EastUS"
+        }
+    },
+    {
+        "status": "active",
+        "key": "CreateStaticWebApp/README.md",
+        "title": "\u5feb\u901f\u5165\u9580\uff1a\u4f7f\u7528 CLI \u4f7f\u7528 Azure Static Web Apps \u5efa\u7f6e\u60a8\u7684\u7b2c\u4e00\u500b\u975c\u614b\u7db2\u7ad9",
+        "description": "\u77ad\u89e3\u5982\u4f55\u4f7f\u7528 Azure CLI \u5c07\u975c\u614b\u7db2\u7ad9\u90e8\u7f72\u81f3 Azure Static Web Apps\u3002",
+        "stackDetails": "",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/localized/zh-TW/scenarios/CreateStaticWebApp/README.md",
+        "documentationUrl": "",
+        "configurations": {
+            "region": "EastUS2"
+        }
+    },
+    {
+        "status": "active",
+        "key": "CreateWordPressDeployment/README.md",
+        "title": "\u6559\u5b78\u8ab2\u7a0b\uff1a\u4f7f\u7528 Azure CLI \u5728 AKS \u53e2\u96c6\u4e0a\u90e8\u7f72 WordPress",
+        "description": "\u77ad\u89e3\u5982\u4f55\u4f7f\u7528 \u9069\u7528\u65bc MySQL \u7684 Azure \u8cc7\u6599\u5eab - \u5f48\u6027\u4f3a\u670d\u5668\u5728 AKS \u4e0a\u5feb\u901f\u5efa\u7f6e\u53ca\u90e8\u7f72 WordPress\u3002",
+        "stackDetails": "",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/localized/zh-TW/scenarios/CreateWordPressDeployment/README.md",
+        "documentationUrl": "",
+        "configurations": {
+            "region": "westeurope"
+        }
+    },
+    {
+        "status": "active",
+        "key": "DeployHAPGonARO/README.md",
+        "title": "\u5728 Azure Red Hat OpenShift \u4e0a\u5efa\u7acb\u9ad8\u53ef\u7528\u6027 PostgreSQL \u53e2\u96c6",
+        "description": "\u672c\u6559\u5b78\u8ab2\u7a0b\u8aaa\u660e\u5982\u4f55\u4f7f\u7528 CloudNativePG \u64cd\u4f5c\u54e1\u5728 Azure Red Hat OpenShift \uff08ARO\uff09 \u4e0a\u5efa\u7acb\u9ad8\u53ef\u7528\u6027 PostgreSQL \u53e2\u96c6",
+        "stackDetails": "",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/localized/zh-TW/scenarios/DeployHAPGonARO/README.md",
+        "documentationUrl": "",
+        "configurations": {
+            "region": ""
+        }
+    },
+    {
+        "status": "active",
+        "key": "DeployIGonAKS/deploy-ig-aks.md",
+        "title": "\u5728 Azure Kubernetes Service \u53e2\u96c6\u4e2d\u90e8\u7f72 Inspektor \u5c0f\u5de5\u5177",
+        "description": "\u672c\u6559\u5b78\u8ab2\u7a0b\u793a\u7bc4\u5982\u4f55\u5728 AKS \u53e2\u96c6\u4e2d\u90e8\u7f72 Inspektor \u5c0f\u5de5\u5177",
+        "stackDetails": "",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/localized/zh-TW/scenarios/DeployIGonAKS/deploy-ig-aks.md",
+        "documentationUrl": "",
+        "configurations": {
+            "region": "eastus"
+        }
+    }
+]
