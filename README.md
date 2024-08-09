@@ -6,6 +6,14 @@ It achieves this by providing one-click and interactive learning experiences for
 
 These experiences utilize [Innovation Engine](https://github.com/Azure/InnovationEngine/tree/main), an open-source project that amplifies standard markdown language such that it can be executed step-by-step in an educational manner and tested via automated CI/CD pipelines.   
 
+**Table of Contents:**
+ - [Setup](#setup)
+ - [Prerequisites](#prerequisites)
+ - [Writing Requirements](#writing-requirements)
+ - [Testing and Publishing](#testing-and-publishing)
+ - [Current Exec Docs Experience](#current-exec-docs-experience)
+ - [Frequently Asked Questions (FAQs)](#frequently-asked-questions-faqs)
+
 ## How to Write an Exec Doc
 
 Follow these steps in sequence to write an Exec Doc either by converting an existing Azure Doc i.e. building on top of the author's work or from scratch i.e. you are the author _(read the Notes in any step for more information)_:
