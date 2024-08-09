@@ -213,34 +213,38 @@ def sync_markdown_files():
 
                             # Create or update the file in the new branch
                             try:
-                                repo.create_file(file_path, f"Add {file_path}", relevant_file_content, branch=new_branch_name)
+                                # repo.create_file(file_path, f"Add {file_path}", relevant_file_content, branch=new_branch_name)
                                 print(f"Created file: {file_path}")
                             except:
                                 contents = repo.get_contents(file_path, ref=new_branch_name)
-                                repo.update_file(contents.path, f"Update {file_path}", relevant_file_content, contents.sha, branch=new_branch_name)
+                                # repo.update_file(contents.path, f"Update {file_path}", relevant_file_content, contents.sha, branch=new_branch_name)
                                 print(f"Updated file: {file_path}")
 
                         # Create or update the base metadata.json file
                         branch_metadata = update_metadata(new_branch_name, localize=False)
                         try:
-                            repo.create_file('scenarios/metadata.json', f"Add metadata.json file", json.dumps(branch_metadata, indent=4), branch=new_branch_name)
+                            # repo.create_file('scenarios/metadata.json', f"Add metadata.json file", json.dumps(branch_metadata, indent=4), branch=new_branch_name)
                             print("Created metadata.json")
                         except:
                             metadata_contents = repo.get_contents('scenarios/metadata.json', ref=new_branch_name)
-                            repo.update_file(metadata_contents.path, f"Update metadata for {file_path}", json.dumps(branch_metadata, indent=4), metadata_contents.sha, branch=new_branch_name)
+                            # repo.update_file(metadata_contents.path, f"Update metadata for {file_path}", json.dumps(branch_metadata, indent=4), metadata_contents.sha, branch=new_branch_name)
                             print("Updated metadata.json")
 
                         # Create or update the localized metadata.json files altogether
                         branch_localized_metadata_dict = update_metadata(new_branch_name, localize=True)
                         try:
                             for locale in branch_localized_metadata_dict:
-                                repo.create_file(f'localized/{locale}/scenarios/metadata.json', f"Add metadata.json file", json.dumps(branch_localized_metadata_dict[locale], indent=4), branch=new_branch_name)
-                                print("created localized metadata")
+                                # repo.create_file(f'localized/{locale}/scenarios/metadata.json', f"Add metadata.json file", json.dumps(branch_localized_metadata_dict[locale], indent=4), branch=new_branch_name)
+                                # print("created localized metadata")
+                                with open(f'localized/{locale}/scenarios/metadata.json', 'w') as f:
+                                    json.dump(branch_localized_metadata_dict[locale], f, indent=4)
                         except:
                             for locale in branch_localized_metadata_dict:
                                 locale_metadata_path = repo.get_contents(f'localized/{locale}/scenarios/metadata.json', ref=new_branch_name)
-                                repo.update_file(locale_metadata_path.path, f"Update metadata for {file_path}", json.dumps(branch_localized_metadata_dict[locale], indent=4), locale_metadata_path.sha, branch=new_branch_name)
-                                print("updated localized metadata")
+                                # repo.update_file(locale_metadata_path.path, f"Update metadata for {file_path}", json.dumps(branch_localized_metadata_dict[locale], indent=4), locale_metadata_path.sha, branch=new_branch_name)
+                                # print("updated localized metadata")
+                                with open(f'localized/{locale}/scenarios/metadata.json', 'w') as f:
+                                    json.dump(branch_localized_metadata_dict[locale], f, indent=4)
 
 def install_ie():
     """Installs IE if it is not already on the path."""
