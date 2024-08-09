@@ -144,7 +144,8 @@ def update_metadata(branch_name, localize=False):
     if localize == False:
         return metadata   
     else:
-        print(localized_metadata_dict+'\n\n\n\n\n\n\n\n\n\n')
+        print(localized_metadata_dict)
+        print('\n\n\n\n\n\n\n\n\n\n\n')
         return localized_metadata_dict
                             
 def sync_markdown_files():
