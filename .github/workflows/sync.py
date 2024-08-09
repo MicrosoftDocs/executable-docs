@@ -93,7 +93,6 @@ def update_base_metadata(directory, metadata):
 def update_metadata(branch_name, localize=False):
     # Save the current branch name
     current_branch = subprocess.check_output(["git", "branch", "--show-current"]).strip().decode('utf-8')
-    print(f"Current branch: {current_branch}\n\n\n\n\n\n\n\n\n\n\n\n\n")
 
     time.sleep(3)
 
@@ -139,7 +138,6 @@ def update_metadata(branch_name, localize=False):
 
     finally:
         # Checkout back to the original branch
-        print(f"Current branch: {current_branch}\n\n\n\n\n\n\n\n\n\n\n\n\n")
         subprocess.check_call(["git", "checkout", current_branch])  
 
 
