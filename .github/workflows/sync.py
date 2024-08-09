@@ -244,6 +244,7 @@ def sync_markdown_files():
                                 # repo.update_file(locale_metadata_path.path, f"Updated localized metadata for all files", json.dumps(branch_localized_metadata_dict[locale], indent=4), locale_metadata_path.sha, branch=new_branch_name)
                                 print("updated localized metadata")
                                 print(branch_localized_metadata_dict[locale])
+                                print(branch_localized_metadata_dict[locale])
                                 with open(f'localized/{locale}/scenarios/metadata.json', 'w') as f:
                                     json.dump(branch_localized_metadata_dict[locale], f, indent=4)
 
