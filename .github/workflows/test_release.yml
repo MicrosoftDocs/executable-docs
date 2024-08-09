@@ -73,7 +73,7 @@ jobs:
         tag_name: t1.0.${{ env.success_count }}
         release_name: t1.0.${{ env.success_count }}
         draft: false
-        prerelease: false
+        prerelease: true
     - name: Upload Release Asset
       if: env.scenarios_changed == 'true' 
       uses: actions/upload-release-asset@v1
