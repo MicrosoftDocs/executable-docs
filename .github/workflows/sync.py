@@ -10,6 +10,7 @@ import json
 import yaml
 from datetime import datetime
 import time
+import copy
 
 GITHUB_TOKEN = os.getenv('GITHUB_TOKEN')
 g = github.Github(GITHUB_TOKEN)
@@ -125,27 +126,26 @@ def update_metadata(branch_name, localize=False):
                 # Update the metadata with the README files in the scenarios directory
                 for locale in sorted(os.listdir('localized')):
                     locale_dir = os.path.join('localized', locale, 'scenarios')
-                    metadata = update_base_metadata(locale_dir, base_metadata)
-                    localized_metadata_dict[locale] = metadata
+                    locale_metadata = copy.deepcopy(base_metadata)
+                    localized_metadata_dict[locale] = update_base_metadata(locale_dir, locale_metadata)
             else:
                 with open('scenarios/metadata.json', 'w') as f:
                     base_metadata = []
                 # Update the metadata with the README files in the scenarios directory
                 for locale in sorted(os.listdir('localized')):
                     locale_dir = os.path.join('localized', locale, 'scenarios')
-                    metadata = update_base_metadata('localized', base_metadata)
-                    localized_metadata_dict[locale] = metadata
+                    locale_metadata = copy.deepcopy(base_metadata)
+                    localized_metadata_dict[locale] = update_base_metadata('localized', locale_metadata)
 
     finally:
         # Checkout back to the original branch
         subprocess.check_call(["git", "checkout", current_branch])  
 
-
     if localize == False:
         return metadata   
     else:
         return localized_metadata_dict
-                            
+
 def sync_markdown_files():
     query = "innovation-engine in:file language:markdown org:MicrosoftDocs -path:/localized/ -repo:MicrosoftDocs/executable-docs" 
     result = g.search_code(query)
@@ -213,39 +213,37 @@ def sync_markdown_files():
 
                             # Create or update the file in the new branch
                             try:
-                                # repo.create_file(file_path, f"Add {file_path}", relevant_file_content, branch=new_branch_name)
+                                repo.create_file(file_path, f"Add {file_path}", relevant_file_content, branch=new_branch_name)
                                 print(f"Created file: {file_path}")
                             except:
                                 contents = repo.get_contents(file_path, ref=new_branch_name)
-                                # repo.update_file(contents.path, f"Update {file_path}", relevant_file_content, contents.sha, branch=new_branch_name)
+                                repo.update_file(contents.path, f"Update {file_path}", relevant_file_content, contents.sha, branch=new_branch_name)
                                 print(f"Updated file: {file_path}")
 
                         # Create or update the base metadata.json file
                         branch_metadata = update_metadata(new_branch_name, localize=False)
                         try:
-                            # repo.create_file('scenarios/metadata.json', f"Add metadata.json file", json.dumps(branch_metadata, indent=4), branch=new_branch_name)
+                            repo.create_file('scenarios/metadata.json', f"Add metadata.json file", json.dumps(branch_metadata, indent=4), branch=new_branch_name)
                             print("Created metadata.json")
                         except:
                             metadata_contents = repo.get_contents('scenarios/metadata.json', ref=new_branch_name)
-                            # repo.update_file(metadata_contents.path, f"Update metadata for all files", json.dumps(branch_metadata, indent=4), metadata_contents.sha, branch=new_branch_name)
+                            repo.update_file(metadata_contents.path, f"Update metadata for all files", json.dumps(branch_metadata, indent=4), metadata_contents.sha, branch=new_branch_name)
                             print("Updated metadata.json")
 
                         # Create or update the localized metadata.json files altogether
                         branch_localized_metadata_dict = update_metadata(new_branch_name, localize=True)
                         try:
                             for locale in branch_localized_metadata_dict:
-                                # repo.create_file(f'localized/{locale}/scenarios/metadata.json', f"Add metadata.json file", json.dumps(branch_localized_metadata_dict[locale], indent=4), branch=new_branch_name)
+                                repo.create_file(f'localized/{locale}/scenarios/metadata.json', f"Add metadata.json file", json.dumps(branch_localized_metadata_dict[locale], indent=4), branch=new_branch_name)
                                 print("created localized metadata")
-                                print(locale)
                                 print(branch_localized_metadata_dict[locale])
                                 with open(f'localized/{locale}/scenarios/metadata.json', 'w') as f:
                                     json.dump(branch_localized_metadata_dict[locale], f, indent=4)
                         except:
                             for locale in branch_localized_metadata_dict:
                                 locale_metadata_path = repo.get_contents(f'localized/{locale}/scenarios/metadata.json', ref=new_branch_name)
-                                # repo.update_file(locale_metadata_path.path, f"Updated localized metadata for all files", json.dumps(branch_localized_metadata_dict[locale], indent=4), locale_metadata_path.sha, branch=new_branch_name)
+                                repo.update_file(locale_metadata_path.path, f"Updated localized metadata for all files", json.dumps(branch_localized_metadata_dict[locale], indent=4), locale_metadata_path.sha, branch=new_branch_name)
                                 print("updated localized metadata")
-                                print(locale)
                                 print(branch_localized_metadata_dict[locale])
                                 with open(f'localized/{locale}/scenarios/metadata.json', 'w') as f:
                                     json.dump(branch_localized_metadata_dict[locale], f, indent=4)
