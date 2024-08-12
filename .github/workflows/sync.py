@@ -175,6 +175,13 @@ def sync_markdown_files():
                                 relevant_files.append(file)
                             # Mark the directory as processed
                             processed_directories.add(os.path.dirname(file.path))
+                        
+                        # Checkout the new branch
+                        try:
+                            subprocess.check_call(["git", "checkout", "main"])
+                        except subprocess.CalledProcessError:
+                            print(f"Error checking out branch main")
+                            continue
 
                         for relevant_file in relevant_files:
                             relevant_file_content = relevant_file.repository.get_contents(relevant_file.path).decoded_content.decode('utf-8')
