@@ -203,36 +203,33 @@ def sync_markdown_files():
                             
                             if not branch_exists:
                                 repo.create_git_ref(ref=f"refs/heads/{new_branch_name}", sha=source_branch.commit.sha)
-                            
-                            # Stash any uncommitted changes
-                            try:
-                                subprocess.check_call(["git", "stash", "--include-untracked"])
-                            except subprocess.CalledProcessError:
-                                print("Error stashing changes")
-                                continue
 
-                            # Checkout the new branch
-                            try:
-                                subprocess.check_call(["git", "checkout", new_branch_name])
-                            except subprocess.CalledProcessError:
-                                print(f"Error checking out branch {new_branch_name}")
-                                continue
+                            # Create a temporary directory
+                            with tempfile.TemporaryDirectory() as temp_dir:
+                                temp_file_path = os.path.join(temp_dir, os.path.basename(relevant_file.path))
 
-                            # Apply the stash
-                            try:
-                                subprocess.check_call(["git", "stash", "apply"])
-                            except subprocess.CalledProcessError:
-                                print("Error applying stash")
-                                continue
+                                # Copy the relevant file to the temporary directory
+                                with open(temp_file_path, 'w') as temp_file:
+                                    temp_file.write(relevant_file_content)
+                                
+                                # Checkout the new branch
+                                try:
+                                    subprocess.check_call(["git", "checkout", new_branch_name])
+                                except subprocess.CalledProcessError:
+                                    print(f"Error checking out branch {new_branch_name}")
+                                    continue
 
-                            # Create or update the file in the new branch
-                            try:
-                                repo.create_file(file_path, f"Add {file_path}", relevant_file_content, branch=new_branch_name)
-                                print(f"Created file: {file_path}")
-                            except:
-                                contents = repo.get_contents(file_path, ref=new_branch_name)
-                                repo.update_file(contents.path, f"Update {file_path}", relevant_file_content, contents.sha, branch=new_branch_name)
-                                print(f"Updated file: {file_path}")
+                                # Copy the file from the temporary directory to the working directory
+                                shutil.copy(temp_file_path, file_path)
+
+                                # Create or update the file in the new branch
+                                try:
+                                    repo.create_file(file_path, f"Add {file_path}", relevant_file_content, branch=new_branch_name)
+                                    print(f"Created file: {file_path}")
+                                except:
+                                    contents = repo.get_contents(file_path, ref=new_branch_name)
+                                    repo.update_file(contents.path, f"Update {file_path}", relevant_file_content, contents.sha, branch=new_branch_name)
+                                    print(f"Updated file: {file_path}")
 
                         # Create or update the base metadata.json file
                         branch_metadata = update_metadata(new_branch_name, localize=False)
