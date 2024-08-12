@@ -183,6 +183,20 @@ def sync_markdown_files():
                             print(f"Error checking out branch main")
                             continue
 
+                        # Create a new branch and commit the file
+                        source_branch = repo.get_branch("main")
+                        new_branch_name = f"test_{source_file_path.replace(os.sep, '_')}"
+
+                        # Check if the branch already exists
+                        try:
+                            repo.get_branch(new_branch_name)
+                            branch_exists = True
+                        except:
+                            branch_exists = False
+                        
+                        if not branch_exists:
+                            repo.create_git_ref(ref=f"refs/heads/{new_branch_name}", sha=source_branch.commit.sha)
+
                         for relevant_file in relevant_files:
                             relevant_file_content = relevant_file.repository.get_contents(relevant_file.path).decoded_content.decode('utf-8')
                             
@@ -205,20 +219,6 @@ def sync_markdown_files():
                             print(f"Processing relevant file: {relevant_file.path}")
                             print(f"Creating or relevant file at: {file_path}")
                             
-                            # Create a new branch and commit the file
-                            source_branch = repo.get_branch("main")
-                            new_branch_name = f"test_{source_file_path.replace(os.sep, '_')}"
-
-                            # Check if the branch already exists
-                            try:
-                                repo.get_branch(new_branch_name)
-                                branch_exists = True
-                            except:
-                                branch_exists = False
-                            
-                            if not branch_exists:
-                                repo.create_git_ref(ref=f"refs/heads/{new_branch_name}", sha=source_branch.commit.sha)
-
                             # Checkout the new branch
                             try:
                                 subprocess.check_call(["git", "checkout", new_branch_name])
