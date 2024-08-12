@@ -184,6 +184,7 @@ def sync_markdown_files():
                             continue
 
                         # Create a new branch and commit the file
+                        repo = g.get_repo("MicrosoftDocs/executable-docs")
                         source_branch = repo.get_branch("main")
                         new_branch_name = f"test_{source_file_path.replace(os.sep, '_')}"
 
@@ -205,7 +206,6 @@ def sync_markdown_files():
                             file_path = os.path.join(dir_path, os.path.basename(relevant_file.path))
 
                             # Check if file_path already exists in the repo and if the content is different
-                            repo = g.get_repo("MicrosoftDocs/executable-docs")
                             try:
                                 existing_file = repo.get_contents(file_path, ref="main")
                                 existing_content = existing_file.decoded_content.decode('utf-8')
