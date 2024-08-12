@@ -149,6 +149,8 @@ def update_metadata(branch_name, localize=False):
 def sync_markdown_files():
     query = "innovation-engine in:file language:markdown org:MicrosoftDocs -path:/localized/ -repo:MicrosoftDocs/executable-docs" 
     result = g.search_code(query)
+
+    processed_directories = set()
     for file in result:
         if '-pr' not in file.repository.name:
             file_content = file.repository.get_contents(file.path).decoded_content.decode('utf-8')
@@ -162,11 +164,17 @@ def sync_markdown_files():
                         source_file_path = os.path.join('scenarios', file.repository.name, os.path.dirname(file.path), os.path.basename(file.path))
                         print(f"Processing file: {source_file_path}")
 
-                        # Get the directory path of the file
-                        all_files = g.search_code(f'repo:{file.repository.full_name} path:{os.path.dirname(file.path)}')
-                        relevant_files = [f for f in all_files if not f.path.endswith('.md')]
-                        if file not in relevant_files:
-                            relevant_files.append(file)
+                        # Check if the directory has already been processed
+                        if os.path.dirname(file.path) in processed_directories:
+                            relevant_files = [file]
+                        else:
+                            # Get the directory path of the file
+                            all_files = g.search_code(f'repo:{file.repository.full_name} path:{os.path.dirname(file.path)}')
+                            relevant_files = [f for f in all_files if not f.path.endswith('.md')]
+                            if file not in relevant_files:
+                                relevant_files.append(file)
+                            # Mark the directory as processed
+                            processed_directories.add(os.path.dirname(file.path))
 
                         for relevant_file in relevant_files:
                             relevant_file_content = relevant_file.repository.get_contents(relevant_file.path).decoded_content.decode('utf-8')
@@ -204,32 +212,21 @@ def sync_markdown_files():
                             if not branch_exists:
                                 repo.create_git_ref(ref=f"refs/heads/{new_branch_name}", sha=source_branch.commit.sha)
 
-                            # Create a temporary directory
-                            with tempfile.TemporaryDirectory() as temp_dir:
-                                temp_file_path = os.path.join(temp_dir, os.path.basename(relevant_file.path))
+                            # Checkout the new branch
+                            try:
+                                subprocess.check_call(["git", "checkout", new_branch_name])
+                            except subprocess.CalledProcessError:
+                                print(f"Error checking out branch {new_branch_name}")
+                                continue
 
-                                # Copy the relevant file to the temporary directory
-                                with open(temp_file_path, 'w') as temp_file:
-                                    temp_file.write(relevant_file_content)
-                                
-                                # Checkout the new branch
-                                try:
-                                    subprocess.check_call(["git", "checkout", new_branch_name])
-                                except subprocess.CalledProcessError:
-                                    print(f"Error checking out branch {new_branch_name}")
-                                    continue
-
-                                # Copy the file from the temporary directory to the working directory
-                                shutil.copy(temp_file_path, file_path)
-
-                                # Create or update the file in the new branch
-                                try:
-                                    repo.create_file(file_path, f"Add {file_path}", relevant_file_content, branch=new_branch_name)
-                                    print(f"Created file: {file_path}")
-                                except:
-                                    contents = repo.get_contents(file_path, ref=new_branch_name)
-                                    repo.update_file(contents.path, f"Update {file_path}", relevant_file_content, contents.sha, branch=new_branch_name)
-                                    print(f"Updated file: {file_path}")
+                            # Create or update the file in the new branch
+                            try:
+                                repo.create_file(file_path, f"Add {file_path}", relevant_file_content, branch=new_branch_name)
+                                print(f"Created file: {file_path}")
+                            except:
+                                contents = repo.get_contents(file_path, ref=new_branch_name)
+                                repo.update_file(contents.path, f"Update {file_path}", relevant_file_content, contents.sha, branch=new_branch_name)
+                                print(f"Updated file: {file_path}")
 
                         # Create or update the base metadata.json file
                         branch_metadata = update_metadata(new_branch_name, localize=False)
