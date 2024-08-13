@@ -8,7 +8,7 @@ These experiences utilize [Innovation Engine](https://github.com/Azure/Innovatio
 
 ## How to Write an Exec Doc
 
-**[Demo Workshop](https://microsoft-my.sharepoint.com/:v:/r/personal/carols_microsoft_com/Documents/Recordings/Exec%20Docs%20overview%20and%20hands-on%20training-20240806_170016-Meeting%20Recording.mp4?csf=1&web=1&e=t6pmYA&nav=eyJyZWZlcnJhbEluZm8iOnsicmVmZXJyYWxBcHAiOiJTdHJlYW1XZWJBcHAiLCJyZWZlcnJhbFZpZXciOiJTaGFyZURpYWxvZy1MaW5rIiwicmVmZXJyYWxBcHBQbGF0Zm9ybSI6IldlYiIsInJlZmVycmFsTW9kZSI6InZpZXcifSwicGxheWJhY2tPcHRpb25zIjp7InN0YXJ0VGltZUluU2Vjb25kcyI6MTMyMC43OH19):** Link to the demo workshop that provides an overview of Exec Docs and a hands-on training session on how to write an Exec Doc. 
+**[Demo Workshop](https://microsoft-my.sharepoint.com/:v:/r/personal/carols_microsoft_com/Documents/Recordings/Exec%20Docs%20overview%20and%20hands-on%20training-20240806_170016-Meeting%20Recording.mp4?csf=1&web=1&e=jwpAHB&nav=eyJyZWZlcnJhbEluZm8iOnsicmVmZXJyYWxBcHAiOiJTdHJlYW1XZWJBcHAiLCJyZWZlcnJhbFZpZXciOiJTaGFyZURpYWxvZy1MaW5rIiwicmVmZXJyYWxBcHBQbGF0Zm9ybSI6IldlYiIsInJlZmVycmFsTW9kZSI6InZpZXcifSwicGxheWJhY2tPcHRpb25zIjp7InN0YXJ0VGltZUluU2Vjb25kcyI6MjE5LjI3fX0%3D):** Link to the demo workshop that provides an overview of Exec Docs and a hands-on training session on how to write an Exec Doc. 
 
 **[Presentation Deck](https://microsoft-my.sharepoint.com/:p:/p/namanparikh/EdxlQiyhGDhFmGcAUE9fejYB3r6ZzgLqWO3jZPK7fcnKgQ?e=PHcSQU)**: Link to the presentation deck used during the demo workshop covering important aspects of Exec Docs.
 
