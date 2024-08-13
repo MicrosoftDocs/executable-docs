@@ -178,6 +178,7 @@ def sync_markdown_files():
                         
                         # Checkout the new branch
                         try:
+                            subprocess.check_call(["git", "fetch", "origin", "main"])
                             subprocess.check_call(["git", "checkout", "main"])
                         except subprocess.CalledProcessError:
                             print(f"Error checking out branch main")
