@@ -8,6 +8,10 @@ These experiences utilize [Innovation Engine](https://github.com/Azure/Innovatio
 
 ## How to Write an Exec Doc
 
+**[Demo Workshop](https://microsoft-my.sharepoint.com/:v:/r/personal/carols_microsoft_com/Documents/Recordings/Exec%20Docs%20overview%20and%20hands-on%20training-20240806_170016-Meeting%20Recording.mp4?csf=1&web=1&e=t6pmYA&nav=eyJyZWZlcnJhbEluZm8iOnsicmVmZXJyYWxBcHAiOiJTdHJlYW1XZWJBcHAiLCJyZWZlcnJhbFZpZXciOiJTaGFyZURpYWxvZy1MaW5rIiwicmVmZXJyYWxBcHBQbGF0Zm9ybSI6IldlYiIsInJlZmVycmFsTW9kZSI6InZpZXcifSwicGxheWJhY2tPcHRpb25zIjp7InN0YXJ0VGltZUluU2Vjb25kcyI6MTMyMC43OH19):** Link to the demo workshop that provides an overview of Exec Docs and a hands-on training session on how to write an Exec Doc. 
+
+**[Presentation Deck](https://microsoft-my.sharepoint.com/:p:/p/namanparikh/EdxlQiyhGDhFmGcAUE9fejYB3r6ZzgLqWO3jZPK7fcnKgQ?e=PHcSQU)**: Link to the presentation deck used during the demo workshop covering important aspects of Exec Docs.
+
 Follow these steps in sequence to write an Exec Doc either by converting an existing Azure Doc i.e. building on top of the author's work or from scratch i.e. you are the author _(read the Notes in any step for more information)_:
 
 ### Setup
@@ -276,7 +280,20 @@ Check if all prerequisites below are met before writing the Exec Doc. ***If any 
     >**Note:** Some code blocks may take a while to execute, especially if they are creating resources in Azure. You can finish other tasks while waiting for the code block to complete in the active Cloudshell window.
 
 15. Submit and review the Exec Doc in the upstream repo once the doc passes all Innovation Engine tests
-    - Create a PR in GitHub once the Exec Doc is ready to be uploaded, pointing to the upstream repo from your fork. [Guidance on creating a PR in GitHub from a fork](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request-from-a-fork)
+    - Create a PR in GitHub once the Exec Doc is ready to be uploaded, pointing to the upstream repo from your fork. [Guidance on creating a PR in GitHub from a fork](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request-from-a-fork). You can use the example PR template below:
+
+        **Example:**
+
+        **Title:** _Making your Azure Doc executable!_
+
+        _**Details:** Hello [author_name], \
+        \
+        I am submitting this PR to make the doc you have authored executable! Essentially, without any major content changes, this will make your doc accesssible, accurate, and actionable! And "this" is" Exec Docs (short for Executable Documentation) \
+        \
+        Exec Docs are documents that automate the deployment/maintenace of Azure resources using Azure CLI commands. This is a new initiative undertaken by the Azure Core Linux, Skilling, and Portal teams to simplify the evaluation and adoption of services for Linux on Azure customers. [Learn More Here!](https://github.com/MicrosoftDocs/executable-docs/blob/main/README.md)\
+        \
+        Once you get acquainted with Exec Docs, I would love to get your review on this doc. If you have any questions feel free to contact me or [Naman Parikh](mailto:namanparikh@microsoft.com)._
+
     - Assign the original Exec Doc author (if it is not you) as a reviewer to the PR. In most cases, this assignment should happen automatically and should include a reviewer from the Skilling team.
     - Add the comment ***#sign-off***  in the PR comments section once the Exec Doc is successfully reviewed. This will trigger the automated pipeline to merge the PR into the public repo.
 
