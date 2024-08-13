@@ -6,7 +6,7 @@ It achieves this by providing one-click and interactive learning experiences for
 
 These experiences utilize [Innovation Engine](https://github.com/Azure/InnovationEngine/tree/main), an open-source project that amplifies standard markdown language such that it can be executed step-by-step in an educational manner and tested via automated CI/CD pipelines.   
 
-**Table of Contents:**
+## Table of Contents
  - [Setup](#setup)
  - [Prerequisites](#prerequisites)
  - [Writing Requirements](#writing-requirements)
