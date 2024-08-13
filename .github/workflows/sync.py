@@ -176,13 +176,13 @@ def sync_markdown_files():
                             # Mark the directory as processed
                             processed_directories.add(os.path.dirname(file.path))
                         
-                        # Checkout the new branch
-                        try:
-                            subprocess.check_call(["git", "fetch", "origin", "main"])
-                            subprocess.check_call(["git", "checkout", "main"])
-                        except subprocess.CalledProcessError:
-                            print(f"Error checking out branch main")
-                            continue
+                        # # Checkout the new branch
+                        # try:
+                        #     subprocess.check_call(["git", "fetch", "origin", "main"])
+                        #     subprocess.check_call(["git", "checkout", "main"])
+                        # except subprocess.CalledProcessError:
+                        #     print(f"Error checking out branch main")
+                        #     continue
 
                         # Create a new branch and commit the file
                         repo = g.get_repo("MicrosoftDocs/executable-docs")
@@ -220,11 +220,30 @@ def sync_markdown_files():
                             print(f"Processing relevant file: {relevant_file.path}")
                             print(f"Creating or relevant file at: {file_path}")
                             
+                            # Stash any uncommitted changes
+                            try:
+                                subprocess.check_call(["git", "stash"])
+                            except subprocess.CalledProcessError:
+                                print("Error stashing changes")
+                                continue
+
                             # Checkout the new branch
                             try:
                                 subprocess.check_call(["git", "checkout", new_branch_name])
+                            except subprocess.CalledProcessError as e:
+                                if "untracked working tree files would be overwritten by checkout" in str(e):
+                                    print("Untracked files would be overwritten. Stashing untracked files.")
+                                    subprocess.check_call(["git", "stash", "--include-untracked"])
+                                    subprocess.check_call(["git", "checkout", new_branch_name])
+                                else:
+                                    print(f"Error checking out branch {new_branch_name}")
+                                    continue
+
+                            # Apply the stash
+                            try:
+                                subprocess.check_call(["git", "stash", "pop"])
                             except subprocess.CalledProcessError:
-                                print(f"Error checking out branch {new_branch_name}")
+                                print("Error applying stash")
                                 continue
 
                             # Create or update the file in the new branch
@@ -235,6 +254,14 @@ def sync_markdown_files():
                                 contents = repo.get_contents(file_path, ref=new_branch_name)
                                 repo.update_file(contents.path, f"Update {file_path}", relevant_file_content, contents.sha, branch=new_branch_name)
                                 print(f"Updated file: {file_path}")
+
+                            # Commit the changes
+                            try:
+                                subprocess.check_call(["git", "add", file_path])
+                                subprocess.check_call(["git", "commit", "-m", f"Add or update {file_path}"])
+                            except subprocess.CalledProcessError:
+                                print(f"Error committing changes for {file_path}")
+                                continue
 
                         # Create or update the base metadata.json file
                         branch_metadata = update_metadata(new_branch_name, localize=False)
