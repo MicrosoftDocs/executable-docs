@@ -7,20 +7,26 @@ It achieves this by providing one-click and interactive learning experiences for
 These experiences utilize [Innovation Engine](https://github.com/Azure/InnovationEngine/tree/main), an open-source project that amplifies standard markdown language such that it can be executed step-by-step in an educational manner and tested via automated CI/CD pipelines.   
 
 ## Table of Contents
- - [Setup](#setup)
- - [Prerequisites](#prerequisites)
- - [Writing Requirements](#writing-requirements)
- - [Testing and Publishing](#testing-and-publishing)
- - [Current Exec Docs Experience](#current-exec-docs-experience)
- - [Frequently Asked Questions (FAQs)](#frequently-asked-questions-faqs)
+
+- [How to Write an Exec Doc](#how-to-write-an-exec-doc)
+    - [Training Resources (Optional)](#training-resources-optional)
+    - [Setup](#setup)
+    - [Prerequisites](#prerequisites)
+    - [Writing Requirements](#writing-requirements)
+    - [Testing and Publishing](#testing-and-publishing)
+- [Current Exec Docs Experience](#current-exec-docs-experience)
+- [Frequently Asked Questions (FAQs)](#frequently-asked-questions-faqs)
+- [Contact Information for Exec Docs](#contact-information-for-exec-docs)
 
 ## How to Write an Exec Doc
+
+Follow these steps in sequence to write an Exec Doc either by converting an existing Azure Doc i.e. building on top of the author's work or from scratch i.e. you are the author _(read the Notes in any step for more information)_:
+
+### Training Resources (Optional)
 
 **[Demo Workshop](https://microsoft-my.sharepoint.com/:v:/r/personal/carols_microsoft_com/Documents/Recordings/Exec%20Docs%20overview%20and%20hands-on%20training-20240806_170016-Meeting%20Recording.mp4?csf=1&web=1&e=jwpAHB&nav=eyJyZWZlcnJhbEluZm8iOnsicmVmZXJyYWxBcHAiOiJTdHJlYW1XZWJBcHAiLCJyZWZlcnJhbFZpZXciOiJTaGFyZURpYWxvZy1MaW5rIiwicmVmZXJyYWxBcHBQbGF0Zm9ybSI6IldlYiIsInJlZmVycmFsTW9kZSI6InZpZXcifSwicGxheWJhY2tPcHRpb25zIjp7InN0YXJ0VGltZUluU2Vjb25kcyI6MjE5LjI3fX0%3D):** Link to the demo workshop that provides an overview of Exec Docs and a hands-on training session on how to write an Exec Doc. 
 
 **[Presentation Deck](https://microsoft-my.sharepoint.com/:p:/p/namanparikh/EdxlQiyhGDhFmGcAUE9fejYB3r6ZzgLqWO3jZPK7fcnKgQ?e=PHcSQU)**: Link to the presentation deck used during the demo workshop covering important aspects of Exec Docs.
-
-Follow these steps in sequence to write an Exec Doc either by converting an existing Azure Doc i.e. building on top of the author's work or from scratch i.e. you are the author _(read the Notes in any step for more information)_:
 
 ### Setup
 
