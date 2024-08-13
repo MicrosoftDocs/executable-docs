@@ -294,7 +294,8 @@ Check if all prerequisites below are met before writing the Exec Doc. ***If any 
     >**Note:** Some code blocks may take a while to execute, especially if they are creating resources in Azure. You can finish other tasks while waiting for the code block to complete in the active Cloudshell window.
 
 15. Submit and review the Exec Doc in the upstream repo once the doc passes all Innovation Engine tests
-    - Create a PR in GitHub once the Exec Doc is ready to be uploaded, pointing to the upstream repo from your fork. [Guidance on creating a PR in GitHub from a fork](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request-from-a-fork). You can use the example PR template below:
+    - Create a PR in GitHub once the Exec Doc is ready to be uploaded, pointing to the upstream repo from your fork. [Guidance on creating a PR in GitHub from a fork](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request-from-a-fork). 
+    - You can use the example PR template below to reach out to the original author of the doc for review (in the PR description, email, or Teams message, etc.).
 
         **Example:**
 
@@ -302,7 +303,7 @@ Check if all prerequisites below are met before writing the Exec Doc. ***If any 
 
         _**Details:** Hello [author_name], \
         \
-        I am submitting this PR to make the doc you have authored executable! Essentially, without any major content changes, this will make your doc accesssible, accurate, and actionable! And "this" is" Exec Docs (short for Executable Documentation) \
+        I am submitting this PR to make the doc you have authored executable! Essentially, without any major content changes, this will make your doc accesssible, accurate, and actionable! And what is "this": Exec Docs (short for Executable Documentation) \
         \
         Exec Docs are documents that automate the deployment/maintenace of Azure resources using Azure CLI commands. This is a new initiative undertaken by the Azure Core Linux, Skilling, and Portal teams to simplify the evaluation and adoption of services for Linux on Azure customers. [Learn More Here!](https://github.com/MicrosoftDocs/executable-docs/blob/main/README.md)\
         \
