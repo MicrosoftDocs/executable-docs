@@ -1,14 +1,14 @@
 ---
 title: Kurz – Nasazení zásobníku LEMP pomocí WordPressu na virtuálním počítači
 description: 'V tomto kurzu se dozvíte, jak nainstalovat zásobník LEMP a WordPress na virtuální počítač s Linuxem v Azure.'
-author: chasecrum
+author: fossygirl
 ms.collection: linux
 ms.service: virtual-machines
 ms.devlang: azurecli
 ms.custom: 'innovation-engine, linux-related-content, devx-track-azurecli'
 ms.topic: tutorial
 ms.date: 2/29/2024
-ms.author: chasecrum
+ms.author: carols
 ms.reviewer: jushim
 ---
 
@@ -16,7 +16,7 @@ ms.reviewer: jushim
 
 **Platí pro:** :heavy_check_mark: virtuální počítače s Linuxem
 
-[![Nasazení do Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#view/Microsoft_Azure_CloudNative/SubscriptionSelectionPage.ReactView/tutorialKey/CreateLinuxVMLAMP)
+[![Nasazení do Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2275458)
 
 Tento článek vás provede nasazením webového serveru NGINX, flexibilního serveru Azure MySQL a PHP (zásobník LEMP) na virtuálním počítači s Ubuntu Linuxem v Azure. Pokud chcete zobrazit server LEMP v akci, můžete volitelně nainstalovat a nakonfigurovat web WordPress. V tomto kurzu se naučíte:
 

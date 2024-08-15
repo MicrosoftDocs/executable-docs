@@ -5,7 +5,7 @@ author: fitzgeraldsteele
 ms.author: fisteele
 ms.topic: how-to
 ms.service: virtual-machine-scale-sets
-ms.date: 3/19/2024
+ms.date: 06/14/2024
 ms.reviewer: jushiman
 ms.custom: 'mimckitt, devx-track-azurecli, vmss-flex, innovation-engine, linux-related-content'
 ---
@@ -121,7 +121,7 @@ Výsledky:
 
 ### Vytvoření prostředků služby Application Gateway
 
-Aplikace Azure Gateway vyžaduje vyhrazenou podsíť ve vaší virtuální síti. Následující příkaz vytvoří podsíť s názvem $MY_APPGW_SN_NAME se zadanou předponou adresy s názvem $MY_APPGW_SN_PREFIX ve vaší virtuální síti $MY_VNET_NAME.
+Aplikace Azure lication Gateway vyžaduje vyhrazenou podsíť ve vaší virtuální síti. Následující příkaz vytvoří podsíť s názvem $MY_APPGW_SN_NAME se zadanou předponou adresy s názvem $MY_APPGW_SN_PREFIX ve vaší virtuální síti $MY_VNET_NAME.
 
 ```bash
 az network vnet subnet create  --name $MY_APPGW_SN_NAME  --resource-group $MY_RESOURCE_GROUP_NAME --vnet-name  $MY_VNET_NAME --address-prefix  $MY_APPGW_SN_PREFIX -o JSON
