@@ -1,14 +1,14 @@
 ---
 title: 教學課程 - 在 VM 上使用 WordPress 部署 LEMP 堆棧
 description: 在本教學課程中，您將瞭解如何在 Azure 中的 Linux 虛擬機上安裝 LEMP 堆疊和 WordPress。
-author: chasecrum
+author: fossygirl
 ms.collection: linux
 ms.service: virtual-machines
 ms.devlang: azurecli
 ms.custom: 'innovation-engine, linux-related-content, devx-track-azurecli'
 ms.topic: tutorial
 ms.date: 2/29/2024
-ms.author: chasecrum
+ms.author: carols
 ms.reviewer: jushim
 ---
 
@@ -16,7 +16,7 @@ ms.reviewer: jushim
 
 **適用於：：** heavy_check_mark：Linux VM
 
-[![部署至 Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#view/Microsoft_Azure_CloudNative/SubscriptionSelectionPage.ReactView/tutorialKey/CreateLinuxVMLAMP)
+[![部署至 Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2275458)
 
 本文將逐步引導您如何在 Azure 中的 Ubuntu Linux VM 上部署 NGINX Web 伺服器、Azure MySQL 彈性伺服器和 PHP （LEMP 堆棧）。 若要查看 LEMP 伺服器運作情形，您可以選擇性地安裝及設定 WordPress 網站。 在本教學課程中，您將了解如何：
 
@@ -574,11 +574,11 @@ echo "Your MySQL user $MY_MYSQL_ADMIN_USERNAME password is: $MY_WP_ADMIN_PW"
 
 > [!NOTE]
 > 建立伺服器後，就無法變更連線方法。 例如，如果您在建立期間選取 `Private access (VNet Integration)` ，則無法在建立之後變更為 `Public access (allowed IP addresses)` 。 強烈建議您建立具有私人存取權的伺服器，才能使用 VNet 整合安全地存取您的伺服器。 若要深入了解私人存取，請參閱[概念文章](../../mysql/flexible-server/concepts-networking-vnet.md)。
-如果您想要變更任何預設值，請參閱 Azure CLI [參考檔](../../mysql/flexible-server/quickstart-create-server-cli.md) ，以取得可設定 CLI 參數的完整清單。
+如果您想要變更任何預設值，請參閱 Azure CLI [參考文件](../../mysql/flexible-server/quickstart-create-server-cli.md) (部分機器翻譯)，以取得可設定的 CLI 參數完整清單。
 
-## 檢查 適用於 MySQL 的 Azure 資料庫 - 彈性伺服器狀態
+## 確認適用於 MySQL 的 Azure 資料庫 - 彈性伺服器狀態
 
-建立 適用於 MySQL 的 Azure 資料庫 - 彈性伺服器和支持資源需要幾分鐘的時間。
+建立適用於 MySQL 的 Azure 資料庫 - 彈性伺服器和支援資源需要幾分鐘的時間。
 
 ```bash
 runtime="10 minute";
@@ -594,9 +594,9 @@ while [[ $(date -u +%s) -le $endtime ]]; do
 done
 ```
 
-## 在 適用於 MySQL 的 Azure 資料庫 中設定伺服器參數 - 彈性伺服器
+## 在適用於 MySQL 的 Azure 資料庫彈性伺服器中設定伺服器參數
 
-您可以使用伺服器參數來管理 適用於 MySQL 的 Azure 資料庫 - 彈性伺服器組態。 當您建立伺服器時，伺服器參數會設定為預設值和建議值。
+您可以使用伺服器參數來管理適用於 MySQL 的 Azure 資料庫 - 彈性伺服器設定。 當您建立伺服器時，伺服器參數會設定為預設值和建議值。
 
 顯示伺服器參數詳細資料：
 
@@ -689,7 +689,7 @@ az vm create \
 
 ## 檢查 Azure Linux 虛擬機狀態
 
-建立虛擬機器和支援資源需要幾分鐘的時間。 在 VM 上成功安裝擴充功能時，[成功] 的 provisioningState 值隨即出現。 VM 必須有執行 [中的 VM 代理程式](../extensions/agent-linux.md) 才能安裝擴充功能。
+建立虛擬機器和支援資源需要幾分鐘的時間。 在 VM 上成功安裝擴充功能時，[成功] 的 provisioningState 值隨即出現。 VM 必須有執行中的 [VM 代理程式](../extensions/agent-linux.md)，才能安裝延伸模組。
 
 ```bash
 runtime="5 minute";
@@ -749,7 +749,7 @@ az ssh config --file ~/.ssh/azure-config --name $MY_VM_NAME --resource-group $MY
 
 ## 在 Azure 中啟用 Linux 虛擬機的 Azure AD 登入
 
-下列會安裝擴充功能，以啟用Linux VM的 Azure AD 登入。 VM 擴充功能是小型應用程式，可在 Azure 虛擬機上提供部署後設定和自動化工作。
+下列會安裝擴充功能，以啟用Linux VM的 Azure AD 登入。 VM 擴充功能是小型的應用程式，可在「Azure 虛擬機器」上提供部署後設定及自動化工作。
 
 ```bash
 az vm extension set \
