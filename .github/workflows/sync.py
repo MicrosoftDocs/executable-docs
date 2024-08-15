@@ -57,19 +57,21 @@ def update_base_metadata(directory, metadata):
                         key = '/'.join(path.split('/')[1:])
                     else:
                         key = '/'.join(path.split('/')[3:]) 
-                        locale = path.split('/')[1]               
+                        locale = path.split('/')[1]      
+
                     # Find the item in metadata with this key
+                    item = None
                     if metadata:
-                        for item in metadata:
-                            if item['key'] == key:
+                        for _item in metadata:
+                            if _item['key'] == key:
+                                item = _item
                                 break
-                        else:
-                            # If the key was not found, add a new item to metadata
-                            item = {'status': 'active', 'key': key}
-                            metadata.append(item)
+                        item = {'status': 'active', 'key': key}
+                        metadata.append(item)
                     else:
                         item = {'status': 'active', 'key': key}
                         metadata.append(item)
+
                     if item is not None and readme_metadata is not None:
                         if 'localized' not in path:
                             # Update the item with the metadata from the README file
@@ -149,6 +151,13 @@ def update_metadata(branch_name, localize=False):
     else:
         return localized_metadata_dict
 
+def delete_branch(repo, branch_name):
+    try:
+        ref = repo.get_git_ref(f"heads/{branch_name}")
+        ref.delete()
+    except Exception as e:
+        print('Error deleting branch: ', e)
+
 def sync_markdown_files():
     query = "innovation-engine in:file language:markdown org:MicrosoftDocs -path:/localized/ -repo:MicrosoftDocs/executable-docs" 
     result = g.search_code(query)
@@ -191,6 +200,18 @@ def sync_markdown_files():
                         repo = g.get_repo("MicrosoftDocs/executable-docs")
                         source_branch = repo.get_branch("main")
                         new_branch_name = f"test_{source_file_path.replace(os.sep, '_')}"
+                        
+                        try:
+                            delete_branch(repo, new_branch_name)
+                        except:
+                            pass
+                        
+                        # Checkout to main before creating a new branch
+                        try:
+                            subprocess.check_call(["git", "checkout", "main"])
+                        except subprocess.CalledProcessError as e:
+                            print(f"Error checking out branch main")
+                            continue
 
                         # Check if the branch already exists
                         try:
