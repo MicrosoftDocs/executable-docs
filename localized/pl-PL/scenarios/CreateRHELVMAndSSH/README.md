@@ -24,7 +24,7 @@ Jeśli nie masz subskrypcji platformy Azure, przed rozpoczęciem utwórz [bezpł
 
 Usługa Azure Cloud Shell to bezpłatna interaktywna powłoka, której możesz używać do wykonywania kroków opisanych w tym artykule. Udostępnia ona wstępnie zainstalowane i najczęściej używane narzędzia platformy Azure, które są skonfigurowane do użycia na koncie. 
 
-Aby otworzyć usługę Cloud Shell, wybierz pozycję **Wypróbuj** w prawym górnym rogu bloku kodu. Możesz również otworzyć usługę Cloud Shell na osobnej karcie przeglądarki, przechodząc do .[https://shell.azure.com/bash](https://shell.azure.com/bash) Wybierz pozycję **Kopiuj** , aby skopiować bloki kodu, wklej go w usłudze Cloud Shell, a następnie wybierz klawisz **Enter** , aby go uruchomić.
+Aby otworzyć usługę Cloud Shell, wybierz pozycję **Wypróbuj** w prawym górnym rogu bloku kodu. Możesz również otworzyć usługę Cloud Shell na osobnej karcie przeglądarki, przechodząc do .[https://shell.azure.com/bash](https://shell.azure.com/bash) Wybierz pozycję **Kopiuj** , aby skopiować bloki kodu, wklej go w usłudze Cloud Shell, a następnie wybierz **Enter** , aby go uruchomić.
 
 Jeśli wolisz zainstalować interfejs wiersza polecenia i korzystać z niego lokalnie, ten przewodnik Szybki start wymaga interfejsu wiersza polecenia platformy Azure w wersji 2.0.30 lub nowszej. Uruchom polecenie `az --version`, aby dowiedzieć się, jaka wersja jest używana. Jeśli konieczna będzie instalacja lub uaktualnienie, zobacz [Instalowanie interfejsu wiersza polecenia platformy Azure]( /cli/azure/install-azure-cli).
 
@@ -35,7 +35,7 @@ Pierwszym krokiem jest zdefiniowanie zmiennych środowiskowych. Zmienne środowi
 ```bash
 export RANDOM_ID="$(openssl rand -hex 3)"
 export MY_RESOURCE_GROUP_NAME="myVMResourceGroup$RANDOM_ID"
-export REGION=EastUS
+export REGION="westeurope"
 export MY_VM_NAME="myVM$RANDOM_ID"
 export MY_USERNAME=azureuser
 export MY_VM_IMAGE="RedHat:RHEL:8-LVM:latest"

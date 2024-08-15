@@ -1,14 +1,14 @@
 ---
 title: Samouczek — wdrażanie stosu LEMP przy użyciu platformy WordPress na maszynie wirtualnej
 description: 'Z tego samouczka dowiesz się, jak zainstalować stos LEMP i platformę WordPress na maszynie wirtualnej z systemem Linux na platformie Azure.'
-author: chasecrum
+author: fossygirl
 ms.collection: linux
 ms.service: virtual-machines
 ms.devlang: azurecli
 ms.custom: 'innovation-engine, linux-related-content, devx-track-azurecli'
 ms.topic: tutorial
 ms.date: 2/29/2024
-ms.author: chasecrum
+ms.author: carols
 ms.reviewer: jushim
 ---
 
@@ -16,7 +16,7 @@ ms.reviewer: jushim
 
 **Dotyczy:** :heavy_check_mark: Maszyny wirtualne z systemem Linux
 
-[![Wdróż na platformie Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#view/Microsoft_Azure_CloudNative/SubscriptionSelectionPage.ReactView/tutorialKey/CreateLinuxVMLAMP)
+[![Wdróż na platformie Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2275458)
 
 W tym artykule przedstawiono sposób wdrażania serwera internetowego NGINX, serwera elastycznego Azure MySQL i języka PHP (stosu LEMP) na maszynie wirtualnej z systemem Ubuntu Linux na platformie Azure. Aby zobaczyć, jak działa serwer LEMP, możesz opcjonalnie zainstalować i skonfigurować witrynę WordPress. Ten samouczek zawiera informacje na temat wykonywania następujących czynności:
 
