@@ -1,14 +1,14 @@
 ---
 title: Tutorial - Implantar uma pilha LEMP usando o WordPress em uma VM
 description: 'Neste tutorial, você aprenderá a instalar a pilha LEMP e o WordPress em uma máquina virtual Linux no Azure.'
-author: chasecrum
+author: fossygirl
 ms.collection: linux
 ms.service: virtual-machines
 ms.devlang: azurecli
 ms.custom: 'innovation-engine, linux-related-content, devx-track-azurecli'
 ms.topic: tutorial
 ms.date: 2/29/2024
-ms.author: chasecrum
+ms.author: carols
 ms.reviewer: jushim
 ---
 
@@ -16,7 +16,7 @@ ms.reviewer: jushim
 
 **Aplica-se a:** :heavy_check_mark: VMs Linux
 
-[![Implementar no Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#view/Microsoft_Azure_CloudNative/SubscriptionSelectionPage.ReactView/tutorialKey/CreateLinuxVMLAMP)
+[![Implementar no Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2275458)
 
 Este artigo orienta você sobre como implantar um servidor Web NGINX, o Servidor Flexível MySQL do Azure e o PHP (a pilha LEMP) em uma VM Ubuntu Linux no Azure. Para ver o servidor LEMP em ação, opcionalmente, pode instalar e configurar um site do WordPress. Neste tutorial, ficará a saber como:
 
