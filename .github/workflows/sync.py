@@ -93,15 +93,15 @@ def update_base_metadata(directory, metadata):
 
 def update_metadata(branch_name, localize=False):
     # Save the current branch name
-    current_branch = subprocess.check_output(["git", "branch", "--show-current"]).strip().decode('utf-8')
+    # current_branch = subprocess.check_output(["git", "branch", "--show-current"]).strip().decode('utf-8')
 
-    time.sleep(3)
+    # time.sleep(3)
 
-    # Fetch the latest state of all branches from the remote
-    subprocess.check_call(["git", "fetch", "--all"])
+    # # Fetch the latest state of all branches from the remote
+    # subprocess.check_call(["git", "fetch", "--all"])
 
-    # Checkout to the specified branch
-    subprocess.check_call(["git", "checkout", branch_name])
+    # # Checkout to the specified branch
+    # subprocess.check_call(["git", "checkout", branch_name])
 
     try:
         if localize == False:
@@ -136,10 +136,13 @@ def update_metadata(branch_name, localize=False):
                     locale_dir = os.path.join('localized', locale, 'scenarios')
                     locale_metadata = copy.deepcopy(base_metadata)
                     localized_metadata_dict[locale] = update_base_metadata('localized', locale_metadata)
+    
+    except Exception as e:
+        print(f"Error updating metadata: {e}")
 
-    finally:
+    # finally:
         # Checkout back to the original branch
-        subprocess.check_call(["git", "checkout", current_branch])  
+        # subprocess.check_call(["git", "checkout", current_branch])  
 
     if localize == False:
         return metadata   
@@ -235,7 +238,7 @@ def sync_markdown_files():
                                 contents = repo.get_contents(file_path, ref=new_branch_name)
                                 repo.update_file(contents.path, f"Update {file_path}", relevant_file_content, contents.sha, branch=new_branch_name)
                                 print(f"Updated file: {file_path}")
-                        exit()
+                        
                         # Create or update the base metadata.json file
                         branch_metadata = update_metadata(new_branch_name, localize=False)
                         try:
@@ -245,6 +248,8 @@ def sync_markdown_files():
                             metadata_contents = repo.get_contents('scenarios/metadata.json', ref=new_branch_name)
                             repo.update_file(metadata_contents.path, f"Update metadata for all files", json.dumps(branch_metadata, indent=4), metadata_contents.sha, branch=new_branch_name)
                             print("Updated metadata.json")
+
+                        exit()
 
                         # Create or update the localized metadata.json files altogether
                         branch_localized_metadata_dict = update_metadata(new_branch_name, localize=True)
