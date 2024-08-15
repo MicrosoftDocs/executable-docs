@@ -5,7 +5,7 @@ author: fitzgeraldsteele
 ms.author: fisteele
 ms.topic: how-to
 ms.service: virtual-machine-scale-sets
-ms.date: 3/19/2024
+ms.date: 06/14/2024
 ms.reviewer: jushiman
 ms.custom: 'mimckitt, devx-track-azurecli, vmss-flex, innovation-engine, linux-related-content'
 ---
@@ -707,7 +707,7 @@ Results:
 
 ## 자동 크기 조정 프로필 정의  
 
-확장 집합에서 자동 크기 조정을 사용하도록 설정하려면 먼저 자동 크기 조정 프로필을 정의합니다. 이 프로필은 기본, 최소, 최대 확장 집합 용량을 정의합니다. 이러한 제한을 통해 VM 인스턴스를 지속적으로 만들지 않고 비용을 제어하고, 스케일 인 이벤트에서 다시 기본 최소 인스턴스 수로 허용 가능한 성능의 균형을 맞출 수 있습니다.
+확장 집합에서 자동 크기 조정을 사용하도록 설정하려면 먼저 자동 크기 조정 프로필을 정의합니다. 이 프로필은 기본, 최소, 최대 확장 집합 용량을 정의합니다. 이러한 한도를 통해 VM 인스턴스를 지속적으로 만들지 않고 비용을 제어하고, 스케일 인 이벤트에 남아 있는 최소 수의 인스턴스와 허용 가능한 성능의 균형을 유지할 수 있습니다.
 다음 예제에서는 두 VM 인스턴스의 기본 최소 용량과 최대 용량 10을 설정합니다.
 
 ```bash
@@ -839,7 +839,7 @@ az network public-ip show --resource-group $MY_RESOURCE_GROUP_NAME --name $MY_AP
 
 ## 리소스 정리(선택 사항)
 
-Azure 요금을 방지하려면 불필요한 리소스를 정리해야 합니다. 확장 집합 및 기타 리소스가 더 이상 필요하지 않은 경우 az group delete를 사용하여 리소스 그룹 및 모든 해당 리소스를 삭제[합니다](/cli/azure/group). `--no-wait` 매개 변수는 작업이 완료될 때까지 대기하지 않고 프롬프트로 제어를 반환합니다. `--yes` 매개 변수는 작업을 수행하는 다른 프롬프트 없이 리소스를 삭제할 것인지 확인합니다. 이 자습서에서는 리소스를 클린.
+Azure 요금을 방지하려면 불필요한 리소스를 정리해야 합니다. 확장 집합 및 기타 리소스가 더 이상 필요하지 않은 경우 az group delete를 사용하여 리소스 그룹 및 모든 해당 리소스를 삭제[합니다](/cli/azure/group). `--no-wait` 매개 변수는 작업이 완료될 때까지 대기하지 않고 프롬프트로 제어를 반환합니다. `--yes` 매개 변수는 작업을 수행하는 다른 프롬프트 없이 리소스를 삭제할 것인지 확인합니다. 이 자습서에서는 리소스를 정리합니다.
 
 ## 다음 단계
 - [Azure Portal에서 확장 집합을 만드는 방법을 알아봅니다.](flexible-virtual-machine-scale-sets-portal.md)

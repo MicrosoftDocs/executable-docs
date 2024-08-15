@@ -1,14 +1,14 @@
 ---
 title: 자습서 - VM에서 WordPress를 사용하여 LEMP 스택 배포
 description: 이 자습서에서는 Azure의 Linux 가상 머신에 LEMP 스택 및 WordPress를 설치하는 방법을 알아봅니다.
-author: chasecrum
+author: fossygirl
 ms.collection: linux
 ms.service: virtual-machines
 ms.devlang: azurecli
 ms.custom: 'innovation-engine, linux-related-content, devx-track-azurecli'
 ms.topic: tutorial
 ms.date: 2/29/2024
-ms.author: chasecrum
+ms.author: carols
 ms.reviewer: jushim
 ---
 
@@ -16,7 +16,7 @@ ms.reviewer: jushim
 
 **적용 대상:** :heavy_check_mark: Linux VM
 
-[![Azure에 배포](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#view/Microsoft_Azure_CloudNative/SubscriptionSelectionPage.ReactView/tutorialKey/CreateLinuxVMLAMP)
+[![Azure에 배포](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2275458)
 
 이 문서에서는 Azure의 Ubuntu Linux VM에 NGINX 웹 서버, Azure MySQL 유연한 서버 및 PHP(LEMP 스택)를 배포하는 방법을 안내합니다. LEMP 서버의 작동을 확인하려면 필요에 따라 WordPress 사이트를 설치하고 구성할 수 있습니다. 이 자습서에서는 다음을 하는 방법을 알아볼 수 있습니다.
 
@@ -569,7 +569,7 @@ echo "Your MySQL user $MY_MYSQL_ADMIN_USERNAME password is: $MY_WP_ADMIN_PW"
 생성된 서버에는 다음과 같은 특성이 있습니다.
 
 * 서버 이름, 관리자 사용자 이름, 관리자 암호, 리소스 그룹 이름, 위치는 클라우드 셸의 로컬 컨텍스트 환경에 이미 지정되어 있습니다. 리소스 그룹 및 기타 Azure 구성 요소와 동일한 위치에 만들어집니다.
-* 서버 구성을 다시 기본 서비스 기본값: 컴퓨팅 계층(버스트 가능), 컴퓨팅 크기/SKU(Standard_B2s), 백업 보존 기간(7일) 및 MySQL 버전(8.0.21)
+* 나머지 서버 구성에 대한 서비스 기본값: 컴퓨팅 계층(버스트 가능), 컴퓨팅 크기/SKU(Standard_B2s), 백업 보존 기간(7일) 및 MySQL 버전(8.0.21)
 * 기본 연결 방법은 연결된 가상 네트워크 및 자동 생성된 서브넷을 사용하는 프라이빗 액세스(VNet 통합)입니다.
 
 > [!NOTE]
