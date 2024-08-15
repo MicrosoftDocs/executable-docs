@@ -1,14 +1,14 @@
 ---
 title: "Tutorial\_– Bereitstellen eines LEMP-Stapels mit WordPress auf einer VM"
 description: 'In diesem Tutorial erfahren Sie, wie Sie den LEMP-Stack und WordPress auf einem virtuellen Linux-Computer in Azure installieren.'
-author: chasecrum
+author: fossygirl
 ms.collection: linux
 ms.service: virtual-machines
 ms.devlang: azurecli
 ms.custom: 'innovation-engine, linux-related-content, devx-track-azurecli'
 ms.topic: tutorial
 ms.date: 2/29/2024
-ms.author: chasecrum
+ms.author: carols
 ms.reviewer: jushim
 ---
 
@@ -16,7 +16,7 @@ ms.reviewer: jushim
 
 **Gilt für**: :heavy_check_mark: Linux-VMs
 
-[![Bereitstellung in Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#view/Microsoft_Azure_CloudNative/SubscriptionSelectionPage.ReactView/tutorialKey/CreateLinuxVMLAMP)
+[![Bereitstellung in Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2275458)
 
 In diesem Artikel werden Sie durch die Bereitstellung eines NGINX-Webservers sowie von Azure MySQL – Flexibler Server und PHP (LEMP-Stack) auf einer Ubuntu Linux-VM in Azure geführt. Um den LEMP-Server in Aktion zu sehen, können Sie optional eine WordPress-Website installieren und konfigurieren. In diesem Tutorial lernen Sie Folgendes:
 
