@@ -1,14 +1,14 @@
 ---
 title: 'Zelfstudie: Een LEMP-stack implementeren met WordPress op een VIRTUELE machine'
 description: In deze zelfstudie leert u hoe u de LEMP-stack en WordPress installeert op een virtuele Linux-machine in Azure.
-author: chasecrum
+author: fossygirl
 ms.collection: linux
 ms.service: virtual-machines
 ms.devlang: azurecli
 ms.custom: 'innovation-engine, linux-related-content, devx-track-azurecli'
 ms.topic: tutorial
 ms.date: 2/29/2024
-ms.author: chasecrum
+ms.author: carols
 ms.reviewer: jushim
 ---
 
@@ -16,7 +16,7 @@ ms.reviewer: jushim
 
 **Van toepassing op:** :heavy_check_mark: Virtuele Linux-machines
 
-[![Implementeren naar Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#view/Microsoft_Azure_CloudNative/SubscriptionSelectionPage.ReactView/tutorialKey/CreateLinuxVMLAMP)
+[![Implementeren naar Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2275458)
 
 In dit artikel wordt uitgelegd hoe u een NGINX-webserver, Azure MySQL Flexible Server en PHP (de LEMP-stack) implementeert op een Ubuntu Linux-VM in Azure. Als u de LEMP-server in actie wilt zien, kunt u eventueel een WordPress-site installeren en configureren. In deze zelfstudie leert u het volgende:
 
