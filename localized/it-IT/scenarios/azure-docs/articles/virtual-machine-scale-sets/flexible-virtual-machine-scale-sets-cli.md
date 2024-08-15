@@ -5,7 +5,7 @@ author: fitzgeraldsteele
 ms.author: fisteele
 ms.topic: how-to
 ms.service: virtual-machine-scale-sets
-ms.date: 3/19/2024
+ms.date: 06/14/2024
 ms.reviewer: jushiman
 ms.custom: 'mimckitt, devx-track-azurecli, vmss-flex, innovation-engine, linux-related-content'
 ---
@@ -49,7 +49,7 @@ export MY_APPGW_PUBLIC_IP_NAME="myAPPGWPublicIP$RANDOM_ID"
 
 ## Creare un gruppo di risorse
 
-Un gruppo di risorse è un contenitore logico in cui vengono distribuite e gestite le risorse di Azure. Tutte le risorse devono essere inserite in un gruppo di risorse. Il comando seguente crea un gruppo di risorse con i parametri $MY_RESOURCE_GROUP_NAME definiti in precedenza e $REGION.
+Un gruppo di risorse è un contenitore logico in cui vengono distribuite e gestite le risorse di Azure. Tutte le risorse devono essere posizionate in un gruppo di risorse. Il comando seguente crea un gruppo di risorse con i parametri $MY_RESOURCE_GROUP_NAME definiti in precedenza e $REGION.
 
 ```bash
 az group create --name $MY_RESOURCE_GROUP_NAME --location $REGION -o JSON
@@ -385,7 +385,7 @@ az network application-gateway create   --name $MY_APPGW_NAME --location $REGION
 >A partire da novembre 2023, i set di scalabilità di macchine virtuali creati con PowerShell e l'interfaccia della riga di comando di Azure avranno per impostazione predefinita la modalità di orchestrazione flessibile se non è specificata alcuna modalità di orchestrazione. Per altre informazioni su questa modifica e sulle azioni da eseguire, vedere [Modifica che causa un'interruzione per i clienti di PowerShell/CLI di VMSS - Hub della community Microsoft](
 https://techcommunity.microsoft.com/t5/azure-compute-blog/breaking-change-for-vmss-powershell-cli-customers/ba-p/3818295)
 
-Creare ora un set di scalabilità di macchine virtuali con [az vmss create](/cli/azure/vmss). L'esempio seguente crea un set di scalabilità con ridondanza della zona con un numero di istanze pari *a 2* con indirizzo IP pubblico nella subnet $MY_VM_SN_NAME all'interno del gruppo di risorse $MY_RESOURCE_GROUP_NAME, integra il gateway applicazione e genera chiavi SSH. Assicurarsi di salvare le chiavi SSH se è necessario accedere alle macchine virtuali tramite ssh.
+Si può ora creare un set di scalabilità di macchine virtuali con il comando [az vmss create](/cli/azure/vmss). L'esempio seguente crea un set di scalabilità con ridondanza della zona con un numero di istanze pari *a 2* con indirizzo IP pubblico nella subnet $MY_VM_SN_NAME all'interno del gruppo di risorse $MY_RESOURCE_GROUP_NAME, integra il gateway applicazione e genera chiavi SSH. Assicurarsi di salvare le chiavi SSH se è necessario accedere alle macchine virtuali tramite ssh.
 
 ```bash
 az vmss create --name $MY_VMSS_NAME --resource-group $MY_RESOURCE_GROUP_NAME --image $MY_VM_IMAGE --admin-username $MY_USERNAME --generate-ssh-keys --public-ip-per-vm --orchestration-mode Uniform --instance-count 2 --zones 1 2 3 --vnet-name $MY_VNET_NAME --subnet $MY_VM_SN_NAME --vm-sku Standard_DS2_v2 --upgrade-policy-mode Automatic --app-gateway $MY_APPGW_NAME --backend-pool-name appGatewayBackendPool -o JSON

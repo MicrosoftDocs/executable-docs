@@ -1,14 +1,14 @@
 ---
 title: 'Esercitazione: Distribuire uno stack LEMP usando WordPress in una macchina virtuale'
 description: Questa esercitazione illustra come installare lo stack LEMP e WordPress in una macchina virtuale Linux in Azure.
-author: chasecrum
+author: fossygirl
 ms.collection: linux
 ms.service: virtual-machines
 ms.devlang: azurecli
 ms.custom: 'innovation-engine, linux-related-content, devx-track-azurecli'
 ms.topic: tutorial
 ms.date: 2/29/2024
-ms.author: chasecrum
+ms.author: carols
 ms.reviewer: jushim
 ---
 
@@ -16,7 +16,7 @@ ms.reviewer: jushim
 
 **Si applica a:** :heavy_check_mark: macchine virtuali Linux
 
-[![Distribuzione in Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#view/Microsoft_Azure_CloudNative/SubscriptionSelectionPage.ReactView/tutorialKey/CreateLinuxVMLAMP)
+[![Distribuzione in Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2275458)
 
 Questo articolo illustra come distribuire un server Web NGINX, un server flessibile Di Azure MySQL e PHP (lo stack LEMP) in una macchina virtuale Ubuntu Linux in Azure. Per verificare il funzionamento del server LEMP, è facoltativamente possibile installare e configurare un sito WordPress. In questa esercitazione si apprenderà come:
 
@@ -102,7 +102,7 @@ Risultati:
 
 ## Creare una rete virtuale di Azure
 
-Una rete virtuale è il blocco predefinito fondamentale per le reti private in Azure. Il servizio Rete virtuale di Microsoft Azure consente alle risorse di Azure, come le VM, di comunicare in modo sicuro tra loro e con Internet.
+Una rete virtuale rappresenta il blocco costitutivo fondamentale per le reti private di Azure. Il servizio Rete virtuale di Microsoft Azure consente alle risorse di Azure, come le VM, di comunicare in modo sicuro tra loro e con Internet.
 Usare [az network vnet create](/cli/azure/network/vnet#az-network-vnet-create) per creare una rete virtuale denominata con una subnet denominata `$MY_VNET_NAME` `$MY_SN_NAME` nel `$MY_RESOURCE_GROUP_NAME` gruppo di risorse.
 
 ```bash
@@ -574,11 +574,11 @@ Il server creato ha gli attributi seguenti:
 
 > [!NOTE]
 > Il metodo di connettività non può essere modificato dopo la creazione del server. Ad esempio, se è stata selezionata `Private access (VNet Integration)` durante la creazione, non è possibile passare a `Public access (allowed IP addresses)` dopo la creazione. È consigliabile creare un server con accesso privato per accedere in modo sicuro al server tramite l'integrazione rete virtuale. Altre informazioni sull'accesso privato sono disponibili nell'[articolo sui concetti](../../mysql/flexible-server/concepts-networking-vnet.md).
-Per modificare le impostazioni predefinite, vedere la documentazione[ di riferimento dell'interfaccia della riga di comando di Azure ](../../mysql/flexible-server/quickstart-create-server-cli.md)per l'elenco completo dei parametri configurabili dell'interfaccia della riga di comando.
+Per modificare le impostazioni predefinite, vedere la [documentazione di riferimento](../../mysql/flexible-server/quickstart-create-server-cli.md) dell'interfaccia della riga di comando di Azure per l'elenco completo dei parametri dell'interfaccia della riga di comando configurabili.
 
-## Controllare lo stato del server flessibile Database di Azure per MySQL
+## Controllare lo stato del Database di Azure per MySQL - Server flessibile
 
-La creazione della Database di Azure per MySQL - Server flessibile e risorse di supporto richiede alcuni minuti.
+Sono necessari alcuni minuti per creare il server flessibile di Database di Azure per MySQL e le risorse di supporto.
 
 ```bash
 runtime="10 minute";
@@ -594,9 +594,9 @@ while [[ $(date -u +%s) -le $endtime ]]; do
 done
 ```
 
-## Configurare i parametri del server in Database di Azure per MySQL - Server flessibile
+## Configurare i parametri del server nel server flessibile di Database di Azure per MySQL
 
-È possibile gestire Database di Azure per MySQL - Configurazione del server flessibile usando i parametri del server. I parametri del server vengono configurati con il valore predefinito e consigliato quando si crea il server.
+È possibile gestire la configurazione del server flessibile di Database di Azure per MySQL mediante i parametri del server. I parametri del server vengono configurati con il valore predefinito e consigliato in fase di creazione del server.
 
 Visualizzare i dettagli dei parametri del server:
 
@@ -606,7 +606,7 @@ Eseguire il [comando az mysql flexible-server parameter show](../../mysql/flexib
 
 Modificare un valore del parametro del server:
 
-È anche possibile modificare il valore di un determinato parametro del server, che aggiorna il valore di configurazione sottostante per il motore del server MySQL. Per aggiornare il parametro del server, usare il [comando az mysql flexible-server parameter set](../../mysql/flexible-server/how-to-configure-server-parameters-cli.md#modify-a-server-parameter-value) .
+È anche possibile modificare il valore di un determinato parametro del server, che aggiorna il valore di configurazione sottostante per il motore del server MySQL. Per aggiornare il parametro del server, usare il comando [az mysql flexible-server parameter set](../../mysql/flexible-server/how-to-configure-server-parameters-cli.md#modify-a-server-parameter-value).
 
 ```bash
 az mysql flexible-server parameter set \
