@@ -1,14 +1,14 @@
 ---
 title: Oktatóanyag – LEMP-verem üzembe helyezése a WordPress használatával virtuális gépen
 description: 'Ebben az oktatóanyagban megtudhatja, hogyan telepítheti a LEMP-vermet és a WordPresst egy Linux rendszerű virtuális gépre az Azure-ban.'
-author: chasecrum
+author: fossygirl
 ms.collection: linux
 ms.service: virtual-machines
 ms.devlang: azurecli
 ms.custom: 'innovation-engine, linux-related-content, devx-track-azurecli'
 ms.topic: tutorial
 ms.date: 2/29/2024
-ms.author: chasecrum
+ms.author: carols
 ms.reviewer: jushim
 ---
 
@@ -16,7 +16,7 @@ ms.reviewer: jushim
 
 **A következőre vonatkozik:** :heavy_check_mark: Linux rendszerű virtuális gépek
 
-[![Üzembe helyezés az Azure-ban](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#view/Microsoft_Azure_CloudNative/SubscriptionSelectionPage.ReactView/tutorialKey/CreateLinuxVMLAMP)
+[![Üzembe helyezés az Azure-ban](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2275458)
 
 Ez a cikk bemutatja, hogyan helyezhet üzembe NGINX-webkiszolgálót, rugalmas Azure MySQL-kiszolgálót és PHP-t (a LEMP-vermet) egy Ubuntu Linux rendszerű virtuális gépen az Azure-ban. Ha szeretné működés közben megtekinteni a LEMP-kiszolgálót, telepíthet és konfigurálhat egy WordPress-webhelyet. Ezen oktatóanyag segítségével megtanulhatja a következőket:
 
