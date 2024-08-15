@@ -1,14 +1,14 @@
 ---
 title: 教程 - 在 VM 上使用 WordPress 部署 LEMP 堆栈
 description: 本教程介绍如何在 Azure 中的 Linux 虚拟机上安装 LEMP 堆栈和 WordPress。
-author: chasecrum
+author: fossygirl
 ms.collection: linux
 ms.service: virtual-machines
 ms.devlang: azurecli
 ms.custom: 'innovation-engine, linux-related-content, devx-track-azurecli'
 ms.topic: tutorial
 ms.date: 2/29/2024
-ms.author: chasecrum
+ms.author: carols
 ms.reviewer: jushim
 ---
 
@@ -16,7 +16,7 @@ ms.reviewer: jushim
 
 适用于：:heavy_check_mark: Linux VM****
 
-[![部署到 Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#view/Microsoft_Azure_CloudNative/SubscriptionSelectionPage.ReactView/tutorialKey/CreateLinuxVMLAMP)
+[![部署到 Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2275458)
 
 本文逐步讲解如何在 Azure 中的 Ubuntu Linux VM 上部署 NGINX Web 服务器、Azure MySQL 灵活服务器和 PHP（LEMP 堆栈）。 若要了解 LEMP 服务器的运作情况，可以选择性地安装并配置 WordPress 站点。 本教程介绍如何执行下列操作：
 
