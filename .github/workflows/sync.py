@@ -199,6 +199,13 @@ def sync_markdown_files():
                         if not branch_exists:
                             repo.create_git_ref(ref=f"refs/heads/{new_branch_name}", sha=source_branch.commit.sha)
 
+                        # Checkout the new branch
+                        try:
+                            subprocess.check_call(["git", "checkout", new_branch_name])
+                        except subprocess.CalledProcessError as e:
+                            print(f"Error checking out branch {new_branch_name}")
+                            continue
+
                         for relevant_file in relevant_files:
                             relevant_file_content = relevant_file.repository.get_contents(relevant_file.path).decoded_content.decode('utf-8')
                             
@@ -220,13 +227,6 @@ def sync_markdown_files():
                             print(f"Processing relevant file: {relevant_file.path}")
                             print(f"Creating or relevant file at: {file_path}")
 
-                            # Checkout the new branch
-                            try:
-                                subprocess.check_call(["git", "checkout", new_branch_name])
-                            except subprocess.CalledProcessError as e:
-                                print(f"Error checking out branch {new_branch_name}")
-                                continue
-
                             # Create or update the file in the new branch
                             try:
                                 repo.create_file(file_path, f"Add {file_path}", relevant_file_content, branch=new_branch_name)
@@ -235,7 +235,7 @@ def sync_markdown_files():
                                 contents = repo.get_contents(file_path, ref=new_branch_name)
                                 repo.update_file(contents.path, f"Update {file_path}", relevant_file_content, contents.sha, branch=new_branch_name)
                                 print(f"Updated file: {file_path}")
-
+                        exit()
                         # Create or update the base metadata.json file
                         branch_metadata = update_metadata(new_branch_name, localize=False)
                         try:
