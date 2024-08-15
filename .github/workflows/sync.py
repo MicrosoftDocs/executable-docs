@@ -156,7 +156,7 @@ def delete_branch(repo, branch_name):
         ref = repo.get_git_ref(f"heads/{branch_name}")
         ref.delete()
     except Exception as e:
-        print('Error deleting branch: ', e)
+        print('Branch does not exist')
 
 def sync_markdown_files():
     query = "innovation-engine in:file language:markdown org:MicrosoftDocs -path:/localized/ -repo:MicrosoftDocs/executable-docs" 
