@@ -1,14 +1,14 @@
 ---
 title: Tutorial - Menyebarkan tumpukan LEMP menggunakan WordPress pada VM
 description: 'Dalam tutorial ini, Anda mempelajari cara menginstal tumpukan LEMP, dan WordPress, pada komputer virtual Linux di Azure.'
-author: chasecrum
+author: fossygirl
 ms.collection: linux
 ms.service: virtual-machines
 ms.devlang: azurecli
 ms.custom: 'innovation-engine, linux-related-content, devx-track-azurecli'
 ms.topic: tutorial
 ms.date: 2/29/2024
-ms.author: chasecrum
+ms.author: carols
 ms.reviewer: jushim
 ---
 
@@ -16,7 +16,7 @@ ms.reviewer: jushim
 
 **Berlaku untuk:** :heavy_check_mark: VM Linux
 
-[![Sebarkan ke Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#view/Microsoft_Azure_CloudNative/SubscriptionSelectionPage.ReactView/tutorialKey/CreateLinuxVMLAMP)
+[![Sebarkan ke Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2275458)
 
 Artikel ini memandu Anda melalui cara menyebarkan server web NGINX, Server Fleksibel Azure MySQL, dan PHP (tumpukan LEMP) pada VM Linux Ubuntu di Azure. Untuk melihat server LEMP beraksi, Anda dapat secara opsional menginstal dan mengonfigurasi situs WordPress. Dalam tutorial ini, Anda akan mempelajari cara:
 
