@@ -1,14 +1,14 @@
 ---
 title: Руководство. Развертывание стека LEMP с помощью WordPress на виртуальной машине
 description: 'В этом руководстве описано, как установить стек LEMP и WordPress на виртуальной машине Linux в Azure.'
-author: chasecrum
+author: fossygirl
 ms.collection: linux
 ms.service: virtual-machines
 ms.devlang: azurecli
 ms.custom: 'innovation-engine, linux-related-content, devx-track-azurecli'
 ms.topic: tutorial
 ms.date: 2/29/2024
-ms.author: chasecrum
+ms.author: carols
 ms.reviewer: jushim
 ---
 
@@ -16,7 +16,7 @@ ms.reviewer: jushim
 
 **Применимо к:** :heavy_check_mark: виртуальным машинам Linux
 
-[![Развертывание в Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#view/Microsoft_Azure_CloudNative/SubscriptionSelectionPage.ReactView/tutorialKey/CreateLinuxVMLAMP)
+[![Развертывание в Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2275458)
 
 В этой статье описывается, как развернуть веб-сервер NGINX, гибкий сервер Azure MySQL и PHP (стек LEMP) на виртуальной машине Ubuntu Linux в Azure. Чтобы оценить работу сервера LEMP в действии, вы можете установить и настроить сайт WordPress. Из этого руководства вы узнаете, как выполнить следующие задачи:
 
