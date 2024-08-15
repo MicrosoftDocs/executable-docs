@@ -1,14 +1,14 @@
 ---
 title: Självstudie – Distribuera en LEMP-stack med Hjälp av WordPress på en virtuell dator
 description: I den här självstudien får du lära dig hur du installerar LEMP-stacken och WordPress på en virtuell Linux-dator i Azure.
-author: chasecrum
+author: fossygirl
 ms.collection: linux
 ms.service: virtual-machines
 ms.devlang: azurecli
 ms.custom: 'innovation-engine, linux-related-content, devx-track-azurecli'
 ms.topic: tutorial
 ms.date: 2/29/2024
-ms.author: chasecrum
+ms.author: carols
 ms.reviewer: jushim
 ---
 
@@ -16,7 +16,7 @@ ms.reviewer: jushim
 
 **Gäller för:** :heavy_check_mark: Virtuella Linux-datorer
 
-[![Distribuera till Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#view/Microsoft_Azure_CloudNative/SubscriptionSelectionPage.ReactView/tutorialKey/CreateLinuxVMLAMP)
+[![Distribuera till Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2275458)
 
 Den här artikeln beskriver hur du distribuerar en NGINX-webbserver, Azure MySQL – flexibel server och PHP (LEMP-stacken) på en virtuell Ubuntu Linux-dator i Azure. Om du vill se LEMP-servern i praktiken kan du installera och konfigurera en WordPress-webbplats. I den här självstudiekursen får du lära du dig att:
 
@@ -156,7 +156,7 @@ Resultat:
 Använd [az network public-ip create](/cli/azure/network/public-ip#az-network-public-ip-create) för att skapa en standardzonredundant offentlig IPv4-adress med namnet `MY_PUBLIC_IP_NAME` i `$MY_RESOURCE_GROUP_NAME`.
 
 >[!NOTE]
->Alternativen nedan för zoner är bara giltiga val i regioner med [Tillgänglighetszoner](../../reliability/availability-zones-service-support.md).
+>Alternativen nedan för zoner är endast giltiga val i regioner med [tillgänglighetszoner](../../reliability/availability-zones-service-support.md).
 ```bash
 az network public-ip create \
     --name $MY_PUBLIC_IP_NAME \
@@ -488,9 +488,9 @@ runcmd:
 EOF
 ```
 
-## Skapa en Flexibel Azure Privat DNS-zon för Azure MySQL – flexibel server
+## Skapa en Azure Private DNS-zon för Azure MySQL – flexibel server
 
-Med Azure Privat DNS Zone-integrering kan du matcha den privata DNS i det aktuella virtuella nätverket eller ett peer-kopplat virtuellt nätverk i regionen där den privata DNS-zonen är länkad. Använd [az network private-dns zone create](/cli/azure/network/private-dns/zone#az-network-private-dns-zone-create) för att skapa den privata DNS-zonen.
+Med Integrering av privat DNS-zon i Azure kan du matcha den privata DNS i det aktuella virtuella nätverket eller ett peer-kopplat virtuellt nätverk i regionen där den privata DNS-zonen är länkad. Använd [az network private-dns zone create](/cli/azure/network/private-dns/zone#az-network-private-dns-zone-create) för att skapa den privata DNS-zonen.
 
 ```bash
 az network private-dns zone create \
@@ -787,7 +787,7 @@ Resultat:
 
 ## Kontrollera och bläddra på din WordPress-webbplats
 
-[WordPress](https://www.wordpress.org) är ett öppen källkod innehållshanteringssystem (CMS) som används av över 40 % av webben för att skapa webbplatser, bloggar och andra program. WordPress kan köras på några olika Azure-tjänster: [AKS](../../mysql/flexible-server/tutorial-deploy-wordpress-on-aks.md), Virtuella datorer och App Service. En fullständig lista över WordPress-alternativ i Azure finns [i WordPress på Azure Marketplace](https://azuremarketplace.microsoft.com/marketplace/apps?page=1&search=wordpress).
+[WordPress](https://www.wordpress.org) är ett system för innehållshantering med öppen källkod (CMS) som används av över 40 % av webben för att skapa webbplatser, bloggar och andra program. WordPress kan köras på några olika Azure-tjänster: [AKS](../../mysql/flexible-server/tutorial-deploy-wordpress-on-aks.md), Virtuella datorer och App Service. En fullständig lista över WordPress-alternativ i Azure finns [i WordPress på Azure Marketplace](https://azuremarketplace.microsoft.com/marketplace/apps?page=1&search=wordpress).
 
 Den här WordPress-installationen är endast avsedd för ”Proof of concept”. Om du vill installera senaste WordPress i produktion med rekommenderade säkerhetsinställningar läser du [WordPress-dokumentationen](https://codex.wordpress.org/Main_Page).
 
