@@ -253,14 +253,14 @@ def sync_markdown_files():
                         branch_localized_metadata_dict = update_metadata(new_branch_name, localize=True)
                         try:
                             for locale in branch_localized_metadata_dict:
-                                repo.create_file(f'localized/{locale}/scenarios/metadata.json', f"Add metadata.json file", json.dumps(branch_localized_metadata_dict[locale], indent=4), branch=new_branch_name)
+                                repo.create_file(f'localized/{locale}/scenarios/metadata.json', f"Add metadata.json file for {locale}", json.dumps(branch_localized_metadata_dict[locale], indent=4), branch=new_branch_name)
                                 print("created localized metadata")
                                 # with open(f'localized/{locale}/scenarios/metadata.json', 'w') as f:
                                 #     json.dump(branch_localized_metadata_dict[locale], f, indent=4)
                         except:
                             for locale in branch_localized_metadata_dict:
                                 locale_metadata_path = repo.get_contents(f'localized/{locale}/scenarios/metadata.json', ref=new_branch_name)
-                                repo.update_file(locale_metadata_path.path, f"Updated localized metadata for all files", json.dumps(branch_localized_metadata_dict[locale], indent=4), locale_metadata_path.sha, branch=new_branch_name)
+                                repo.update_file(locale_metadata_path.path, f"Updated localized metadata for {locale}", json.dumps(branch_localized_metadata_dict[locale], indent=4), locale_metadata_path.sha, branch=new_branch_name)
                                 print("updated localized metadata")
                                 # with open(f'localized/{locale}/scenarios/metadata.json', 'w') as f:
                                 #     json.dump(branch_localized_metadata_dict[locale], f, indent=4)
