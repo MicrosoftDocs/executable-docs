@@ -1,14 +1,14 @@
 ---
 title: チュートリアル - WordPress を使用して VM に LEMP スタックをデプロイする
 description: このチュートリアルでは、Azure 内の Linux 仮想マシンに LEMP スタックと WordPress をインストールする方法について説明します。
-author: chasecrum
+author: fossygirl
 ms.collection: linux
 ms.service: virtual-machines
 ms.devlang: azurecli
 ms.custom: 'innovation-engine, linux-related-content, devx-track-azurecli'
 ms.topic: tutorial
 ms.date: 2/29/2024
-ms.author: chasecrum
+ms.author: carols
 ms.reviewer: jushim
 ---
 
@@ -16,7 +16,7 @@ ms.reviewer: jushim
 
 **適用対象:** :heavy_check_mark: Linux VM
 
-[![Azure に配置する](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#view/Microsoft_Azure_CloudNative/SubscriptionSelectionPage.ReactView/tutorialKey/CreateLinuxVMLAMP)
+[![Azure に配置する](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2275458)
 
 この記事では、NGINX Web サーバー、Azure MySQL フレキシブル サーバー、PHP (LEMP スタック) を Azure 上の Ubuntu Linux VM にデプロイする方法について説明します。 LEMP サーバーの動作を確認するために、WordPress サイトをインストールし、構成することもできます。 このチュートリアルで学習する内容は次のとおりです。
 
