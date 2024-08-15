@@ -1,6 +1,6 @@
 ---
-title: 'Guia de início rápido: usar a CLI do Azure para criar uma máquina virtual Linux do Red Hat Enterprise'
-description: 'Neste guia de início rápido, você aprenderá a usar a CLI do Azure para criar uma máquina virtual Red Hat Enterprise Linux'
+title: 'Início Rápido: Usar a CLI do Azure para criar uma Máquina Virtual Linux do Red Hat Enterprise'
+description: 'Neste início rápido, você aprenderá a usar a CLI do Azure para criar uma máquina virtual do Red Hat Enterprise Linux'
 author: namanparikh
 ms.service: virtual-machines
 ms.collection: linux
@@ -10,13 +10,13 @@ ms.author: namanparikh
 ms.custom: 'mvc, devx-track-azurecli, mode-api, innovation-engine, linux-related-content'
 ---
 
-# Guia de início rápido: criar uma máquina virtual Red Hat Enterprise Linux com a CLI do Azure no Azure
+# Início Rápido: Criar uma máquina virtual do Red Hat Enterprise Linux com a CLI do Azure no Azure
 
 **Aplica-se a:** :heavy_check_mark: VMs do Linux
 
 [![Implantar no Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262692)
 
-Este guia de início rápido mostra como usar a CLI do Azure para implantar uma máquina virtual (VM) do Red Hat Enterprise Linux no Azure. A CLI do Azure é usada para criar e gerenciar recursos do Azure por meio da linha de comando ou de scripts.
+Este guia de início rápido mostra como usar a CLI do Azure para implantar uma VM (máquina virtual) do Red Hat Enterprise Linux no Azure. A CLI do Azure é usada para criar e gerenciar recursos do Azure por meio da linha de comando ou de scripts.
 
 Se você não tiver uma assinatura do Azure, crie uma [conta gratuita](https://azure.microsoft.com/free/?WT.mc_id=A261C142F) antes de começar.
 
@@ -35,7 +35,7 @@ O primeiro passo é definir as variáveis de ambiente. As variáveis de ambiente
 ```bash
 export RANDOM_ID="$(openssl rand -hex 3)"
 export MY_RESOURCE_GROUP_NAME="myVMResourceGroup$RANDOM_ID"
-export REGION=EastUS
+export REGION="westeurope"
 export MY_VM_NAME="myVM$RANDOM_ID"
 export MY_USERNAME=azureuser
 export MY_VM_IMAGE="RedHat:RHEL:8-LVM:latest"
