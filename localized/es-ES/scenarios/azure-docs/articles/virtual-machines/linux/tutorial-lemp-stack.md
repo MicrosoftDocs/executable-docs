@@ -1,14 +1,14 @@
 ---
 title: 'Tutorial: Implementación de una pila LEMP mediante WordPress en una máquina virtual'
 description: 'En este tutorial, aprenderá a instalar la pila LEMP y WordPress en una máquina virtual Linux de Azure.'
-author: chasecrum
+author: fossygirl
 ms.collection: linux
 ms.service: virtual-machines
 ms.devlang: azurecli
 ms.custom: 'innovation-engine, linux-related-content, devx-track-azurecli'
 ms.topic: tutorial
 ms.date: 2/29/2024
-ms.author: chasecrum
+ms.author: carols
 ms.reviewer: jushim
 ---
 
@@ -16,7 +16,7 @@ ms.reviewer: jushim
 
 **Se aplica a:** :heavy_check_mark: Máquinas virtuales Linux
 
-[![Implementación en Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#view/Microsoft_Azure_CloudNative/SubscriptionSelectionPage.ReactView/tutorialKey/CreateLinuxVMLAMP)
+[![Implementación en Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2275458)
 
 En este artículo se ofrecen instrucciones paso a paso para implementar un servidor web NGINX, servidor flexible de Azure MySQL y PHP (la pila LEMP) en una máquina virtual de Ubuntu Linux en Azure. Para ver el servidor LEMP en acción, si lo desea, puede instalar y configurar un sitio de WordPress. En este tutorial, aprenderá a:
 

@@ -35,7 +35,7 @@ El primer paso es definir las variables de entorno. Las variables de entorno se 
 ```bash
 export RANDOM_ID="$(openssl rand -hex 3)"
 export MY_RESOURCE_GROUP_NAME="myVMResourceGroup$RANDOM_ID"
-export REGION=EastUS
+export REGION="westeurope"
 export MY_VM_NAME="myVM$RANDOM_ID"
 export MY_USERNAME=azureuser
 export MY_VM_IMAGE="RedHat:RHEL:8-LVM:latest"
