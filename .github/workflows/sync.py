@@ -1,5 +1,4 @@
 # sync exec docs every day, metadata.json gets updated as soon as exec docs are synced, ie test runs on all docs as soon as it is selective localization happens as soon as the localization goes through main (which is 2-3 hours post sync), portal tests every monday with all exec docs from previous week and pushes changes to be reflected the next week
-
 import os
 import github
 import shutil
@@ -73,6 +72,10 @@ def update_base_metadata(directory, metadata):
                         metadata.append(item)
 
                     if item is not None and readme_metadata is not None:
+                        print(key)
+                        print(item)
+                        print(readme_metadata.get('title'))
+                        print(item.get('title', ''))
                         if 'localized' not in path:
                             # Update the item with the metadata from the README file
                             item['title'] = readme_metadata.get('title', item.get('title', ''))
@@ -92,6 +95,12 @@ def update_base_metadata(directory, metadata):
                             item['configurations']["region"] = find_region_value(f.read())
 
     return metadata
+
+with open('scenarios/metadata.json', 'r') as f:
+    metadata = json.load(f)
+update_base_metadata('scenarios', metadata)
+
+
 
 def update_metadata(branch_name, localize=False):
     # Save the current branch name
@@ -154,14 +163,24 @@ def update_metadata(branch_name, localize=False):
 def delete_branch(repo, branch_name):
     try:
         ref = repo.get_git_ref(f"heads/{branch_name}")
+        
+        # Check if there is an open PR for the branch
+        pulls = repo.get_pulls(state='open', head=f"{repo.owner.login}:{branch_name}")
+        if pulls.totalCount > 0:
+            for pr in pulls:
+                pr.edit(state='closed')
+                print(f"Closed PR #{pr.number} for branch '{branch_name}'")
+        
+        # Delete the branch
         ref.delete()
+        print(f"Deleted branch '{branch_name}'")
+        
     except Exception as e:
-        print('Branch does not exist')
+        print(f"Branch '{branch_name}' does not exist")
 
 def sync_markdown_files():
     query = "innovation-engine in:file language:markdown org:MicrosoftDocs -path:/localized/ -repo:MicrosoftDocs/executable-docs" 
     result = g.search_code(query)
-
     processed_directories = set()
     for file in result:
         if '-pr' not in file.repository.name:
