@@ -61,8 +61,9 @@ def update_metadata(file_path, localize=False):
                             if _item['key'] == key:
                                 item = _item
                                 break
-                        item = {'status': 'active', 'key': key}
-                        base_metadata.append(item)
+                        if not item:
+                            item = {'status': 'active', 'key': key}
+                            base_metadata.append(item)
                     else:
                         item = {'status': 'active', 'key': key}
                         base_metadata.append(item)
@@ -262,9 +263,6 @@ def sync_markdown_files():
                             metadata_contents = repo.get_contents('scenarios/metadata.json', ref=new_branch_name)
                             repo.update_file(metadata_contents.path, f"Update metadata for all files", json.dumps(branch_metadata, indent=4), metadata_contents.sha, branch=new_branch_name)
                             print("Updated metadata.json")
-
-                        print(branch_metadata)
-                        print("\n\n\n\n\n\n")
 
                         # Create or update the localized metadata.json files altogether
                         try:
