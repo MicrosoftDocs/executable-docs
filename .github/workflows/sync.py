@@ -263,6 +263,9 @@ def sync_markdown_files():
                             repo.update_file(metadata_contents.path, f"Update metadata for all files", json.dumps(branch_metadata, indent=4), metadata_contents.sha, branch=new_branch_name)
                             print("Updated metadata.json")
 
+                        print(branch_metadata)
+                        print("\n\n\n\n\n\n")
+
                         # Create or update the localized metadata.json files altogether
                         try:
                             for locale in sorted(os.listdir('localized')):
