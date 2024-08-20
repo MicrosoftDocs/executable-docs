@@ -21,18 +21,18 @@ def find_region_value(markdown_text):
         return region
     else:
         return ""
-    
-def update_base_metadata(directory, metadata):
-    for name in sorted(os.listdir(directory)):
-        path = os.path.join(directory, name)
-        if os.path.isdir(path):
-            # If it's a directory, process it recursively
-            update_base_metadata(path, metadata)
-        else:
-            # If it's a file, check if it's a README file
-            if '.md' in name.lower():
-                # Process the README file
-                with open(path, 'r') as f:
+
+def update_metadata(file_path, localize=False):
+    try:
+        if localize == False:
+            # Load the base metadata.json file
+            if os.path.isfile('scenarios/metadata.json'):
+                with open('scenarios/metadata.json', 'r') as f:
+                    base_metadata = json.load(f)
+                # # Update the metadata with the README files in the scenarios directory
+                # metadata = update_base_metadata('scenarios', base_metadata)
+
+                with open(file_path, 'r') as f:
                     metadata_lines = []
                     collecting = False
                     for line in f:
@@ -52,114 +52,85 @@ def update_base_metadata(directory, metadata):
                     readme_metadata = json.loads(json.dumps(readme_metadata, ensure_ascii=False))
                     
                     # Get the key for this file
-                    if 'localized' not in path:
-                        key = '/'.join(path.split('/')[1:])
-                    else:
-                        key = '/'.join(path.split('/')[3:]) 
-                        locale = path.split('/')[1]      
+                    key = '/'.join(file_path.split('/')[1:])
 
                     # Find the item in metadata with this key
                     item = None
-                    if metadata:
-                        for _item in metadata:
+                    if base_metadata:
+                        for _item in base_metadata:
                             if _item['key'] == key:
                                 item = _item
                                 break
                         item = {'status': 'active', 'key': key}
-                        metadata.append(item)
+                        base_metadata.append(item)
                     else:
                         item = {'status': 'active', 'key': key}
-                        metadata.append(item)
+                        base_metadata.append(item)
 
                     if item is not None and readme_metadata is not None:
-                        print(key)
-                        print(item)
-                        print(readme_metadata.get('title'))
-                        print(item.get('title', ''))
-                        if 'localized' not in path:
-                            # Update the item with the metadata from the README file
-                            item['title'] = readme_metadata.get('title', item.get('title', ''))
-                            item['description'] = readme_metadata.get('description', item.get('description', ''))
-                            item['stackDetails'] = readme_metadata.get('stackDetails', item.get('stackDetails', ''))
-                            item['sourceUrl'] = "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/"+key
-                            item['documentationUrl'] = readme_metadata.get('documentationUrl', item.get('documentationUrl', ''))
-                            item['configurations'] = item.get('configurations', {})
-                            item['configurations']["region"] = find_region_value(f.read())
-                        else:
-                            item['title'] = readme_metadata.get('title', item.get('title', ''))
-                            item['description'] = readme_metadata.get('description', item.get('description', ''))
-                            item['stackDetails'] = readme_metadata.get('stackDetails', item.get('stackDetails', ''))
-                            item['sourceUrl'] = f"https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/localized/{locale}/scenarios/{key}"
-                            item['documentationUrl'] = readme_metadata.get('documentationUrl', item.get('documentationUrl'.replace('learn.microsoft.com/azure', f'learn.microsoft.com/{locale}/azure'), ''))
-                            item['configurations'] = item.get('configurations', {})
-                            item['configurations']["region"] = find_region_value(f.read())
+                        item['title'] = readme_metadata.get('title', item.get('title', ''))
+                        item['description'] = readme_metadata.get('description', item.get('description', ''))
+                        item['stackDetails'] = readme_metadata.get('stackDetails', item.get('stackDetails', ''))
+                        item['sourceUrl'] = "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/"+key
+                        item['documentationUrl'] = readme_metadata.get('documentationUrl', item.get('documentationUrl', ''))
+                        item['configurations'] = item.get('configurations', {})
+                        item['configurations']["region"] = find_region_value(f.read())
 
-    return metadata
-
-with open('scenarios/metadata.json', 'r') as f:
-    metadata = json.load(f)
-update_base_metadata('scenarios', metadata)
-
-
-
-def update_metadata(branch_name, localize=False):
-    # Save the current branch name
-    # current_branch = subprocess.check_output(["git", "branch", "--show-current"]).strip().decode('utf-8')
-
-    # time.sleep(3)
-
-    # # Fetch the latest state of all branches from the remote
-    # subprocess.check_call(["git", "fetch", "--all"])
-
-    # # Checkout to the specified branch
-    # subprocess.check_call(["git", "checkout", branch_name])
-
-    try:
-        if localize == False:
-            # Load the base metadata.json file
-            if os.path.isfile('scenarios/metadata.json'):
-                with open('scenarios/metadata.json', 'r') as f:
-                    base_metadata = json.load(f)
-                # Update the metadata with the README files in the scenarios directory
-                metadata = update_base_metadata('scenarios', base_metadata)
-            else:
-                with open('scenarios/metadata.json', 'w') as f:
-                    base_metadata = []
-                # Update the metadata with the README files in the scenarios directory
-                metadata = update_base_metadata('scenarios', base_metadata)
         elif localize == True:
-            # Initialize an emty list to store the localized metadata
-            localized_metadata_dict = {}
+            locale = file_path.split('/')[1] 
             # Load the base metadata.json file
-            if os.path.isfile('scenarios/metadata.json'):
+            if os.path.isfile(f'localized/{locale}/scenarios/metadata.json'):
                 with open('scenarios/metadata.json', 'r') as f:
                     base_metadata = json.load(f)
                 # Update the metadata with the README files in the scenarios directory
-                for locale in sorted(os.listdir('localized')):
-                    locale_dir = os.path.join('localized', locale, 'scenarios')
-                    locale_metadata = copy.deepcopy(base_metadata)
-                    localized_metadata_dict[locale] = update_base_metadata(locale_dir, locale_metadata)
-            else:
-                with open('scenarios/metadata.json', 'w') as f:
-                    base_metadata = []
-                # Update the metadata with the README files in the scenarios directory
-                for locale in sorted(os.listdir('localized')):
-                    locale_dir = os.path.join('localized', locale, 'scenarios')
-                    locale_metadata = copy.deepcopy(base_metadata)
-                    localized_metadata_dict[locale] = update_base_metadata('localized', locale_metadata)
-    
+                with open(file_path, 'r') as f:
+                    metadata_lines = []
+                    collecting = False
+                    for line in f:
+                        if line.strip() == '---':
+                            if collecting:
+                                break
+                            else:
+                                collecting = True
+                                continue
+                        if collecting:
+                            metadata_lines.append(line)
+                    # Join the lines together into a single string
+                    metadata_str = '\n'.join(metadata_lines).strip('---').strip('\n')
+
+                    # Parse the metadata from the string
+                    readme_metadata = yaml.safe_load(metadata_str)
+                    readme_metadata = json.loads(json.dumps(readme_metadata, ensure_ascii=False))
+                    
+                    key = '/'.join(file_path.split('/')[3:])      
+
+                    # Find the item in metadata with this key
+                    item = None
+                    if base_metadata:
+                        for _item in base_metadata:
+                            if _item['key'] == key:
+                                item = _item
+                                break
+                        item = {'status': 'active', 'key': key}
+                        base_metadata.append(item)
+                    else:
+                        item = {'status': 'active', 'key': key}
+                        base_metadata.append(item)
+
+                    if item is not None and readme_metadata is not None:
+                        item['title'] = readme_metadata.get('title', item.get('title', ''))
+                        item['description'] = readme_metadata.get('description', item.get('description', ''))
+                        item['stackDetails'] = readme_metadata.get('stackDetails', item.get('stackDetails', ''))
+                        item['sourceUrl'] = f"https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/localized/{locale}/scenarios/{key}"
+                        item['documentationUrl'] = readme_metadata.get('documentationUrl', item.get('documentationUrl'.replace('learn.microsoft.com/azure', f'learn.microsoft.com/{locale}/azure'), ''))
+                        item['configurations'] = item.get('configurations', {})
+                        item['configurations']["region"] = find_region_value(f.read())
+
     except Exception as e:
         print(f"Error updating metadata: {e}")
 
-    # finally:
-        # Checkout back to the original branch
-        # subprocess.check_call(["git", "checkout", current_branch])  
-
-    if localize == False:
-        return metadata   
-    else:
-        return localized_metadata_dict
-
+    return base_metadata   
+    
 def delete_branch(repo, branch_name):
     try:
         ref = repo.get_git_ref(f"heads/{branch_name}")
@@ -280,7 +251,7 @@ def sync_markdown_files():
                                 print(f"Updated file: {file_path}")
                         
                         # Create or update the base metadata.json file
-                        branch_metadata = update_metadata(new_branch_name, localize=False)
+                        branch_metadata = update_metadata(source_file_path, localize=False)
                         try:
                             repo.create_file('scenarios/metadata.json', f"Add metadata.json file", json.dumps(branch_metadata, indent=4), branch=new_branch_name)
                             print("Created metadata.json")
@@ -290,17 +261,20 @@ def sync_markdown_files():
                             print("Updated metadata.json")
 
                         # Create or update the localized metadata.json files altogether
-                        branch_localized_metadata_dict = update_metadata(new_branch_name, localize=True)
                         try:
-                            for locale in branch_localized_metadata_dict:
-                                repo.create_file(f'localized/{locale}/scenarios/metadata.json', f"Add metadata.json file for {locale}", json.dumps(branch_localized_metadata_dict[locale], indent=4), branch=new_branch_name)
+                            for locale in sorted(os.listdir('localized')):
+                                locale_source_file_path = f'localized/{locale}/{source_file_path}'
+                                locale_metadata = update_metadata(locale_source_file_path, localize=True)
+                                repo.create_file(f'localized/{locale}/scenarios/metadata.json', f"Add metadata.json file for {locale}", json.dumps(locale_metadata, indent=4), branch=new_branch_name)
                                 print("created localized metadata")
                                 # with open(f'localized/{locale}/scenarios/metadata.json', 'w') as f:
                                 #     json.dump(branch_localized_metadata_dict[locale], f, indent=4)
                         except:
-                            for locale in branch_localized_metadata_dict:
+                            for locale in sorted(os.listdir('localized')):
+                                locale_source_file_path = f'localized/{locale}/{source_file_path}'
+                                locale_metadata = update_metadata(locale_source_file_path, localize=True)
                                 locale_metadata_path = repo.get_contents(f'localized/{locale}/scenarios/metadata.json', ref=new_branch_name)
-                                repo.update_file(locale_metadata_path.path, f"Updated localized metadata for {locale}", json.dumps(branch_localized_metadata_dict[locale], indent=4), locale_metadata_path.sha, branch=new_branch_name)
+                                repo.update_file(locale_metadata_path.path, f"Updated localized metadata for {locale}", json.dumps(locale_metadata, indent=4), locale_metadata_path.sha, branch=new_branch_name)
                                 print("updated localized metadata")
                                 # with open(f'localized/{locale}/scenarios/metadata.json', 'w') as f:
                                 #     json.dump(branch_localized_metadata_dict[locale], f, indent=4)
