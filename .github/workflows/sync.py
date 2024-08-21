@@ -178,14 +178,6 @@ def sync_markdown_files():
                                 relevant_files.append(file)
                             # Mark the directory as processed
                             processed_directories.add(os.path.dirname(file.path))
-                        
-                        # # Checkout the new branch
-                        # try:
-                        #     subprocess.check_call(["git", "fetch", "origin", "main"])
-                        #     subprocess.check_call(["git", "checkout", "main"])
-                        # except subprocess.CalledProcessError:
-                        #     print(f"Error checking out branch main")
-                        #     continue
 
                         # Create a new branch and commit the file
                         repo = g.get_repo("MicrosoftDocs/executable-docs")
@@ -220,7 +212,6 @@ def sync_markdown_files():
                         # Checkout the new branch
                         try:
                             subprocess.check_call(["git", "checkout", new_branch_name])
-                            subprocess.check_call(["git", "push", "--set-upstream", "origin", new_branch_name])
                         except subprocess.CalledProcessError as e:
                             print(f"Error checking out branch {new_branch_name}")
                             continue
