@@ -2,10 +2,10 @@
     {
         "status": "active",
         "key": "azure-docs/articles/aks/learn/quick-kubernetes-deploy-cli.md",
-        "title": "\u041a\u0440\u0430\u0442\u043a\u043e\u0435 \u0440\u0443\u043a\u043e\u0432\u043e\u0434\u0441\u0442\u0432\u043e. \u0420\u0430\u0437\u0432\u0435\u0440\u0442\u044b\u0432\u0430\u043d\u0438\u0435 \u043a\u043b\u0430\u0441\u0442\u0435\u0440\u0430 \u0421\u043b\u0443\u0436\u0431\u0430 Azure Kubernetes (AKS) \u0441 \u043f\u043e\u043c\u043e\u0449\u044c\u044e Azure CLI",
-        "description": "\u0423\u0437\u043d\u0430\u0439\u0442\u0435, \u043a\u0430\u043a \u0431\u044b\u0441\u0442\u0440\u043e \u0440\u0430\u0437\u0432\u0435\u0440\u043d\u0443\u0442\u044c \u043a\u043b\u0430\u0441\u0442\u0435\u0440 Kubernetes \u0438 \u0440\u0430\u0437\u0432\u0435\u0440\u043d\u0443\u0442\u044c \u043f\u0440\u0438\u043b\u043e\u0436\u0435\u043d\u0438\u0435 \u0432 \u0421\u043b\u0443\u0436\u0431\u0430 Azure Kubernetes (AKS) \u0441 \u043f\u043e\u043c\u043e\u0449\u044c\u044e Azure CLI.",
+        "title": "Quickstart: Deploy an Azure Kubernetes Service (AKS) cluster using Azure CLI",
+        "description": "Learn how to quickly deploy a Kubernetes cluster and deploy an application in Azure Kubernetes Service (AKS) using Azure CLI",
         "stackDetails": "",
-        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/localized/ru-RU/scenarios/azure-docs/articles/aks/learn/quick-kubernetes-deploy-cli.md",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-docs/articles/aks/learn/quick-kubernetes-deploy-cli.md",
         "documentationUrl": "https://learn.microsoft.com/en-us/azure/aks/learn/quick-kubernetes-deploy-cli",
         "nextSteps": [
             {
@@ -49,14 +49,14 @@
                 "Microsoft.ContainerService/managedClusters/GetAccessProfiles/action",
                 "Microsoft.Network/publicIPAddresses/list/action"
             ],
-            "region": "westeurope"
+            "region": "eastus"
         }
     },
     {
         "status": "active",
         "key": "azure-docs/articles/mysql/flexible-server/tutorial-deploy-wordpress-on-aks.md",
-        "title": "\u0420\u0443\u043a\u043e\u0432\u043e\u0434\u0441\u0442\u0432\u043e \u043f\u043e \u0440\u0430\u0437\u0432\u0435\u0440\u0442\u044b\u0432\u0430\u043d\u0438\u044e WordPress \u0432 \u043a\u043b\u0430\u0441\u0442\u0435\u0440\u0435 AKS \u0441 \u043f\u043e\u043c\u043e\u0449\u044c\u044e Azure CLI",
-        "description": "\u0421\u0432\u0435\u0434\u0435\u043d\u0438\u044f \u043e \u0442\u043e\u043c, \u043a\u0430\u043a \u0431\u044b\u0441\u0442\u0440\u043e \u0441\u043e\u0437\u0434\u0430\u0442\u044c \u0438 \u0440\u0430\u0437\u0432\u0435\u0440\u043d\u0443\u0442\u044c WordPress \u0432 AKS \u0441 \u0433\u0438\u0431\u043a\u0438\u043c \u0441\u0435\u0440\u0432\u0435\u0440\u043e\u043c \u0411\u0430\u0437\u044b \u0434\u0430\u043d\u043d\u044b\u0445 Azure \u0434\u043b\u044f MySQL.",
+        "title": "Tutorial: Deploy WordPress on AKS cluster by using Azure CLI",
+        "description": "Learn how to quickly build and deploy WordPress on AKS with Azure Database for MySQL - Flexible Server.",
         "stackDetails": [
             "An Ubuntu 22.04 Linux VM (Standard DS2_v2)",
             "Azure Database for MySQL - Flexible Server: 8.0.21",
@@ -67,7 +67,7 @@
             "Azure Private DNS Zone for Azure MySQL Flexible Server",
             "Use port 22 for SSH and ports 80, 443 for web traffic"
         ],
-        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/localized/ru-RU/scenarios/azure-docs/articles/mysql/flexible-server/tutorial-deploy-wordpress-on-aks.md",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-docs/articles/mysql/flexible-server/tutorial-deploy-wordpress-on-aks.md",
         "documentationUrl": "https://learn.microsoft.com/en-us/azure/mysql/flexible-server/tutorial-deploy-wordpress-on-aks",
         "nextSteps": [
             {
@@ -125,16 +125,16 @@
                 "Microsoft.Authorization/roleDefinitions/read",
                 "Microsoft.Authorization/roleDefinitions/write"
             ],
-            "region": "westeurope"
+            "region": "eastus"
         }
     },
     {
         "status": "active",
         "key": "azure-docs/articles/static-web-apps/get-started-cli.md",
-        "title": "\u041a\u0440\u0430\u0442\u043a\u043e\u0435 \u0440\u0443\u043a\u043e\u0432\u043e\u0434\u0441\u0442\u0432\u043e. \u0421\u043e\u0437\u0434\u0430\u043d\u0438\u0435 \u043f\u0435\u0440\u0432\u043e\u0433\u043e \u0441\u0442\u0430\u0442\u0438\u0447\u0435\u0441\u043a\u043e\u0433\u043e \u0441\u0430\u0439\u0442\u0430 \u0441 \u043f\u043e\u043c\u043e\u0449\u044c\u044e \u0421\u0442\u0430\u0442\u0438\u0447\u0435\u0441\u043a\u0438\u0435 \u0432\u0435\u0431-\u043f\u0440\u0438\u043b\u043e\u0436\u0435\u043d\u0438\u044f Azure \u0441 \u043f\u043e\u043c\u043e\u0449\u044c\u044e \u0438\u043d\u0442\u0435\u0440\u0444\u0435\u0439\u0441\u0430 \u043a\u043e\u043c\u0430\u043d\u0434\u043d\u043e\u0439 \u0441\u0442\u0440\u043e\u043a\u0438",
-        "description": "\u0423\u0437\u043d\u0430\u0439\u0442\u0435, \u043a\u0430\u043a \u0440\u0430\u0437\u0432\u0435\u0440\u043d\u0443\u0442\u044c \u0441\u0442\u0430\u0442\u0438\u0447\u0435\u0441\u043a\u0438\u0439 \u0441\u0430\u0439\u0442 \u0432 \u0441\u043b\u0443\u0436\u0431\u0435 \"\u0421\u0442\u0430\u0442\u0438\u0447\u0435\u0441\u043a\u0438\u0435 \u0432\u0435\u0431-\u043f\u0440\u0438\u043b\u043e\u0436\u0435\u043d\u0438\u044f Azure\" \u0441 \u043f\u043e\u043c\u043e\u0449\u044c\u044e Azure\u00a0CLI.",
+        "title": "Quickstart: Building your first static site with the Azure Static Web Apps using the CLI",
+        "description": "Learn to deploy a static site to Azure Static Web Apps with the Azure CLI.",
         "stackDetails": "",
-        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/localized/ru-RU/scenarios/azure-docs/articles/static-web-apps/get-started-cli.md",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-docs/articles/static-web-apps/get-started-cli.md",
         "documentationUrl": "https://learn.microsoft.com/en-us/azure/static-web-apps/get-started-cli",
         "nextSteps": [
             {
@@ -143,16 +143,16 @@
             }
         ],
         "configurations": {
-            "region": "EastUS2"
+            "region": "westus2"
         }
     },
     {
         "status": "active",
         "key": "azure-docs/articles/virtual-machine-scale-sets/flexible-virtual-machine-scale-sets-cli.md",
-        "title": "\u0421\u043e\u0437\u0434\u0430\u043d\u0438\u0435 \u0432\u0438\u0440\u0442\u0443\u0430\u043b\u044c\u043d\u044b\u0445 \u043c\u0430\u0448\u0438\u043d \u0432 \u0433\u0438\u0431\u043a\u043e\u043c \u043c\u0430\u0441\u0448\u0442\u0430\u0431\u0438\u0440\u0443\u0435\u043c\u043e\u043c \u043d\u0430\u0431\u043e\u0440\u0435 \u0441 \u043f\u043e\u043c\u043e\u0449\u044c\u044e Azure CLI",
-        "description": "\u0423\u0437\u043d\u0430\u0439\u0442\u0435, \u043a\u0430\u043a \u0441\u043e\u0437\u0434\u0430\u0442\u044c \u043c\u0430\u0441\u0448\u0442\u0430\u0431\u0438\u0440\u0443\u0435\u043c\u044b\u0439 \u043d\u0430\u0431\u043e\u0440 \u0432\u0438\u0440\u0442\u0443\u0430\u043b\u044c\u043d\u044b\u0445 \u043c\u0430\u0448\u0438\u043d \u0432 \u0433\u0438\u0431\u043a\u043e\u043c \u0440\u0435\u0436\u0438\u043c\u0435 \u043e\u0440\u043a\u0435\u0441\u0442\u0440\u0430\u0446\u0438\u0438 \u0441 \u043f\u043e\u043c\u043e\u0449\u044c\u044e Azure CLI.",
+        "title": "Create virtual machines in a Flexible scale set using Azure CLI",
+        "description": "Learn how to create a Virtual Machine Scale Set in Flexible orchestration mode using Azure CLI.",
         "stackDetails": "",
-        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/localized/ru-RU/scenarios/azure-docs/articles/virtual-machine-scale-sets/flexible-virtual-machine-scale-sets-cli.md",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-docs/articles/virtual-machine-scale-sets/flexible-virtual-machine-scale-sets-cli.md",
         "documentationUrl": "https://learn.microsoft.com/en-us/azure/virtual-machine-scale-sets/flexible-virtual-machine-scale-sets-cli",
         "nextSteps": [
             {
@@ -169,21 +169,21 @@
             }
         ],
         "configurations": {
-            "region": "EastUS"
+            "region": "centralindia"
         }
     },
     {
         "status": "active",
         "key": "azure-docs/articles/virtual-machines/linux/quick-create-cli.md",
-        "title": "\u041a\u0440\u0430\u0442\u043a\u043e\u0435 \u0440\u0443\u043a\u043e\u0432\u043e\u0434\u0441\u0442\u0432\u043e. \u0421\u043e\u0437\u0434\u0430\u043d\u0438\u0435 \u0432\u0438\u0440\u0442\u0443\u0430\u043b\u044c\u043d\u043e\u0439 \u043c\u0430\u0448\u0438\u043d\u044b Linux \u0441 \u043f\u043e\u043c\u043e\u0449\u044c\u044e Azure CLI",
-        "description": "\u0418\u0437 \u044d\u0442\u043e\u0433\u043e \u043a\u0440\u0430\u0442\u043a\u043e\u0433\u043e \u0440\u0443\u043a\u043e\u0432\u043e\u0434\u0441\u0442\u0432\u0430 \u0432\u044b \u0443\u0437\u043d\u0430\u0435\u0442\u0435, \u043a\u0430\u043a \u0441 \u043f\u043e\u043c\u043e\u0449\u044c\u044e Azure CLI \u0441\u043e\u0437\u0434\u0430\u0442\u044c \u0432\u0438\u0440\u0442\u0443\u0430\u043b\u044c\u043d\u0443\u044e \u043c\u0430\u0448\u0438\u043d\u0443 Linux.",
+        "title": "Quickstart: Use the Azure CLI to create a Linux Virtual Machine",
+        "description": "In this quickstart, you learn how to use the Azure CLI to create a Linux virtual machine",
         "stackDetails": [
             "An Ubuntu 22.04 Linux VM (Standard DS1_v2)",
             "30 GB Premium SSD (120 IOPS, 25 MBps)",
             "Network interface with public IP and network security group",
             "Port 22 will be opened"
         ],
-        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/localized/ru-RU/scenarios/azure-docs/articles/virtual-machines/linux/quick-create-cli.md",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-docs/articles/virtual-machines/linux/quick-create-cli.md",
         "documentationUrl": "https://learn.microsoft.com/en-us/azure/virtual-machines/linux/quick-create-cli",
         "nextSteps": [
             {
@@ -216,16 +216,16 @@
                 "Microsoft.Network/publicIPAddresses/read",
                 "Microsoft.Compute/virtualMachines/instanceView/read"
             ],
-            "region": "EastUS"
+            "region": "centralindia"
         }
     },
     {
         "status": "active",
         "key": "azure-docs/articles/virtual-machines/linux/tutorial-lemp-stack.md",
-        "title": "\u0420\u0443\u043a\u043e\u0432\u043e\u0434\u0441\u0442\u0432\u043e. \u0420\u0430\u0437\u0432\u0435\u0440\u0442\u044b\u0432\u0430\u043d\u0438\u0435 \u0441\u0442\u0435\u043a\u0430 LEMP \u0441 \u043f\u043e\u043c\u043e\u0449\u044c\u044e WordPress \u043d\u0430 \u0432\u0438\u0440\u0442\u0443\u0430\u043b\u044c\u043d\u043e\u0439 \u043c\u0430\u0448\u0438\u043d\u0435",
-        "description": "\u0412 \u044d\u0442\u043e\u043c \u0440\u0443\u043a\u043e\u0432\u043e\u0434\u0441\u0442\u0432\u0435 \u043e\u043f\u0438\u0441\u0430\u043d\u043e, \u043a\u0430\u043a \u0443\u0441\u0442\u0430\u043d\u043e\u0432\u0438\u0442\u044c \u0441\u0442\u0435\u043a LEMP \u0438 WordPress \u043d\u0430 \u0432\u0438\u0440\u0442\u0443\u0430\u043b\u044c\u043d\u043e\u0439 \u043c\u0430\u0448\u0438\u043d\u0435 Linux \u0432 Azure.",
+        "title": "Tutorial - Deploy a LEMP stack using WordPress on a VM",
+        "description": "In this tutorial, you learn how to install the LEMP stack, and WordPress, on a Linux virtual machine in Azure.",
         "stackDetails": "",
-        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/localized/ru-RU/scenarios/azure-docs/articles/virtual-machines/linux/tutorial-lemp-stack.md",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-docs/articles/virtual-machines/linux/tutorial-lemp-stack.md",
         "documentationUrl": "https://learn.microsoft.com/en-us/azure/virtual-machines/linux/tutorial-lemp-stack",
         "configurations": {
             "region": "westeurope"
@@ -234,10 +234,10 @@
     {
         "status": "active",
         "key": "DeployIGonAKS/README.md",
-        "title": "\u0420\u0430\u0437\u0432\u0435\u0440\u0442\u044b\u0432\u0430\u043d\u0438\u0435 Inspektor Gadget \u0432 \u043a\u043b\u0430\u0441\u0442\u0435\u0440\u0435 \u0421\u043b\u0443\u0436\u0431\u0430 Azure Kubernetes",
-        "description": "\u0412 \u044d\u0442\u043e\u043c \u0440\u0443\u043a\u043e\u0432\u043e\u0434\u0441\u0442\u0432\u0435 \u043f\u043e\u043a\u0430\u0437\u0430\u043d\u043e, \u043a\u0430\u043a \u0440\u0430\u0437\u0432\u0435\u0440\u043d\u0443\u0442\u044c Inspektor Gadget \u0432 \u043a\u043b\u0430\u0441\u0442\u0435\u0440\u0435 AKS",
+        "title": "Deploy Inspektor Gadget in an Azure Kubernetes Service cluster",
+        "description": "This tutorial shows how to deploy Inspektor Gadget in an AKS cluster",
         "stackDetails": "",
-        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/localized/ru-RU/scenarios/DeployIGonAKS/README.md",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/DeployIGonAKS/README.md",
         "documentationUrl": "",
         "nextSteps": [
             {
@@ -260,10 +260,10 @@
     {
         "status": "active",
         "key": "CreateAKSWebApp/README.md",
-        "title": "\u0420\u0430\u0437\u0432\u0435\u0440\u0442\u044b\u0432\u0430\u043d\u0438\u0435 \u043c\u0430\u0441\u0448\u0442\u0430\u0431\u0438\u0440\u0443\u0435\u043c\u043e\u0433\u043e \u043a\u043b\u0430\u0441\u0442\u0435\u0440\u0430 \u0438 \u0431\u0435\u0437\u043e\u043f\u0430\u0441\u043d\u043e\u0433\u043e \u0421\u043b\u0443\u0436\u0431\u0430 Azure Kubernetes \u0441 \u043f\u043e\u043c\u043e\u0449\u044c\u044e Azure CLI",
-        "description": "\u0412 \u044d\u0442\u043e\u043c \u0440\u0443\u043a\u043e\u0432\u043e\u0434\u0441\u0442\u0432\u0435 \u043c\u044b \u043f\u043e\u0448\u0430\u0433\u043e\u0432\u044b\u0435 \u0438\u043d\u0441\u0442\u0440\u0443\u043a\u0446\u0438\u0438 \u043f\u043e \u0441\u043e\u0437\u0434\u0430\u043d\u0438\u044e \u0432\u0435\u0431-\u043f\u0440\u0438\u043b\u043e\u0436\u0435\u043d\u0438\u044f Azure Kubernetes, \u0437\u0430\u0449\u0438\u0449\u0435\u043d\u043d\u043e\u0433\u043e \u0447\u0435\u0440\u0435\u0437 https.",
+        "title": "Deploy a Scalable & Secure Azure Kubernetes Service cluster using the Azure CLI",
+        "description": "This tutorial where we will take you step by step in creating an Azure Kubernetes Web Application that is secured via https.",
         "stackDetails": "",
-        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/localized/ru-RU/scenarios/CreateAKSWebApp/README.md",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/CreateAKSWebApp/README.md",
         "documentationUrl": "",
         "nextSteps": [
             {
@@ -284,7 +284,7 @@
             }
         ],
         "configurations": {
-            "region": "westeurope"
+            "region": "eastus"
         }
     },
     {
@@ -294,10 +294,10 @@
     {
         "status": "inactive",
         "key": "CreateAKSDeployment/create-aks-deployment.md",
-        "title": "\u041a\u0440\u0430\u0442\u043a\u043e\u0435 \u0440\u0443\u043a\u043e\u0432\u043e\u0434\u0441\u0442\u0432\u043e. \u0420\u0430\u0437\u0432\u0435\u0440\u0442\u044b\u0432\u0430\u043d\u0438\u0435 \u043a\u043b\u0430\u0441\u0442\u0435\u0440\u0430 \u0421\u043b\u0443\u0436\u0431\u0430 Azure Kubernetes (AKS) \u0441 \u043f\u043e\u043c\u043e\u0449\u044c\u044e Azure CLI",
-        "description": "\u0423\u0437\u043d\u0430\u0439\u0442\u0435, \u043a\u0430\u043a \u0431\u044b\u0441\u0442\u0440\u043e \u0440\u0430\u0437\u0432\u0435\u0440\u043d\u0443\u0442\u044c \u043a\u043b\u0430\u0441\u0442\u0435\u0440 Kubernetes \u0438 \u0440\u0430\u0437\u0432\u0435\u0440\u043d\u0443\u0442\u044c \u043f\u0440\u0438\u043b\u043e\u0436\u0435\u043d\u0438\u0435 \u0432 \u0421\u043b\u0443\u0436\u0431\u0430 Azure Kubernetes (AKS) \u0441 \u043f\u043e\u043c\u043e\u0449\u044c\u044e Azure CLI.",
+        "title": "Quickstart: Deploy an Azure Kubernetes Service (AKS) cluster using Azure CLI",
+        "description": "Learn how to quickly deploy a Kubernetes cluster and deploy an application in Azure Kubernetes Service (AKS) using Azure CLI.",
         "stackDetails": "",
-        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/localized/ru-RU/scenarios/CreateAKSDeployment/create-aks-deployment.md",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/CreateAKSDeployment/create-aks-deployment.md",
         "documentationUrl": "",
         "configurations": {
             "region": "westeurope"
@@ -306,10 +306,10 @@
     {
         "status": "inactive",
         "key": "CreateContainerAppDeploymentFromSource/create-container-app-deployment-from-source.md",
-        "title": "\u0421\u043e\u0437\u0434\u0430\u043d\u0438\u0435 \u043f\u0440\u0438\u043b\u043e\u0436\u0435\u043d\u0438\u044f-\u043a\u043e\u043d\u0442\u0435\u0439\u043d\u0435\u0440\u0430 \u0441 \u0438\u0441\u043f\u043e\u043b\u044c\u0437\u043e\u0432\u0430\u043d\u0438\u0435\u043c \u0445\u0440\u0430\u043d\u0438\u043b\u0438\u0449\u0430 BLOB-\u043e\u0431\u044a\u0435\u043a\u0442\u043e\u0432, SQL \u0438 \u041a\u043e\u043c\u043f\u044c\u044e\u0442\u0435\u0440\u043d\u043e\u0435 \u0437\u0440\u0435\u043d\u0438\u0435",
-        "description": "\u0412 \u044d\u0442\u043e\u043c \u0440\u0443\u043a\u043e\u0432\u043e\u0434\u0441\u0442\u0432\u0435 \u043f\u043e\u043a\u0430\u0437\u0430\u043d\u043e, \u043a\u0430\u043a \u0441\u043e\u0437\u0434\u0430\u0442\u044c \u043f\u0440\u0438\u043b\u043e\u0436\u0435\u043d\u0438\u0435 \u043a\u043e\u043d\u0442\u0435\u0439\u043d\u0435\u0440\u0430 \u0441 \u0438\u0441\u043f\u043e\u043b\u044c\u0437\u043e\u0432\u0430\u043d\u0438\u0435\u043c \u0445\u0440\u0430\u043d\u0438\u043b\u0438\u0449\u0430 BLOB-\u043e\u0431\u044a\u0435\u043a\u0442\u043e\u0432, SQL \u0438 \u041a\u043e\u043c\u043f\u044c\u044e\u0442\u0435\u0440\u043d\u043e\u0435 \u0437\u0440\u0435\u043d\u0438\u0435",
+        "title": "Create a Container App leveraging Blob Store, SQL, and Computer Vision",
+        "description": "This tutorial shows how to create a Container App leveraging Blob Store, SQL, and Computer Vision",
         "stackDetails": "",
-        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/localized/ru-RU/scenarios/CreateContainerAppDeploymentFromSource/create-container-app-deployment-from-source.md",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/CreateContainerAppDeploymentFromSource/create-container-app-deployment-from-source.md",
         "documentationUrl": "",
         "configurations": {
             "region": "westus"
@@ -318,10 +318,10 @@
     {
         "status": "active",
         "key": "CreateRHELVMAndSSH/create-rhel-vm-ssh.md",
-        "title": "\u041a\u0440\u0430\u0442\u043a\u043e\u0435 \u0440\u0443\u043a\u043e\u0432\u043e\u0434\u0441\u0442\u0432\u043e. \u0421\u043e\u0437\u0434\u0430\u043d\u0438\u0435 \u0432\u0438\u0440\u0442\u0443\u0430\u043b\u044c\u043d\u043e\u0439 \u043c\u0430\u0448\u0438\u043d\u044b Red Hat Enterprise Linux \u0441 \u043f\u043e\u043c\u043e\u0449\u044c\u044e Azure CLI",
-        "description": "\u0418\u0437 \u044d\u0442\u043e\u0433\u043e \u043a\u0440\u0430\u0442\u043a\u043e\u0433\u043e \u0440\u0443\u043a\u043e\u0432\u043e\u0434\u0441\u0442\u0432\u0430 \u0432\u044b \u0443\u0437\u043d\u0430\u0435\u0442\u0435, \u043a\u0430\u043a \u0438\u0441\u043f\u043e\u043b\u044c\u0437\u043e\u0432\u0430\u0442\u044c Azure CLI \u0434\u043b\u044f \u0441\u043e\u0437\u0434\u0430\u043d\u0438\u044f \u0432\u0438\u0440\u0442\u0443\u0430\u043b\u044c\u043d\u043e\u0439 \u043c\u0430\u0448\u0438\u043d\u044b Red Hat Enterprise Linux",
+        "title": "Quickstart: Use the Azure CLI to create a Red Hat Enterprise Linux Virtual Machine",
+        "description": "In this quickstart, you learn how to use the Azure CLI to create a Red Hat Enterprise Linux virtual machine",
         "stackDetails": "",
-        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/localized/ru-RU/scenarios/CreateRHELVMAndSSH/create-rhel-vm-ssh.md",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/CreateRHELVMAndSSH/create-rhel-vm-ssh.md",
         "documentationUrl": "",
         "configurations": {
             "region": "westeurope"
@@ -330,10 +330,10 @@
     {
         "status": "inactive",
         "key": "DeployHAPGonARO/deploy-ha-pg-aro.md",
-        "title": "\u0421\u043e\u0437\u0434\u0430\u043d\u0438\u0435 \u043a\u043b\u0430\u0441\u0442\u0435\u0440\u0430 PostgreSQL \u0441 \u0432\u044b\u0441\u043e\u043a\u0438\u043c \u0443\u0440\u043e\u0432\u043d\u0435\u043c \u0434\u043e\u0441\u0442\u0443\u043f\u043d\u043e\u0441\u0442\u0438 \u0432 Azure Red Hat OpenShift",
-        "description": "\u0412 \u044d\u0442\u043e\u043c \u0440\u0443\u043a\u043e\u0432\u043e\u0434\u0441\u0442\u0432\u0435 \u043f\u043e\u043a\u0430\u0437\u0430\u043d\u043e, \u043a\u0430\u043a \u0441\u043e\u0437\u0434\u0430\u0442\u044c \u043a\u043b\u0430\u0441\u0442\u0435\u0440 PostgreSQL \u0441 \u0432\u044b\u0441\u043e\u043a\u0438\u043c \u0443\u0440\u043e\u0432\u043d\u0435\u043c \u0434\u043e\u0441\u0442\u0443\u043f\u043d\u043e\u0441\u0442\u0438 \u0432 Azure Red Hat OpenShift (ARO) \u0441 \u043f\u043e\u043c\u043e\u0449\u044c\u044e \u043e\u043f\u0435\u0440\u0430\u0442\u043e\u0440\u0430 CloudNativePG",
+        "title": "Create a Highly Available PostgreSQL Cluster on Azure Red Hat OpenShift",
+        "description": "This tutorial shows how to create a Highly Available PostgreSQL cluster on Azure Red Hat OpenShift (ARO) using the CloudNativePG operator",
         "stackDetails": "",
-        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/localized/ru-RU/scenarios/DeployHAPGonARO/deploy-ha-pg-aro.md",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/DeployHAPGonARO/deploy-ha-pg-aro.md",
         "documentationUrl": "",
         "configurations": {
             "region": ""
@@ -366,10 +366,10 @@
     {
         "status": "inactive",
         "key": "azure-docs/articles/aks/postgresql-ha-overview.md",
-        "title": "\u041e\u0431\u0437\u043e\u0440 \u0440\u0430\u0437\u0432\u0435\u0440\u0442\u044b\u0432\u0430\u043d\u0438\u044f \u0432\u044b\u0441\u043e\u043a\u043e\u0434\u043e\u0441\u0442\u0443\u043f\u043d\u043e\u0439 \u0431\u0430\u0437\u044b \u0434\u0430\u043d\u043d\u044b\u0445 PostgreSQL \u0432 AKS \u0441 \u043f\u043e\u043c\u043e\u0449\u044c\u044e Azure CLI",
-        "description": "\u0423\u0437\u043d\u0430\u0439\u0442\u0435, \u043a\u0430\u043a \u0440\u0430\u0437\u0432\u0435\u0440\u043d\u0443\u0442\u044c \u0432\u044b\u0441\u043e\u043a\u043e\u0434\u043e\u0441\u0442\u0443\u043f\u043d\u0443\u044e \u0431\u0430\u0437\u0443 \u0434\u0430\u043d\u043d\u044b\u0445 PostgreSQL \u0432 AKS \u0441 \u043f\u043e\u043c\u043e\u0449\u044c\u044e \u043e\u043f\u0435\u0440\u0430\u0442\u043e\u0440\u0430 CloudNativePG \u0441 \u043f\u043e\u043c\u043e\u0449\u044c\u044e Azure CLI.",
+        "title": "Overview of deploying a highly available PostgreSQL database on AKS with Azure CLI",
+        "description": "Learn how to deploy a highly available PostgreSQL database on AKS using the CloudNativePG operator with Azure CLI.",
         "stackDetails": "",
-        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/localized/ru-RU/scenarios/azure-docs/articles/aks/postgresql-ha-overview.md",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-docs/articles/aks/postgresql-ha-overview.md",
         "documentationUrl": "",
         "configurations": {
             "region": ""
@@ -378,10 +378,10 @@
     {
         "status": "active",
         "key": "AttachDataDiskLinuxVM/attach-data-disk-linux-vm.md",
-        "title": "\u041a\u0440\u0430\u0442\u043a\u043e\u0435 \u0440\u0443\u043a\u043e\u0432\u043e\u0434\u0441\u0442\u0432\u043e. \u0421\u043e\u0437\u0434\u0430\u043d\u0438\u0435 \u0432\u0438\u0440\u0442\u0443\u0430\u043b\u044c\u043d\u043e\u0439 \u043c\u0430\u0448\u0438\u043d\u044b Ubuntu \u0438 \u043f\u043e\u0434\u043a\u043b\u044e\u0447\u0435\u043d\u0438\u0435 \u0434\u0438\u0441\u043a\u0430 \u0434\u0430\u043d\u043d\u044b\u0445 Azure \u0441 \u043f\u043e\u043c\u043e\u0449\u044c\u044e Azure CLI",
-        "description": "\u0418\u0437 \u044d\u0442\u043e\u0433\u043e \u043a\u0440\u0430\u0442\u043a\u043e\u0433\u043e \u0440\u0443\u043a\u043e\u0432\u043e\u0434\u0441\u0442\u0432\u0430 \u0432\u044b \u0443\u0437\u043d\u0430\u0435\u0442\u0435, \u043a\u0430\u043a \u0438\u0441\u043f\u043e\u043b\u044c\u0437\u043e\u0432\u0430\u0442\u044c Azure CLI \u0434\u043b\u044f \u0441\u043e\u0437\u0434\u0430\u043d\u0438\u044f \u0432\u0438\u0440\u0442\u0443\u0430\u043b\u044c\u043d\u043e\u0439 \u043c\u0430\u0448\u0438\u043d\u044b Ubuntu Linux",
+        "title": "Quickstart: Use the Azure CLI to create an Ubuntu Virtual Machine and attach an Azure Data Disk",
+        "description": "In this quickstart, you learn how to use the Azure CLI to create an Ubuntu Linux virtual machine",
         "stackDetails": "",
-        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/localized/ru-RU/scenarios/AttachDataDiskLinuxVM/attach-data-disk-linux-vm.md",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/AttachDataDiskLinuxVM/attach-data-disk-linux-vm.md",
         "documentationUrl": "",
         "nextSteps": [
             {
@@ -409,10 +409,10 @@
     {
         "status": "inactive",
         "key": "ObtainPerformanceMetricsLinuxSustem/README.md",
-        "title": "\u041f\u043e\u043b\u0443\u0447\u0435\u043d\u0438\u0435 \u043c\u0435\u0442\u0440\u0438\u043a \u043f\u0440\u043e\u0438\u0437\u0432\u043e\u0434\u0438\u0442\u0435\u043b\u044c\u043d\u043e\u0441\u0442\u0438 \u0438\u0437 \u0441\u0438\u0441\u0442\u0435\u043c\u044b Linux",
-        "description": "\u0423\u0437\u043d\u0430\u0439\u0442\u0435, \u043a\u0430\u043a \u043f\u043e\u043b\u0443\u0447\u0438\u0442\u044c \u043c\u0435\u0442\u0440\u0438\u043a\u0438 \u043f\u0440\u043e\u0438\u0437\u0432\u043e\u0434\u0438\u0442\u0435\u043b\u044c\u043d\u043e\u0441\u0442\u0438 \u0438\u0437 \u0441\u0438\u0441\u0442\u0435\u043c\u044b Linux.",
+        "title": "Obtaining Performance metrics from a Linux system",
+        "description": "Learn how to obtainer Performance metrics from a Linux system.",
         "stackDetails": "",
-        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/localized/ru-RU/scenarios/ObtainPerformanceMetricsLinuxSustem/README.md",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/ObtainPerformanceMetricsLinuxSustem/README.md",
         "documentationUrl": "",
         "configurations": {
             "region": ""
@@ -420,111 +420,11 @@
     },
     {
         "status": "active",
-        "key": "BlobVisionOnAKS/README.md"
-    },
-    {
-        "status": "active",
-        "key": "CreateAKSDeployment/README.md",
-        "title": "\u041a\u0440\u0430\u0442\u043a\u043e\u0435 \u0440\u0443\u043a\u043e\u0432\u043e\u0434\u0441\u0442\u0432\u043e. \u0420\u0430\u0437\u0432\u0435\u0440\u0442\u044b\u0432\u0430\u043d\u0438\u0435 \u043a\u043b\u0430\u0441\u0442\u0435\u0440\u0430 \u0421\u043b\u0443\u0436\u0431\u0430 Azure Kubernetes (AKS) \u0441 \u043f\u043e\u043c\u043e\u0449\u044c\u044e Azure CLI",
-        "description": "\u0423\u0437\u043d\u0430\u0439\u0442\u0435, \u043a\u0430\u043a \u0431\u044b\u0441\u0442\u0440\u043e \u0440\u0430\u0437\u0432\u0435\u0440\u043d\u0443\u0442\u044c \u043a\u043b\u0430\u0441\u0442\u0435\u0440 Kubernetes \u0438 \u0440\u0430\u0437\u0432\u0435\u0440\u043d\u0443\u0442\u044c \u043f\u0440\u0438\u043b\u043e\u0436\u0435\u043d\u0438\u0435 \u0432 \u0421\u043b\u0443\u0436\u0431\u0430 Azure Kubernetes (AKS) \u0441 \u043f\u043e\u043c\u043e\u0449\u044c\u044e Azure CLI.",
+        "key": "azure-docs/articles/static-web-apps/get-started-cli.md",
+        "title": "Quickstart: Building your first static site with the Azure Static Web Apps using the CLI",
+        "description": "Learn to deploy a static site to Azure Static Web Apps with the Azure CLI.",
         "stackDetails": "",
-        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/localized/ru-RU/scenarios/CreateAKSDeployment/README.md",
-        "documentationUrl": "",
-        "configurations": {
-            "region": "westeurope"
-        }
-    },
-    {
-        "status": "active",
-        "key": "CreateAKSWebApp/create-aks-web-app.md",
-        "title": "\u0420\u0430\u0437\u0432\u0435\u0440\u0442\u044b\u0432\u0430\u043d\u0438\u0435 \u043c\u0430\u0441\u0448\u0442\u0430\u0431\u0438\u0440\u0443\u0435\u043c\u043e\u0433\u043e \u043a\u043b\u0430\u0441\u0442\u0435\u0440\u0430 \u0438 \u0431\u0435\u0437\u043e\u043f\u0430\u0441\u043d\u043e\u0433\u043e \u0421\u043b\u0443\u0436\u0431\u0430 Azure Kubernetes \u0441 \u043f\u043e\u043c\u043e\u0449\u044c\u044e Azure CLI",
-        "description": "\u0412 \u044d\u0442\u043e\u043c \u0440\u0443\u043a\u043e\u0432\u043e\u0434\u0441\u0442\u0432\u0435 \u043c\u044b \u043f\u043e\u0448\u0430\u0433\u043e\u0432\u044b\u0435 \u0438\u043d\u0441\u0442\u0440\u0443\u043a\u0446\u0438\u0438 \u043f\u043e \u0441\u043e\u0437\u0434\u0430\u043d\u0438\u044e \u0432\u0435\u0431-\u043f\u0440\u0438\u043b\u043e\u0436\u0435\u043d\u0438\u044f Azure Kubernetes, \u0437\u0430\u0449\u0438\u0449\u0435\u043d\u043d\u043e\u0433\u043e \u0447\u0435\u0440\u0435\u0437 https.",
-        "stackDetails": "",
-        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/localized/ru-RU/scenarios/CreateAKSWebApp/create-aks-web-app.md",
-        "documentationUrl": "",
-        "configurations": {
-            "region": "westeurope"
-        }
-    },
-    {
-        "status": "active",
-        "key": "CreateContainerAppDeploymentFromSource/README.md",
-        "title": "\u0421\u043e\u0437\u0434\u0430\u043d\u0438\u0435 \u043f\u0440\u0438\u043b\u043e\u0436\u0435\u043d\u0438\u044f-\u043a\u043e\u043d\u0442\u0435\u0439\u043d\u0435\u0440\u0430 \u0441 \u0438\u0441\u043f\u043e\u043b\u044c\u0437\u043e\u0432\u0430\u043d\u0438\u0435\u043c \u0445\u0440\u0430\u043d\u0438\u043b\u0438\u0449\u0430 BLOB-\u043e\u0431\u044a\u0435\u043a\u0442\u043e\u0432, SQL \u0438 \u041a\u043e\u043c\u043f\u044c\u044e\u0442\u0435\u0440\u043d\u043e\u0435 \u0437\u0440\u0435\u043d\u0438\u0435",
-        "description": "\u0412 \u044d\u0442\u043e\u043c \u0440\u0443\u043a\u043e\u0432\u043e\u0434\u0441\u0442\u0432\u0435 \u043f\u043e\u043a\u0430\u0437\u0430\u043d\u043e, \u043a\u0430\u043a \u0441\u043e\u0437\u0434\u0430\u0442\u044c \u043f\u0440\u0438\u043b\u043e\u0436\u0435\u043d\u0438\u0435 \u043a\u043e\u043d\u0442\u0435\u0439\u043d\u0435\u0440\u0430 \u0441 \u0438\u0441\u043f\u043e\u043b\u044c\u0437\u043e\u0432\u0430\u043d\u0438\u0435\u043c \u0445\u0440\u0430\u043d\u0438\u043b\u0438\u0449\u0430 BLOB-\u043e\u0431\u044a\u0435\u043a\u0442\u043e\u0432, SQL \u0438 \u041a\u043e\u043c\u043f\u044c\u044e\u0442\u0435\u0440\u043d\u043e\u0435 \u0437\u0440\u0435\u043d\u0438\u0435",
-        "stackDetails": "",
-        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/localized/ru-RU/scenarios/CreateContainerAppDeploymentFromSource/README.md",
-        "documentationUrl": "",
-        "configurations": {
-            "region": "westus"
-        }
-    },
-    {
-        "status": "active",
-        "key": "CreateLinuxVMAndSSH/README.md",
-        "title": "\u041a\u0440\u0430\u0442\u043a\u043e\u0435 \u0440\u0443\u043a\u043e\u0432\u043e\u0434\u0441\u0442\u0432\u043e. \u0421\u043e\u0437\u0434\u0430\u043d\u0438\u0435 \u0432\u0438\u0440\u0442\u0443\u0430\u043b\u044c\u043d\u043e\u0439 \u043c\u0430\u0448\u0438\u043d\u044b Linux \u0441 \u043f\u043e\u043c\u043e\u0449\u044c\u044e Azure CLI",
-        "description": "\u0418\u0437 \u044d\u0442\u043e\u0433\u043e \u043a\u0440\u0430\u0442\u043a\u043e\u0433\u043e \u0440\u0443\u043a\u043e\u0432\u043e\u0434\u0441\u0442\u0432\u0430 \u0432\u044b \u0443\u0437\u043d\u0430\u0435\u0442\u0435, \u043a\u0430\u043a \u0441 \u043f\u043e\u043c\u043e\u0449\u044c\u044e Azure CLI \u0441\u043e\u0437\u0434\u0430\u0442\u044c \u0432\u0438\u0440\u0442\u0443\u0430\u043b\u044c\u043d\u0443\u044e \u043c\u0430\u0448\u0438\u043d\u0443 Linux.",
-        "stackDetails": "",
-        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/localized/ru-RU/scenarios/CreateLinuxVMAndSSH/README.md",
-        "documentationUrl": "",
-        "configurations": {
-            "region": "EastUS"
-        }
-    },
-    {
-        "status": "active",
-        "key": "CreateLinuxVMLAMP/README.md",
-        "title": "\u0420\u0443\u043a\u043e\u0432\u043e\u0434\u0441\u0442\u0432\u043e. \u0420\u0430\u0437\u0432\u0435\u0440\u0442\u044b\u0432\u0430\u043d\u0438\u0435 \u0441\u0442\u0435\u043a\u0430 LEMP \u0441 \u043f\u043e\u043c\u043e\u0449\u044c\u044e WordPress \u043d\u0430 \u0432\u0438\u0440\u0442\u0443\u0430\u043b\u044c\u043d\u043e\u0439 \u043c\u0430\u0448\u0438\u043d\u0435",
-        "description": "\u0412 \u044d\u0442\u043e\u043c \u0440\u0443\u043a\u043e\u0432\u043e\u0434\u0441\u0442\u0432\u0435 \u043e\u043f\u0438\u0441\u0430\u043d\u043e, \u043a\u0430\u043a \u0443\u0441\u0442\u0430\u043d\u043e\u0432\u0438\u0442\u044c \u0441\u0442\u0435\u043a LEMP \u0438 WordPress \u043d\u0430 \u0432\u0438\u0440\u0442\u0443\u0430\u043b\u044c\u043d\u043e\u0439 \u043c\u0430\u0448\u0438\u043d\u0435 Linux \u0432 Azure.",
-        "stackDetails": "",
-        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/localized/ru-RU/scenarios/CreateLinuxVMLAMP/README.md",
-        "documentationUrl": "",
-        "configurations": {
-            "region": "westeurope"
-        }
-    },
-    {
-        "status": "active",
-        "key": "CreateLinuxVMSSwithAppGW/README.md",
-        "title": "\u0421\u043e\u0437\u0434\u0430\u043d\u0438\u0435 \u0432\u0438\u0440\u0442\u0443\u0430\u043b\u044c\u043d\u044b\u0445 \u043c\u0430\u0448\u0438\u043d \u0432 \u0433\u0438\u0431\u043a\u043e\u043c \u043c\u0430\u0441\u0448\u0442\u0430\u0431\u0438\u0440\u0443\u0435\u043c\u043e\u043c \u043d\u0430\u0431\u043e\u0440\u0435 \u0441 \u043f\u043e\u043c\u043e\u0449\u044c\u044e Azure CLI",
-        "description": "\u0423\u0437\u043d\u0430\u0439\u0442\u0435, \u043a\u0430\u043a \u0441\u043e\u0437\u0434\u0430\u0442\u044c \u043c\u0430\u0441\u0448\u0442\u0430\u0431\u0438\u0440\u0443\u0435\u043c\u044b\u0439 \u043d\u0430\u0431\u043e\u0440 \u0432\u0438\u0440\u0442\u0443\u0430\u043b\u044c\u043d\u044b\u0445 \u043c\u0430\u0448\u0438\u043d \u0432 \u0433\u0438\u0431\u043a\u043e\u043c \u0440\u0435\u0436\u0438\u043c\u0435 \u043e\u0440\u043a\u0435\u0441\u0442\u0440\u0430\u0446\u0438\u0438 \u0441 \u043f\u043e\u043c\u043e\u0449\u044c\u044e Azure CLI.",
-        "stackDetails": "",
-        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/localized/ru-RU/scenarios/CreateLinuxVMSSwithAppGW/README.md",
-        "documentationUrl": "",
-        "configurations": {
-            "region": "EastUS"
-        }
-    },
-    {
-        "status": "active",
-        "key": "CreateLinuxVMSecureWebServer/README.md",
-        "title": "\u0421\u043e\u0437\u0434\u0430\u043d\u0438\u0435 \u0432\u0435\u0431-\u0441\u0435\u0440\u0432\u0435\u0440\u0430 NGINX, \u0437\u0430\u0449\u0438\u0449\u0435\u043d\u043d\u043e\u0433\u043e \u0447\u0435\u0440\u0435\u0437 HTTPS",
-        "description": "\u0412 \u044d\u0442\u043e\u043c \u0440\u0443\u043a\u043e\u0432\u043e\u0434\u0441\u0442\u0432\u0435 \u043f\u043e\u043a\u0430\u0437\u0430\u043d\u043e, \u043a\u0430\u043a \u0441\u043e\u0437\u0434\u0430\u0442\u044c \u0432\u0435\u0431-\u0441\u0435\u0440\u0432\u0435\u0440 NGINX Secured \u0441 \u043f\u043e\u043c\u043e\u0449\u044c\u044e HTTPS.",
-        "stackDetails": "",
-        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/localized/ru-RU/scenarios/CreateLinuxVMSecureWebServer/README.md",
-        "documentationUrl": "",
-        "configurations": {
-            "region": "eastus"
-        }
-    },
-    {
-        "status": "active",
-        "key": "CreateRHELVMAndSSH/README.md",
-        "title": "\u041a\u0440\u0430\u0442\u043a\u043e\u0435 \u0440\u0443\u043a\u043e\u0432\u043e\u0434\u0441\u0442\u0432\u043e. \u0421\u043e\u0437\u0434\u0430\u043d\u0438\u0435 \u0432\u0438\u0440\u0442\u0443\u0430\u043b\u044c\u043d\u043e\u0439 \u043c\u0430\u0448\u0438\u043d\u044b Red Hat Enterprise Linux \u0441 \u043f\u043e\u043c\u043e\u0449\u044c\u044e Azure CLI",
-        "description": "\u0418\u0437 \u044d\u0442\u043e\u0433\u043e \u043a\u0440\u0430\u0442\u043a\u043e\u0433\u043e \u0440\u0443\u043a\u043e\u0432\u043e\u0434\u0441\u0442\u0432\u0430 \u0432\u044b \u0443\u0437\u043d\u0430\u0435\u0442\u0435, \u043a\u0430\u043a \u0438\u0441\u043f\u043e\u043b\u044c\u0437\u043e\u0432\u0430\u0442\u044c Azure CLI \u0434\u043b\u044f \u0441\u043e\u0437\u0434\u0430\u043d\u0438\u044f \u0432\u0438\u0440\u0442\u0443\u0430\u043b\u044c\u043d\u043e\u0439 \u043c\u0430\u0448\u0438\u043d\u044b Red Hat Enterprise Linux",
-        "stackDetails": "",
-        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/localized/ru-RU/scenarios/CreateRHELVMAndSSH/README.md",
-        "documentationUrl": "",
-        "configurations": {
-            "region": "EastUS"
-        }
-    },
-    {
-        "status": "active",
-        "key": "CreateStaticWebApp/README.md",
-        "title": "\u041a\u0440\u0430\u0442\u043a\u043e\u0435 \u0440\u0443\u043a\u043e\u0432\u043e\u0434\u0441\u0442\u0432\u043e. \u0421\u043e\u0437\u0434\u0430\u043d\u0438\u0435 \u043f\u0435\u0440\u0432\u043e\u0433\u043e \u0441\u0442\u0430\u0442\u0438\u0447\u0435\u0441\u043a\u043e\u0433\u043e \u0441\u0430\u0439\u0442\u0430 \u0441 \u043f\u043e\u043c\u043e\u0449\u044c\u044e \u0421\u0442\u0430\u0442\u0438\u0447\u0435\u0441\u043a\u0438\u0435 \u0432\u0435\u0431-\u043f\u0440\u0438\u043b\u043e\u0436\u0435\u043d\u0438\u044f Azure \u0441 \u043f\u043e\u043c\u043e\u0449\u044c\u044e \u0438\u043d\u0442\u0435\u0440\u0444\u0435\u0439\u0441\u0430 \u043a\u043e\u043c\u0430\u043d\u0434\u043d\u043e\u0439 \u0441\u0442\u0440\u043e\u043a\u0438",
-        "description": "\u0423\u0437\u043d\u0430\u0439\u0442\u0435, \u043a\u0430\u043a \u0440\u0430\u0437\u0432\u0435\u0440\u043d\u0443\u0442\u044c \u0441\u0442\u0430\u0442\u0438\u0447\u0435\u0441\u043a\u0438\u0439 \u0441\u0430\u0439\u0442 \u0432 \u0441\u043b\u0443\u0436\u0431\u0435 \"\u0421\u0442\u0430\u0442\u0438\u0447\u0435\u0441\u043a\u0438\u0435 \u0432\u0435\u0431-\u043f\u0440\u0438\u043b\u043e\u0436\u0435\u043d\u0438\u044f Azure\" \u0441 \u043f\u043e\u043c\u043e\u0449\u044c\u044e Azure\u00a0CLI.",
-        "stackDetails": "",
-        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/localized/ru-RU/scenarios/CreateStaticWebApp/README.md",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-docs/articles/static-web-apps/get-started-cli.md",
         "documentationUrl": "",
         "configurations": {
             "region": "EastUS2"
@@ -532,38 +432,26 @@
     },
     {
         "status": "active",
-        "key": "CreateWordPressDeployment/README.md",
-        "title": "\u0420\u0443\u043a\u043e\u0432\u043e\u0434\u0441\u0442\u0432\u043e \u043f\u043e \u0440\u0430\u0437\u0432\u0435\u0440\u0442\u044b\u0432\u0430\u043d\u0438\u044e WordPress \u0432 \u043a\u043b\u0430\u0441\u0442\u0435\u0440\u0435 AKS \u0441 \u043f\u043e\u043c\u043e\u0449\u044c\u044e Azure CLI",
-        "description": "\u0421\u0432\u0435\u0434\u0435\u043d\u0438\u044f \u043e \u0442\u043e\u043c, \u043a\u0430\u043a \u0431\u044b\u0441\u0442\u0440\u043e \u0441\u043e\u0437\u0434\u0430\u0442\u044c \u0438 \u0440\u0430\u0437\u0432\u0435\u0440\u043d\u0443\u0442\u044c WordPress \u0432 AKS \u0441 \u0433\u0438\u0431\u043a\u0438\u043c \u0441\u0435\u0440\u0432\u0435\u0440\u043e\u043c \u0411\u0430\u0437\u044b \u0434\u0430\u043d\u043d\u044b\u0445 Azure \u0434\u043b\u044f MySQL.",
+        "key": "azure-docs/articles/static-web-apps/get-started-cli.md",
+        "title": "Quickstart: Building your first static site with the Azure Static Web Apps using the CLI",
+        "description": "Learn to deploy a static site to Azure Static Web Apps with the Azure CLI.",
         "stackDetails": "",
-        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/localized/ru-RU/scenarios/CreateWordPressDeployment/README.md",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-docs/articles/static-web-apps/get-started-cli.md",
         "documentationUrl": "",
         "configurations": {
-            "region": "westeurope"
+            "region": "EastUS2"
         }
     },
     {
         "status": "active",
-        "key": "DeployHAPGonARO/README.md",
-        "title": "\u0421\u043e\u0437\u0434\u0430\u043d\u0438\u0435 \u043a\u043b\u0430\u0441\u0442\u0435\u0440\u0430 PostgreSQL \u0441 \u0432\u044b\u0441\u043e\u043a\u0438\u043c \u0443\u0440\u043e\u0432\u043d\u0435\u043c \u0434\u043e\u0441\u0442\u0443\u043f\u043d\u043e\u0441\u0442\u0438 \u0432 Azure Red Hat OpenShift",
-        "description": "\u0412 \u044d\u0442\u043e\u043c \u0440\u0443\u043a\u043e\u0432\u043e\u0434\u0441\u0442\u0432\u0435 \u043f\u043e\u043a\u0430\u0437\u0430\u043d\u043e, \u043a\u0430\u043a \u0441\u043e\u0437\u0434\u0430\u0442\u044c \u043a\u043b\u0430\u0441\u0442\u0435\u0440 PostgreSQL \u0441 \u0432\u044b\u0441\u043e\u043a\u0438\u043c \u0443\u0440\u043e\u0432\u043d\u0435\u043c \u0434\u043e\u0441\u0442\u0443\u043f\u043d\u043e\u0441\u0442\u0438 \u0432 Azure Red Hat OpenShift (ARO) \u0441 \u043f\u043e\u043c\u043e\u0449\u044c\u044e \u043e\u043f\u0435\u0440\u0430\u0442\u043e\u0440\u0430 CloudNativePG",
+        "key": "azure-docs/articles/static-web-apps/get-started-cli.md",
+        "title": "\u041a\u0440\u0430\u0442\u043a\u043e\u0435 \u0440\u0443\u043a\u043e\u0432\u043e\u0434\u0441\u0442\u0432\u043e. \u0421\u043e\u0437\u0434\u0430\u043d\u0438\u0435 \u043f\u0435\u0440\u0432\u043e\u0433\u043e \u0441\u0442\u0430\u0442\u0438\u0447\u0435\u0441\u043a\u043e\u0433\u043e \u0441\u0430\u0439\u0442\u0430 \u0441 \u043f\u043e\u043c\u043e\u0449\u044c\u044e \u0421\u0442\u0430\u0442\u0438\u0447\u0435\u0441\u043a\u0438\u0435 \u0432\u0435\u0431-\u043f\u0440\u0438\u043b\u043e\u0436\u0435\u043d\u0438\u044f Azure \u0441 \u043f\u043e\u043c\u043e\u0449\u044c\u044e \u0438\u043d\u0442\u0435\u0440\u0444\u0435\u0439\u0441\u0430 \u043a\u043e\u043c\u0430\u043d\u0434\u043d\u043e\u0439 \u0441\u0442\u0440\u043e\u043a\u0438",
+        "description": "\u0423\u0437\u043d\u0430\u0439\u0442\u0435, \u043a\u0430\u043a \u0440\u0430\u0437\u0432\u0435\u0440\u043d\u0443\u0442\u044c \u0441\u0442\u0430\u0442\u0438\u0447\u0435\u0441\u043a\u0438\u0439 \u0441\u0430\u0439\u0442 \u0432 \u0441\u043b\u0443\u0436\u0431\u0435 \"\u0421\u0442\u0430\u0442\u0438\u0447\u0435\u0441\u043a\u0438\u0435 \u0432\u0435\u0431-\u043f\u0440\u0438\u043b\u043e\u0436\u0435\u043d\u0438\u044f Azure\" \u0441 \u043f\u043e\u043c\u043e\u0449\u044c\u044e Azure\u00a0CLI.",
         "stackDetails": "",
-        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/localized/ru-RU/scenarios/DeployHAPGonARO/README.md",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/localized/ru-RU/scenarios/azure-docs/articles/static-web-apps/get-started-cli.md",
         "documentationUrl": "",
         "configurations": {
-            "region": ""
-        }
-    },
-    {
-        "status": "active",
-        "key": "DeployIGonAKS/deploy-ig-aks.md",
-        "title": "\u0420\u0430\u0437\u0432\u0435\u0440\u0442\u044b\u0432\u0430\u043d\u0438\u0435 Inspektor Gadget \u0432 \u043a\u043b\u0430\u0441\u0442\u0435\u0440\u0435 \u0421\u043b\u0443\u0436\u0431\u0430 Azure Kubernetes",
-        "description": "\u0412 \u044d\u0442\u043e\u043c \u0440\u0443\u043a\u043e\u0432\u043e\u0434\u0441\u0442\u0432\u0435 \u043f\u043e\u043a\u0430\u0437\u0430\u043d\u043e, \u043a\u0430\u043a \u0440\u0430\u0437\u0432\u0435\u0440\u043d\u0443\u0442\u044c Inspektor Gadget \u0432 \u043a\u043b\u0430\u0441\u0442\u0435\u0440\u0435 AKS",
-        "stackDetails": "",
-        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/localized/ru-RU/scenarios/DeployIGonAKS/deploy-ig-aks.md",
-        "documentationUrl": "",
-        "configurations": {
-            "region": "eastus"
+            "region": "EastUS2"
         }
     }
 ]
