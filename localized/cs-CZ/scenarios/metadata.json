@@ -2,10 +2,10 @@
     {
         "status": "active",
         "key": "azure-docs/articles/aks/learn/quick-kubernetes-deploy-cli.md",
-        "title": "Rychl\u00fd start: Nasazen\u00ed clusteru Azure Kubernetes Service (AKS) pomoc\u00ed Azure CLI",
-        "description": "Zjist\u011bte, jak rychle nasadit cluster Kubernetes a nasadit aplikaci ve slu\u017eb\u011b Azure Kubernetes Service (AKS) pomoc\u00ed Azure CLI.",
+        "title": "Quickstart: Deploy an Azure Kubernetes Service (AKS) cluster using Azure CLI",
+        "description": "Learn how to quickly deploy a Kubernetes cluster and deploy an application in Azure Kubernetes Service (AKS) using Azure CLI",
         "stackDetails": "",
-        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/localized/cs-CZ/scenarios/azure-docs/articles/aks/learn/quick-kubernetes-deploy-cli.md",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-docs/articles/aks/learn/quick-kubernetes-deploy-cli.md",
         "documentationUrl": "https://learn.microsoft.com/en-us/azure/aks/learn/quick-kubernetes-deploy-cli",
         "nextSteps": [
             {
@@ -49,14 +49,14 @@
                 "Microsoft.ContainerService/managedClusters/GetAccessProfiles/action",
                 "Microsoft.Network/publicIPAddresses/list/action"
             ],
-            "region": "westeurope"
+            "region": "eastus"
         }
     },
     {
         "status": "active",
         "key": "azure-docs/articles/mysql/flexible-server/tutorial-deploy-wordpress-on-aks.md",
-        "title": "Kurz: Nasazen\u00ed WordPressu v clusteru AKS pomoc\u00ed Azure CLI",
-        "description": "Zjist\u011bte, jak rychle sestavit a nasadit WordPress v AKS pomoc\u00ed flexibiln\u00edho serveru Azure Database for MySQL.",
+        "title": "Tutorial: Deploy WordPress on AKS cluster by using Azure CLI",
+        "description": "Learn how to quickly build and deploy WordPress on AKS with Azure Database for MySQL - Flexible Server.",
         "stackDetails": [
             "An Ubuntu 22.04 Linux VM (Standard DS2_v2)",
             "Azure Database for MySQL - Flexible Server: 8.0.21",
@@ -67,7 +67,7 @@
             "Azure Private DNS Zone for Azure MySQL Flexible Server",
             "Use port 22 for SSH and ports 80, 443 for web traffic"
         ],
-        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/localized/cs-CZ/scenarios/azure-docs/articles/mysql/flexible-server/tutorial-deploy-wordpress-on-aks.md",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-docs/articles/mysql/flexible-server/tutorial-deploy-wordpress-on-aks.md",
         "documentationUrl": "https://learn.microsoft.com/en-us/azure/mysql/flexible-server/tutorial-deploy-wordpress-on-aks",
         "nextSteps": [
             {
@@ -125,7 +125,7 @@
                 "Microsoft.Authorization/roleDefinitions/read",
                 "Microsoft.Authorization/roleDefinitions/write"
             ],
-            "region": "westeurope"
+            "region": "eastus"
         }
     },
     {
@@ -149,10 +149,10 @@
     {
         "status": "active",
         "key": "azure-docs/articles/virtual-machine-scale-sets/flexible-virtual-machine-scale-sets-cli.md",
-        "title": "Vytvo\u0159en\u00ed virtu\u00e1ln\u00edch po\u010d\u00edta\u010d\u016f v flexibiln\u00ed \u0161k\u00e1lovac\u00ed sad\u011b pomoc\u00ed Azure CLI",
-        "description": "Zjist\u011bte, jak vytvo\u0159it \u0161k\u00e1lovac\u00ed sadu virtu\u00e1ln\u00edch po\u010d\u00edta\u010d\u016f v flexibiln\u00edm re\u017eimu orchestrace pomoc\u00ed Azure CLI.",
+        "title": "Create virtual machines in a Flexible scale set using Azure CLI",
+        "description": "Learn how to create a Virtual Machine Scale Set in Flexible orchestration mode using Azure CLI.",
         "stackDetails": "",
-        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/localized/cs-CZ/scenarios/azure-docs/articles/virtual-machine-scale-sets/flexible-virtual-machine-scale-sets-cli.md",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-docs/articles/virtual-machine-scale-sets/flexible-virtual-machine-scale-sets-cli.md",
         "documentationUrl": "https://learn.microsoft.com/en-us/azure/virtual-machine-scale-sets/flexible-virtual-machine-scale-sets-cli",
         "nextSteps": [
             {
@@ -169,21 +169,21 @@
             }
         ],
         "configurations": {
-            "region": "EastUS"
+            "region": "centralindia"
         }
     },
     {
         "status": "active",
         "key": "azure-docs/articles/virtual-machines/linux/quick-create-cli.md",
-        "title": "Rychl\u00fd start: Vytvo\u0159en\u00ed virtu\u00e1ln\u00edho po\u010d\u00edta\u010de s Linuxem pomoc\u00ed Azure CLI",
-        "description": "V tomto rychl\u00e9m startu zjist\u00edte, jak pomoc\u00ed Azure CLI vytvo\u0159it virtu\u00e1ln\u00ed po\u010d\u00edta\u010d s Linuxem",
+        "title": "Quickstart: Use the Azure CLI to create a Linux Virtual Machine",
+        "description": "In this quickstart, you learn how to use the Azure CLI to create a Linux virtual machine",
         "stackDetails": [
             "An Ubuntu 22.04 Linux VM (Standard DS1_v2)",
             "30 GB Premium SSD (120 IOPS, 25 MBps)",
             "Network interface with public IP and network security group",
             "Port 22 will be opened"
         ],
-        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/localized/cs-CZ/scenarios/azure-docs/articles/virtual-machines/linux/quick-create-cli.md",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-docs/articles/virtual-machines/linux/quick-create-cli.md",
         "documentationUrl": "https://learn.microsoft.com/en-us/azure/virtual-machines/linux/quick-create-cli",
         "nextSteps": [
             {
@@ -216,16 +216,16 @@
                 "Microsoft.Network/publicIPAddresses/read",
                 "Microsoft.Compute/virtualMachines/instanceView/read"
             ],
-            "region": "EastUS"
+            "region": "centralindia"
         }
     },
     {
         "status": "active",
         "key": "azure-docs/articles/virtual-machines/linux/tutorial-lemp-stack.md",
-        "title": "Kurz \u2013 Nasazen\u00ed z\u00e1sobn\u00edku LEMP pomoc\u00ed WordPressu na virtu\u00e1ln\u00edm po\u010d\u00edta\u010di",
-        "description": "V tomto kurzu se dozv\u00edte, jak nainstalovat z\u00e1sobn\u00edk LEMP a WordPress na virtu\u00e1ln\u00ed po\u010d\u00edta\u010d s Linuxem v Azure.",
+        "title": "Tutorial - Deploy a LEMP stack using WordPress on a VM",
+        "description": "In this tutorial, you learn how to install the LEMP stack, and WordPress, on a Linux virtual machine in Azure.",
         "stackDetails": "",
-        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/localized/cs-CZ/scenarios/azure-docs/articles/virtual-machines/linux/tutorial-lemp-stack.md",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-docs/articles/virtual-machines/linux/tutorial-lemp-stack.md",
         "documentationUrl": "https://learn.microsoft.com/en-us/azure/virtual-machines/linux/tutorial-lemp-stack",
         "configurations": {
             "region": "westeurope"
@@ -234,10 +234,10 @@
     {
         "status": "active",
         "key": "DeployIGonAKS/README.md",
-        "title": "Nasazen\u00ed miniaplikace Inspektor v clusteru Azure Kubernetes Service",
-        "description": "V tomto kurzu se dozv\u00edte, jak nasadit Miniaplikaci Inspektor v clusteru AKS.",
+        "title": "Deploy Inspektor Gadget in an Azure Kubernetes Service cluster",
+        "description": "This tutorial shows how to deploy Inspektor Gadget in an AKS cluster",
         "stackDetails": "",
-        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/localized/cs-CZ/scenarios/DeployIGonAKS/README.md",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/DeployIGonAKS/README.md",
         "documentationUrl": "",
         "nextSteps": [
             {
@@ -260,10 +260,10 @@
     {
         "status": "active",
         "key": "CreateAKSWebApp/README.md",
-        "title": "Nasazen\u00ed \u0161k\u00e1lovateln\u00e9ho a zabezpe\u010den\u00e9ho clusteru Azure Kubernetes Service pomoc\u00ed Azure CLI",
-        "description": "V tomto kurzu v\u00e1s provedeme krok za krokem p\u0159i vytv\u00e1\u0159en\u00ed webov\u00e9 aplikace Azure Kubernetes, kter\u00e1 je zabezpe\u010den\u00e1 p\u0159es https.",
+        "title": "Deploy a Scalable & Secure Azure Kubernetes Service cluster using the Azure CLI",
+        "description": "This tutorial where we will take you step by step in creating an Azure Kubernetes Web Application that is secured via https.",
         "stackDetails": "",
-        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/localized/cs-CZ/scenarios/CreateAKSWebApp/README.md",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/CreateAKSWebApp/README.md",
         "documentationUrl": "",
         "nextSteps": [
             {
@@ -284,7 +284,7 @@
             }
         ],
         "configurations": {
-            "region": "westeurope"
+            "region": "eastus"
         }
     },
     {
@@ -294,10 +294,10 @@
     {
         "status": "inactive",
         "key": "CreateAKSDeployment/create-aks-deployment.md",
-        "title": "Rychl\u00fd start: Nasazen\u00ed clusteru Azure Kubernetes Service (AKS) pomoc\u00ed Azure CLI",
-        "description": "Zjist\u011bte, jak rychle nasadit cluster Kubernetes a nasadit aplikaci ve slu\u017eb\u011b Azure Kubernetes Service (AKS) pomoc\u00ed Azure CLI.",
+        "title": "Quickstart: Deploy an Azure Kubernetes Service (AKS) cluster using Azure CLI",
+        "description": "Learn how to quickly deploy a Kubernetes cluster and deploy an application in Azure Kubernetes Service (AKS) using Azure CLI.",
         "stackDetails": "",
-        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/localized/cs-CZ/scenarios/CreateAKSDeployment/create-aks-deployment.md",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/CreateAKSDeployment/create-aks-deployment.md",
         "documentationUrl": "",
         "configurations": {
             "region": "westeurope"
@@ -306,10 +306,10 @@
     {
         "status": "inactive",
         "key": "CreateContainerAppDeploymentFromSource/create-container-app-deployment-from-source.md",
-        "title": "Vytvo\u0159en\u00ed kontejnerov\u00e9 aplikace vyu\u017e\u00edvaj\u00edc\u00ed \u00dalo\u017ei\u0161t\u011b objekt\u016f blob, SQL a Po\u010d\u00edta\u010dov\u00e9 zpracov\u00e1n\u00ed obrazu",
-        "description": "V tomto kurzu se dozv\u00edte, jak vytvo\u0159it kontejnerovou aplikaci vyu\u017e\u00edvaj\u00edc\u00ed \u00dalo\u017ei\u0161t\u011b objekt\u016f blob, SQL a Po\u010d\u00edta\u010dov\u00e9 zpracov\u00e1n\u00ed obrazu",
+        "title": "Create a Container App leveraging Blob Store, SQL, and Computer Vision",
+        "description": "This tutorial shows how to create a Container App leveraging Blob Store, SQL, and Computer Vision",
         "stackDetails": "",
-        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/localized/cs-CZ/scenarios/CreateContainerAppDeploymentFromSource/create-container-app-deployment-from-source.md",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/CreateContainerAppDeploymentFromSource/create-container-app-deployment-from-source.md",
         "documentationUrl": "",
         "configurations": {
             "region": "westus"
@@ -318,10 +318,10 @@
     {
         "status": "active",
         "key": "CreateRHELVMAndSSH/create-rhel-vm-ssh.md",
-        "title": "Rychl\u00fd start: Vytvo\u0159en\u00ed virtu\u00e1ln\u00edho po\u010d\u00edta\u010de s Red Hat Enterprise Linuxem pomoc\u00ed Azure CLI",
-        "description": "V tomto rychl\u00e9m startu se dozv\u00edte, jak pomoc\u00ed Azure CLI vytvo\u0159it virtu\u00e1ln\u00ed po\u010d\u00edta\u010d s Red Hat Enterprise Linuxem.",
+        "title": "Quickstart: Use the Azure CLI to create a Red Hat Enterprise Linux Virtual Machine",
+        "description": "In this quickstart, you learn how to use the Azure CLI to create a Red Hat Enterprise Linux virtual machine",
         "stackDetails": "",
-        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/localized/cs-CZ/scenarios/CreateRHELVMAndSSH/create-rhel-vm-ssh.md",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/CreateRHELVMAndSSH/create-rhel-vm-ssh.md",
         "documentationUrl": "",
         "configurations": {
             "region": "westeurope"
@@ -330,10 +330,10 @@
     {
         "status": "inactive",
         "key": "DeployHAPGonARO/deploy-ha-pg-aro.md",
-        "title": "Vytvo\u0159en\u00ed clusteru PostgreSQL s vysokou dostupnost\u00ed v Azure Red Hat OpenShiftu",
-        "description": "Tento kurz ukazuje, jak vytvo\u0159it cluster PostgreSQL s vysokou dostupnost\u00ed v Azure Red Hat OpenShift (ARO) pomoc\u00ed oper\u00e1toru CloudNativePG.",
+        "title": "Create a Highly Available PostgreSQL Cluster on Azure Red Hat OpenShift",
+        "description": "This tutorial shows how to create a Highly Available PostgreSQL cluster on Azure Red Hat OpenShift (ARO) using the CloudNativePG operator",
         "stackDetails": "",
-        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/localized/cs-CZ/scenarios/DeployHAPGonARO/deploy-ha-pg-aro.md",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/DeployHAPGonARO/deploy-ha-pg-aro.md",
         "documentationUrl": "",
         "configurations": {
             "region": ""
@@ -366,10 +366,10 @@
     {
         "status": "inactive",
         "key": "azure-docs/articles/aks/postgresql-ha-overview.md",
-        "title": "P\u0159ehled nasazen\u00ed vysoce dostupn\u00e9 datab\u00e1ze PostgreSQL v AKS pomoc\u00ed Azure CLI",
-        "description": "Zjist\u011bte, jak nasadit vysoce dostupnou datab\u00e1zi PostgreSQL v AKS pomoc\u00ed oper\u00e1tora CloudNativePG s Azure CLI.",
+        "title": "Overview of deploying a highly available PostgreSQL database on AKS with Azure CLI",
+        "description": "Learn how to deploy a highly available PostgreSQL database on AKS using the CloudNativePG operator with Azure CLI.",
         "stackDetails": "",
-        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/localized/cs-CZ/scenarios/azure-docs/articles/aks/postgresql-ha-overview.md",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-docs/articles/aks/postgresql-ha-overview.md",
         "documentationUrl": "",
         "configurations": {
             "region": ""
@@ -378,10 +378,10 @@
     {
         "status": "active",
         "key": "AttachDataDiskLinuxVM/attach-data-disk-linux-vm.md",
-        "title": "Rychl\u00fd start: Vytvo\u0159en\u00ed virtu\u00e1ln\u00edho po\u010d\u00edta\u010de s Ubuntu pomoc\u00ed Azure CLI a p\u0159ipojen\u00ed datov\u00e9ho disku Azure",
-        "description": "V tomto rychl\u00e9m startu se dozv\u00edte, jak pomoc\u00ed Azure CLI vytvo\u0159it virtu\u00e1ln\u00ed po\u010d\u00edta\u010d s Ubuntu Linuxem.",
+        "title": "Quickstart: Use the Azure CLI to create an Ubuntu Virtual Machine and attach an Azure Data Disk",
+        "description": "In this quickstart, you learn how to use the Azure CLI to create an Ubuntu Linux virtual machine",
         "stackDetails": "",
-        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/localized/cs-CZ/scenarios/AttachDataDiskLinuxVM/attach-data-disk-linux-vm.md",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/AttachDataDiskLinuxVM/attach-data-disk-linux-vm.md",
         "documentationUrl": "",
         "nextSteps": [
             {
@@ -409,161 +409,13 @@
     {
         "status": "inactive",
         "key": "ObtainPerformanceMetricsLinuxSustem/README.md",
-        "title": "Z\u00edsk\u00e1n\u00ed metrik v\u00fdkonu ze syst\u00e9mu Linux",
-        "description": "Zjist\u011bte, jak z\u00edskat metriky v\u00fdkonu ze syst\u00e9mu Linux.",
+        "title": "Obtaining Performance metrics from a Linux system",
+        "description": "Learn how to obtainer Performance metrics from a Linux system.",
         "stackDetails": "",
-        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/localized/cs-CZ/scenarios/ObtainPerformanceMetricsLinuxSustem/README.md",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/ObtainPerformanceMetricsLinuxSustem/README.md",
         "documentationUrl": "",
         "configurations": {
             "region": ""
-        }
-    },
-    {
-        "status": "active",
-        "key": "BlobVisionOnAKS/README.md"
-    },
-    {
-        "status": "active",
-        "key": "CreateAKSDeployment/README.md",
-        "title": "Rychl\u00fd start: Nasazen\u00ed clusteru Azure Kubernetes Service (AKS) pomoc\u00ed Azure CLI",
-        "description": "Zjist\u011bte, jak rychle nasadit cluster Kubernetes a nasadit aplikaci ve slu\u017eb\u011b Azure Kubernetes Service (AKS) pomoc\u00ed Azure CLI.",
-        "stackDetails": "",
-        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/localized/cs-CZ/scenarios/CreateAKSDeployment/README.md",
-        "documentationUrl": "",
-        "configurations": {
-            "region": "westeurope"
-        }
-    },
-    {
-        "status": "active",
-        "key": "CreateAKSWebApp/create-aks-web-app.md",
-        "title": "Nasazen\u00ed \u0161k\u00e1lovateln\u00e9ho a zabezpe\u010den\u00e9ho clusteru Azure Kubernetes Service pomoc\u00ed Azure CLI",
-        "description": "V tomto kurzu v\u00e1s provedeme krok za krokem p\u0159i vytv\u00e1\u0159en\u00ed webov\u00e9 aplikace Azure Kubernetes, kter\u00e1 je zabezpe\u010den\u00e1 p\u0159es https.",
-        "stackDetails": "",
-        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/localized/cs-CZ/scenarios/CreateAKSWebApp/create-aks-web-app.md",
-        "documentationUrl": "",
-        "configurations": {
-            "region": "westeurope"
-        }
-    },
-    {
-        "status": "active",
-        "key": "CreateContainerAppDeploymentFromSource/README.md",
-        "title": "Vytvo\u0159en\u00ed kontejnerov\u00e9 aplikace vyu\u017e\u00edvaj\u00edc\u00ed \u00dalo\u017ei\u0161t\u011b objekt\u016f blob, SQL a Po\u010d\u00edta\u010dov\u00e9 zpracov\u00e1n\u00ed obrazu",
-        "description": "V tomto kurzu se dozv\u00edte, jak vytvo\u0159it kontejnerovou aplikaci vyu\u017e\u00edvaj\u00edc\u00ed \u00dalo\u017ei\u0161t\u011b objekt\u016f blob, SQL a Po\u010d\u00edta\u010dov\u00e9 zpracov\u00e1n\u00ed obrazu",
-        "stackDetails": "",
-        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/localized/cs-CZ/scenarios/CreateContainerAppDeploymentFromSource/README.md",
-        "documentationUrl": "",
-        "configurations": {
-            "region": "westus"
-        }
-    },
-    {
-        "status": "active",
-        "key": "CreateLinuxVMAndSSH/README.md",
-        "title": "Rychl\u00fd start: Vytvo\u0159en\u00ed virtu\u00e1ln\u00edho po\u010d\u00edta\u010de s Linuxem pomoc\u00ed Azure CLI",
-        "description": "V tomto rychl\u00e9m startu zjist\u00edte, jak pomoc\u00ed Azure CLI vytvo\u0159it virtu\u00e1ln\u00ed po\u010d\u00edta\u010d s Linuxem",
-        "stackDetails": "",
-        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/localized/cs-CZ/scenarios/CreateLinuxVMAndSSH/README.md",
-        "documentationUrl": "",
-        "configurations": {
-            "region": "EastUS"
-        }
-    },
-    {
-        "status": "active",
-        "key": "CreateLinuxVMLAMP/README.md",
-        "title": "Kurz \u2013 Nasazen\u00ed z\u00e1sobn\u00edku LEMP pomoc\u00ed WordPressu na virtu\u00e1ln\u00edm po\u010d\u00edta\u010di",
-        "description": "V tomto kurzu se dozv\u00edte, jak nainstalovat z\u00e1sobn\u00edk LEMP a WordPress na virtu\u00e1ln\u00ed po\u010d\u00edta\u010d s Linuxem v Azure.",
-        "stackDetails": "",
-        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/localized/cs-CZ/scenarios/CreateLinuxVMLAMP/README.md",
-        "documentationUrl": "",
-        "configurations": {
-            "region": "westeurope"
-        }
-    },
-    {
-        "status": "active",
-        "key": "CreateLinuxVMSSwithAppGW/README.md",
-        "title": "Vytvo\u0159en\u00ed virtu\u00e1ln\u00edch po\u010d\u00edta\u010d\u016f v flexibiln\u00ed \u0161k\u00e1lovac\u00ed sad\u011b pomoc\u00ed Azure CLI",
-        "description": "Zjist\u011bte, jak vytvo\u0159it \u0161k\u00e1lovac\u00ed sadu virtu\u00e1ln\u00edch po\u010d\u00edta\u010d\u016f v flexibiln\u00edm re\u017eimu orchestrace pomoc\u00ed Azure CLI.",
-        "stackDetails": "",
-        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/localized/cs-CZ/scenarios/CreateLinuxVMSSwithAppGW/README.md",
-        "documentationUrl": "",
-        "configurations": {
-            "region": "EastUS"
-        }
-    },
-    {
-        "status": "active",
-        "key": "CreateLinuxVMSecureWebServer/README.md",
-        "title": "Vytvo\u0159en\u00ed webov\u00e9ho serveru NGINX zabezpe\u010den\u00e9ho p\u0159es HTTPS",
-        "description": "V tomto kurzu se dozv\u00edte, jak vytvo\u0159it webov\u00fd server NGINX zabezpe\u010den\u00fd p\u0159es PROTOKOL HTTPS.",
-        "stackDetails": "",
-        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/localized/cs-CZ/scenarios/CreateLinuxVMSecureWebServer/README.md",
-        "documentationUrl": "",
-        "configurations": {
-            "region": "eastus"
-        }
-    },
-    {
-        "status": "active",
-        "key": "CreateRHELVMAndSSH/README.md",
-        "title": "Rychl\u00fd start: Vytvo\u0159en\u00ed virtu\u00e1ln\u00edho po\u010d\u00edta\u010de s Red Hat Enterprise Linuxem pomoc\u00ed Azure CLI",
-        "description": "V tomto rychl\u00e9m startu se dozv\u00edte, jak pomoc\u00ed Azure CLI vytvo\u0159it virtu\u00e1ln\u00ed po\u010d\u00edta\u010d s Red Hat Enterprise Linuxem.",
-        "stackDetails": "",
-        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/localized/cs-CZ/scenarios/CreateRHELVMAndSSH/README.md",
-        "documentationUrl": "",
-        "configurations": {
-            "region": "EastUS"
-        }
-    },
-    {
-        "status": "active",
-        "key": "CreateStaticWebApp/README.md",
-        "title": "Rychl\u00fd start: Vytvo\u0159en\u00ed prvn\u00edho statick\u00e9ho webu pomoc\u00ed Azure Static Web Apps pomoc\u00ed rozhran\u00ed p\u0159\u00edkazov\u00e9ho \u0159\u00e1dku",
-        "description": "Nau\u010dte se nasadit statick\u00fd web do Azure Static Web Apps pomoc\u00ed Azure CLI.",
-        "stackDetails": "",
-        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/localized/cs-CZ/scenarios/CreateStaticWebApp/README.md",
-        "documentationUrl": "",
-        "configurations": {
-            "region": "EastUS2"
-        }
-    },
-    {
-        "status": "active",
-        "key": "CreateWordPressDeployment/README.md",
-        "title": "Kurz: Nasazen\u00ed WordPressu v clusteru AKS pomoc\u00ed Azure CLI",
-        "description": "Zjist\u011bte, jak rychle sestavit a nasadit WordPress v AKS pomoc\u00ed flexibiln\u00edho serveru Azure Database for MySQL.",
-        "stackDetails": "",
-        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/localized/cs-CZ/scenarios/CreateWordPressDeployment/README.md",
-        "documentationUrl": "",
-        "configurations": {
-            "region": "westeurope"
-        }
-    },
-    {
-        "status": "active",
-        "key": "DeployHAPGonARO/README.md",
-        "title": "Vytvo\u0159en\u00ed clusteru PostgreSQL s vysokou dostupnost\u00ed v Azure Red Hat OpenShiftu",
-        "description": "Tento kurz ukazuje, jak vytvo\u0159it cluster PostgreSQL s vysokou dostupnost\u00ed v Azure Red Hat OpenShift (ARO) pomoc\u00ed oper\u00e1toru CloudNativePG.",
-        "stackDetails": "",
-        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/localized/cs-CZ/scenarios/DeployHAPGonARO/README.md",
-        "documentationUrl": "",
-        "configurations": {
-            "region": ""
-        }
-    },
-    {
-        "status": "active",
-        "key": "DeployIGonAKS/deploy-ig-aks.md",
-        "title": "Nasazen\u00ed miniaplikace Inspektor v clusteru Azure Kubernetes Service",
-        "description": "V tomto kurzu se dozv\u00edte, jak nasadit Miniaplikaci Inspektor v clusteru AKS.",
-        "stackDetails": "",
-        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/localized/cs-CZ/scenarios/DeployIGonAKS/deploy-ig-aks.md",
-        "documentationUrl": "",
-        "configurations": {
-            "region": "eastus"
         }
     }
 ]
