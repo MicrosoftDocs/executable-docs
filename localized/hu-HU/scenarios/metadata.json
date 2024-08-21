@@ -2,10 +2,10 @@
     {
         "status": "active",
         "key": "azure-docs/articles/aks/learn/quick-kubernetes-deploy-cli.md",
-        "title": "R\u00f6vid \u00fatmutat\u00f3: Azure Kubernetes Service- (AKS-) f\u00fcrt \u00fczembe helyez\u00e9se az Azure CLI haszn\u00e1lat\u00e1val",
-        "description": "Megtudhatja, hogyan helyezhet \u00fczembe gyorsan egy Kubernetes-f\u00fcrt\u00f6t, \u00e9s hogyan helyezhet \u00fczembe alkalmaz\u00e1sokat az Azure Kubernetes Service-ben (AKS) az Azure CLI haszn\u00e1lat\u00e1val.",
+        "title": "Quickstart: Deploy an Azure Kubernetes Service (AKS) cluster using Azure CLI",
+        "description": "Learn how to quickly deploy a Kubernetes cluster and deploy an application in Azure Kubernetes Service (AKS) using Azure CLI",
         "stackDetails": "",
-        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/localized/hu-HU/scenarios/azure-docs/articles/aks/learn/quick-kubernetes-deploy-cli.md",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-docs/articles/aks/learn/quick-kubernetes-deploy-cli.md",
         "documentationUrl": "https://learn.microsoft.com/en-us/azure/aks/learn/quick-kubernetes-deploy-cli",
         "nextSteps": [
             {
@@ -49,14 +49,14 @@
                 "Microsoft.ContainerService/managedClusters/GetAccessProfiles/action",
                 "Microsoft.Network/publicIPAddresses/list/action"
             ],
-            "region": "westeurope"
+            "region": "eastus"
         }
     },
     {
         "status": "active",
         "key": "azure-docs/articles/mysql/flexible-server/tutorial-deploy-wordpress-on-aks.md",
-        "title": "Oktat\u00f3anyag: A WordPress \u00fczembe helyez\u00e9se AKS-f\u00fcrt\u00f6n az Azure CLI haszn\u00e1lat\u00e1val",
-        "description": "Megtudhatja, hogyan hozhatja l\u00e9tre \u00e9s helyezheti \u00fczembe gyorsan a WordPresst az AKS-en a rugalmas Azure Database for MySQL-kiszolg\u00e1l\u00f3val.",
+        "title": "Tutorial: Deploy WordPress on AKS cluster by using Azure CLI",
+        "description": "Learn how to quickly build and deploy WordPress on AKS with Azure Database for MySQL - Flexible Server.",
         "stackDetails": [
             "An Ubuntu 22.04 Linux VM (Standard DS2_v2)",
             "Azure Database for MySQL - Flexible Server: 8.0.21",
@@ -67,7 +67,7 @@
             "Azure Private DNS Zone for Azure MySQL Flexible Server",
             "Use port 22 for SSH and ports 80, 443 for web traffic"
         ],
-        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/localized/hu-HU/scenarios/azure-docs/articles/mysql/flexible-server/tutorial-deploy-wordpress-on-aks.md",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-docs/articles/mysql/flexible-server/tutorial-deploy-wordpress-on-aks.md",
         "documentationUrl": "https://learn.microsoft.com/en-us/azure/mysql/flexible-server/tutorial-deploy-wordpress-on-aks",
         "nextSteps": [
             {
@@ -125,7 +125,7 @@
                 "Microsoft.Authorization/roleDefinitions/read",
                 "Microsoft.Authorization/roleDefinitions/write"
             ],
-            "region": "westeurope"
+            "region": "eastus"
         }
     },
     {
@@ -149,10 +149,10 @@
     {
         "status": "active",
         "key": "azure-docs/articles/virtual-machine-scale-sets/flexible-virtual-machine-scale-sets-cli.md",
-        "title": "Virtu\u00e1lis g\u00e9pek l\u00e9trehoz\u00e1sa rugalmas m\u00e9retez\u00e9si csoportban az Azure CLI haszn\u00e1lat\u00e1val",
-        "description": "Megtudhatja, hogyan hozhat l\u00e9tre virtu\u00e1lisg\u00e9p-m\u00e9retez\u00e9si csoportot rugalmas vez\u00e9nyl\u00e9si m\u00f3dban az Azure CLI haszn\u00e1lat\u00e1val.",
+        "title": "Create virtual machines in a Flexible scale set using Azure CLI",
+        "description": "Learn how to create a Virtual Machine Scale Set in Flexible orchestration mode using Azure CLI.",
         "stackDetails": "",
-        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/localized/hu-HU/scenarios/azure-docs/articles/virtual-machine-scale-sets/flexible-virtual-machine-scale-sets-cli.md",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-docs/articles/virtual-machine-scale-sets/flexible-virtual-machine-scale-sets-cli.md",
         "documentationUrl": "https://learn.microsoft.com/en-us/azure/virtual-machine-scale-sets/flexible-virtual-machine-scale-sets-cli",
         "nextSteps": [
             {
@@ -169,21 +169,21 @@
             }
         ],
         "configurations": {
-            "region": "EastUS"
+            "region": "centralindia"
         }
     },
     {
         "status": "active",
         "key": "azure-docs/articles/virtual-machines/linux/quick-create-cli.md",
-        "title": "R\u00f6vid \u00fatmutat\u00f3: Linux rendszer\u0171 virtu\u00e1lis g\u00e9p l\u00e9trehoz\u00e1sa az Azure CLI haszn\u00e1lat\u00e1val",
-        "description": "Ebb\u0151l a r\u00f6vid \u00fatmutat\u00f3b\u00f3l elsaj\u00e1t\u00edthatja, hogyan hozhat l\u00e9tre Linux rendszer\u0171 virtu\u00e1lis g\u00e9pet az Azure CLI haszn\u00e1lat\u00e1val.",
+        "title": "Quickstart: Use the Azure CLI to create a Linux Virtual Machine",
+        "description": "In this quickstart, you learn how to use the Azure CLI to create a Linux virtual machine",
         "stackDetails": [
             "An Ubuntu 22.04 Linux VM (Standard DS1_v2)",
             "30 GB Premium SSD (120 IOPS, 25 MBps)",
             "Network interface with public IP and network security group",
             "Port 22 will be opened"
         ],
-        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/localized/hu-HU/scenarios/azure-docs/articles/virtual-machines/linux/quick-create-cli.md",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-docs/articles/virtual-machines/linux/quick-create-cli.md",
         "documentationUrl": "https://learn.microsoft.com/en-us/azure/virtual-machines/linux/quick-create-cli",
         "nextSteps": [
             {
@@ -216,16 +216,16 @@
                 "Microsoft.Network/publicIPAddresses/read",
                 "Microsoft.Compute/virtualMachines/instanceView/read"
             ],
-            "region": "EastUS"
+            "region": "centralindia"
         }
     },
     {
         "status": "active",
         "key": "azure-docs/articles/virtual-machines/linux/tutorial-lemp-stack.md",
-        "title": "Oktat\u00f3anyag \u2013 LEMP-verem \u00fczembe helyez\u00e9se a WordPress haszn\u00e1lat\u00e1val virtu\u00e1lis g\u00e9pen",
-        "description": "Ebben az oktat\u00f3anyagban megtudhatja, hogyan telep\u00edtheti a LEMP-vermet \u00e9s a WordPresst egy Linux rendszer\u0171 virtu\u00e1lis g\u00e9pre az Azure-ban.",
+        "title": "Tutorial - Deploy a LEMP stack using WordPress on a VM",
+        "description": "In this tutorial, you learn how to install the LEMP stack, and WordPress, on a Linux virtual machine in Azure.",
         "stackDetails": "",
-        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/localized/hu-HU/scenarios/azure-docs/articles/virtual-machines/linux/tutorial-lemp-stack.md",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-docs/articles/virtual-machines/linux/tutorial-lemp-stack.md",
         "documentationUrl": "https://learn.microsoft.com/en-us/azure/virtual-machines/linux/tutorial-lemp-stack",
         "configurations": {
             "region": "westeurope"
@@ -234,10 +234,10 @@
     {
         "status": "active",
         "key": "DeployIGonAKS/README.md",
-        "title": "Inspektor-minialkalmaz\u00e1s \u00fczembe helyez\u00e9se Egy Azure Kubernetes Service-f\u00fcrtben",
-        "description": "Ez az oktat\u00f3anyag bemutatja, hogyan helyezhet \u00fczembe inspektor minialkalmaz\u00e1st egy AKS-f\u00fcrtben",
+        "title": "Deploy Inspektor Gadget in an Azure Kubernetes Service cluster",
+        "description": "This tutorial shows how to deploy Inspektor Gadget in an AKS cluster",
         "stackDetails": "",
-        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/localized/hu-HU/scenarios/DeployIGonAKS/README.md",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/DeployIGonAKS/README.md",
         "documentationUrl": "",
         "nextSteps": [
             {
@@ -260,10 +260,10 @@
     {
         "status": "active",
         "key": "CreateAKSWebApp/README.md",
-        "title": "Sk\u00e1l\u00e1zhat\u00f3 \u00e9s biztons\u00e1gos Azure Kubernetes Service-f\u00fcrt \u00fczembe helyez\u00e9se az Azure CLI haszn\u00e1lat\u00e1val",
-        "description": "Ebben az oktat\u00f3anyagban l\u00e9p\u00e9sr\u0151l l\u00e9p\u00e9sre haladva l\u00e9trehozunk egy Https haszn\u00e1lat\u00e1val v\u00e9dett Azure Kubernetes-webalkalmaz\u00e1st.",
+        "title": "Deploy a Scalable & Secure Azure Kubernetes Service cluster using the Azure CLI",
+        "description": "This tutorial where we will take you step by step in creating an Azure Kubernetes Web Application that is secured via https.",
         "stackDetails": "",
-        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/localized/hu-HU/scenarios/CreateAKSWebApp/README.md",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/CreateAKSWebApp/README.md",
         "documentationUrl": "",
         "nextSteps": [
             {
@@ -284,7 +284,7 @@
             }
         ],
         "configurations": {
-            "region": "westeurope"
+            "region": "eastus"
         }
     },
     {
@@ -294,10 +294,10 @@
     {
         "status": "inactive",
         "key": "CreateAKSDeployment/create-aks-deployment.md",
-        "title": "R\u00f6vid \u00fatmutat\u00f3: Azure Kubernetes Service- (AKS-) f\u00fcrt \u00fczembe helyez\u00e9se az Azure CLI haszn\u00e1lat\u00e1val",
-        "description": "Megtudhatja, hogyan helyezhet \u00fczembe gyorsan egy Kubernetes-f\u00fcrt\u00f6t, \u00e9s hogyan helyezhet \u00fczembe alkalmaz\u00e1sokat az Azure Kubernetes Service-ben (AKS) az Azure CLI haszn\u00e1lat\u00e1val.",
+        "title": "Quickstart: Deploy an Azure Kubernetes Service (AKS) cluster using Azure CLI",
+        "description": "Learn how to quickly deploy a Kubernetes cluster and deploy an application in Azure Kubernetes Service (AKS) using Azure CLI.",
         "stackDetails": "",
-        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/localized/hu-HU/scenarios/CreateAKSDeployment/create-aks-deployment.md",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/CreateAKSDeployment/create-aks-deployment.md",
         "documentationUrl": "",
         "configurations": {
             "region": "westeurope"
@@ -306,10 +306,10 @@
     {
         "status": "inactive",
         "key": "CreateContainerAppDeploymentFromSource/create-container-app-deployment-from-source.md",
-        "title": "T\u00e1rol\u00f3alkalmaz\u00e1s l\u00e9trehoz\u00e1sa a Blob Store, az SQL \u00e9s a Computer Vision haszn\u00e1lat\u00e1val",
-        "description": "Ez az oktat\u00f3anyag bemutatja, hogyan hozhat l\u00e9tre t\u00e1rol\u00f3alkalmaz\u00e1st a Blob Store, az SQL \u00e9s a Computer Vision haszn\u00e1lat\u00e1val",
+        "title": "Create a Container App leveraging Blob Store, SQL, and Computer Vision",
+        "description": "This tutorial shows how to create a Container App leveraging Blob Store, SQL, and Computer Vision",
         "stackDetails": "",
-        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/localized/hu-HU/scenarios/CreateContainerAppDeploymentFromSource/create-container-app-deployment-from-source.md",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/CreateContainerAppDeploymentFromSource/create-container-app-deployment-from-source.md",
         "documentationUrl": "",
         "configurations": {
             "region": "westus"
@@ -318,10 +318,10 @@
     {
         "status": "active",
         "key": "CreateRHELVMAndSSH/create-rhel-vm-ssh.md",
-        "title": "R\u00f6vid \u00fatmutat\u00f3: Red Hat Enterprise Linux rendszer\u0171 virtu\u00e1lis g\u00e9p l\u00e9trehoz\u00e1sa az Azure CLI haszn\u00e1lat\u00e1val",
-        "description": "Ebben a r\u00f6vid \u00fatmutat\u00f3ban megtudhatja, hogyan hozhat l\u00e9tre Red Hat Enterprise Linux rendszer\u0171 virtu\u00e1lis g\u00e9pet az Azure CLI haszn\u00e1lat\u00e1val",
+        "title": "Quickstart: Use the Azure CLI to create a Red Hat Enterprise Linux Virtual Machine",
+        "description": "In this quickstart, you learn how to use the Azure CLI to create a Red Hat Enterprise Linux virtual machine",
         "stackDetails": "",
-        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/localized/hu-HU/scenarios/CreateRHELVMAndSSH/create-rhel-vm-ssh.md",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/CreateRHELVMAndSSH/create-rhel-vm-ssh.md",
         "documentationUrl": "",
         "configurations": {
             "region": "westeurope"
@@ -330,10 +330,10 @@
     {
         "status": "inactive",
         "key": "DeployHAPGonARO/deploy-ha-pg-aro.md",
-        "title": "Magas rendelkez\u00e9sre \u00e1ll\u00e1s\u00fa PostgreSQL-f\u00fcrt l\u00e9trehoz\u00e1sa az Azure Red Hat OpenShiften",
-        "description": "Ez az oktat\u00f3anyag bemutatja, hogyan hozhat l\u00e9tre magas rendelkez\u00e9sre \u00e1ll\u00e1s\u00fa PostgreSQL-f\u00fcrt\u00f6t az Azure Red Hat OpenShiftben (ARO) a CloudNativePG oper\u00e1torral",
+        "title": "Create a Highly Available PostgreSQL Cluster on Azure Red Hat OpenShift",
+        "description": "This tutorial shows how to create a Highly Available PostgreSQL cluster on Azure Red Hat OpenShift (ARO) using the CloudNativePG operator",
         "stackDetails": "",
-        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/localized/hu-HU/scenarios/DeployHAPGonARO/deploy-ha-pg-aro.md",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/DeployHAPGonARO/deploy-ha-pg-aro.md",
         "documentationUrl": "",
         "configurations": {
             "region": ""
@@ -366,10 +366,10 @@
     {
         "status": "inactive",
         "key": "azure-docs/articles/aks/postgresql-ha-overview.md",
-        "title": "Magas rendelkez\u00e9sre \u00e1ll\u00e1s\u00fa PostgreSQL-adatb\u00e1zis \u00fczembe helyez\u00e9s\u00e9nek \u00e1ttekint\u00e9se az AKS-ben az Azure CLI-vel",
-        "description": "Megtudhatja, hogyan helyezhet \u00fczembe magas rendelkez\u00e9sre \u00e1ll\u00e1s\u00fa PostgreSQL-adatb\u00e1zist az AKS-en a CloudNativePG oper\u00e1torral az Azure CLI-vel.",
+        "title": "Overview of deploying a highly available PostgreSQL database on AKS with Azure CLI",
+        "description": "Learn how to deploy a highly available PostgreSQL database on AKS using the CloudNativePG operator with Azure CLI.",
         "stackDetails": "",
-        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/localized/hu-HU/scenarios/azure-docs/articles/aks/postgresql-ha-overview.md",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-docs/articles/aks/postgresql-ha-overview.md",
         "documentationUrl": "",
         "configurations": {
             "region": ""
@@ -378,10 +378,10 @@
     {
         "status": "active",
         "key": "AttachDataDiskLinuxVM/attach-data-disk-linux-vm.md",
-        "title": "R\u00f6vid \u00fatmutat\u00f3: Ubuntu virtu\u00e1lis g\u00e9p l\u00e9trehoz\u00e1sa \u00e9s Azure Data Disk csatol\u00e1sa az Azure CLI haszn\u00e1lat\u00e1val",
-        "description": "Ebben a r\u00f6vid \u00fatmutat\u00f3ban megtudhatja, hogyan hozhat l\u00e9tre Ubuntu Linux rendszer\u0171 virtu\u00e1lis g\u00e9pet az Azure CLI haszn\u00e1lat\u00e1val",
+        "title": "Quickstart: Use the Azure CLI to create an Ubuntu Virtual Machine and attach an Azure Data Disk",
+        "description": "In this quickstart, you learn how to use the Azure CLI to create an Ubuntu Linux virtual machine",
         "stackDetails": "",
-        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/localized/hu-HU/scenarios/AttachDataDiskLinuxVM/attach-data-disk-linux-vm.md",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/AttachDataDiskLinuxVM/attach-data-disk-linux-vm.md",
         "documentationUrl": "",
         "nextSteps": [
             {
@@ -409,161 +409,13 @@
     {
         "status": "inactive",
         "key": "ObtainPerformanceMetricsLinuxSustem/README.md",
-        "title": "Teljes\u00edtm\u00e9nymetrik\u00e1k beszerz\u00e9se Linux-rendszerb\u0151l",
-        "description": "Megtudhatja, hogyan szerezhet be teljes\u00edtm\u00e9nymetrik\u00e1kat Linux-rendszerb\u0151l.",
+        "title": "Obtaining Performance metrics from a Linux system",
+        "description": "Learn how to obtainer Performance metrics from a Linux system.",
         "stackDetails": "",
-        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/localized/hu-HU/scenarios/ObtainPerformanceMetricsLinuxSustem/README.md",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/ObtainPerformanceMetricsLinuxSustem/README.md",
         "documentationUrl": "",
         "configurations": {
             "region": ""
-        }
-    },
-    {
-        "status": "active",
-        "key": "BlobVisionOnAKS/README.md"
-    },
-    {
-        "status": "active",
-        "key": "CreateAKSDeployment/README.md",
-        "title": "R\u00f6vid \u00fatmutat\u00f3: Azure Kubernetes Service- (AKS-) f\u00fcrt \u00fczembe helyez\u00e9se az Azure CLI haszn\u00e1lat\u00e1val",
-        "description": "Megtudhatja, hogyan helyezhet \u00fczembe gyorsan egy Kubernetes-f\u00fcrt\u00f6t, \u00e9s hogyan helyezhet \u00fczembe alkalmaz\u00e1sokat az Azure Kubernetes Service-ben (AKS) az Azure CLI haszn\u00e1lat\u00e1val.",
-        "stackDetails": "",
-        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/localized/hu-HU/scenarios/CreateAKSDeployment/README.md",
-        "documentationUrl": "",
-        "configurations": {
-            "region": "westeurope"
-        }
-    },
-    {
-        "status": "active",
-        "key": "CreateAKSWebApp/create-aks-web-app.md",
-        "title": "Sk\u00e1l\u00e1zhat\u00f3 \u00e9s biztons\u00e1gos Azure Kubernetes Service-f\u00fcrt \u00fczembe helyez\u00e9se az Azure CLI haszn\u00e1lat\u00e1val",
-        "description": "Ebben az oktat\u00f3anyagban l\u00e9p\u00e9sr\u0151l l\u00e9p\u00e9sre haladva l\u00e9trehozunk egy Https haszn\u00e1lat\u00e1val v\u00e9dett Azure Kubernetes-webalkalmaz\u00e1st.",
-        "stackDetails": "",
-        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/localized/hu-HU/scenarios/CreateAKSWebApp/create-aks-web-app.md",
-        "documentationUrl": "",
-        "configurations": {
-            "region": "westeurope"
-        }
-    },
-    {
-        "status": "active",
-        "key": "CreateContainerAppDeploymentFromSource/README.md",
-        "title": "T\u00e1rol\u00f3alkalmaz\u00e1s l\u00e9trehoz\u00e1sa a Blob Store, az SQL \u00e9s a Computer Vision haszn\u00e1lat\u00e1val",
-        "description": "Ez az oktat\u00f3anyag bemutatja, hogyan hozhat l\u00e9tre t\u00e1rol\u00f3alkalmaz\u00e1st a Blob Store, az SQL \u00e9s a Computer Vision haszn\u00e1lat\u00e1val",
-        "stackDetails": "",
-        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/localized/hu-HU/scenarios/CreateContainerAppDeploymentFromSource/README.md",
-        "documentationUrl": "",
-        "configurations": {
-            "region": "westus"
-        }
-    },
-    {
-        "status": "active",
-        "key": "CreateLinuxVMAndSSH/README.md",
-        "title": "R\u00f6vid \u00fatmutat\u00f3: Linux rendszer\u0171 virtu\u00e1lis g\u00e9p l\u00e9trehoz\u00e1sa az Azure CLI haszn\u00e1lat\u00e1val",
-        "description": "Ebb\u0151l a r\u00f6vid \u00fatmutat\u00f3b\u00f3l elsaj\u00e1t\u00edthatja, hogyan hozhat l\u00e9tre Linux rendszer\u0171 virtu\u00e1lis g\u00e9pet az Azure CLI haszn\u00e1lat\u00e1val.",
-        "stackDetails": "",
-        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/localized/hu-HU/scenarios/CreateLinuxVMAndSSH/README.md",
-        "documentationUrl": "",
-        "configurations": {
-            "region": "EastUS"
-        }
-    },
-    {
-        "status": "active",
-        "key": "CreateLinuxVMLAMP/README.md",
-        "title": "Oktat\u00f3anyag \u2013 LEMP-verem \u00fczembe helyez\u00e9se a WordPress haszn\u00e1lat\u00e1val virtu\u00e1lis g\u00e9pen",
-        "description": "Ebben az oktat\u00f3anyagban megtudhatja, hogyan telep\u00edtheti a LEMP-vermet \u00e9s a WordPresst egy Linux rendszer\u0171 virtu\u00e1lis g\u00e9pre az Azure-ban.",
-        "stackDetails": "",
-        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/localized/hu-HU/scenarios/CreateLinuxVMLAMP/README.md",
-        "documentationUrl": "",
-        "configurations": {
-            "region": "westeurope"
-        }
-    },
-    {
-        "status": "active",
-        "key": "CreateLinuxVMSSwithAppGW/README.md",
-        "title": "Virtu\u00e1lis g\u00e9pek l\u00e9trehoz\u00e1sa rugalmas m\u00e9retez\u00e9si csoportban az Azure CLI haszn\u00e1lat\u00e1val",
-        "description": "Megtudhatja, hogyan hozhat l\u00e9tre virtu\u00e1lisg\u00e9p-m\u00e9retez\u00e9si csoportot rugalmas vez\u00e9nyl\u00e9si m\u00f3dban az Azure CLI haszn\u00e1lat\u00e1val.",
-        "stackDetails": "",
-        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/localized/hu-HU/scenarios/CreateLinuxVMSSwithAppGW/README.md",
-        "documentationUrl": "",
-        "configurations": {
-            "region": "EastUS"
-        }
-    },
-    {
-        "status": "active",
-        "key": "CreateLinuxVMSecureWebServer/README.md",
-        "title": "NGINX-webkiszolg\u00e1l\u00f3 l\u00e9trehoz\u00e1sa HTTPS-en kereszt\u00fcl",
-        "description": "Ez az oktat\u00f3anyag bemutatja, hogyan hozhat l\u00e9tre egy HTTPS-en kereszt\u00fcl biztons\u00e1gos NGINX-webkiszolg\u00e1l\u00f3t.",
-        "stackDetails": "",
-        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/localized/hu-HU/scenarios/CreateLinuxVMSecureWebServer/README.md",
-        "documentationUrl": "",
-        "configurations": {
-            "region": "eastus"
-        }
-    },
-    {
-        "status": "active",
-        "key": "CreateRHELVMAndSSH/README.md",
-        "title": "R\u00f6vid \u00fatmutat\u00f3: Red Hat Enterprise Linux rendszer\u0171 virtu\u00e1lis g\u00e9p l\u00e9trehoz\u00e1sa az Azure CLI haszn\u00e1lat\u00e1val",
-        "description": "Ebben a r\u00f6vid \u00fatmutat\u00f3ban megtudhatja, hogyan hozhat l\u00e9tre Red Hat Enterprise Linux rendszer\u0171 virtu\u00e1lis g\u00e9pet az Azure CLI haszn\u00e1lat\u00e1val",
-        "stackDetails": "",
-        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/localized/hu-HU/scenarios/CreateRHELVMAndSSH/README.md",
-        "documentationUrl": "",
-        "configurations": {
-            "region": "EastUS"
-        }
-    },
-    {
-        "status": "active",
-        "key": "CreateStaticWebApp/README.md",
-        "title": "R\u00f6vid \u00fatmutat\u00f3: Az els\u0151 statikus webhely l\u00e9trehoz\u00e1sa az Azure Static Web Apps haszn\u00e1lat\u00e1val a parancssori fel\u00fclet haszn\u00e1lat\u00e1val",
-        "description": "Ismerje meg, hogyan helyezhet \u00fczembe statikus webhelyet az Azure Static Web Appsben az Azure CLI-vel.",
-        "stackDetails": "",
-        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/localized/hu-HU/scenarios/CreateStaticWebApp/README.md",
-        "documentationUrl": "",
-        "configurations": {
-            "region": "EastUS2"
-        }
-    },
-    {
-        "status": "active",
-        "key": "CreateWordPressDeployment/README.md",
-        "title": "Oktat\u00f3anyag: A WordPress \u00fczembe helyez\u00e9se AKS-f\u00fcrt\u00f6n az Azure CLI haszn\u00e1lat\u00e1val",
-        "description": "Megtudhatja, hogyan hozhatja l\u00e9tre \u00e9s helyezheti \u00fczembe gyorsan a WordPresst az AKS-en a rugalmas Azure Database for MySQL-kiszolg\u00e1l\u00f3val.",
-        "stackDetails": "",
-        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/localized/hu-HU/scenarios/CreateWordPressDeployment/README.md",
-        "documentationUrl": "",
-        "configurations": {
-            "region": "westeurope"
-        }
-    },
-    {
-        "status": "active",
-        "key": "DeployHAPGonARO/README.md",
-        "title": "Magas rendelkez\u00e9sre \u00e1ll\u00e1s\u00fa PostgreSQL-f\u00fcrt l\u00e9trehoz\u00e1sa az Azure Red Hat OpenShiften",
-        "description": "Ez az oktat\u00f3anyag bemutatja, hogyan hozhat l\u00e9tre magas rendelkez\u00e9sre \u00e1ll\u00e1s\u00fa PostgreSQL-f\u00fcrt\u00f6t az Azure Red Hat OpenShiftben (ARO) a CloudNativePG oper\u00e1torral",
-        "stackDetails": "",
-        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/localized/hu-HU/scenarios/DeployHAPGonARO/README.md",
-        "documentationUrl": "",
-        "configurations": {
-            "region": ""
-        }
-    },
-    {
-        "status": "active",
-        "key": "DeployIGonAKS/deploy-ig-aks.md",
-        "title": "Inspektor-minialkalmaz\u00e1s \u00fczembe helyez\u00e9se Egy Azure Kubernetes Service-f\u00fcrtben",
-        "description": "Ez az oktat\u00f3anyag bemutatja, hogyan helyezhet \u00fczembe inspektor minialkalmaz\u00e1st egy AKS-f\u00fcrtben",
-        "stackDetails": "",
-        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/localized/hu-HU/scenarios/DeployIGonAKS/deploy-ig-aks.md",
-        "documentationUrl": "",
-        "configurations": {
-            "region": "eastus"
         }
     }
 ]
