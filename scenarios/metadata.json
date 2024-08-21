@@ -216,7 +216,7 @@
                 "Microsoft.Network/publicIPAddresses/read",
                 "Microsoft.Compute/virtualMachines/instanceView/read"
             ],
-            "region": "centralindia"
+            "region": "EastUS"
         }
     },
     {
