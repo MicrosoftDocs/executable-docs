@@ -112,8 +112,9 @@ def update_metadata(file_path, localize=False):
                             if _item['key'] == key:
                                 item = _item
                                 break
-                        item = {'status': 'active', 'key': key}
-                        base_metadata.append(item)
+                        if not item:
+                            item = {'status': 'active', 'key': key}
+                            base_metadata.append(item)
                     else:
                         item = {'status': 'active', 'key': key}
                         base_metadata.append(item)
