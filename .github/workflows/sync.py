@@ -81,7 +81,7 @@ def update_metadata(file_path, localize=False):
             locale = file_path.split('/')[1] 
             # Load the base metadata.json file
             if os.path.isfile(f'localized/{locale}/scenarios/metadata.json'):
-                with open('scenarios/metadata.json', 'r') as f:
+                with open(f'localized/{locale}/scenarios/metadata.json', 'r') as f:
                     base_metadata = json.load(f)
                 # Update the metadata with the README files in the scenarios directory
                 with open(file_path, 'r') as f:
