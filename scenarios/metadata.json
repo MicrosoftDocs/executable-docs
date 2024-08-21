@@ -417,5 +417,17 @@
         "configurations": {
             "region": ""
         }
+    },
+    {
+        "status": "active",
+        "key": "azure-aks-docs/articles/aks/create-postgresql-ha.md",
+        "title": "Create infrastructure for deploying a highly available PostgreSQL database on AKS",
+        "description": "Create the infrastructure needed to deploy a highly available PostgreSQL database on AKS using the CloudNativePG operator.",
+        "stackDetails": "",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-aks-docs/articles/aks/create-postgresql-ha.md",
+        "documentationUrl": "",
+        "configurations": {
+            "region": "westus3"
+        }
     }
 ]
