@@ -270,6 +270,8 @@ def sync_markdown_files():
                             for locale in sorted(os.listdir('localized')):
                                 locale_source_file_path = f'localized/{locale}/{source_file_path}'
                                 locale_metadata = update_metadata(locale_source_file_path, localize=True)
+                                print(locale_metadata)
+                                time.sleep(10)
                                 locale_metadata_path = repo.get_contents(f'localized/{locale}/scenarios/metadata.json', ref=new_branch_name)
                                 repo.update_file(locale_metadata_path.path, f"Updated localized metadata for {locale}", json.dumps(locale_metadata, indent=4), locale_metadata_path.sha, branch=new_branch_name)
                                 print("updated localized metadata")
