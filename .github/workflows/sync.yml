@@ -42,6 +42,10 @@ jobs:
         git config --global user.email "${{ github.actor }}@users.noreply.github.com"
         git config --global user.name "${{ github.actor }}"
 
+    - name: test step
+      run: |
+        curl --location --request GET 'https://api.github.com/search/code?q=addClass+in:file+language:csharp' --header 'Authorization: Token ${{ secrets.PAT }}'
+
     - name: Sync markdown files
       run: python .github/workflows/sync.py
       env:
