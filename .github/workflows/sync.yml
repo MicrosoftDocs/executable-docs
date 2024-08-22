@@ -46,6 +46,7 @@ jobs:
       run: python .github/workflows/sync.py
       env:
         GITHUB_TOKEN: ${{ secrets.PAT }} # Replace with the name of your secret
+        USER_AGENT: ${{ github.actor }}
     
     - name: Check for changes
       id: git-check
