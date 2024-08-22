@@ -288,4 +288,10 @@ jobs:
         PR_NUMBER=$(echo $PR_RESPONSE | jq '.number')
         echo "Pull Request created: #$PR_NUMBER"
 
+        # Add org admin as a mandatory reviewer
+        REVIEWERS_API_URL="https://api.github.com/repos/${{ github.repository }}/pulls/$PR_NUMBER/requested_reviewers"
+        REVIEWERS_PAYLOAD="{\"reviewers\":[\"naman-msft\"]}"
+        REVIEWERS_RESPONSE=$(curl -X POST -H "Authorization: token ${{ secrets.PAT }}" -H "Content-Type: application/json" -d "$REVIEWERS_PAYLOAD" "$REVIEWERS_API_URL")
+        echo $REVIEWERS_RESPONSE
+
         
