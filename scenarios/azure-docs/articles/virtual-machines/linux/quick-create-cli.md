@@ -1,6 +1,6 @@
 ---
 title: 'Quickstart: Use the Azure CLI to create a Linux Virtual Machine'
-description: In this quickstart, you learn how to use the Azure CLI to create a Linux virtual machine
+description: In this quickstart, you learn how to use the Azure CLI to create a Linux virtual machine!
 author: ju-shim
 ms.service: azure-virtual-machines
 ms.collection: linux
