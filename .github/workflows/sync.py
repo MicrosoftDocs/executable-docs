@@ -154,6 +154,10 @@ def sync_markdown_files():
     query = "innovation-engine in:file language:markdown org:MicrosoftDocs -path:/localized/ -repo:MicrosoftDocs/executable-docs" 
     result = g.search_code(query)
     for file in result:
+        print(f"Processing file: {file.path}")
+    exit()
+
+    for file in result:
         if '-pr' not in file.repository.name:
             file_content = file.repository.get_contents(file.path).decoded_content.decode('utf-8')
             if '---' in file_content:
