@@ -184,10 +184,10 @@ def sync_markdown_files():
                         
                         # Checkout to main before creating a new branch
                         try:
-                            # subprocess.check_output(["git", "checkout", "main"])
-                            subprocess.check_output(["git", "fetch", "origin"])
-                            subprocess.check_output(["git", "checkout", "main"])
-                            subprocess.check_output(["git", "pull", "origin", "main"])
+                            # subprocess.check_call(["git", "checkout", "main"])
+                            subprocess.check_call(["git", "fetch", "origin"])
+                            subprocess.check_call(["git", "checkout", "main"])
+                            subprocess.check_call(["git", "pull", "origin", "main"])
                         except subprocess.CalledProcessError as e:
                             print(f"Error checking out branch main")
                             continue
@@ -204,7 +204,7 @@ def sync_markdown_files():
 
                         # Checkout the new branch
                         try:
-                            subprocess.check_output(["git", "checkout", new_branch_name])
+                            subprocess.check_call(["git", "checkout", new_branch_name])
                         except subprocess.CalledProcessError as e:
                             print(f"Error checking out branch {new_branch_name}")
                             continue
