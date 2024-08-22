@@ -1,0 +1,135 @@
+HTTP/2 200 
+date: Thu, 22 Aug 2024 20:08:10 GMT
+content-type: application/json; charset=utf-8
+content-length: 177636
+cache-control: no-cache
+vary: Accept, Authorization, Cookie, X-GitHub-OTP,Accept-Encoding, Accept, X-Requested-With
+github-authentication-token-expiration: 2024-09-21 13:06:56 -0700
+x-github-media-type: github.v3; format=json
+link: <https://api.github.com/search/code?q=repo%3AMicrosoftDocs%2Fazure-aks-docs+path%3Aarticles%2Faks&page=4>; rel="prev", <https://api.github.com/search/code?q=repo%3AMicrosoftDocs%2Fazure-aks-docs+path%3Aarticles%2Faks&page=6>; rel="next", <https://api.github.com/search/code?q=repo%3AMicrosoftDocs%2Fazure-aks-docs+path%3Aarticles%2Faks&page=11>; rel="last", <https://api.github.com/search/code?q=repo%3AMicrosoftDocs%2Fazure-aks-docs+path%3Aarticles%2Faks&page=1>; rel="first"
+x-accepted-github-permissions: allows_permissionless_access=true
+x-github-api-version-selected: 2022-11-28
+x-ratelimit-limit: 10
+x-ratelimit-remaining: 9
+x-ratelimit-reset: 1724357349
+x-ratelimit-used: 1
+x-ratelimit-resource: code_search
+access-control-expose-headers: ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO, X-GitHub-Request-Id, Deprecation, Sunset
+access-control-allow-origin: *
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: origin-when-cross-origin, strict-origin-when-cross-origin
+content-security-policy: default-src 'none'
+server: github.com
+x-github-request-id: F412:10798:98BFD3:99D28D:66C79AA9
+
+HTTP/2 200 
+date: Thu, 22 Aug 2024 20:08:11 GMT
+content-type: application/json; charset=utf-8
+content-length: 177636
+cache-control: no-cache
+vary: Accept, Authorization, Cookie, X-GitHub-OTP,Accept-Encoding, Accept, X-Requested-With
+github-authentication-token-expiration: 2024-09-21 13:06:56 -0700
+x-github-media-type: github.v3; format=json
+link: <https://api.github.com/search/code?q=repo%3AMicrosoftDocs%2Fazure-aks-docs+path%3Aarticles%2Faks&page=4>; rel="prev", <https://api.github.com/search/code?q=repo%3AMicrosoftDocs%2Fazure-aks-docs+path%3Aarticles%2Faks&page=6>; rel="next", <https://api.github.com/search/code?q=repo%3AMicrosoftDocs%2Fazure-aks-docs+path%3Aarticles%2Faks&page=11>; rel="last", <https://api.github.com/search/code?q=repo%3AMicrosoftDocs%2Fazure-aks-docs+path%3Aarticles%2Faks&page=1>; rel="first"
+x-accepted-github-permissions: allows_permissionless_access=true
+x-github-api-version-selected: 2022-11-28
+x-ratelimit-limit: 10
+x-ratelimit-remaining: 8
+x-ratelimit-reset: 1724357349
+x-ratelimit-used: 2
+x-ratelimit-resource: code_search
+access-control-expose-headers: ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO, X-GitHub-Request-Id, Deprecation, Sunset
+access-control-allow-origin: *
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: origin-when-cross-origin, strict-origin-when-cross-origin
+content-security-policy: default-src 'none'
+server: github.com
+x-github-request-id: F418:124B:60D596:619DA1:66C79AAA
+
+HTTP/2 200 
+date: Thu, 22 Aug 2024 20:08:11 GMT
+content-type: application/json; charset=utf-8
+content-length: 177636
+cache-control: no-cache
+vary: Accept, Authorization, Cookie, X-GitHub-OTP,Accept-Encoding, Accept, X-Requested-With
+github-authentication-token-expiration: 2024-09-21 13:06:56 -0700
+x-github-media-type: github.v3; format=json
+link: <https://api.github.com/search/code?q=repo%3AMicrosoftDocs%2Fazure-aks-docs+path%3Aarticles%2Faks&page=4>; rel="prev", <https://api.github.com/search/code?q=repo%3AMicrosoftDocs%2Fazure-aks-docs+path%3Aarticles%2Faks&page=6>; rel="next", <https://api.github.com/search/code?q=repo%3AMicrosoftDocs%2Fazure-aks-docs+path%3Aarticles%2Faks&page=11>; rel="last", <https://api.github.com/search/code?q=repo%3AMicrosoftDocs%2Fazure-aks-docs+path%3Aarticles%2Faks&page=1>; rel="first"
+x-accepted-github-permissions: allows_permissionless_access=true
+x-github-api-version-selected: 2022-11-28
+x-ratelimit-limit: 10
+x-ratelimit-remaining: 7
+x-ratelimit-reset: 1724357349
+x-ratelimit-used: 3
+x-ratelimit-resource: code_search
+access-control-expose-headers: ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO, X-GitHub-Request-Id, Deprecation, Sunset
+access-control-allow-origin: *
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: origin-when-cross-origin, strict-origin-when-cross-origin
+content-security-policy: default-src 'none'
+server: github.com
+x-github-request-id: F428:124B:60D6F4:619EE3:66C79AAB
+
+HTTP/2 200 
+date: Thu, 22 Aug 2024 20:08:11 GMT
+content-type: application/json; charset=utf-8
+content-length: 177636
+cache-control: no-cache
+vary: Accept, Authorization, Cookie, X-GitHub-OTP,Accept-Encoding, Accept, X-Requested-With
+github-authentication-token-expiration: 2024-09-21 13:06:56 -0700
+x-github-media-type: github.v3; format=json
+link: <https://api.github.com/search/code?q=repo%3AMicrosoftDocs%2Fazure-aks-docs+path%3Aarticles%2Faks&page=4>; rel="prev", <https://api.github.com/search/code?q=repo%3AMicrosoftDocs%2Fazure-aks-docs+path%3Aarticles%2Faks&page=6>; rel="next", <https://api.github.com/search/code?q=repo%3AMicrosoftDocs%2Fazure-aks-docs+path%3Aarticles%2Faks&page=11>; rel="last", <https://api.github.com/search/code?q=repo%3AMicrosoftDocs%2Fazure-aks-docs+path%3Aarticles%2Faks&page=1>; rel="first"
+x-accepted-github-permissions: allows_permissionless_access=true
+x-github-api-version-selected: 2022-11-28
+x-ratelimit-limit: 10
+x-ratelimit-remaining: 6
+x-ratelimit-reset: 1724357349
+x-ratelimit-used: 4
+x-ratelimit-resource: code_search
+access-control-expose-headers: ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO, X-GitHub-Request-Id, Deprecation, Sunset
+access-control-allow-origin: *
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: origin-when-cross-origin, strict-origin-when-cross-origin
+content-security-policy: default-src 'none'
+server: github.com
+x-github-request-id: F42C:5D7F6:A1A9A2:A2BC6F:66C79AAB
+
+HTTP/2 200 
+date: Thu, 22 Aug 2024 20:08:12 GMT
+content-type: application/json; charset=utf-8
+content-length: 177636
+cache-control: no-cache
+vary: Accept, Authorization, Cookie, X-GitHub-OTP,Accept-Encoding, Accept, X-Requested-With
+github-authentication-token-expiration: 2024-09-21 13:06:56 -0700
+x-github-media-type: github.v3; format=json
+link: <https://api.github.com/search/code?q=repo%3AMicrosoftDocs%2Fazure-aks-docs+path%3Aarticles%2Faks&page=4>; rel="prev", <https://api.github.com/search/code?q=repo%3AMicrosoftDocs%2Fazure-aks-docs+path%3Aarticles%2Faks&page=6>; rel="next", <https://api.github.com/search/code?q=repo%3AMicrosoftDocs%2Fazure-aks-docs+path%3Aarticles%2Faks&page=11>; rel="last", <https://api.github.com/search/code?q=repo%3AMicrosoftDocs%2Fazure-aks-docs+path%3Aarticles%2Faks&page=1>; rel="first"
+x-accepted-github-permissions: allows_permissionless_access=true
+x-github-api-version-selected: 2022-11-28
+x-ratelimit-limit: 10
+x-ratelimit-remaining: 5
+x-ratelimit-reset: 1724357349
+x-ratelimit-used: 5
+x-ratelimit-resource: code_search
+access-control-expose-headers: ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO, X-GitHub-Request-Id, Deprecation, Sunset
+access-control-allow-origin: *
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: origin-when-cross-origin, strict-origin-when-cross-origin
+content-security-policy: default-src 'none'
+server: github.com
+x-github-request-id: F436:5D7F6:A1AB1D:A2BDFE:66C79AAB
+

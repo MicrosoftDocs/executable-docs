@@ -42,10 +42,6 @@ jobs:
         git config --global user.email "${{ github.actor }}@users.noreply.github.com"
         git config --global user.name "${{ github.actor }}"
 
-    - name: test step
-      run: |
-        curl --location --request GET 'https://api.github.com/search/code?q=repo%3AMicrosoftDocs%2Fazure-aks-docs+path%3Aarticles%2Faks&page=5' --header 'Authorization: Token ${{ secrets.PAT }}'
-
     - name: Sync markdown files
       run: python .github/workflows/sync.py
       env:
