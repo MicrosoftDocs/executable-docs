@@ -1,4 +1,3 @@
-# sync exec docs every day, metadata.json gets updated as soon as exec docs are synced, ie test runs on all docs as soon as it is selective localization happens as soon as the localization goes through main (which is 2-3 hours post sync), portal tests every monday with all exec docs from previous week and pushes changes to be reflected the next week
 import os
 import github
 import shutil
@@ -9,7 +8,6 @@ import json
 import yaml
 from datetime import datetime
 import time
-import copy
 
 GITHUB_TOKEN = os.getenv('GITHUB_TOKEN')
 g = github.Github(GITHUB_TOKEN)
@@ -29,8 +27,6 @@ def update_metadata(file_path, localize=False):
             if os.path.isfile('scenarios/metadata.json'):
                 with open('scenarios/metadata.json', 'r') as f:
                     base_metadata = json.load(f)
-                # # Update the metadata with the README files in the scenarios directory
-                # metadata = update_base_metadata('scenarios', base_metadata)
 
                 with open(file_path, 'r') as f:
                     metadata_lines = []
@@ -44,6 +40,7 @@ def update_metadata(file_path, localize=False):
                                 continue
                         if collecting:
                             metadata_lines.append(line)
+
                     # Join the lines together into a single string
                     metadata_str = '\n'.join(metadata_lines).strip('---').strip('\n')
 
@@ -83,6 +80,7 @@ def update_metadata(file_path, localize=False):
             if os.path.isfile(f'localized/{locale}/scenarios/metadata.json'):
                 with open(f'localized/{locale}/scenarios/metadata.json', 'r') as f:
                     base_metadata = json.load(f)
+
                 # Update the metadata with the README files in the scenarios directory
                 with open(file_path, 'r') as f:
                     metadata_lines = []
@@ -96,6 +94,7 @@ def update_metadata(file_path, localize=False):
                                 continue
                         if collecting:
                             metadata_lines.append(line)
+                            
                     # Join the lines together into a single string
                     metadata_str = '\n'.join(metadata_lines).strip('---').strip('\n')
 
@@ -132,7 +131,7 @@ def update_metadata(file_path, localize=False):
         print(f"Error updating metadata: {e}")
 
     return base_metadata   
-    
+
 def delete_branch(repo, branch_name):
     try:
         ref = repo.get_git_ref(f"heads/{branch_name}")
@@ -154,7 +153,6 @@ def delete_branch(repo, branch_name):
 def sync_markdown_files():
     query = "innovation-engine in:file language:markdown org:MicrosoftDocs -path:/localized/ -repo:MicrosoftDocs/executable-docs" 
     result = g.search_code(query)
-    processed_directories = set()
     for file in result:
         if '-pr' not in file.repository.name:
             file_content = file.repository.get_contents(file.path).decoded_content.decode('utf-8')
@@ -168,17 +166,11 @@ def sync_markdown_files():
                         source_file_path = os.path.join('scenarios', file.repository.name, os.path.dirname(file.path), os.path.basename(file.path))
                         print(f"Processing file: {source_file_path}")
 
-                        # Check if the directory has already been processed
-                        if os.path.dirname(file.path) in processed_directories:
-                            relevant_files = [file]
-                        else:
-                            # Get the directory path of the file
-                            all_files = g.search_code(f'repo:{file.repository.full_name} path:{os.path.dirname(file.path)}')
-                            relevant_files = [f for f in all_files if not f.path.endswith('.md')]
-                            if file not in relevant_files:
-                                relevant_files.append(file)
-                            # Mark the directory as processed
-                            processed_directories.add(os.path.dirname(file.path))
+                        # Get the directory path of the file
+                        all_files = g.search_code(f'repo:{file.repository.full_name} path:{os.path.dirname(file.path)}')
+                        relevant_files = [f for f in all_files if not f.path.endswith('.md')]
+                        if file not in relevant_files:
+                            relevant_files.append(file)
 
                         # Create a new branch and commit the file
                         repo = g.get_repo("MicrosoftDocs/executable-docs")
@@ -265,8 +257,7 @@ def sync_markdown_files():
                                 locale_metadata = update_metadata(locale_source_file_path, localize=True)
                                 repo.create_file(f'localized/{locale}/scenarios/metadata.json', f"Add metadata.json file for {locale}", json.dumps(locale_metadata, indent=4), branch=new_branch_name)
                                 print("created localized metadata")
-                                # with open(f'localized/{locale}/scenarios/metadata.json', 'w') as f:
-                                #     json.dump(branch_localized_metadata_dict[locale], f, indent=4)
+
                         except:
                             for locale in sorted(os.listdir('localized')):
                                 locale_source_file_path = f'localized/{locale}/{source_file_path}'
@@ -274,8 +265,6 @@ def sync_markdown_files():
                                 locale_metadata_path = repo.get_contents(f'localized/{locale}/scenarios/metadata.json', ref=new_branch_name)
                                 repo.update_file(locale_metadata_path.path, f"Updated localized metadata for {locale}", json.dumps(locale_metadata, indent=4), locale_metadata_path.sha, branch=new_branch_name)
                                 print("updated localized metadata")
-                                # with open(f'localized/{locale}/scenarios/metadata.json', 'w') as f:
-                                #     json.dump(branch_localized_metadata_dict[locale], f, indent=4)
 
 def install_ie():
     """Installs IE if it is not already on the path."""
