@@ -177,10 +177,10 @@ def sync_markdown_files():
                         source_branch = repo.get_branch("main")
                         new_branch_name = f"test_{source_file_path.replace(os.sep, '_')}"
                         
-                        try:
-                            delete_branch(repo, new_branch_name)
-                        except:
-                            pass
+                        # try:
+                        #     delete_branch(repo, new_branch_name)
+                        # except:
+                        #     pass
                         
                         # Checkout to main before creating a new branch
                         try:
