@@ -131,7 +131,7 @@ def update_metadata(file_path, localize=False):
         print(f"Error updating metadata: {e}")
 
     print(base_metadata)
-    return base_metadata   
+    return base_metadata
 
 def delete_branch(repo, branch_name):
     try:
