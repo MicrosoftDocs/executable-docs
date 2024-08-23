@@ -247,7 +247,6 @@ def sync_markdown_files():
                             # Create or update the base metadata.json file
                             branch_metadata_updated = update_metadata(source_file_path, localize=False)
                             branch_metadata = copy.deepcopy(branch_metadata_updated)
-                            print(branch_metadata)
                             try:
                                 repo.create_file('scenarios/metadata.json', f"Add metadata.json file", json.dumps(branch_metadata, indent=4), branch=new_branch_name)
                                 print("Created metadata.json")
