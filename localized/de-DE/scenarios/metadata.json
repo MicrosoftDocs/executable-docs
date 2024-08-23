@@ -132,7 +132,7 @@
         "status": "active",
         "key": "azure-docs/articles/static-web-apps/get-started-cli.md",
         "title": "Schnellstart: Erstellen Ihrer ersten statischen Website mit Azure Static Web Apps und der CLI",
-        "description": "Erfahren Sie, wie Sie mit der Azure CLI eine statische Website f\u00fcr Azure Static Web Apps bereitstellen.",
+        "description": "Erfahren Sie, wie Sie mit der Azure CLI eine statische Website f\u00fcr Azure Static Web Apps bereitstellen via a guided deployment.",
         "stackDetails": "",
         "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/localized/de-DE/scenarios/azure-docs/articles/static-web-apps/get-started-cli.md",
         "documentationUrl": "https://learn.microsoft.com/en-us/azure/static-web-apps/get-started-cli",

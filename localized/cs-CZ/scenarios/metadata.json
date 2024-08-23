@@ -132,7 +132,7 @@
         "status": "active",
         "key": "azure-docs/articles/static-web-apps/get-started-cli.md",
         "title": "Rychl\u00fd start: Vytvo\u0159en\u00ed prvn\u00edho statick\u00e9ho webu pomoc\u00ed Azure Static Web Apps pomoc\u00ed rozhran\u00ed p\u0159\u00edkazov\u00e9ho \u0159\u00e1dku",
-        "description": "Nau\u010dte se nasadit statick\u00fd web do Azure Static Web Apps pomoc\u00ed Azure CLI.",
+        "description": "Nau\u010dte se nasadit statick\u00fd web do Azure Static Web Apps pomoc\u00ed Azure CLI via a guided deployment.",
         "stackDetails": "",
         "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/localized/cs-CZ/scenarios/azure-docs/articles/static-web-apps/get-started-cli.md",
         "documentationUrl": "https://learn.microsoft.com/en-us/azure/static-web-apps/get-started-cli",

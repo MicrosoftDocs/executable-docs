@@ -1,6 +1,6 @@
 ---
 title: "Quickstart: Building your first static site with the Azure Static Web Apps using the CLI"
-description: Learn to deploy a static site to Azure Static Web Apps with the Azure CLI.
+description: Learn to deploy a static site to Azure Static Web Apps with the Azure CLI via a guided deployment..
 services: static-web-apps
 author: craigshoemaker
 ms.service: azure-static-web-apps
