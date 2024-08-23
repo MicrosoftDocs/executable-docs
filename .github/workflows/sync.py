@@ -130,7 +130,6 @@ def update_metadata(file_path, localize=False):
     except Exception as e:
         print(f"Error updating metadata: {e}")
 
-    print(base_metadata)
     return base_metadata
 
 def delete_branch(repo, branch_name):
@@ -246,7 +245,7 @@ def sync_markdown_files():
                         if source_file_changed:
                             # Create or update the base metadata.json file
                             branch_metadata = update_metadata(source_file_path, localize=False)
-                            
+                            print(branch_metadata)
                             try:
                                 repo.create_file('scenarios/metadata.json', f"Add metadata.json file", json.dumps(branch_metadata, indent=4), branch=new_branch_name)
                                 print("Created metadata.json")
