@@ -1,6 +1,6 @@
 ---
 title: 'Rychlý start: Vytvoření prvního statického webu pomocí Azure Static Web Apps pomocí rozhraní příkazového řádku'
-description: Naučte se nasadit statický web do Azure Static Web Apps pomocí Azure CLI
+description: Naučte se nasadit statický web do Azure Static Web Apps pomocí Azure CLI via a guided deployment.
 services: static-web-apps
 author: craigshoemaker
 ms.service: static-web-apps
