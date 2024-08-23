@@ -8,6 +8,7 @@ import json
 import yaml
 from datetime import datetime
 import time
+import copy
 
 GITHUB_TOKEN = os.getenv('GITHUB_TOKEN')
 g = github.Github(GITHUB_TOKEN)
@@ -244,7 +245,8 @@ def sync_markdown_files():
                         
                         if source_file_changed:
                             # Create or update the base metadata.json file
-                            branch_metadata = update_metadata(source_file_path, localize=False)
+                            branch_metadata_updated = update_metadata(source_file_path, localize=False)
+                            branch_metadata = copy.deepcopy(branch_metadata_updated)
                             print(branch_metadata)
                             try:
                                 repo.create_file('scenarios/metadata.json', f"Add metadata.json file", json.dumps(branch_metadata, indent=4), branch=new_branch_name)
@@ -259,14 +261,16 @@ def sync_markdown_files():
                             try:
                                 for locale in sorted(os.listdir('localized')):
                                     locale_source_file_path = f'localized/{locale}/{source_file_path}'
-                                    locale_metadata = update_metadata(locale_source_file_path, localize=True)
+                                    locale_metadata_updated = update_metadata(locale_source_file_path, localize=True)
+                                    locale_metadata = copy.deepcopy(locale_metadata_updated)
                                     repo.create_file(f'localized/{locale}/scenarios/metadata.json', f"Add metadata.json file for {locale}", json.dumps(locale_metadata, indent=4), branch=new_branch_name)
                                     print("created localized metadata")
 
                             except:
                                 for locale in sorted(os.listdir('localized')):
                                     locale_source_file_path = f'localized/{locale}/{source_file_path}'
-                                    locale_metadata = update_metadata(locale_source_file_path, localize=True)
+                                    locale_metadata_updated = update_metadata(locale_source_file_path, localize=True)
+                                    locale_metadata = copy.deepcopy(locale_metadata_updated)
                                     locale_metadata_path = repo.get_contents(f'localized/{locale}/scenarios/metadata.json', ref=new_branch_name)
                                     repo.update_file(locale_metadata_path.path, f"Updated localized metadata for {locale}", json.dumps(locale_metadata, indent=4), locale_metadata_path.sha, branch=new_branch_name)
                                     print("updated localized metadata")
