@@ -1,6 +1,6 @@
 ---
 title: 'Schnellstart: Erstellen Ihrer ersten statischen Website mit Azure Static Web Apps und der CLI'
-description: 'Erfahren Sie, wie Sie mit der Azure CLI eine statische Website für Azure Static Web Apps bereitstellen via a guided deployment.'
+description: 'Erfahren Sie, wie Sie mit der Azure CLI eine statische Website für Azure Static Web Apps bereitstellen'
 services: static-web-apps
 author: craigshoemaker
 ms.service: static-web-apps
