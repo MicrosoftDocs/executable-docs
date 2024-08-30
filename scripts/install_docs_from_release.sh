@@ -9,9 +9,14 @@ RELEASE="$2"
 # If no release is specified, download the latest release
 if [ "$RELEASE" == "" ]; then
 
-	RESPONSE=$(curl -s "https://api.github.com/repos/MicrosoftDocs/executable-docs/releases/latest")
+	RESPONSE=$(curl -s "https://api.github.com/repos/MicrosoftDocs/executable-docs/releases/latestt")
 
 	RELEASE=$(echo $RESPONSE | jq -r '.tag_name')
+
+	# If the curl request returns null, hardcode the release version
+    if [ "$RELEASE" == "null" ] || [ -z "$RELEASE" ]; then
+        RELEASE="v1.0.10518406132"
+    fi
 fi
 
 # Set a default scenarios file
