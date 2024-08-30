@@ -9,7 +9,7 @@ RELEASE="$2"
 # If no release is specified, download the latest release
 if [ "$RELEASE" == "" ]; then
 
-	RESPONSE=$(curl -s "https://api.github.com/repos/MicrosoftDocs/executable-docs/releases/latestt")
+	RESPONSE=$(curl -s "https://api.github.com/repos/MicrosoftDocs/executable-docs/releases/latest")
 
 	RELEASE=$(echo $RESPONSE | jq -r '.tag_name')
 
