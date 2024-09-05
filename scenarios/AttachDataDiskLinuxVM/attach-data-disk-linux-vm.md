@@ -405,6 +405,26 @@ You can now SSH into the VM by running the following command in your ssh client 
 ssh -o StrictHostKeyChecking=no $MY_VM_USERNAME@$FQDN
 ```
 
+## Validation
+
+To verify that the resources have been created as promised, you can use the following command:
+
+```bash
+az resource list --resource-group $RESOURCE_GROUP_NAME --query "[].name" --output json
+```
+
+Results:
+
+<!-- expected_similarity=0.3 -->
+```json
+[
+  "myVMxxxxx",
+  "mydnslabelxxxxxx",
+  "LinuxRG-xxxxxx"
+]
+```
+
+
 ## Next Steps
 
 * [Learn about virtual machines](../index.yml)

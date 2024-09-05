@@ -66,6 +66,9 @@ jobs:
         release_name: v1.0.${{ env.success_count }}
         draft: false
         prerelease: false
+    - name: Write tag_name to latest_release.txt
+      if: env.scenarios_changed == 'true'
+      run: echo "v1.0.${{ env.success_count }}" > .github/workflows/latest_release.txt
     - name: Upload Release Asset
       if: env.scenarios_changed == 'true'
       uses: actions/upload-release-asset@v1
