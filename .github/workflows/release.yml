@@ -78,7 +78,7 @@ jobs:
         git commit -m "Update latest_release.txt with new tag v1.0.${{ env.success_count }}"
         git push
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.PAT }}
     - name: Upload Release Asset
       if: env.scenarios_changed == 'true'
       uses: actions/upload-release-asset@v1
