@@ -1,6 +1,6 @@
 ---
 title: 'Quickstart: Use the Azure CLI to create an Ubuntu Virtual Machine and attach an Azure Data Disk'
-description: In this quickstart, you learn how to use the Azure CLI to create an Ubuntu Linux virtual machine
+description: In this quickstart, you learn how to use the Azure CLI to create an Ubuntu Linux virtual machine.
 author: ajoian
 ms.service: virtual-machines
 ms.collection: linux
