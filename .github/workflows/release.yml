@@ -69,9 +69,16 @@ jobs:
     - name: Write tag_name to latest_release.txt
       if: env.scenarios_changed == 'true'
       run: echo "v1.0.${{ env.success_count }}" > .github/workflows/latest_release.txt
-    - name: Debug latest_release.txt
+    - name: Commit and push changes
       if: env.scenarios_changed == 'true'
-      run: cat .github/workflows/latest_release.txt
+      run: |
+        git config --global user.name 'github-actions[bot]'
+        git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+        git add .github/workflows/latest_release.txt
+        git commit -m "Update latest_release.txt with new tag v1.0.${{ env.success_count }}"
+        git push
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     - name: Upload Release Asset
       if: env.scenarios_changed == 'true'
       uses: actions/upload-release-asset@v1
