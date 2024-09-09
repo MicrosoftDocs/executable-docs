@@ -70,11 +70,13 @@ az postgres flexible-server create \
     --version 16 \
     --yes -o JSON \
     --public-access 0.0.0.0
+```
 
-## Enable postgres vector extension.
+## Enable postgres vector extension
 
 Set up the vector extension for postgres to allow storing vectors/embeddings.
 
+```bash
 az postgres flexible-server parameter set \
     --resource-group $RG_NAME \
     --server-name $POSTGRES_SERVER_NAME \
@@ -100,7 +102,11 @@ az cognitiveservices account create \
     --location $REGION \
     --kind OpenAI \
     --sku s0 \
+```
 
+## Create OpenAI deployments
+
+```bash
 az cognitiveservices account deployment create \
     --name $OPEN_AI_SERVICE_NAME \
     --resource-group  $RG_NAME \
