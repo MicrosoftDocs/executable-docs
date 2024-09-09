@@ -92,16 +92,15 @@ psql \
 ## Set up OpenAI resource
 
 ```bash
+export CHAT_MODEL="gpt-4-turbo-2024-04-09"
 export OPEN_AI_SERVICE_NAME="openai-service-$RANDOM_ID"
 export EMBEDDING_MODEL="text-embedding-ada-002"
-export CHAT_MODEL="gpt-4-turbo-2024-04-09"
 
-az cognitiveservices account create \
-    --name $OPEN_AI_SERVICE_NAME \
-    --resource-group $RG_NAME \
-    --location $REGION \
-    --kind OpenAI \
-    --sku s0 \
+echo "
+Name: $OPEN_AI_SERVICE_NAME
+Resource Group: $RG_NAME 
+Location: $REGION
+"
 ```
 
 ## Create OpenAI deployments
