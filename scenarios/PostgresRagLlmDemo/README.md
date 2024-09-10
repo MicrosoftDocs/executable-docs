@@ -35,73 +35,13 @@ In order to run commands in Azure using the CLI, you need to log in first. Log i
 Set up a resource group with a random ID.
 
 ```bash
-export RANDOM_ID="$(openssl rand -hex 3)"
+export RANDOM_ID="3be726"
 export RG_NAME="myPostgresResourceGroup$RANDOM_ID"
 export REGION="centralus"
 
 az group create \
     --name $RG_NAME \
     --location $REGION \
-```
-
-## Create Database
-
-Create an Azure postgres database.
-
-```bash
-export POSTGRES_SERVER_NAME="mydb$RANDOM_ID"
-export PGHOST="${POSTGRES_SERVER_NAME}.postgres.database.azure.com"
-export PGUSER="dbadmin$RANDOM_ID"
-export PGPORT=5432
-export PGDATABASE="azure-ai-demo"
-export PGPASSWORD="$(openssl rand -base64 32)"
-
-az postgres flexible-server create \
-    --admin-password $PGPASSWORD \
-    --admin-user $PGUSER \
-    --location $REGION \
-    --name $POSTGRES_SERVER_NAME \
-    --database-name $PGDATABASE \
-    --resource-group $RG_NAME \
-    --sku-name Standard_B2s \
-    --storage-auto-grow Disabled \
-    --storage-size 32 \
-    --tier Burstable \
-    --version 16 \
-    --yes -o JSON \
-    --public-access 0.0.0.0
-```
-
-## Enable postgres vector extension
-
-Set up the vector extension for postgres to allow storing vectors/embeddings.
-
-```bash
-az postgres flexible-server parameter set \
-    --resource-group $RG_NAME \
-    --server-name $POSTGRES_SERVER_NAME \
-    --name azure.extensions --value vector
-
-psql -c "CREATE EXTENSION IF NOT EXISTS vector;"
-
-psql \
-    -c "CREATE TABLE embeddings(id int PRIMARY KEY, data text, embedding vector(1536));" \
-    -c "CREATE INDEX ON embeddings USING hnsw (embedding vector_ip_ops);"
-```
-
-## Set up OpenAI resource
-
-```bash
-export CHAT_MODEL="gpt-4-turbo-2024-04-09"
-export OPEN_AI_SERVICE_NAME="openai-service-$RANDOM_ID"
-export EMBEDDING_MODEL="text-embedding-ada-002"
-
-echo "
-Go to https://ms.portal.azure.com/#create/Microsoft.CognitiveServicesOpenAI
-Name: $OPEN_AI_SERVICE_NAME
-Resource Group: $RG_NAME 
-Location: $REGION
-"
 ```
 
 ## Create OpenAI deployments
