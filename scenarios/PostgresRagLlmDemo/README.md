@@ -34,15 +34,17 @@ In order to run commands in Azure using the CLI, you need to log in first. Log i
 
 Set up a resource group with a random ID.
 
+## Create OpenAI deployments
+
 ```bash
 export RANDOM_ID="3be726"
 export RG_NAME="myPostgresResourceGroup$RANDOM_ID"
 export REGION="centralus"
-```
 
-## Create OpenAI deployments
+export CHAT_MODEL="gpt-4o-mini"
+export OPEN_AI_SERVICE_NAME="openai-service-$RANDOM_ID"
+export EMBEDDING_MODEL="text-embedding-ada-002"
 
-```bash
 az cognitiveservices account deployment create \
     --name $OPEN_AI_SERVICE_NAME \
     --resource-group  $RG_NAME \
@@ -58,7 +60,7 @@ az cognitiveservices account deployment create \
     --resource-group  $RG_NAME \
     --deployment-name $CHAT_MODEL \
     --model-name $CHAT_MODEL \
-    --model-version "0125-Preview" \
+    --model-version "2024-07-18" \
     --model-format OpenAI \
     --sku-capacity "1" \
     --sku-name "Standard"
