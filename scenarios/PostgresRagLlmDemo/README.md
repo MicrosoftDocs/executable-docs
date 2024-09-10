@@ -45,6 +45,16 @@ export CHAT_MODEL="gpt-4o-mini"
 export OPEN_AI_SERVICE_NAME="openai-service-$RANDOM_ID"
 export EMBEDDING_MODEL="text-embedding-ada-002"
 
+export POSTGRES_SERVER_NAME="mydb$RANDOM_ID"
+export PGHOST="${POSTGRES_SERVER_NAME}.postgres.database.azure.com"
+export PGUSER="dbadmin$RANDOM_ID"
+export PGPORT=5432
+export PGDATABASE="azure-ai-demo"
+export PGPASSWORD="$(openssl rand -base64 32)"
+
+ENDPOINT=$(az cognitiveservices account show --name $OPEN_AI_SERVICE_NAME --resource-group $RG_NAME | jq -r .properties.endpoint)
+API_KEY=$(az cognitiveservices account keys list --name $OPEN_AI_SERVICE_NAME --resource-group $RG_NAME | jq -r .key1)
+
 cd ~/scenarios/PostgresRagLlmDemo
 pip install -r requirements.txt
 python chat.py --populate
