@@ -89,7 +89,7 @@ psql \
     -c "CREATE INDEX ON embeddings USING hnsw (embedding vector_ip_ops);"
 ```
 
-## Set up OpenAI resource
+## Create OpenAI resources
 
 ```bash
 export CHAT_MODEL="gpt-4-turbo-2024-04-09"
@@ -122,15 +122,15 @@ az cognitiveservices account deployment create \
     --resource-group  $RG_NAME \
     --deployment-name $CHAT_MODEL \
     --model-name $CHAT_MODEL \
-    --model-version "0125-Preview" \
+    --model-version "2024-07-18" \
     --model-format OpenAI \
     --sku-capacity "1" \
     --sku-name "Standard"
 ```
 
-## Clone and run chatbot code
+## Install python libraries
 
 ```bash
-pip install -r requirements
-python chat.py --populate
+cd ~/scenarios/PostgresRagLlmDemo
+pip install -r requirements.txt
 ```
