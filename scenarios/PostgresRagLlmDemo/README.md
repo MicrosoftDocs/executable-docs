@@ -91,13 +91,14 @@ psql \
 
 ## Create OpenAI resources
 
+IMPORTANT: MANUAL STEP.
+For this step you must create an OpenAI resource manually. Go to this link and enter the details below:
+<https://ms.portal.azure.com/#create/Microsoft.CognitiveServicesOpenAI>
+
 ```bash
-export CHAT_MODEL="gpt-4-turbo-2024-04-09"
 export OPEN_AI_SERVICE_NAME="openai-service-$RANDOM_ID"
-export EMBEDDING_MODEL="text-embedding-ada-002"
 
 echo "
-Go to https://ms.portal.azure.com/#create/Microsoft.CognitiveServicesOpenAI
 Name: $OPEN_AI_SERVICE_NAME
 Resource Group: $RG_NAME 
 Location: $REGION
@@ -107,6 +108,9 @@ Location: $REGION
 ## Create OpenAI deployments
 
 ```bash
+export EMBEDDING_MODEL="text-embedding-ada-002"
+export CHAT_MODEL="gpt-4o-mini"
+
 az cognitiveservices account deployment create \
     --name $OPEN_AI_SERVICE_NAME \
     --resource-group  $RG_NAME \
