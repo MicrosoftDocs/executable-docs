@@ -38,10 +38,6 @@ Set up a resource group with a random ID.
 export RANDOM_ID="3be726"
 export RG_NAME="myPostgresResourceGroup$RANDOM_ID"
 export REGION="centralus"
-
-az group create \
-    --name $RG_NAME \
-    --location $REGION \
 ```
 
 ## Create OpenAI deployments
