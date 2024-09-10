@@ -34,7 +34,7 @@ In order to run commands in Azure using the CLI, you need to log in first. Log i
 
 Set up a resource group with a random ID.
 
-## Create OpenAI deployments
+## Run
 
 ```bash
 export RANDOM_ID="3be726"
@@ -45,30 +45,6 @@ export CHAT_MODEL="gpt-4o-mini"
 export OPEN_AI_SERVICE_NAME="openai-service-$RANDOM_ID"
 export EMBEDDING_MODEL="text-embedding-ada-002"
 
-az cognitiveservices account deployment create \
-    --name $OPEN_AI_SERVICE_NAME \
-    --resource-group  $RG_NAME \
-    --deployment-name $EMBEDDING_MODEL \
-    --model-name $EMBEDDING_MODEL \
-    --model-version "1"  \
-    --model-format OpenAI \
-    --sku-capacity "1" \
-    --sku-name "Standard"
-
-az cognitiveservices account deployment create \
-    --name $OPEN_AI_SERVICE_NAME \
-    --resource-group  $RG_NAME \
-    --deployment-name $CHAT_MODEL \
-    --model-name $CHAT_MODEL \
-    --model-version "2024-07-18" \
-    --model-format OpenAI \
-    --sku-capacity "1" \
-    --sku-name "Standard"
-```
-
-## Clone and run chatbot code
-
-```bash
 pip install -r scenarios/PostgresRagLlmDemo/requirements.txt
 python chat.py --populate
 ```
