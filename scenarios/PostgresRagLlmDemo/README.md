@@ -45,6 +45,7 @@ export CHAT_MODEL="gpt-4o-mini"
 export OPEN_AI_SERVICE_NAME="openai-service-$RANDOM_ID"
 export EMBEDDING_MODEL="text-embedding-ada-002"
 
+cd ~/scenarios/PostgresRagLlmDemo
 pip install -r requirements.txt
 python chat.py --populate
 ```
