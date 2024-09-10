@@ -69,6 +69,6 @@ az cognitiveservices account deployment create \
 ## Clone and run chatbot code
 
 ```bash
-pip install -r requirements
+pip install -r scenarios/PostgresRagLlmDemo/requirements.txt
 python chat.py --populate
 ```
