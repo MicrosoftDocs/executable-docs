@@ -50,10 +50,10 @@ export PGHOST="${POSTGRES_SERVER_NAME}.postgres.database.azure.com"
 export PGUSER="dbadmin$RANDOM_ID"
 export PGPORT=5432
 export PGDATABASE="azure-ai-demo"
-export PGPASSWORD="$(openssl rand -base64 32)"
+export PGPASSWORD="O+XjThk+L61WoEX6CU3/sB0iJNxZsYJCwAxghoMGlq0="
 
-ENDPOINT=$(az cognitiveservices account show --name $OPEN_AI_SERVICE_NAME --resource-group $RG_NAME | jq -r .properties.endpoint)
-API_KEY=$(az cognitiveservices account keys list --name $OPEN_AI_SERVICE_NAME --resource-group $RG_NAME | jq -r .key1)
+export ENDPOINT=$(az cognitiveservices account show --name $OPEN_AI_SERVICE_NAME --resource-group $RG_NAME | jq -r .properties.endpoint)
+export API_KEY=$(az cognitiveservices account keys list --name $OPEN_AI_SERVICE_NAME --resource-group $RG_NAME | jq -r .key1)
 
 cd ~/scenarios/PostgresRagLlmDemo
 pip install -r requirements.txt
