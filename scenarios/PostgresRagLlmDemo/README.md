@@ -141,3 +141,16 @@ export API_KEY=$(az cognitiveservices account keys list --name $OPEN_AI_SERVICE_
 cd ~/scenarios/PostgresRagLlmDemo
 pip install -r requirements.txt
 ```
+
+## Run Chatbot
+
+To test out the chat bot, run the bottom command in the terminal once the deployment is complete.
+The chat bot uses a local file called "knowledge.txt" as the sample document to generate embeddings for
+and to store those embeddings in the newly created postgres database. Then any questions you ask will
+be augmented with context from the "knowledge.txt" after searching the document for the most relevant
+pieces of context using the embeddings. The "knowledge.txt" is about a fictional material called Zytonium.
+You can view the full knowledge.txt and the code for the chatbot by looking in the "scenarios/PostgresRagLlmDemo" directory.
+
+```bash
+echo "cd ~/scenarios/PostgresRagLlmDemo && python chat.py --populate"
+```
