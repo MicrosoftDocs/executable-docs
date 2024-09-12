@@ -135,6 +135,9 @@ az cognitiveservices account deployment create \
 ## Install python libraries
 
 ```bash
+export ENDPOINT=$(az cognitiveservices account show --name $OPEN_AI_SERVICE_NAME --resource-group $RG_NAME | jq -r .properties.endpoint)
+export API_KEY=$(az cognitiveservices account keys list --name $OPEN_AI_SERVICE_NAME --resource-group $RG_NAME | jq -r .key1)
+
 cd ~/scenarios/PostgresRagLlmDemo
 pip install -r requirements.txt
 ```
