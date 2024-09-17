@@ -1,3 +1,4 @@
+import argparse
 import os
 import sys
 from textwrap import dedent
@@ -7,16 +8,22 @@ from openai import AzureOpenAI
 
 from db import VectorDatabase
 
-API_KEY = os.environ["API_KEY"]
-ENDPOINT = os.environ["ENDPOINT"]
+parser = argparse.ArgumentParser()
+parser.add_argument('--api-key', dest='api_key', type=str)
+parser.add_argument('--endpoint', dest='endpoint', type=str)
+parser.add_argument('--pguser', dest='pguser', type=str)
+parser.add_argument('--phhost', dest='phhost', type=str)
+parser.add_argument('--pgpassword', dest='pgpassword', type=str)
+parser.add_argument('--pgdatabase', dest='pgdatabase', type=str)
+args = parser.parse_args()
 
 
 class ChatBot:
     def __init__(self):
-        self.db = VectorDatabase()
+        self.db = VectorDatabase(pguser=args.pguser, pghost=args.phhost, pgpassword=args.pgpassword, pgdatabase=args.pgdatabase)
         self.api = AzureOpenAI(
-            azure_endpoint=ENDPOINT,
-            api_key=API_KEY,
+            azure_endpoint=args.endpoint,
+            api_key=args.api_key,
             api_version="2024-02-01",
         )
         self.text_splitter = RecursiveCharacterTextSplitter(

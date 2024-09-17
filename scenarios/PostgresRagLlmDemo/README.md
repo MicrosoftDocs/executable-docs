@@ -151,6 +151,15 @@ be augmented with context from the "knowledge.txt" after searching the document 
 pieces of context using the embeddings. The "knowledge.txt" is about a fictional material called Zytonium.
 You can view the full knowledge.txt and the code for the chatbot by looking in the "scenarios/PostgresRagLlmDemo" directory.
 
+cd ~/scenarios/PostgresRagLlmDemo
+python chat.py --populate \
+    --api-key $API_KEY \
+    --endpoint $ENDPOINT \
+    --pguser $PGUSER \
+    --phhost $PGHOST \
+    --pgpassword $PGPASSWORD \
+    --pgdatabase $PGDATABASE
+
 ```bash
-echo "cd ~/scenarios/PostgresRagLlmDemo && python chat.py --populate"
+echo "Run chat.py to test out your newly created RAG model. Read the instructions for the last step to learn how"
 ```

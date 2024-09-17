@@ -2,15 +2,10 @@ import os
 
 from psycopg2 import connect
 
-PGHOST = os.environ["PGHOST"]
-PGUSER = os.environ["PGUSER"]
-PGPASSWORD = os.environ["PGPASSWORD"]
-PGDATABASE = os.environ["PGDATABASE"]
-
 
 class VectorDatabase:
-    def __init__(self):
-        self.conn = connect(user=PGUSER, password=PGPASSWORD, host=PGHOST, port=5432, dbname=PGDATABASE)
+    def __init__(self, pguser, pghost, pgpassword, pgdatabase):
+        self.conn = connect(user=pguser, password=pgpassword, host=pghost, port=5432, dbname=pgdatabase)
 
     def __exit__(self, exc_type, exc_value, traceback):
         self.conn.close()
