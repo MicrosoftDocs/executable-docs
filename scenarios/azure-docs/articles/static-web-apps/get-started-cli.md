@@ -27,17 +27,6 @@ In this quickstart, you deploy a web application to Azure Static Web apps using 
 - [Azure CLI](/cli/azure/install-azure-cli) installed (version 2.29.0 or higher).
 - [A Git setup](https://www.git-scm.com/downloads). 
 
-## Define environment variables
-
-The first step in this quickstart is to define environment variables.
-
-```bash
-export RANDOM_ID="$(openssl rand -hex 3)"
-export MY_RESOURCE_GROUP_NAME="myStaticWebAppResourceGroup$RANDOM_ID"
-export REGION=EastUS2
-export MY_STATIC_WEB_APP_NAME="myStaticWebApp$RANDOM_ID"
-```
-
 ## Create a repository (optional)
 
 (Optional) This article uses a GitHub template repository as another way to make it easy for you to get started. The template features a starter app to deploy to Azure Static Web Apps.
@@ -57,6 +46,9 @@ Deploy the app as a static web app from the Azure CLI.
 1. Create a resource group.
 
 ```bash
+export RANDOM_ID="$(openssl rand -hex 3)"
+export MY_RESOURCE_GROUP_NAME="myStaticWebAppResourceGroup$RANDOM_ID"
+export REGION=EastUS2
 az group create \
   --name $MY_RESOURCE_GROUP_NAME \
   --location $REGION
@@ -81,6 +73,7 @@ Results:
 2. Deploy a new static web app from your repository.
 
 ```bash
+export MY_STATIC_WEB_APP_NAME="myStaticWebApp$RANDOM_ID"
 az staticwebapp create \
     --name $MY_STATIC_WEB_APP_NAME \
     --resource-group $MY_RESOURCE_GROUP_NAME \

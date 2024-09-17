@@ -14,31 +14,14 @@ ms.custom: innovation-engine
 
 Welcome to this tutorial where we will take you step by step in creating an Azure Kubernetes Web Application that is secured via https. This tutorial assumes you are logged into Azure CLI already and have selected a subscription to use with the CLI. It also assumes that you have Helm installed ([Instructions can be found here](https://helm.sh/docs/intro/install/)).
 
-## Define Environment Variables
-
-The first step in this tutorial is to define environment variables.
-
-```bash
-export RANDOM_ID="$(openssl rand -hex 3)"
-export NETWORK_PREFIX="$(($RANDOM % 254 + 1))"
-export SSL_EMAIL_ADDRESS="$(az account show --query user.name --output tsv)"
-export MY_RESOURCE_GROUP_NAME="myAKSResourceGroup$RANDOM_ID"
-export REGION="westeurope"
-export MY_AKS_CLUSTER_NAME="myAKSCluster$RANDOM_ID"
-export MY_PUBLIC_IP_NAME="myPublicIP$RANDOM_ID"
-export MY_DNS_LABEL="mydnslabel$RANDOM_ID"
-export MY_VNET_NAME="myVNet$RANDOM_ID"
-export MY_VNET_PREFIX="10.$NETWORK_PREFIX.0.0/16"
-export MY_SN_NAME="mySN$RANDOM_ID"
-export MY_SN_PREFIX="10.$NETWORK_PREFIX.0.0/22"
-export FQDN="${MY_DNS_LABEL}.${REGION}.cloudapp.azure.com"
-```
-
 ## Create a resource group
 
 A resource group is a container for related resources. All resources must be placed in a resource group. We will create one for this tutorial. The following command creates a resource group with the previously defined $MY_RESOURCE_GROUP_NAME and $REGION parameters.
 
 ```bash
+export RANDOM_ID="$(openssl rand -hex 3)"
+export MY_RESOURCE_GROUP_NAME="myAKSResourceGroup$RANDOM_ID"
+export REGION="westeurope"
 az group create --name $MY_RESOURCE_GROUP_NAME --location $REGION
 ```
 
@@ -65,6 +48,11 @@ Results:
 A virtual network is the fundamental building block for private networks in Azure. Azure Virtual Network enables Azure resources like VMs to securely communicate with each other and the internet.
 
 ```bash
+export NETWORK_PREFIX="$(($RANDOM % 254 + 1))"
+export MY_VNET_NAME="myVNet$RANDOM_ID"
+export MY_VNET_PREFIX="10.$NETWORK_PREFIX.0.0/16"
+export MY_SN_NAME="mySN$RANDOM_ID"
+export MY_SN_PREFIX="10.$NETWORK_PREFIX.0.0/22"
 az network vnet create \
     --resource-group $MY_RESOURCE_GROUP_NAME \
     --location $REGION \
@@ -129,6 +117,7 @@ This will take a few minutes.
 
 ```bash
 export MY_SN_ID=$(az network vnet subnet list --resource-group $MY_RESOURCE_GROUP_NAME --vnet-name $MY_VNET_NAME --query "[0].id" --output tsv)
+export MY_AKS_CLUSTER_NAME="myAKSCluster$RANDOM_ID"
 az aks create \
   --resource-group $MY_RESOURCE_GROUP_NAME \
   --name $MY_AKS_CLUSTER_NAME \
@@ -178,6 +167,8 @@ To manage a Kubernetes cluster, use the Kubernetes command-line client, kubectl.
 ## Install NGINX Ingress Controller
 
 ```bash
+export MY_PUBLIC_IP_NAME="myPublicIP$RANDOM_ID"
+export MY_DNS_LABEL="mydnslabel$RANDOM_ID"
 export MY_STATIC_IP=$(az network public-ip create --resource-group MC_${MY_RESOURCE_GROUP_NAME}_${MY_AKS_CLUSTER_NAME}_${REGION} --location ${REGION} --name ${MY_PUBLIC_IP_NAME} --dns-name ${MY_DNS_LABEL} --sku Standard --allocation-method static --version IPv4 --zone 1 2 3 --query publicIp.ipAddress -o tsv)
 helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
 helm repo update
@@ -346,6 +337,7 @@ done
 ```
 
 ```bash
+export FQDN="${MY_DNS_LABEL}.${REGION}.cloudapp.azure.com"
 curl "http://$FQDN"
 ```
 
@@ -443,6 +435,7 @@ Cert-manager provides Helm charts as a first-class method of installation on Kub
    The issuer we are using can be found in the `cluster-issuer-prod.yml file`
         
     ```bash
+    export SSL_EMAIL_ADDRESS="$(az account show --query user.name --output tsv)"
     cat <<EOF > cluster-issuer-prod.yml
     apiVersion: cert-manager.io/v1
     kind: ClusterIssuer

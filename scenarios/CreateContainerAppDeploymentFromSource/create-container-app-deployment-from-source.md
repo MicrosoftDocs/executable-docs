@@ -19,24 +19,6 @@ In this guide, we'll be walking through deploying the necessary resources for a 
 
 Note: If you've never created a Computer Vision resource before, you will not be able to create one using the Azure CLI. You must create your first Computer Vision resource from the Azure portal to review and acknowledge the Responsible AI terms and conditions. You can do so here: [Create a Computer Vision Resource](https://portal.azure.com/#create/Microsoft.CognitiveServicesComputerVision). After that, you can create subsequent resources using any deployment tool (SDK, CLI, or ARM template, etc) under the same Azure subscription.
 
-## Define Environment Variables
-
-The first step in this tutorial is to define environment variables. **Replace the values on the right with your own unique values.** These values will be used throughout the tutorial to create resources and configure the application. Use lowercase and no special characters for the storage account name.
-
-```bash
-export SUFFIX=$(cat /dev/urandom | LC_ALL=C tr -dc 'a-z0-9' | fold -w 8 | head -n 1)
-export MY_RESOURCE_GROUP_NAME=rg$SUFFIX
-export REGION=westus
-export MY_STORAGE_ACCOUNT_NAME=storage$SUFFIX
-export MY_DATABASE_SERVER_NAME=dbserver$SUFFIX
-export MY_DATABASE_NAME=db$SUFFIX
-export MY_DATABASE_USERNAME=dbuser$SUFFIX
-export MY_DATABASE_PASSWORD=dbpass$SUFFIX
-export MY_COMPUTER_VISION_NAME=computervision$SUFFIX
-export MY_CONTAINER_APP_NAME=containerapp$SUFFIX
-export MY_CONTAINER_APP_ENV_NAME=containerappenv$SUFFIX
-```
-
 ## Clone the sample repository
 
 First, we're going to clone this repository onto our local machines. This will provide the starter code required to provide the functionality for the simple application outlined above. We can clone with a simple git command.
@@ -56,6 +38,9 @@ In order to run commands against Azure using [the CLI ](https://learn.microsoft.
 A resource group is a container for related resources. All resources must be placed in a resource group. We will create one for this tutorial. The following command creates a resource group with the previously defined $MY_RESOURCE_GROUP_NAME and $REGION parameters.
 
 ```bash
+export SUFFIX=$(cat /dev/urandom | LC_ALL=C tr -dc 'a-z0-9' | fold -w 8 | head -n 1)
+export MY_RESOURCE_GROUP_NAME=rg$SUFFIX
+export REGION=westus
 az group create --name $MY_RESOURCE_GROUP_NAME --location $REGION
 ```
 
@@ -81,6 +66,7 @@ Results:
 To create a storage account in this resource group we need to run a simple command. To this command, we are passing the name of the storage account, the resource group to deploy it in, the physical region to deploy it in, and the SKU of the storage account. All values are configured using environment variables.
 
 ```bash
+export MY_STORAGE_ACCOUNT_NAME=storage$SUFFIX
 az storage account create --name $MY_STORAGE_ACCOUNT_NAME --resource-group $MY_RESOURCE_GROUP_NAME --location $REGION --sku Standard_LRS
 ```
 
@@ -219,6 +205,10 @@ We will be creating an Azure Database for PostgreSQL flexible server for the app
 - The datatabase credentials: username and password
 
 ```bash
+export MY_DATABASE_SERVER_NAME=dbserver$SUFFIX
+export MY_DATABASE_NAME=db$SUFFIX
+export MY_DATABASE_USERNAME=dbuser$SUFFIX
+export MY_DATABASE_PASSWORD=dbpass$SUFFIX
 az postgres flexible-server create \
   --name $MY_DATABASE_SERVER_NAME \
   --database-name $MY_DATABASE_NAME \
@@ -266,6 +256,8 @@ We will be creating a Computer Vision resource to be able to identify cats or do
 - The SKU as `S1`, or the most cost-effective paid performance tier.
 
 ```bash
+export MY_COMPUTER_VISION_NAME=computervision$SUFFIX
+
 az cognitiveservices account create \
     --name $MY_COMPUTER_VISION_NAME \
     --resource-group $MY_RESOURCE_GROUP_NAME \
@@ -437,6 +429,9 @@ This command will create an Azure Container Registry resource to host our Docker
 - The path to the source code
 
 ```bash
+export MY_CONTAINER_APP_NAME=containerapp$SUFFIX
+export MY_CONTAINER_APP_ENV_NAME=containerappenv$SUFFIX
+
 az containerapp up \
   --name $MY_CONTAINER_APP_NAME \
   --resource-group $MY_RESOURCE_GROUP_NAME \

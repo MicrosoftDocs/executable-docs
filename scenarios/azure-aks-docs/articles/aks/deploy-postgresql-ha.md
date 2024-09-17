@@ -21,7 +21,7 @@ In this article, you deploy a highly available PostgreSQL database on AKS.
 1. Generate a secret to validate the PostgreSQL deployment by interactive login for a bootstrap app user using the [`kubectl create secret`][kubectl-create-secret] command.
 
     ```bash
-    PG_DATABASE_APPUSER_SECRET=$(echo -n | openssl rand -base64 16)
+    export PG_DATABASE_APPUSER_SECRET=$(echo -n | openssl rand -base64 16)
 
     kubectl create secret generic db-user-pass \
         --from-literal=username=app \
@@ -41,6 +41,7 @@ In this article, you deploy a highly available PostgreSQL database on AKS.
 * Deploy a ConfigMap to set environment variables for the PostgreSQL cluster using the following [`kubectl apply`][kubectl-apply] command:
 
     ```bash
+    export ENABLE_AZURE_PVC_UPDATES="true"
     cat <<EOF | kubectl apply --context $AKS_PRIMARY_CLUSTER_NAME -n $PG_NAMESPACE -f -
     apiVersion: v1
     kind: ConfigMap
@@ -76,6 +77,7 @@ Prometheus creates PodMonitors for the CNPG instances using a set of default rec
 Verify that the pod monitor is created.
 
 ```bash
+export PG_PRIMARY_CLUSTER_NAME="pg-primary-${LOCAL_NAME}-${SUFFIX}"
 kubectl --namespace $PG_NAMESPACE \
     --context $AKS_PRIMARY_CLUSTER_NAME \
     get podmonitors.monitoring.coreos.com \
@@ -100,6 +102,7 @@ In this section, you create a federated identity credential for PostgreSQL backu
 2. Create a federated identity credential using the [`az identity federated-credential create`][az-identity-federated-credential-create] command.
 
     ```bash
+    export AKS_PRIMARY_CLUSTER_FED_CREDENTIAL_NAME="pg-primary-fedcred1-${LOCAL_NAME}-${SUFFIX}"
     az identity federated-credential create \
         --name $AKS_PRIMARY_CLUSTER_FED_CREDENTIAL_NAME \
         --identity-name $AKS_UAMI_CLUSTER_IDENTITY_NAME \
@@ -131,6 +134,7 @@ The following table outlines the key properties set in the YAML deployment manif
 1. Deploy the PostgreSQL cluster with the Cluster CRD using the [`kubectl apply`][kubectl-apply] command.
 
     ```bash
+    export AKS_PRIMARY_CLUSTER_PG_DNSPREFIX=$(echo $(echo "a$(openssl rand -hex 5 | cut -c1-11)"))
     cat <<EOF | kubectl apply --context $AKS_PRIMARY_CLUSTER_NAME -n $PG_NAMESPACE -v 9 -f -
     apiVersion: postgresql.cnpg.io/v1
     kind: Cluster

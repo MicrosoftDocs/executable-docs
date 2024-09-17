@@ -20,31 +20,6 @@ In this article, you create the infrastructure needed to deploy a highly availab
 * [Set environment variables](#set-environment-variables) for use throughout this guide.
 * [Install the required extensions](#install-required-extensions).
 
-## Set environment variables
-
-Set the following environment variables for use throughout this guide:
-
-```bash
-export SUFFIX=$(cat /dev/urandom | LC_ALL=C tr -dc 'a-z0-9' | fold -w 8 | head -n 1)
-export LOCAL_NAME="cnpg"
-export TAGS="owner=user"
-export RESOURCE_GROUP_NAME="rg-${LOCAL_NAME}-${SUFFIX}"
-export PRIMARY_CLUSTER_REGION="westus3"
-export AKS_PRIMARY_CLUSTER_NAME="aks-primary-${LOCAL_NAME}-${SUFFIX}"
-export AKS_PRIMARY_MANAGED_RG_NAME="rg-${LOCAL_NAME}-primary-aksmanaged-${SUFFIX}"
-export AKS_PRIMARY_CLUSTER_FED_CREDENTIAL_NAME="pg-primary-fedcred1-${LOCAL_NAME}-${SUFFIX}"
-export AKS_PRIMARY_CLUSTER_PG_DNSPREFIX=$(echo $(echo "a$(openssl rand -hex 5 | cut -c1-11)"))
-export AKS_UAMI_CLUSTER_IDENTITY_NAME="mi-aks-${LOCAL_NAME}-${SUFFIX}"
-export AKS_CLUSTER_VERSION="1.29"
-export PG_NAMESPACE="cnpg-database"
-export PG_SYSTEM_NAMESPACE="cnpg-system"
-export PG_PRIMARY_CLUSTER_NAME="pg-primary-${LOCAL_NAME}-${SUFFIX}"
-export PG_PRIMARY_STORAGE_ACCOUNT_NAME="hacnpgpsa${SUFFIX}"
-export PG_STORAGE_BACKUP_CONTAINER_NAME="backups"
-export ENABLE_AZURE_PVC_UPDATES="true"
-export MY_PUBLIC_CLIENT_IP=$(dig +short myip.opendns.com @resolver3.opendns.com)
-```
-
 ## Install required extensions
 
 The `aks-preview`, `k8s-extension` and `amg` extensions provide more functionality for managing Kubernetes clusters and querying Azure resources. Install these extensions using the following [`az extension add`][az-extension-add] commands:
@@ -78,6 +53,10 @@ kubectl krew install cnpg
 Create a resource group to hold the resources you create in this guide using the [`az group create`][az-group-create] command.
 
 ```bash
+export TAGS="owner=user"
+export LOCAL_NAME="cnpg"
+export RESOURCE_GROUP_NAME="rg-${LOCAL_NAME}-${SUFFIX}"
+export PRIMARY_CLUSTER_REGION="westus3"
 az group create \
     --name $RESOURCE_GROUP_NAME \
     --location $PRIMARY_CLUSTER_REGION \
@@ -93,6 +72,8 @@ In this section, you create a user-assigned managed identity (UAMI) to allow the
 1. Create a user-assigned managed identity using the [`az identity create`][az-identity-create] command.
 
     ```bash
+    export SUFFIX=$(cat /dev/urandom | LC_ALL=C tr -dc 'a-z0-9' | fold -w 8 | head -n 1)
+    export AKS_UAMI_CLUSTER_IDENTITY_NAME="mi-aks-${LOCAL_NAME}-${SUFFIX}"
     AKS_UAMI_WI_IDENTITY=$(az identity create \
         --name $AKS_UAMI_CLUSTER_IDENTITY_NAME \
         --resource-group $RESOURCE_GROUP_NAME \
@@ -124,6 +105,8 @@ The CNPG operator automatically generates a service account called *postgres* th
 1. Create an object storage account to store PostgreSQL backups in the primary region using the [`az storage account create`][az-storage-account-create] command.
 
     ```bash
+    export PG_PRIMARY_STORAGE_ACCOUNT_NAME="hacnpgpsa${SUFFIX}"
+
     az storage account create \
         --name $PG_PRIMARY_STORAGE_ACCOUNT_NAME \
         --resource-group $RESOURCE_GROUP_NAME \
@@ -137,6 +120,8 @@ The CNPG operator automatically generates a service account called *postgres* th
 1. Create the storage container to store the Write Ahead Logs (WAL) and regular PostgreSQL on-demand and scheduled backups using the [`az storage container create`][az-storage-container-create] command.
 
     ```bash
+    export PG_STORAGE_BACKUP_CONTAINER_NAME="backups"
+
     az storage container create \
         --name $PG_STORAGE_BACKUP_CONTAINER_NAME \
         --account-name $PG_PRIMARY_STORAGE_ACCOUNT_NAME \
@@ -268,7 +253,11 @@ You also add a user node pool to the AKS cluster to host the PostgreSQL cluster.
     export SYSTEM_NODE_POOL_VMSKU="standard_d2s_v3"
     export USER_NODE_POOL_NAME="postgres"
     export USER_NODE_POOL_VMSKU="standard_d4s_v3"
-    
+    export AKS_PRIMARY_CLUSTER_NAME="aks-primary-${LOCAL_NAME}-${SUFFIX}"
+    export AKS_PRIMARY_MANAGED_RG_NAME="rg-${LOCAL_NAME}-primary-aksmanaged-${SUFFIX}"
+    export AKS_CLUSTER_VERSION="1.29"
+    export MY_PUBLIC_CLIENT_IP=$(dig +short myip.opendns.com @resolver3.opendns.com)
+
     az aks create \
         --name $AKS_PRIMARY_CLUSTER_NAME \
         --tags $TAGS \
@@ -333,6 +322,9 @@ In this section, you get the AKS cluster credentials, which serve as the keys th
 2. Create the namespace for the CNPG controller manager services, the PostgreSQL cluster, and its related services by using the [`kubectl create namespace`][kubectl-create-namespace] command.
 
     ```bash
+    export PG_NAMESPACE="cnpg-database"
+    export PG_SYSTEM_NAMESPACE="cnpg-system"
+
     kubectl create namespace $PG_NAMESPACE --context $AKS_PRIMARY_CLUSTER_NAME
     kubectl create namespace $PG_SYSTEM_NAMESPACE --context $AKS_PRIMARY_CLUSTER_NAME
     ```
@@ -440,7 +432,6 @@ To validate deployment of the PostgreSQL cluster and use client PostgreSQL tooli
         $AKS_PRIMARY_CLUSTER_NODERG_NAME \
         --query id \
         --output tsv)
-
     echo $AKS_PRIMARY_CLUSTER_NODERG_NAME_SCOPE
     ```
 
