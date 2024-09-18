@@ -475,7 +475,7 @@
         "sourceUrl": "https://raw.githubusercontent.com/aamini7/postgres-rag-llm-demo/main/README.md",
         "documentationUrl": "",
         "configurations": {
-            "region": "westus"
+            "region": "centralus"
         }
     }
 ]
