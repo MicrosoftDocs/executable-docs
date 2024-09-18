@@ -37,6 +37,7 @@ Set up a resource group with a random ID.
 ```bash
 export RANDOM_ID="$(openssl rand -hex 3)"
 export RG_NAME="myPostgresResourceGroup$RANDOM_ID"
+export REGION="centralus"
 
 az group create \
     --name $RG_NAME \
@@ -55,7 +56,7 @@ export CHAT_MODEL="gpt-4-turbo-2024-04-09"
 az cognitiveservices account create \
     --name $OPEN_AI_SERVICE_NAME \
     --resource-group $RG_NAME \
-    --location $REGION \
+    --location westus \
     --kind OpenAI \
     --sku s0 \
 ```
