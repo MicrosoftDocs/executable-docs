@@ -48,10 +48,7 @@ az group create \
 
 ```bash
 az provider register --namespace Microsoft.CognitiveServices
-az feature registration create --name Microsoft.CognitiveServices --namespace LegalTerms.Face.PoliceTermsAccepted
-az feature registration create --name Microsoft.CognitiveServices --namespace LegalTerms.ComputerVision.SpatialAnaysisRAITermsAccepted
-az feature registration create --name Microsoft.CognitiveServices --namespace LegalTerms.TextAnalytics.TAForHealthRAITermsAccepted
-az feature registration create --name Microsoft.CognitiveServices --namespace LegalTerms.TextAnalytics.TAForPIIRAITermsAccepted
+az feature registration create --namespace Microsoft.CognitiveServices --name LegalTerms.TextAnalytics.TAForPIIRAITermsAccepted
 ```
 
 ## Create Database
