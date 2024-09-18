@@ -14,7 +14,7 @@ parser.add_argument('--pguser', dest='pguser', type=str)
 parser.add_argument('--phhost', dest='phhost', type=str)
 parser.add_argument('--pgpassword', dest='pgpassword', type=str)
 parser.add_argument('--pgdatabase', dest='pgdatabase', type=str)
-parser.add_argument('--populate', dest='populate', type=bool, default=False, action="store_true")
+parser.add_argument('--populate', dest='populate', action="store_true")
 args = parser.parse_args()
 
 
@@ -64,7 +64,7 @@ class ChatBot:
         # fmt: on
 
         response = self.api.chat.completions.create(
-            model="gpt-4",
+            model="gpt-4o-mini",
             messages=[
                 {"role": "system", "content": system_promt},
                 {"role": "user", "content": question},
@@ -76,7 +76,7 @@ class ChatBot:
 def main():
     chat_bot = ChatBot()
 
-    if sys.argv[1] == "--populate":
+    if args.populate:
         print("Loading embedding data into database...")
         chat_bot.load_file("knowledge.txt")
         print("Done loading data.")
