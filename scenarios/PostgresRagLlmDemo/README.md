@@ -37,20 +37,10 @@ Set up a resource group with a random ID.
 ```bash
 export RANDOM_ID="$(openssl rand -hex 3)"
 export RG_NAME="myPostgresResourceGroup$RANDOM_ID"
-export REGION="centralus"
 
 az group create \
     --name $RG_NAME \
     --location $REGION \
-```
-
-## Accept Terms/Conditions
-
-```bash
-az feature registration create --namespace Microsoft.CognitiveServices --name LegalTerms.Face.PoliceTermsAccepted
-az feature registration create --namespace Microsoft.CognitiveServices --name LegalTerms.ComputerVision.SpatialAnaysisRAITermsAccepted
-az feature registration create --namespace Microsoft.CognitiveServices --name LegalTerms.TextAnalytics.TAForHealthRAITermsAccepted
-az feature registration create --namespace Microsoft.CognitiveServices --name LegalTerms.TextAnalytics.TAForPIIRAITermsAccepted
 ```
 
 ## Create OpenAI resources
