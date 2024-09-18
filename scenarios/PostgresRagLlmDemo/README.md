@@ -64,7 +64,7 @@ az cognitiveservices account create \
 
 ```bash
 export EMBEDDING_MODEL="text-embedding-ada-002"
-export CHAT_MODEL="gpt-4o-mini"
+export CHAT_MODEL="gpt-4"
 
 az cognitiveservices account deployment create \
     --name $OPEN_AI_SERVICE_NAME \
@@ -81,7 +81,7 @@ az cognitiveservices account deployment create \
     --resource-group  $RG_NAME \
     --deployment-name $CHAT_MODEL \
     --model-name $CHAT_MODEL \
-    --model-version "2024-07-18" \
+    --model-version "turbo-2024-04-09" \
     --model-format OpenAI \
     --sku-capacity "1" \
     --sku-name "Standard"

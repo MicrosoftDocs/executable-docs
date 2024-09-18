@@ -23,7 +23,7 @@ class ChatBot:
         self.api = AzureOpenAI(
             azure_endpoint=args.endpoint,
             api_key=args.api_key,
-            api_version="2024-02-01",
+            api_version="turbo-2024-04-09",
         )
         self.text_splitter = RecursiveCharacterTextSplitter(
             chunk_size=512,
@@ -63,7 +63,7 @@ class ChatBot:
         # fmt: on
 
         response = self.api.chat.completions.create(
-            model="gpt-4o-mini",
+            model="gpt-4",
             messages=[
                 {"role": "system", "content": system_promt},
                 {"role": "user", "content": question},
