@@ -80,6 +80,7 @@ def main():
         print("Loading embedding data into database...")
         chat_bot.load_file("knowledge.txt")
         print("Done loading data.")
+        return
 
     while True:
         q = input("Ask a question (q to exit): ")
