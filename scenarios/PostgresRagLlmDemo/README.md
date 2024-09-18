@@ -44,6 +44,15 @@ az group create \
     --location $REGION \
 ```
 
+## Accept Terms/Conditions
+
+```bash
+az feature registration create --name Microsoft.CognitiveServices --namespace LegalTerms.Face.PoliceTermsAccepted
+az feature registration create --name Microsoft.CognitiveServices --namespace LegalTerms.ComputerVision.SpatialAnaysisRAITermsAccepted
+az feature registration create --name Microsoft.CognitiveServices --namespace LegalTerms.TextAnalytics.TAForHealthRAITermsAccepted
+az feature registration create --name Microsoft.CognitiveServices --namespace LegalTerms.TextAnalytics.TAForPIIRAITermsAccepted
+```
+
 ## Create Database
 
 Create an Azure postgres database.
@@ -91,18 +100,19 @@ psql \
 
 ## Create OpenAI resources
 
-IMPORTANT: MANUAL STEP.
-For this step you must create an OpenAI resource manually. Go to this link and enter the details below:
-<https://ms.portal.azure.com/#create/Microsoft.CognitiveServicesOpenAI>
+Create the openai resource
 
 ```bash
 export OPEN_AI_SERVICE_NAME="openai-service-$RANDOM_ID"
+export EMBEDDING_MODEL="text-embedding-ada-002"
+export CHAT_MODEL="gpt-4-turbo-2024-04-09"
 
-echo "
-Name: $OPEN_AI_SERVICE_NAME
-Resource Group: $RG_NAME 
-Location: $REGION
-"
+az cognitiveservices account create \
+    --name $OPEN_AI_SERVICE_NAME \
+    --resource-group $RG_NAME \
+    --location $REGION \
+    --kind OpenAI \
+    --sku s0 \
 ```
 
 ## Create OpenAI deployments

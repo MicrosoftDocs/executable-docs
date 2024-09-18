@@ -1,5 +1,4 @@
 import argparse
-import sys
 from textwrap import dedent
 
 from langchain_text_splitters import RecursiveCharacterTextSplitter
