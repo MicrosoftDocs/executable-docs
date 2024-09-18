@@ -51,6 +51,50 @@ az provider register --namespace Microsoft.CognitiveServices
 az feature registration create --namespace Microsoft.CognitiveServices --name LegalTerms.TextAnalytics.TAForPIIRAITermsAccepted
 ```
 
+## Create OpenAI resources
+
+Create the openai resource
+
+```bash
+export OPEN_AI_SERVICE_NAME="openai-service-$RANDOM_ID"
+export EMBEDDING_MODEL="text-embedding-ada-002"
+export CHAT_MODEL="gpt-4-turbo-2024-04-09"
+
+az cognitiveservices account create \
+    --name $OPEN_AI_SERVICE_NAME \
+    --resource-group $RG_NAME \
+    --location $REGION \
+    --kind OpenAI \
+    --sku s0 \
+```
+
+## Create OpenAI deployments
+
+```bash
+export EMBEDDING_MODEL="text-embedding-ada-002"
+export CHAT_MODEL="gpt-4o-mini"
+
+az cognitiveservices account deployment create \
+    --name $OPEN_AI_SERVICE_NAME \
+    --resource-group  $RG_NAME \
+    --deployment-name $EMBEDDING_MODEL \
+    --model-name $EMBEDDING_MODEL \
+    --model-version "1"  \
+    --model-format OpenAI \
+    --sku-capacity "1" \
+    --sku-name "Standard"
+
+az cognitiveservices account deployment create \
+    --name $OPEN_AI_SERVICE_NAME \
+    --resource-group  $RG_NAME \
+    --deployment-name $CHAT_MODEL \
+    --model-name $CHAT_MODEL \
+    --model-version "2024-07-18" \
+    --model-format OpenAI \
+    --sku-capacity "1" \
+    --sku-name "Standard"
+```
+
 ## Create Database
 
 Create an Azure postgres database.
@@ -94,50 +138,6 @@ psql -c "CREATE EXTENSION IF NOT EXISTS vector;"
 psql \
     -c "CREATE TABLE embeddings(id int PRIMARY KEY, data text, embedding vector(1536));" \
     -c "CREATE INDEX ON embeddings USING hnsw (embedding vector_ip_ops);"
-```
-
-## Create OpenAI resources
-
-Create the openai resource
-
-```bash
-export OPEN_AI_SERVICE_NAME="openai-service-$RANDOM_ID"
-export EMBEDDING_MODEL="text-embedding-ada-002"
-export CHAT_MODEL="gpt-4-turbo-2024-04-09"
-
-az cognitiveservices account create \
-    --name $OPEN_AI_SERVICE_NAME \
-    --resource-group $RG_NAME \
-    --location $REGION \
-    --kind OpenAI \
-    --sku s0 \
-```
-
-## Create OpenAI deployments
-
-```bash
-export EMBEDDING_MODEL="text-embedding-ada-002"
-export CHAT_MODEL="gpt-4o-mini"
-
-az cognitiveservices account deployment create \
-    --name $OPEN_AI_SERVICE_NAME \
-    --resource-group  $RG_NAME \
-    --deployment-name $EMBEDDING_MODEL \
-    --model-name $EMBEDDING_MODEL \
-    --model-version "1"  \
-    --model-format OpenAI \
-    --sku-capacity "1" \
-    --sku-name "Standard"
-
-az cognitiveservices account deployment create \
-    --name $OPEN_AI_SERVICE_NAME \
-    --resource-group  $RG_NAME \
-    --deployment-name $CHAT_MODEL \
-    --model-name $CHAT_MODEL \
-    --model-version "2024-07-18" \
-    --model-format OpenAI \
-    --sku-capacity "1" \
-    --sku-name "Standard"
 ```
 
 ## Populate with data from knowledge file
