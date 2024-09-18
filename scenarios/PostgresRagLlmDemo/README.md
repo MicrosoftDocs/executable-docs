@@ -71,7 +71,7 @@ az cognitiveservices account deployment create \
     --resource-group  $RG_NAME \
     --deployment-name $EMBEDDING_MODEL \
     --model-name $EMBEDDING_MODEL \
-    --model-version "1"  \
+    --model-version "2"  \
     --model-format OpenAI \
     --sku-capacity "1" \
     --sku-name "Standard"
