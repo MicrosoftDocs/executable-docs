@@ -1,5 +1,4 @@
 import argparse
-import os
 import sys
 from textwrap import dedent
 
@@ -15,6 +14,7 @@ parser.add_argument('--pguser', dest='pguser', type=str)
 parser.add_argument('--phhost', dest='phhost', type=str)
 parser.add_argument('--pgpassword', dest='pgpassword', type=str)
 parser.add_argument('--pgdatabase', dest='pgdatabase', type=str)
+parser.add_argument('--populate', dest='populate', type=bool, default=False, action="store_true")
 args = parser.parse_args()
 
 
