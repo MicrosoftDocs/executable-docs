@@ -47,6 +47,7 @@ az group create \
 ## Accept Terms/Conditions
 
 ```bash
+az provider register --namespace Microsoft.CognitiveServices
 az feature registration create --name Microsoft.CognitiveServices --namespace LegalTerms.Face.PoliceTermsAccepted
 az feature registration create --name Microsoft.CognitiveServices --namespace LegalTerms.ComputerVision.SpatialAnaysisRAITermsAccepted
 az feature registration create --name Microsoft.CognitiveServices --namespace LegalTerms.TextAnalytics.TAForHealthRAITermsAccepted
