@@ -12,6 +12,8 @@ ms.custom: mvc, devx-track-azurecli, mode-api, innovation-engine, linux-related-
 
 # Quickstart: Use the Azure CLI to create an Ubuntu Virtual Machine and attach an Azure Data Disk
 
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2286318)
+
 This quickstart shows you how to use the Azure CLI to deploy an Ubuntu Linux virtual machine (VM) in Azure and attach an Azure Data Disk to the virtual machine. The Azure CLI is used to create and manage Azure resources via either the command line or scripts.
 
 If you don't have an Azure subscription, create a [free account](https://azure.microsoft.com/free/?WT.mc_id=A261C142F) before you begin.
