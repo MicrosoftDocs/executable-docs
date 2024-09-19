@@ -35,7 +35,7 @@ Since not every region and zone supports Premium SSD v2, you can use the Azure C
 
 To determine the regions and zones that support Premium SSD v2, replace `yourSubscriptionId` with your subscription, and then run the [az vm list-skus](/cli/azure/vm#az-vm-list-skus) command:
 
-```azurecli
+```markdown
 az login
 
 subscriptionId="<yourSubscriptionId>"
@@ -98,7 +98,7 @@ Now that you know the region and zone to deploy to, follow the deployment steps 
 
 ## Use a Premium SSD v2
 
-Create a Premium SSD v2 disk in an availability zone by using the [az disk create](/cli/azure/disk#az-disk-create) command. Then create a VM in the same region and availability zone that supports Premium Storage and attach the disk to it by using the [az vm create](/cli/azure/vm#az-vm-create) command. 
+Create a Premium SSD v2 disk in an availability zone by using the [az disk create](/cli/azure/disk#az-disk-create) command. 
 
 The following script creates a Premium SSD v2 with a 4k sector size, to deploy one with a 512 sector size, update the `$LOGICAL_SECTOR_SIZE` parameter. Replace the values of all the variables with your own, then run the following script:
 
@@ -115,8 +115,13 @@ az disk create -n $MY_DISK_NAME -g $MY_RESOURCE_GROUP_NAME \
 --sku PremiumV2_LRS \
 --zone "1" \
 --logical-sector-size $LOGICAL_SECTOR_SIZE
+```
 
 ## Create the VM
+
+Then create a VM in the same region and availability zone that supports Premium Storage and attach the disk to it by using the [az vm create](/cli/azure/vm#az-vm-create) command. 
+
+```azurecli-interactive
 export MY_VM_NAME="myVM$RANDOM_ID"
 export MY_VM_IMAGE="Win2016Datacenter"
 export MY_VM_SIZE="Standard_D4s_v3"
