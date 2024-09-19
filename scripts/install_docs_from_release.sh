@@ -15,7 +15,7 @@ if [ "$RELEASE" == "" ]; then
 
 	# If the curl request returns null, hardcode the release version
     if [ "$RELEASE" == "null" ] || [ -z "$RELEASE" ]; then
-        RELEASE="v1.0.10518406132"
+        RELEASE="v1.0.10950561401"
     fi
 fi
 
