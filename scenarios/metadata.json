@@ -544,11 +544,11 @@
     },
     {
         "status": "active",
-        "key": "PostgresRAGLLM/postgres-ragllm.md",
+        "key": "PostgresRAGLLM/postgres-rag-llm.md",
         "title": "Quickstart: Deploy a Postgres vector database",
         "description": "Setup a Postgres vector database and openai resources to run a RAG-LLM model.",
         "stackDetails": "",
-        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/PostgresRAGLLM/postgres-ragllm.md",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/PostgresRAGLLM/postgres-rag-llm.md",
         "documentationUrl": "",
         "nextSteps": [],
         "configurations": {

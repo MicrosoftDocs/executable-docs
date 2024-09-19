@@ -278,7 +278,7 @@ az cognitiveservices account deployment create \
 --resource-group $MY_RESOURCE_GROUP_NAME \
 --deployment-name $MY_MODEL_NAME \
 --model-name text-embedding-ada-002 \
---model-version "1"  \
+--model-version "2"  \
 --model-format OpenAI \
 --sku-capacity "1" \
 --sku-name "Standard"
@@ -354,11 +354,4 @@ Results:
 ```
 ## Delete a model from your resource
 
-You can delete any model deployed from your resource with the [az cognitiveservices account deployment delete](/cli/azure/cognitiveservices/account/deployment?view=azure-cli-latest&preserve-view=true#az-cognitiveservices-account-deployment-delete) command. In the following example, you delete a model named _$MY_MODEL_NAME_. When you try the example, update the variables to use your values for the resource group, resource, and deployed model. 
-
-```bash
-az cognitiveservices account deployment delete \
---name $MY_OPENAI_RESOURCE_NAME \
---resource-group $MY_RESOURCE_GROUP_NAME \
---deployment-name $MY_MODEL_NAME
-```
+You can delete any model deployed from your resource with the [az cognitiveservices account deployment delete](/cli/azure/cognitiveservices/account/deployment?view=azure-cli-latest&preserve-view=true#az-cognitiveservices-account-deployment-delete) command. 
