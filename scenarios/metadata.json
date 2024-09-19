@@ -555,5 +555,19 @@
             "permissions": [],
             "region": "EastUS2"
         }
+    },
+    {
+        "status": "active",
+        "key": "CreateAOAIDeployment/create-aoai-deployment.md",
+        "title": "Create and manage Azure OpenAI Service deployments with the Azure CLI",
+        "description": "Learn how to use the Azure CLI to create an Azure OpenAI resource and manage deployments with the Azure OpenAI Service.",
+        "stackDetails": "",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/CreateAOAIDeployment/create-aoai-deployment.md",
+        "documentationUrl": "",
+        "nextSteps": [],
+        "configurations": {
+            "permissions": [],
+            "region": "EastUS2"
+        }
     }
 ]
