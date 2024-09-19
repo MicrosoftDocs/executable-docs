@@ -383,7 +383,7 @@
         }
     },
     {
-        "status": "inactive",
+        "status": "active",
         "key": "ObtainPerformanceMetricsLinuxSustem/obtain-performance-metrics-linux-system.md",
         "title": "Obtaining Performance metrics from a Linux system",
         "description": "Learn how to obtainer Performance metrics from a Linux system.",
@@ -407,7 +407,7 @@
         }
     },
     {
-        "status": "inactive",
+        "status": "active",
         "key": "azure-aks-docs/articles/aks/deploy-postgresql-ha.md",
         "title": "Deploy a highly available PostgreSQL database on AKS with Azure CLI",
         "description": "In this article, you deploy a highly available PostgreSQL database on AKS using the CloudNativePG operator.",
@@ -419,7 +419,7 @@
         }
     },
     {
-        "status": "inactive",
+        "status": "active",
         "key": "azure-aks-docs/articles/aks/postgresql-ha-overview.md",
         "title": "Overview of deploying a highly available PostgreSQL database on AKS with Azure CLI",
         "description": "Learn how to deploy a highly available PostgreSQL database on AKS using the CloudNativePG operator.",
@@ -443,11 +443,11 @@
         }
     },
     {
-        "status": "inactive",
+        "status": "active",
         "key": "BlobVisionOnAKS/blob-vision-aks.md"
     },
     {
-        "status": "inactive",
+        "status": "active",
         "key": "DeployHAPGonARO/deploy-ha-pg-aro.md",
         "title": "Create a Highly Available PostgreSQL Cluster on Azure Red Hat OpenShift",
         "description": "This tutorial shows how to create a Highly Available PostgreSQL cluster on Azure Red Hat OpenShift (ARO) using the CloudNativePG operator",
@@ -456,6 +456,104 @@
         "documentationUrl": "",
         "configurations": {
             "region": ""
+        }
+    },
+    {
+        "status": "active",
+        "key": "AIChatApp/ai-chat-app.md",
+        "title": "Create an Azure OpenAI, LangChain, ChromaDB, and Chainlit Chat App in Container Apps",
+        "description": "",
+        "stackDetails": "",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/AIChatApp/ai-chat-app.md",
+        "documentationUrl": "",
+        "nextSteps": [],
+        "configurations": {
+            "permissions": [],
+            "region": "EastUS2"
+        }
+    },
+    {
+        "status": "active",
+        "key": "ConfigurePythonContainer/configure-python-container.md",
+        "title": "Configure Linux Python apps",
+        "description": "Learn how to configure the Python container in which web apps are run, using both the Azure portal and the Azure CLI.",
+        "stackDetails": "",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/ConfigurePythonContainer/configure-python-container.md",
+        "documentationUrl": "https://learn.microsoft.com/en-us/azure/app-service/configure-language-python",
+        "nextSteps": [],
+        "configurations": {
+            "permissions": [],
+            "region": "EastUS2"
+        }
+    },
+    {
+        "status": "active",
+        "key": "CreateSpeechService/create-speech-service.md",
+        "title": "Quickstart: The Speech CLI - Speech service",
+        "description": "In this Azure AI Speech CLI quickstart, you interact with speech to text, text to speech, and speech translation without having to write code.",
+        "stackDetails": "",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/CreateSpeechService/create-speech-service.md",
+        "documentationUrl": "https://learn.microsoft.com/en-us/azure/ai-services/speech-service/spx-basics?tabs=windowsinstall%2Cterminal",
+        "nextSteps": [],
+        "configurations": {
+            "permissions": [],
+            "region": "EastUS2"
+        }
+    },
+    {
+        "status": "active",
+        "key": "DeployApacheAirflowOnAKS/deploy-apache-airflow-on-aks.md",
+        "title": "Quickstart: Deploy an Azure Kubernetes Service (AKS) cluster and Apache Airflow using Azure CLI",
+        "description": "Learn how to quickly deploy a Kubernetes cluster and deploy Apache Airflow in Azure Kubernetes Service (AKS) using Azure CLI.",
+        "stackDetails": "",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/DeployApacheAirflowOnAKS/deploy-apache-airflow-on-aks.md",
+        "documentationUrl": "",
+        "nextSteps": [],
+        "configurations": {
+            "permissions": [],
+            "region": "EastUS2"
+        }
+    },
+    {
+        "status": "active",
+        "key": "DeployPremiumSSDV2/deploy-premium-ssd-v2.md",
+        "title": "Deploy a Premium SSD v2 managed disk",
+        "description": "Learn how to deploy a Premium SSD v2 and about its regional availability.",
+        "stackDetails": "",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/DeployPremiumSSDV2/deploy-premium-ssd-v2.md",
+        "documentationUrl": "https://learn.microsoft.com/en-us/azure/virtual-machines/disks-deploy-premium-v2?tabs=azure-cli",
+        "nextSteps": [],
+        "configurations": {
+            "permissions": [],
+            "region": "EastUS2"
+        }
+    },
+    {
+        "status": "active",
+        "key": "GPUNodePoolAKS/gpu-node-pool-aks.md",
+        "title": "Create a multi-instance GPU node pool in Azure Kubernetes Service (AKS)",
+        "description": "Learn how to create a multi-instance GPU node pool in Azure Kubernetes Service (AKS).",
+        "stackDetails": "",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/GPUNodePoolAKS/gpu-node-pool-aks.md",
+        "documentationUrl": "https://learn.microsoft.com/en-us/azure/aks/gpu-multi-instance?tabs=azure-cli",
+        "nextSteps": [],
+        "configurations": {
+            "permissions": [],
+            "region": "EastUS2"
+        }
+    },
+    {
+        "status": "active",
+        "key": "PostgresRAGLLM/postgres-ragllm.md",
+        "title": "Quickstart: Deploy a Postgres vector database",
+        "description": "Setup a Postgres vector database and openai resources to run a RAG-LLM model.",
+        "stackDetails": "",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/PostgresRAGLLM/postgres-ragllm.md",
+        "documentationUrl": "",
+        "nextSteps": [],
+        "configurations": {
+            "permissions": [],
+            "region": "EastUS2"
         }
     }
 ]
