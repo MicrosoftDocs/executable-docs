@@ -391,7 +391,7 @@
         "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/ObtainPerformanceMetricsLinuxSustem/obtain-performance-metrics-linux-system.md",
         "documentationUrl": "",
         "configurations": {
-            "region": ""
+            "region": "EastUS2"
         }
     },
     {
@@ -415,7 +415,7 @@
         "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-aks-docs/articles/aks/deploy-postgresql-ha.md",
         "documentationUrl": "",
         "configurations": {
-            "region": ""
+            "region": "EastUS2"
         }
     },
     {
@@ -427,7 +427,7 @@
         "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-aks-docs/articles/aks/postgresql-ha-overview.md",
         "documentationUrl": "",
         "configurations": {
-            "region": ""
+            "region": "EastUS2"
         }
     },
     {
@@ -455,7 +455,7 @@
         "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/DeployHAPGonARO/deploy-ha-pg-aro.md",
         "documentationUrl": "",
         "configurations": {
-            "region": ""
+            "region": "eastus2"
         }
     },
     {
