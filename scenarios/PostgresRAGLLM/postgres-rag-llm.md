@@ -39,8 +39,7 @@ export REGION="centralus"
 
 az group create \
     --name $RG_NAME \
-    --location $REGION \
-    --subscription $SUBSCRIPTION_ID
+    --location $REGION 
 ```
 
 ## Create Database
