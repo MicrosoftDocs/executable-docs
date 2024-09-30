@@ -23,7 +23,7 @@ class ChatBot:
         self.api = AzureOpenAI(
             azure_endpoint=args.endpoint,
             api_key=args.api_key,
-            api_version="turbo-2024-04-09",
+            api_version="2024-06-01",
         )
         self.text_splitter = RecursiveCharacterTextSplitter(
             chunk_size=512,
