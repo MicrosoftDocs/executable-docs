@@ -99,6 +99,7 @@ az aks create --location ${REGION} \
     --resource-group ${AZURE_RESOURCE_GROUP} \
     --name ${CLUSTER_NAME} \
     --enable-oidc-issuer \
+    --node-os-upgrade-channel SecurityPatch \
     --enable-ai-toolchain-operator \
     --generate-ssh-keys
 ```
