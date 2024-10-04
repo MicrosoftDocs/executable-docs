@@ -48,16 +48,16 @@ This article shows you how to enable the AI toolchain operator add-on and deploy
 
 ## Set up resource group
 
-Set up a resource group with a random ID.
+Set up a resource group with a random ID. Create an Azure resource group using the [az group create][az-group-create] command.
 
 ```bash
 export RANDOM_ID="$(openssl rand -hex 3)"
-export RG_NAME="myPostgresResourceGroup$RANDOM_ID"
+export AZURE_RESOURCE_GROUP="myKaitoResourceGroup$RANDOM_ID"
 export REGION="centralus"
 export CLUSTER_NAME="myClusterName$RANDOM_ID"
 
 az group create \
-    --name $RG_NAME \
+    --name $AZURE_RESOURCE_GROUP \
     --location $REGION \
 ```
 
@@ -86,12 +86,6 @@ az feature show --namespace "Microsoft.ContainerService" --name "AIToolchainOper
 ```
 
 ## Create an AKS cluster with the AI toolchain operator add-on enabled
-
-Create an Azure resource group using the [az group create][az-group-create] command.
-
-```bash
-az group create --name ${AZURE_RESOURCE_GROUP} --location ${REGION}
-```
 
 Create an AKS cluster with the AI toolchain operator add-on enabled using the [az aks create][az-aks-create] command with the `--enable-ai-toolchain-operator` and `--enable-oidc-issuer` flags.
 
