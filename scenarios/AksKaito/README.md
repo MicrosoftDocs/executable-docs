@@ -100,8 +100,10 @@ az aks create --location ${REGION} \
     --name ${CLUSTER_NAME} \
     --enable-oidc-issuer \
     --node-os-upgrade-channel SecurityPatch \
+    --auto-upgrade-channel stable \
     --enable-ai-toolchain-operator \
-    --generate-ssh-keys
+    --generate-ssh-keys \
+    --k8s-support-plan KubernetesOfficial
 ```
 
 On an existing AKS cluster, you can enable the AI toolchain operator add-on using the [az aks update][az-aks-update] command.
