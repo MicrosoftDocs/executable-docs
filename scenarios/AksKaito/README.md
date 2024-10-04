@@ -9,7 +9,17 @@ ms.author: schaffererin
 
 ---
 
-# Deploy an AI model on Azure Kubernetes Service (AKS) with the AI toolchain operator (preview)
+## Quickstart: Create a Linux virtual machine with the Azure CLI on Azure
+
+**Applies to:** :heavy_check_mark: Linux VMs
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262692)
+
+This quickstart shows you how to use the Azure CLI to deploy a Linux virtual machine (VM) in Azure. The Azure CLI is used to create and manage Azure resources via either the command line or scripts.
+
+If you don't have an Azure subscription, create a [free account](https://azure.microsoft.com/free/?WT.mc_id=A261C142F) before you begin.
+
+## Deploy an AI model on Azure Kubernetes Service (AKS) with the AI toolchain operator (preview)
 
 The AI toolchain operator (KAITO) is a managed add-on for AKS that simplifies the experience of running OSS AI models on your AKS clusters. The AI toolchain operator automatically provisions the necessary GPU nodes and sets up the associated inference server as an endpoint server to your AI models. Using this add-on reduces your onboarding time and enables you to focus on AI model usage and development rather than infrastructure setup.
 
@@ -36,97 +46,91 @@ This article shows you how to enable the AI toolchain operator add-on and deploy
 * [Install the Azure CLI AKS preview extension](#install-the-azure-cli-preview-extension).
 * [Register the AI toolchain operator add-on feature flag](#register-the-ai-toolchain-operator-add-on-feature-flag).
 
-### Install the Azure CLI preview extension
+## Set up resource group
 
-1. Install the Azure CLI preview extension using the [az extension add][az-extension-add] command.
+Set up a resource group with a random ID.
 
-    ```azurecli-interactive
-    az extension add --name aks-preview
-    ```
+```bash
+export RANDOM_ID="$(openssl rand -hex 3)"
+export RG_NAME="myPostgresResourceGroup$RANDOM_ID"
+export REGION="centralus"
+export CLUSTER_NAME="myClusterName$RANDOM_ID"
 
-2. Update the extension to make sure you have the latest version using the [az extension update][az-extension-update] command.
+az group create \
+    --name $RG_NAME \
+    --location $REGION \
+```
 
-    ```azurecli-interactive
-    az extension update --name aks-preview
-    ```
+## Install the Azure CLI preview extension
 
-### Register the AI toolchain operator add-on feature flag
+Install the Azure CLI preview extension using the [az extension add][az-extension-add] command. Then update the extension to make sure you have the latest version using the [az extension update][az-extension-update] command.
 
-1. Register the AIToolchainOperatorPreview feature flag using the [az feature register][az-feature-register] command.
+```bash
+az extension add --name aks-preview
+az extension update --name aks-preview
+```
 
-    ```azurecli-interactive
-    az feature register --namespace "Microsoft.ContainerService" --name "AIToolchainOperatorPreview"
-    ```
+## Register the AI toolchain operator add-on feature flag
 
-    It takes a few minutes for the registration to complete.
+Register the AIToolchainOperatorPreview feature flag using the az feature register command.
+It takes a few minutes for the registration to complete.
 
-2. Verify the registration using the [az feature show][az-feature-show] command.
+```bash
+az feature register --namespace "Microsoft.ContainerService" --name "AIToolchainOperatorPreview"
+```
 
-    ```azurecli-interactive
-    az feature show --namespace "Microsoft.ContainerService" --name "AIToolchainOperatorPreview"
-    ```
+Verify the registration using the [az feature show][az-feature-show] command.
 
-### Export environment variables
+```bash
+az feature show --namespace "Microsoft.ContainerService" --name "AIToolchainOperatorPreview"
+```
 
-* To simplify the configuration steps in this article, you can define environment variables using the following commands. Make sure to replace the placeholder values with your own.
+## Create an AKS cluster with the AI toolchain operator add-on enabled
 
-    ```azurecli-interactive
-    export AZURE_SUBSCRIPTION_ID="mySubscriptionID"
-    export AZURE_RESOURCE_GROUP="myResourceGroup"
-    export AZURE_LOCATION="myLocation"
-    export CLUSTER_NAME="myClusterName"
-    ```
+Create an Azure resource group using the [az group create][az-group-create] command.
 
-## Enable the AI toolchain operator add-on on an AKS cluster
+```bash
+az group create --name ${AZURE_RESOURCE_GROUP} --location ${REGION}
+```
 
-The following sections describe how to create an AKS cluster with the AI toolchain operator add-on enabled and deploy a default hosted AI model.
+Create an AKS cluster with the AI toolchain operator add-on enabled using the [az aks create][az-aks-create] command with the `--enable-ai-toolchain-operator` and `--enable-oidc-issuer` flags.
 
-### Create an AKS cluster with the AI toolchain operator add-on enabled
+> [!NOTE]
+> AKS creates a managed identity once you enable the AI toolchain operator add-on. The managed identity is used to create GPU node pools in the managed AKS cluster. Proper permissions need to be set for it manually following the steps introduced in the following sections.
+>
+> AI toolchain operator enablement requires the enablement of OIDC issuer.
 
-1. Create an Azure resource group using the [az group create][az-group-create] command.
+```bash
+az aks create --location ${REGION} \
+    --resource-group ${AZURE_RESOURCE_GROUP} \
+    --name ${CLUSTER_NAME} \
+    --enable-oidc-issuer \
+    --enable-ai-toolchain-operator \
+    --generate-ssh-keys
+```
 
-    ```azurecli-interactive
-    az group create --name ${AZURE_RESOURCE_GROUP} --location ${AZURE_LOCATION}
-    ```
+On an existing AKS cluster, you can enable the AI toolchain operator add-on using the [az aks update][az-aks-update] command.
 
-2. Create an AKS cluster with the AI toolchain operator add-on enabled using the [az aks create][az-aks-create] command with the `--enable-ai-toolchain-operator` and `--enable-oidc-issuer` flags.
-
-    ```azurecli-interactive
-    az aks create --location ${AZURE_LOCATION} \
+```bash
+az aks update --name ${CLUSTER_NAME} \
         --resource-group ${AZURE_RESOURCE_GROUP} \
-        --name ${CLUSTER_NAME} \
         --enable-oidc-issuer \
-        --enable-ai-toolchain-operator \
-        --generate-ssh-keys
-    ```
-
-    > [!NOTE]
-    > AKS creates a managed identity once you enable the AI toolchain operator add-on. The managed identity is used to create GPU node pools in the managed AKS cluster. Proper permissions need to be set for it manually following the steps introduced in the following sections.
-    >
-    > AI toolchain operator enablement requires the enablement of OIDC issuer.
-
-3. On an existing AKS cluster, you can enable the AI toolchain operator add-on using the [az aks update][az-aks-update] command.
-
-    ```azurecli-interactive
-    az aks update --name ${CLUSTER_NAME} \
-            --resource-group ${AZURE_RESOURCE_GROUP} \
-            --enable-oidc-issuer \
-            --enable-ai-toolchain-operator
-    ```
+        --enable-ai-toolchain-operator
+```
 
 ## Connect to your cluster
 
-1. Configure `kubectl` to connect to your cluster using the [az aks get-credentials][az-aks-get-credentials] command.
+Configure `kubectl` to connect to your cluster using the [az aks get-credentials][az-aks-get-credentials] command.
 
-    ```azurecli-interactive
-    az aks get-credentials --resource-group ${AZURE_RESOURCE_GROUP} --name ${CLUSTER_NAME}
-    ```
+```bash
+az aks get-credentials --resource-group ${AZURE_RESOURCE_GROUP} --name ${CLUSTER_NAME}
+```
 
-2. Verify the connection to your cluster using the `kubectl get` command.
+Verify the connection to your cluster using the `kubectl get` command.
 
-    ```azurecli-interactive
-    kubectl get nodes
-    ```
+```bash
+kubectl get nodes
+```
 
 ## Export environment variables
 
