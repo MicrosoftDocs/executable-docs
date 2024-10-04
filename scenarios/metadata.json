@@ -465,5 +465,17 @@
         "configurations": {
             "region": "westeurope"
         }
+    },
+    {
+        "status": "active",
+        "key": "azure-compute-docs/articles/virtual-machines/linux/quick-create-cli.md",
+        "title": "Quickstart: Use the Azure CLI to create a Linux Virtual Machine",
+        "description": "In this quickstart, you learn how to use the Azure CLI to create a Linux virtual machine",
+        "stackDetails": "",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-compute-docs/articles/virtual-machines/linux/quick-create-cli.md",
+        "documentationUrl": "",
+        "configurations": {
+            "region": "EastUS"
+        }
     }
 ]
