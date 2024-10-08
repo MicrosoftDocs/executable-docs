@@ -52,15 +52,6 @@ Set up a resource group with a random ID. Create an Azure resource group using t
 
 ```bash
 echo $SUBSCRIPTION_ID
-
-export RANDOM_ID="$(openssl rand -hex 3)"
-export AZURE_RESOURCE_GROUP="myKaitoResourceGroup$RANDOM_ID"
-export REGION="centralus"
-export CLUSTER_NAME="myClusterName$RANDOM_ID"
-
-az group create \
-    --name $AZURE_RESOURCE_GROUP \
-    --location $REGION \
 ```
 
 ## Install the Azure CLI preview extension
