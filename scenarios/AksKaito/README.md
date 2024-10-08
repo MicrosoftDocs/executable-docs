@@ -51,6 +51,8 @@ This article shows you how to enable the AI toolchain operator add-on and deploy
 Set up a resource group with a random ID. Create an Azure resource group using the [az group create][az-group-create] command.
 
 ```bash
+echo $SUBSCRIPTION_ID
+
 export RANDOM_ID="$(openssl rand -hex 3)"
 export AZURE_RESOURCE_GROUP="myKaitoResourceGroup$RANDOM_ID"
 export REGION="centralus"
@@ -163,7 +165,7 @@ kubectl get nodes
     ```azurecli-interactive
     az role assignment create --role "Contributor" \
         --assignee "${PRINCIPAL_ID}" \
-        --scope "/subscriptions/${AZURE_SUBSCRIPTION_ID}/resourcegroups/${AZURE_RESOURCE_GROUP}"
+        --scope "/subscriptions/${SUBSCRIPTION_ID}/resourcegroups/${AZURE_RESOURCE_GROUP}"
     ```
 
 ## Establish a federated identity credential
