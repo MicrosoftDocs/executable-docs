@@ -198,9 +198,9 @@ kubectl apply -f https://raw.githubusercontent.com/Azure/kaito/main/examples/inf
 
 ## Ask a question
 
-Run the Falcon 7B-instruct model with a sample input of your choice using the following `curl` command:
-`kubectl get workspace workspace-falcon-7b-instruct -w`. Store IP: `export SERVICE_IP=$(kubectl get svc workspace-falcon-7b-instruct -o jsonpath='{.spec.clusterIP}')`.
-Ask question: `kubectl run -it --rm --restart=Never curl --image=curlimages/curl -- curl -X POST http://$SERVICE_IP/chat -H "accept: application/json" -H "Content-Type: application/json" -d "{\"prompt\":\"YOUR QUESTION HERE\"}"`
+1. Verify deployment done: `kubectl get workspace workspace-falcon-7b-instruct -w`.
+2. Store IP: `export SERVICE_IP=$(kubectl get svc workspace-falcon-7b-instruct -o jsonpath='{.spec.clusterIP}')`.
+3. Ask question: `kubectl run -it --rm --restart=Never curl --image=curlimages/curl -- curl -X POST http://$SERVICE_IP/chat -H "accept: application/json" -H "Content-Type: application/json" -d "{\"prompt\":\"YOUR QUESTION HERE\"}"`
 
 ```bash
 echo "See last step for details on how to ask questions to the model.
