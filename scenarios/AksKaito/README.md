@@ -156,16 +156,6 @@ export AKS_OIDC_ISSUER=$(az aks show --resource-group "${AZURE_RESOURCE_GROUP}" 
     -o tsv)
 ```
 
-## Create role assignment for the service principal
-
-Create a new role assignment for the service principal using the [az role assignment create][az-role-assignment-create] command.
-
-```bash
-az role assignment create --role "Contributor" \
-    --assignee "${PRINCIPAL_ID}" \
-    --scope "/subscriptions/${SUBSCRIPTION_ID}/resourcegroups/${AZURE_RESOURCE_GROUP}"
-```
-
 ## Establish a federated identity credential
 
 Create the federated identity credential between the managed identity, AKS OIDC issuer, and subject using the [az identity federated-credential create][az-identity-federated-credential-create] command.
