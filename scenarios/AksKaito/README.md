@@ -79,10 +79,19 @@ It takes a few minutes for the registration to complete.
 az feature register --namespace "Microsoft.ContainerService" --name "AIToolchainOperatorPreview"
 ```
 
+## Verify the AI toolchain operator add-on registration
+
 Verify the registration using the [az feature show][az-feature-show] command.
 
 ```bash
-az feature show --namespace "Microsoft.ContainerService" --name "AIToolchainOperatorPreview"
+while true; do
+    status=$(az feature show --namespace "Microsoft.ContainerService" --name "AIToolchainOperatorPreview" --query "properties.state" -o tsv)
+    if [ "$status" == "Registered" ]; then
+        break
+    else
+        sleep 30
+    fi
+done
 ```
 
 ## Create an AKS cluster with the AI toolchain operator add-on enabled
@@ -105,6 +114,8 @@ az aks create --location ${REGION} \
     --generate-ssh-keys \
     --k8s-support-plan KubernetesOfficial
 ```
+
+## Enable AI toolchain operator for cluster
 
 On an existing AKS cluster, you can enable the AI toolchain operator add-on using the [az aks update][az-aks-update] command.
 
@@ -171,47 +182,28 @@ az identity federated-credential create --name "kaito-federated-identity" \
 
 ## Verify that your deployment is running
 
-1. Restart the KAITO GPU provisioner deployment on your pods using the `kubectl rollout restart` command:
+Restart the KAITO GPU provisioner deployment on your pods using the `kubectl rollout restart` command:
 
-    ```bash
-    kubectl rollout restart deployment/kaito-gpu-provisioner -n kube-system
-    ```
-
-2. Verify that the deployment is running using the `kubectl get` command:
-
-    ```bash
-    kubectl get deployment -n kube-system | grep kaito
-    ```
+```bash
+kubectl rollout restart deployment/kaito-gpu-provisioner -n kube-system
+```
 
 ## Deploy a default hosted AI model
 
-1. Deploy the Falcon 7B-instruct model from the KAITO model repository using the `kubectl apply` command.
+Deploy the Falcon 7B-instruct model from the KAITO model repository using the `kubectl apply` command.
 
-    ```bash
-    kubectl apply -f https://raw.githubusercontent.com/Azure/kaito/main/examples/inference/kaito_workspace_falcon_7b-instruct.yaml
-    ```
-
-2. Track the live resource changes in your workspace using the `kubectl get` command.
-
-    ```bash
-    kubectl get workspace workspace-falcon-7b-instruct -w
-    ```
-
-    > [!NOTE]
-    > As you track the live resource changes in your workspace, note that machine readiness can take up to 10 minutes, and workspace readiness up to 20 minutes.
-
-3. Check your service and get the service IP address using the `kubectl get svc` command.
-
-    ```bash
-    export SERVICE_IP=$(kubectl get svc workspace-falcon-7b-instruct -o jsonpath='{.spec.clusterIP}')
-    ```
+```bash
+kubectl apply -f https://raw.githubusercontent.com/Azure/kaito/main/examples/inference/kaito_workspace_falcon_7b-instruct.yaml
+```
 
 ## Ask a question
 
 Run the Falcon 7B-instruct model with a sample input of your choice using the following `curl` command:
+`kubectl get workspace workspace-falcon-7b-instruct -w`. Store IP: `export SERVICE_IP=$(kubectl get svc workspace-falcon-7b-instruct -o jsonpath='{.spec.clusterIP}')`.
+Ask question: `kubectl run -it --rm --restart=Never curl --image=curlimages/curl -- curl -X POST http://$SERVICE_IP/chat -H "accept: application/json" -H "Content-Type: application/json" -d "{\"prompt\":\"YOUR QUESTION HERE\"}"`
 
 ```bash
-kubectl run -it --rm --restart=Never curl --image=curlimages/curl -- curl -X POST http://$SERVICE_IP/chat -H "accept: application/json" -H "Content-Type: application/json" -d "{\"prompt\":\"YOUR QUESTION HERE\"}"
+echo "See last step for details on how to ask questions to the model.
 ```
 
 ## Next steps
