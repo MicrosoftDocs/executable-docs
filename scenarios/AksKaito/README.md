@@ -131,65 +131,65 @@ kubectl get nodes
 
 ## Export environment variables
 
-* Export environment variables for the MC resource group, principal ID identity, and KAITO identity using the following commands:
+Export environment variables for the MC resource group, principal ID identity, and KAITO identity using the following commands:
 
-    ```azurecli-interactive
-    export MC_RESOURCE_GROUP=$(az aks show --resource-group ${AZURE_RESOURCE_GROUP} \
-        --name ${CLUSTER_NAME} \
-        --query nodeResourceGroup \
-        -o tsv)
-    export PRINCIPAL_ID=$(az identity show --name "ai-toolchain-operator-${CLUSTER_NAME}" \
-        --resource-group "${MC_RESOURCE_GROUP}" \
-        --query 'principalId' \
-        -o tsv)
-    export KAITO_IDENTITY_NAME="ai-toolchain-operator-${CLUSTER_NAME}"
-    ```
+```bash
+export MC_RESOURCE_GROUP=$(az aks show --resource-group ${AZURE_RESOURCE_GROUP} \
+    --name ${CLUSTER_NAME} \
+    --query nodeResourceGroup \
+    -o tsv)
+export PRINCIPAL_ID=$(az identity show --name "ai-toolchain-operator-${CLUSTER_NAME}" \
+    --resource-group "${MC_RESOURCE_GROUP}" \
+    --query 'principalId' \
+    -o tsv)
+export KAITO_IDENTITY_NAME="ai-toolchain-operator-${CLUSTER_NAME}"
+```
 
 ## Get the AKS OpenID Connect (OIDC) Issuer
 
-* Get the AKS OIDC Issuer URL and export it as an environment variable:
+Get the AKS OIDC Issuer URL and export it as an environment variable:
 
-    ```azurecli-interactive
-    export AKS_OIDC_ISSUER=$(az aks show --resource-group "${AZURE_RESOURCE_GROUP}" \
-        --name "${CLUSTER_NAME}" \
-        --query "oidcIssuerProfile.issuerUrl" \
-        -o tsv)
-    ```
+```bash
+export AKS_OIDC_ISSUER=$(az aks show --resource-group "${AZURE_RESOURCE_GROUP}" \
+    --name "${CLUSTER_NAME}" \
+    --query "oidcIssuerProfile.issuerUrl" \
+    -o tsv)
+```
 
 ## Create role assignment for the service principal
 
-* Create a new role assignment for the service principal using the [az role assignment create][az-role-assignment-create] command.
+Create a new role assignment for the service principal using the [az role assignment create][az-role-assignment-create] command.
 
-    ```azurecli-interactive
-    az role assignment create --role "Contributor" \
-        --assignee "${PRINCIPAL_ID}" \
-        --scope "/subscriptions/${SUBSCRIPTION_ID}/resourcegroups/${AZURE_RESOURCE_GROUP}"
-    ```
+```bash
+az role assignment create --role "Contributor" \
+    --assignee "${PRINCIPAL_ID}" \
+    --scope "/subscriptions/${SUBSCRIPTION_ID}/resourcegroups/${AZURE_RESOURCE_GROUP}"
+```
 
 ## Establish a federated identity credential
 
-* Create the federated identity credential between the managed identity, AKS OIDC issuer, and subject using the [az identity federated-credential create][az-identity-federated-credential-create] command.
+Create the federated identity credential between the managed identity, AKS OIDC issuer, and subject using the [az identity federated-credential create][az-identity-federated-credential-create] command.
 
-    ```azurecli-interactive
-    az identity federated-credential create --name "kaito-federated-identity" \
-        --identity-name "${KAITO_IDENTITY_NAME}" \
-        -g "${MC_RESOURCE_GROUP}" \
-        --issuer "${AKS_OIDC_ISSUER}" \
-        --subject system:serviceaccount:"kube-system:kaito-gpu-provisioner" \
-        --audience api://AzureADTokenExchange
-    ```
+```bash
+az identity federated-credential create --name "kaito-federated-identity" \
+    --identity-name "${KAITO_IDENTITY_NAME}" \
+    -g "${MC_RESOURCE_GROUP}" \
+    --issuer "${AKS_OIDC_ISSUER}" \
+    --subject system:serviceaccount:"kube-system:kaito-gpu-provisioner" \
+    --audience api://AzureADTokenExchange
+```
 
 ## Verify that your deployment is running
 
 1. Restart the KAITO GPU provisioner deployment on your pods using the `kubectl rollout restart` command:
 
-    ```azurecli-interactive
+    ```bash
     kubectl rollout restart deployment/kaito-gpu-provisioner -n kube-system
     ```
 
 2. Verify that the deployment is running using the `kubectl get` command:
 
-    ```azurecli-interactive
+    ```bash
     kubectl get deployment -n kube-system | grep kaito
     ```
 
@@ -197,13 +197,13 @@ kubectl get nodes
 
 1. Deploy the Falcon 7B-instruct model from the KAITO model repository using the `kubectl apply` command.
 
-    ```azurecli-interactive
+    ```bash
     kubectl apply -f https://raw.githubusercontent.com/Azure/kaito/main/examples/inference/kaito_workspace_falcon_7b-instruct.yaml
     ```
 
 2. Track the live resource changes in your workspace using the `kubectl get` command.
 
-    ```azurecli-interactive
+    ```bash
     kubectl get workspace workspace-falcon-7b-instruct -w
     ```
 
@@ -212,25 +212,17 @@ kubectl get nodes
 
 3. Check your service and get the service IP address using the `kubectl get svc` command.
 
-    ```azurecli-interactive
+    ```bash
     export SERVICE_IP=$(kubectl get svc workspace-falcon-7b-instruct -o jsonpath='{.spec.clusterIP}')
     ```
 
-4. Run the Falcon 7B-instruct model with a sample input of your choice using the following `curl` command:
+## Ask a question
 
-    ```azurecli-interactive
-    kubectl run -it --rm --restart=Never curl --image=curlimages/curl -- curl -X POST http://$SERVICE_IP/chat -H "accept: application/json" -H "Content-Type: application/json" -d "{\"prompt\":\"YOUR QUESTION HERE\"}"
-    ```
+Run the Falcon 7B-instruct model with a sample input of your choice using the following `curl` command:
 
-## Clean up resources
-
-If you no longer need these resources, you can delete them to avoid incurring extra Azure charges.
-
-* Delete the resource group and its associated resources using the [az group delete][az-group-delete] command.
-
-    ```azurecli-interactive
-    az group delete --name "${AZURE_RESOURCE_GROUP}" --yes --no-wait
-    ```
+```bash
+kubectl run -it --rm --restart=Never curl --image=curlimages/curl -- curl -X POST http://$SERVICE_IP/chat -H "accept: application/json" -H "Content-Type: application/json" -d "{\"prompt\":\"YOUR QUESTION HERE\"}"
+```
 
 ## Next steps
 
