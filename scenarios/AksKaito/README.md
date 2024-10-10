@@ -98,11 +98,6 @@ done
 
 Create an AKS cluster with the AI toolchain operator add-on enabled using the [az aks create](https://learn.microsoft.com/en-us/cli/azure/aks?view=azure-cli-latest#az-aks-create) command with the `--enable-ai-toolchain-operator` and `--enable-oidc-issuer` flags.
 
-> [!NOTE]
-> AKS creates a managed identity once you enable the AI toolchain operator add-on. The managed identity is used to create GPU node pools in the managed AKS cluster. Proper permissions need to be set for it manually following the steps introduced in the following sections.
->
-> AI toolchain operator enablement requires the enablement of OIDC issuer.
-
 ```bash
 az aks create --location ${REGION} \
     --resource-group ${AZURE_RESOURCE_GROUP} \
@@ -123,15 +118,9 @@ Configure `kubectl` to connect to your cluster using the [az aks get-credentials
 az aks get-credentials --resource-group ${AZURE_RESOURCE_GROUP} --name ${CLUSTER_NAME}
 ```
 
-Verify the connection to your cluster using the `kubectl get` command.
+## Establish a federated identity credential
 
-```bash
-kubectl get nodes
-```
-
-## Export environment variables
-
-Export environment variables for the MC resource group, KAITO identity, and AKS OIDC Issuer URL using the following commands:
+Create the federated identity credential between the managed identity, AKS OIDC issuer, and subject using the [az identity federated-credential create](https://learn.microsoft.com/en-us/cli/azure/identity/federated-credential?view=azure-cli-latest) command.
 
 ```bash
 export MC_RESOURCE_GROUP=$(az aks show --resource-group ${AZURE_RESOURCE_GROUP} \
@@ -145,13 +134,7 @@ export AKS_OIDC_ISSUER=$(az aks show --resource-group "${AZURE_RESOURCE_GROUP}" 
     --name "${CLUSTER_NAME}" \
     --query "oidcIssuerProfile.issuerUrl" \
     -o tsv)
-```
 
-## Establish a federated identity credential
-
-Create the federated identity credential between the managed identity, AKS OIDC issuer, and subject using the [az identity federated-credential create](https://learn.microsoft.com/en-us/cli/azure/identity/federated-credential?view=azure-cli-latest) command.
-
-```bash
 az identity federated-credential create --name "kaito-federated-identity" \
     --identity-name "${KAITO_IDENTITY_NAME}" \
     -g "${MC_RESOURCE_GROUP}" \
