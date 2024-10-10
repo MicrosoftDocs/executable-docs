@@ -122,16 +122,6 @@ az aks get-credentials --resource-group ${AZURE_RESOURCE_GROUP} --name ${CLUSTER
 ## Create role assignment for the service principal
 
 ```bash
-az role assignment create --role "Contributor" \
-    --assignee "${PRINCIPAL_ID}" \
-    --scope "/subscriptions/${SUBSCRIPTION_ID}/resourcegroups/${AZURE_RESOURCE_GROUP}"
-```
-
-## Establish a federated identity credential
-
-Create the federated identity credential between the managed identity, AKS OIDC issuer, and subject using the [az identity federated-credential create](https://learn.microsoft.com/en-us/cli/azure/identity/federated-credential?view=azure-cli-latest) command.
-
-```bash
 export MC_RESOURCE_GROUP=$(az aks show --resource-group ${AZURE_RESOURCE_GROUP} \
     --name ${CLUSTER_NAME} \
     --query nodeResourceGroup \
@@ -144,6 +134,16 @@ export AKS_OIDC_ISSUER=$(az aks show --resource-group "${AZURE_RESOURCE_GROUP}" 
     --query "oidcIssuerProfile.issuerUrl" \
     -o tsv)
 
+az role assignment create --role "Contributor" \
+    --assignee "${PRINCIPAL_ID}" \
+    --scope "/subscriptions/${SUBSCRIPTION_ID}/resourcegroups/${AZURE_RESOURCE_GROUP}"
+```
+
+## Establish a federated identity credential
+
+Create the federated identity credential between the managed identity, AKS OIDC issuer, and subject using the [az identity federated-credential create](https://learn.microsoft.com/en-us/cli/azure/identity/federated-credential?view=azure-cli-latest) command.
+
+```bash
 az identity federated-credential create --name "kaito-federated-identity" \
     --identity-name "${KAITO_IDENTITY_NAME}" \
     -g "${MC_RESOURCE_GROUP}" \
