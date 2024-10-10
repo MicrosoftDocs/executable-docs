@@ -134,6 +134,11 @@ export AKS_OIDC_ISSUER=$(az aks show --resource-group "${AZURE_RESOURCE_GROUP}" 
     --query "oidcIssuerProfile.issuerUrl" \
     -o tsv)
 
+export PRINCIPAL_ID=$(az identity show --name "ai-toolchain-operator-${CLUSTER_NAME}" \
+    --resource-group "${MC_RESOURCE_GROUP}" \
+    --query 'principalId' \
+    -o tsv)
+
 az role assignment create --role "Contributor" \
     --assignee "${PRINCIPAL_ID}" \
     --scope "/subscriptions/${SUBSCRIPTION_ID}/resourcegroups/${AZURE_RESOURCE_GROUP}"
