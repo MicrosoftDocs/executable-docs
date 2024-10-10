@@ -55,6 +55,7 @@ export RANDOM_ID="$(openssl rand -hex 3)"
 export AZURE_RESOURCE_GROUP="myKaitoResourceGroup$RANDOM_ID"
 export REGION="centralus"
 export CLUSTER_NAME="myClusterName$RANDOM_ID"
+export SUBSCRIPTION_ID="0c8875c7-e423-4caa-827a-1f0350bd8dd3"
 
 az group create \
     --name $AZURE_RESOURCE_GROUP \
@@ -116,6 +117,14 @@ Configure `kubectl` to connect to your cluster using the [az aks get-credentials
 
 ```bash
 az aks get-credentials --resource-group ${AZURE_RESOURCE_GROUP} --name ${CLUSTER_NAME}
+```
+
+## Create role assignment for the service principal
+
+```bash
+az role assignment create --role "Contributor" \
+    --assignee "${PRINCIPAL_ID}" \
+    --scope "/subscriptions/${SUBSCRIPTION_ID}/resourcegroups/${AZURE_RESOURCE_GROUP}"
 ```
 
 ## Establish a federated identity credential
