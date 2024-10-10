@@ -487,7 +487,7 @@
         "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/azure-aks-docs/refs/heads/main/articles/aks/ai-toolchain-operator.md",
         "documentationUrl": "",
         "configurations": {
-            "region": "westus2"
+            "region": "westus"
         }
     }
 ]

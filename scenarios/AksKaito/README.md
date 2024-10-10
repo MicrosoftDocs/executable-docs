@@ -166,7 +166,7 @@ Store IP: `export SERVICE_IP=$(kubectl get svc workspace-falcon-7b-instruct -o j
 Ask question: `kubectl run -it --rm --restart=Never curl --image=curlimages/curl -- curl -X POST http://$SERVICE_IP/chat -H "accept: application/json" -H "Content-Type: application/json" -d "{\"prompt\":\"YOUR QUESTION HERE\"}"`
 
 ```bash
-echo "See last step for details on how to ask questions to the model.
+echo "See last step for details on how to ask questions to the model."
 ```
 
 ## Next steps
