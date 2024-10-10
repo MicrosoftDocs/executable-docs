@@ -36,7 +36,7 @@ This article shows you how to enable the AI toolchain operator add-on and deploy
 ## Prerequisites
 
 * If you don't have an Azure subscription, create a [free account](https://azure.microsoft.com/free/?WT.mc_id=A261C142F) before you begin.
-  * If you have multiple Azure subscriptions, make sure you select the correct subscription in which the resources will be created and charged using the [az account set][az-account-set] command.
+  * If you have multiple Azure subscriptions, make sure you select the correct subscription in which the resources will be created and charged using the [az account set](https://learn.microsoft.com/en-us/cli/azure/account?view=azure-cli-latest#az-account-set) command.
 
     > [!NOTE]
     > The subscription you use must have GPU VM quota.
@@ -48,7 +48,7 @@ This article shows you how to enable the AI toolchain operator add-on and deploy
 
 ## Set up resource group
 
-Set up a resource group with a random ID. Create an Azure resource group using the [az group create][az-group-create] command.
+Set up a resource group with a random ID. Create an Azure resource group using the [az group create](https://learn.microsoft.com/en-us/cli/azure/group?view=azure-cli-latest#az-group-create) command.
 
 ```bash
 export RANDOM_ID="$(openssl rand -hex 3)"
@@ -63,7 +63,7 @@ az group create \
 
 ## Install the Azure CLI preview extension
 
-Install the Azure CLI preview extension using the [az extension add][az-extension-add] command. Then update the extension to make sure you have the latest version using the [az extension update][az-extension-update] command.
+Install the Azure CLI preview extension using the [az extension add](https://learn.microsoft.com/en-us/cli/azure/extension?view=azure-cli-latest#az-extension-add) command. Then update the extension to make sure you have the latest version using the [az extension update](https://learn.microsoft.com/en-us/cli/azure/extension?view=azure-cli-latest#az-extension-update) command.
 
 ```bash
 az extension add --name aks-preview
@@ -81,7 +81,7 @@ az feature register --namespace "Microsoft.ContainerService" --name "AIToolchain
 
 ## Verify the AI toolchain operator add-on registration
 
-Verify the registration using the [az feature show][az-feature-show] command.
+Verify the registration using the [az feature show](https://learn.microsoft.com/en-us/cli/azure/feature?view=azure-cli-latest#az-feature-show) command.
 
 ```bash
 while true; do
@@ -89,14 +89,14 @@ while true; do
     if [ "$status" == "Registered" ]; then
         break
     else
-        sleep 30
+        sleep 15
     fi
 done
 ```
 
 ## Create an AKS cluster with the AI toolchain operator add-on enabled
 
-Create an AKS cluster with the AI toolchain operator add-on enabled using the [az aks create][az-aks-create] command with the `--enable-ai-toolchain-operator` and `--enable-oidc-issuer` flags.
+Create an AKS cluster with the AI toolchain operator add-on enabled using the [az aks create](https://learn.microsoft.com/en-us/cli/azure/aks?view=azure-cli-latest#az-aks-create) command with the `--enable-ai-toolchain-operator` and `--enable-oidc-issuer` flags.
 
 > [!NOTE]
 > AKS creates a managed identity once you enable the AI toolchain operator add-on. The managed identity is used to create GPU node pools in the managed AKS cluster. Proper permissions need to be set for it manually following the steps introduced in the following sections.
@@ -115,20 +115,9 @@ az aks create --location ${REGION} \
     --k8s-support-plan KubernetesOfficial
 ```
 
-## Enable AI toolchain operator for cluster
-
-On an existing AKS cluster, you can enable the AI toolchain operator add-on using the [az aks update][az-aks-update] command.
-
-```bash
-az aks update --name ${CLUSTER_NAME} \
-        --resource-group ${AZURE_RESOURCE_GROUP} \
-        --enable-oidc-issuer \
-        --enable-ai-toolchain-operator
-```
-
 ## Connect to your cluster
 
-Configure `kubectl` to connect to your cluster using the [az aks get-credentials][az-aks-get-credentials] command.
+Configure `kubectl` to connect to your cluster using the [az aks get-credentials](https://learn.microsoft.com/en-us/cli/azure/aks?view=azure-cli-latest#az-aks-get-credentials) command.
 
 ```bash
 az aks get-credentials --resource-group ${AZURE_RESOURCE_GROUP} --name ${CLUSTER_NAME}
@@ -142,25 +131,16 @@ kubectl get nodes
 
 ## Export environment variables
 
-Export environment variables for the MC resource group, principal ID identity, and KAITO identity using the following commands:
+Export environment variables for the MC resource group, KAITO identity, and AKS OIDC Issuer URL using the following commands:
 
 ```bash
 export MC_RESOURCE_GROUP=$(az aks show --resource-group ${AZURE_RESOURCE_GROUP} \
     --name ${CLUSTER_NAME} \
     --query nodeResourceGroup \
     -o tsv)
-export PRINCIPAL_ID=$(az identity show --name "ai-toolchain-operator-${CLUSTER_NAME}" \
-    --resource-group "${MC_RESOURCE_GROUP}" \
-    --query 'principalId' \
-    -o tsv)
+
 export KAITO_IDENTITY_NAME="ai-toolchain-operator-${CLUSTER_NAME}"
-```
 
-## Get the AKS OpenID Connect (OIDC) Issuer
-
-Get the AKS OIDC Issuer URL and export it as an environment variable:
-
-```bash
 export AKS_OIDC_ISSUER=$(az aks show --resource-group "${AZURE_RESOURCE_GROUP}" \
     --name "${CLUSTER_NAME}" \
     --query "oidcIssuerProfile.issuerUrl" \
@@ -169,7 +149,7 @@ export AKS_OIDC_ISSUER=$(az aks show --resource-group "${AZURE_RESOURCE_GROUP}" 
 
 ## Establish a federated identity credential
 
-Create the federated identity credential between the managed identity, AKS OIDC issuer, and subject using the [az identity federated-credential create][az-identity-federated-credential-create] command.
+Create the federated identity credential between the managed identity, AKS OIDC issuer, and subject using the [az identity federated-credential create](https://learn.microsoft.com/en-us/cli/azure/identity/federated-credential?view=azure-cli-latest) command.
 
 ```bash
 az identity federated-credential create --name "kaito-federated-identity" \
@@ -209,18 +189,3 @@ echo "See last step for details on how to ask questions to the model.
 ## Next steps
 
 For more inference model options, see the [KAITO GitHub repository](https://github.com/Azure/kaito).
-
-<!-- LINKS -->
-[az-group-create]: /cli/azure/group#az_group_create
-[az-group-delete]: /cli/azure/group#az_group_delete
-[az-aks-create]: /cli/azure/aks#az_aks_create
-[az-aks-update]: /cli/azure/aks#az_aks_update
-[az-aks-get-credentials]: /cli/azure/aks#az_aks_get_credentials
-[az-role-assignment-create]: /cli/azure/role/assignment#az_role_assignment_create
-[az-identity-federated-credential-create]: /cli/azure/identity/federated-credential#az_identity_federated_credential_create
-[az-account-set]: /cli/azure/account#az_account_set
-[az-extension-add]: /cli/azure/extension#az_extension_add
-[az-extension-update]: /cli/azure/extension#az_extension_update
-[az-feature-register]: /cli/azure/feature#az_feature_register
-[az-feature-show]: /cli/azure/feature#az_feature_show
-[az-provider-register]: /cli/azure/provider#az_provider_register
