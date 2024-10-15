@@ -3,7 +3,7 @@ title: 'Zelfstudie: Een LEMP-stack implementeren met WordPress op een VIRTUELE m
 description: In deze zelfstudie leert u hoe u de LEMP-stack en WordPress installeert op een virtuele Linux-machine in Azure.
 author: fossygirl
 ms.collection: linux
-ms.service: virtual-machines
+ms.service: azure-virtual-machines
 ms.devlang: azurecli
 ms.custom: 'innovation-engine, linux-related-content, devx-track-azurecli'
 ms.topic: tutorial
@@ -16,7 +16,7 @@ ms.reviewer: jushim
 
 **Van toepassing op:** :heavy_check_mark: Virtuele Linux-machines
 
-[![Implementeren naar Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2275458)
+[![Implementeren naar Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2286415)
 
 In dit artikel wordt uitgelegd hoe u een NGINX-webserver, Azure MySQL Flexible Server en PHP (de LEMP-stack) implementeert op een Ubuntu Linux-VM in Azure. Als u de LEMP-server in actie wilt zien, kunt u eventueel een WordPress-site installeren en configureren. In deze zelfstudie leert u het volgende:
 
@@ -521,7 +521,7 @@ Resultaten:
 
 ## Azure Database for MySQL - flexibele server maken
 
-Azure Database for MySQL - Flexible Server is een beheerde service die u kunt gebruiken voor het uitvoeren, beheren en schalen van maximaal beschikbare MySQL-servers in de cloud. Maak een flexibele server met de [opdracht az mysql flexible-server create](../../mysql/flexible-server/quickstart-create-server-cli.md#create-an-azure-database-for-mysql-flexible-server) . Een server kan meerdere databases bevatten. Met de volgende opdracht maakt u een server met behulp van servicestandaarden en variabele waarden uit de lokale omgeving van uw Azure CLI:
+Azure Database for MySQL - Flexible Server is een beheerde service die u kunt gebruiken voor het uitvoeren, beheren en schalen van maximaal beschikbare MySQL-servers in de cloud. Maak een flexibele server met de [opdracht az mysql flexible-server create](/azure/mysql/flexible-server/quickstart-create-server-cli#create-an-azure-database-for-mysql-flexible-server) . Een server kan meerdere databases bevatten. Met de volgende opdracht maakt u een server met behulp van servicestandaarden en variabele waarden uit de lokale omgeving van uw Azure CLI:
 
 ```bash
 az mysql flexible-server create \
@@ -573,8 +573,8 @@ De gemaakte server heeft de volgende kenmerken:
 * De standaardverbindingsmethode is Privétoegang (VNet-integratie) met een gekoppeld virtueel netwerk en een automatisch gegenereerd subnet.
 
 > [!NOTE]
-> De verbindingsmethode kan niet worden gewijzigd na het maken van de server. Als u bijvoorbeeld tijdens het maken hebt geselecteerd `Private access (VNet Integration)` , kunt u deze niet wijzigen `Public access (allowed IP addresses)` na het maken. U kunt het beste een server met privétoegang maken om veilig toegang te krijgen tot uw server met behulp van VNet-integratie. Meer informatie over persoonlijke toegang vindt u in het [artikel over concepten](../../mysql/flexible-server/concepts-networking-vnet.md).
-Als u de standaardinstellingen wilt wijzigen, raadpleegt u de Azure CLI-referentiedocumentatie [](../../mysql/flexible-server/quickstart-create-server-cli.md) voor de volledige lijst met configureerbare CLI-parameters.
+> De verbindingsmethode kan niet worden gewijzigd na het maken van de server. Als u bijvoorbeeld tijdens het maken hebt geselecteerd `Private access (VNet Integration)` , kunt u deze niet wijzigen `Public access (allowed IP addresses)` na het maken. U kunt het beste een server met privétoegang maken om veilig toegang te krijgen tot uw server met behulp van VNet-integratie. Meer informatie over persoonlijke toegang vindt u in het [artikel over concepten](/azure/mysql/flexible-server/concepts-networking-vnet).
+Als u de standaardinstellingen wilt wijzigen, raadpleegt u de Azure CLI-referentiedocumentatie [](/azure/mysql/flexible-server/quickstart-create-server-cli) voor de volledige lijst met configureerbare CLI-parameters.
 
 ## De status van Azure Database for MySQL - Flexible Server controleren
 
@@ -600,13 +600,13 @@ U kunt de configuratie van Azure Database for MySQL - Flexible Server beheren me
 
 Details van serverparameter weergeven:
 
-Voer de [opdracht az mysql flexible-server show uit](../../mysql/flexible-server/how-to-configure-server-parameters-cli.md) om details over een bepaalde parameter voor de server weer te geven.
+Voer de [opdracht az mysql flexible-server show uit](/azure/mysql/flexible-server/how-to-configure-server-parameters-cli) om details over een bepaalde parameter voor de server weer te geven.
 
 ## Azure Database for MySQL - Flexible Server SSL-verbindingsparameter uitschakelen voor Wordpress-integratie
 
 Wijzig de waarde van een serverparameter:
 
-U kunt ook de waarde van een bepaalde serverparameter wijzigen, waarmee de onderliggende configuratiewaarde voor de MySQL-serverengine wordt bijgewerkt. Als u de serverparameter wilt bijwerken, gebruikt u de [opdracht az mysql flexible-server parameter set](../../mysql/flexible-server/how-to-configure-server-parameters-cli.md#modify-a-server-parameter-value) .
+U kunt ook de waarde van een bepaalde serverparameter wijzigen, waarmee de onderliggende configuratiewaarde voor de MySQL-serverengine wordt bijgewerkt. Als u de serverparameter wilt bijwerken, gebruikt u de [opdracht az mysql flexible-server parameter set](/azure/mysql/flexible-server/how-to-configure-server-parameters-cli#modify-a-server-parameter-value) .
 
 ```bash
 az mysql flexible-server parameter set \
@@ -641,7 +641,7 @@ Resultaten:
 
 In het volgende voorbeeld wordt een virtuele machine gemaakt met de naam `$MY_VM_NAME` en worden SSH-sleutels gemaakt als deze nog niet bestaan op een standaardsleutellocatie. De opdracht wordt ook ingesteld `$MY_VM_USERNAME` als een gebruikersnaam van de beheerder.
 
-Om de beveiliging van virtuele Linux-machines in Azure te verbeteren, kunt u integreren met Azure Active Directory-verificatie. U kunt Nu Azure AD gebruiken als basisverificatieplatform. U kunt ook SSH gebruiken voor de Virtuele Linux-machine met behulp van Verificatie op basis van Azure AD- en OpenSSH-certificaten. Met deze functionaliteit kunnen organisaties de toegang tot VM's beheren met op rollen gebaseerd toegangsbeheer en beleid voor voorwaardelijke toegang van Azure.
+Om de beveiliging van virtuele Linux-machines in Azure te verbeteren, kunt u integreren met Microsoft Entra ID-verificatie. Nu kunt u Microsoft Entra ID gebruiken als een basisverificatieplatform. U kunt ook SSH gebruiken voor de Virtuele Linux-machine met behulp van Microsoft Entra ID en openSSH-verificatie op basis van certificaten. Met deze functionaliteit kunnen organisaties de toegang tot VM's beheren met op rollen gebaseerd toegangsbeheer en beleid voor voorwaardelijke toegang van Azure.
 
 Maak een VM met de opdracht [az vm create](/cli/azure/vm#az-vm-create).
 
@@ -706,7 +706,7 @@ done
 ```
 
 <!--
-## Assign Azure AD RBAC for Azure AD login for Linux Virtual Machine
+## Assign Microsoft Entra ID RBAC for Microsoft Entra ID login for Linux Virtual Machine
 The below command uses [az role assignment create](https://learn.microsoft.com/cli/azure/role/assignment#az-role-assignment-create) to assign the `Virtual Machine Administrator Login` role to the VM for your current Azure user.
 ```bash
 export MY_RESOURCE_GROUP_ID=$(az group show --resource-group $MY_RESOURCE_GROUP_NAME --query id -o tsv)
@@ -741,15 +741,15 @@ Results:
 
 <!--
 ## Export the SSH configuration for use with SSH clients that support OpenSSH
-Login to Azure Linux VMs with Azure AD supports exporting the OpenSSH certificate and configuration. That means you can use any SSH clients that support OpenSSH-based certificates to sign in through Azure AD. The following example exports the configuration for all IP addresses assigned to the VM:
+Login to Azure Linux VMs with Microsoft Entra ID supports exporting the OpenSSH certificate and configuration. That means you can use any SSH clients that support OpenSSH-based certificates to sign in through Microsoft Entra ID. The following example exports the configuration for all IP addresses assigned to the VM:
 ```bash
 az ssh config --file ~/.ssh/azure-config --name $MY_VM_NAME --resource-group $MY_RESOURCE_GROUP_NAME
 ```
 -->
 
-## Azure AD-aanmelding inschakelen voor een virtuele Linux-machine in Azure
+## Microsoft Entra ID-aanmelding inschakelen voor een virtuele Linux-machine in Azure
 
-Met de volgende installatie wordt de extensie geïnstalleerd om Azure AD-aanmelding in te schakelen voor een Virtuele Linux-machine. Extensies van virtuele Azure-machines (VM's) zijn kleine toepassingen die configuratie na de implementatie en automatiseringstaken voor Azure-VM's bieden.
+Hieronder wordt de extensie geïnstalleerd om aanmelding via Microsoft Entra ID in te schakelen voor een Virtuele Linux-machine. Extensies van virtuele Azure-machines (VM's) zijn kleine toepassingen die configuratie na de implementatie en automatiseringstaken voor Azure-VM's bieden.
 
 ```bash
 az vm extension set \
@@ -787,7 +787,7 @@ Resultaten:
 
 ## Uw WordPress-website controleren en bekijken
 
-[WordPress](https://www.wordpress.org) is een open source content management system (CMS) dat door meer dan 40% van het web wordt gebruikt om websites, blogs en andere toepassingen te maken. WordPress kan worden uitgevoerd op een aantal verschillende Azure-services: [AKS](../../mysql/flexible-server/tutorial-deploy-wordpress-on-aks.md), Virtual Machines en App Service. Zie WordPress op Azure Marketplace[ voor een volledige lijst met WordPress-opties in Azure](https://azuremarketplace.microsoft.com/marketplace/apps?page=1&search=wordpress).
+[WordPress](https://www.wordpress.org) is een open source content management system (CMS) dat door meer dan 40% van het web wordt gebruikt om websites, blogs en andere toepassingen te maken. WordPress kan worden uitgevoerd op een aantal verschillende Azure-services: [AKS](/azure/mysql/flexible-server/tutorial-deploy-wordpress-on-aks), Virtual Machines en App Service. Zie WordPress op Azure Marketplace[ voor een volledige lijst met WordPress-opties in Azure](https://azuremarketplace.microsoft.com/marketplace/apps?page=1&search=wordpress).
 
 Deze WordPress-installatie is alleen bedoeld als Proof of Concept. Raadpleeg de [WordPress-documentatie](https://codex.wordpress.org/Main_Page) voor het installeren van de nieuwste WordPress-versie in een productieomgeving met de aanbevolen beveiligingsinstellingen.
 

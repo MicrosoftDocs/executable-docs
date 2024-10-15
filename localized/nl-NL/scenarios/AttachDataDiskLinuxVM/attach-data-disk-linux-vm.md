@@ -1,6 +1,6 @@
 ---
 title: 'Quickstart: De Azure CLI gebruiken om een virtuele Ubuntu-machine te maken en een Azure Data Disk te koppelen'
-description: In deze quickstart leert u hoe u de Azure CLI gebruikt om een virtuele Ubuntu Linux-machine te maken
+description: In deze quickstart leert u hoe u de Azure CLI gebruikt om een virtuele Ubuntu Linux-machine te maken.
 author: ajoian
 ms.service: virtual-machines
 ms.collection: linux
@@ -11,6 +11,8 @@ ms.custom: 'mvc, devx-track-azurecli, mode-api, innovation-engine, linux-related
 ---
 
 # Quickstart: De Azure CLI gebruiken om een virtuele Ubuntu-machine te maken en een Azure Data Disk te koppelen
+
+[![Implementeren naar Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2286318)
 
 In deze quickstart ziet u hoe u de Azure CLI gebruikt om een virtuele Ubuntu Linux-machine (VM) in Azure te implementeren en een Azure Data Disk te koppelen aan de virtuele machine. De Azure CLI wordt gebruikt om Azure-resources te maken en te beheren via de opdrachtregel of scripts.
 
