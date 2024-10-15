@@ -14,7 +14,7 @@ ms.custom: 'mvc, devx-track-azurecli, mode-api, innovation-engine, linux-related
 
 **Dotyczy:** :heavy_check_mark: Maszyny wirtualne z systemem Linux
 
-[![Wdróż na platformie Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262692)
+[![Wdróż na platformie Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2286317)
 
 W tym przewodniku Szybki start pokazano, jak za pomocą interfejsu wiersza polecenia platformy Azure wdrożyć maszynę wirtualną z systemem Red Hat Enterprise Linux na platformie Azure. Interfejs wiersza polecenia platformy Azure służy do tworzenia zasobów platformy Azure i zarządzania nimi za pośrednictwem wiersza polecenia lub skryptów.
 
