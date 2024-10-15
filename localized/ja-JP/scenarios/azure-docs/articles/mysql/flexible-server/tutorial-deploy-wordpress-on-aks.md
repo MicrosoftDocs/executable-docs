@@ -14,7 +14,7 @@ ms.custom: 'vc, devx-track-azurecli, innovation-engine, linux-related-content'
 
 [!INCLUDE[applies-to-mysql-flexible-server](../includes/applies-to-mysql-flexible-server.md)]
 
-[![Azure に配置する](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262843)
+[![Azure に配置する](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2286232)
 
 このチュートリアルでは、Azure CLI を使用して、Azure Database for MySQL フレキシブル サーバーで Azure Kubernetes Service (AKS) クラスターに、HTTPS 経由でセキュリティ保護されたスケーラブルな WordPress アプリケーションをデプロイします。
 **[AKS](../../aks/intro-kubernetes.md)** は、クラスターをすばやくデプロイして管理できるマネージド Kubernetes サービスです。 **[Azure Database for MySQL フレキシブル サーバー](overview.md)** は、データベース管理機能と構成設定のよりきめ細かな制御と柔軟性を提供するように設計されたフル マネージド データベース サービスです。
