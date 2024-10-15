@@ -14,7 +14,7 @@ ms.custom: 'mvc, devx-track-azurecli, mode-api, innovation-engine, linux-related
 
 **Gäller för:** :heavy_check_mark: Virtuella Linux-datorer
 
-[![Distribuera till Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262692)
+[![Distribuera till Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2286317)
 
 Den här snabbstarten visar hur du använder Azure CLI för att distribuera en virtuell Red Hat Enterprise Linux-dator (VM) i Azure. Azure CLI används för att skapa och hantera Azure-resurser via antingen kommandoraden eller skripten.
 

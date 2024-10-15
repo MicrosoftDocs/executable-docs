@@ -2,7 +2,7 @@
 title: 'Snabbstart: Använda Azure CLI för att skapa en virtuell Linux-dator'
 description: I den här snabbstarten lär du dig hur du använder Azure CLI för att skapa en virtuell Linux-dator
 author: ju-shim
-ms.service: virtual-machines
+ms.service: azure-virtual-machines
 ms.collection: linux
 ms.topic: quickstart
 ms.date: 03/11/2024
@@ -14,7 +14,7 @@ ms.custom: 'mvc, devx-track-azurecli, mode-api, innovation-engine, linux-related
 
 **Gäller för:** :heavy_check_mark: Virtuella Linux-datorer
 
-[![Distribuera till Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262692)
+[![Distribuera till Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2285977)
 
 I den här snabbstarten beskrivs hur du använder Azure CLI för att distribuera en virtuell dator (VM) med Linux i Azure. Azure CLI används för att skapa och hantera Azure-resurser via antingen kommandoraden eller skripten.
 

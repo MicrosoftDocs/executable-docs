@@ -4,7 +4,7 @@ description: Lär dig hur du skapar en VM-skalningsuppsättning i flexibelt orke
 author: fitzgeraldsteele
 ms.author: fisteele
 ms.topic: how-to
-ms.service: virtual-machine-scale-sets
+ms.service: azure-virtual-machine-scale-sets
 ms.date: 06/14/2024
 ms.reviewer: jushiman
 ms.custom: 'mimckitt, devx-track-azurecli, vmss-flex, innovation-engine, linux-related-content'
@@ -12,7 +12,7 @@ ms.custom: 'mimckitt, devx-track-azurecli, vmss-flex, innovation-engine, linux-r
 
 # Skapa virtuella datorer i en skalningsuppsättning med Hjälp av Azure CLI
 
-[![Distribuera till Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262759)
+[![Distribuera till Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2286316)
 
 Den här artikeln beskriver hur du använder Azure CLI för att skapa en VM-skalningsuppsättning.
 
@@ -842,6 +842,6 @@ az network public-ip show --resource-group $MY_RESOURCE_GROUP_NAME --name $MY_AP
 För att undvika Azure-avgifter bör du rensa onödiga resurser. När du inte längre behöver din skalningsuppsättning och andra resurser tar du bort resursgruppen och alla dess resurser med [az group delete](/cli/azure/group). Parametern `--no-wait` återför kontrollen till kommandotolken utan att vänta på att uppgiften slutförs. Parametern `--yes` bekräftar att du vill ta bort resurserna utan någon annan uppmaning om att göra det. I den här självstudien rensas resurser åt dig.
 
 ## Nästa steg
-- [Lär dig hur du skapar en skalningsuppsättning i Azure-portalen.](flexible-virtual-machine-scale-sets-portal.md)
+- [Lär dig hur du skapar en skalningsuppsättning i Azure Portal.](flexible-virtual-machine-scale-sets-portal.md)
 - [Läs mer om VM-skalningsuppsättningar.](overview.md)
 - [Skala automatiskt en VM-skalningsuppsättning med Azure CLI](tutorial-autoscale-cli.md)

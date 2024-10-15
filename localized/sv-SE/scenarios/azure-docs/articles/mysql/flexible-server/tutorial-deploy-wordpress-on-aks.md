@@ -14,7 +14,7 @@ ms.custom: 'vc, devx-track-azurecli, innovation-engine, linux-related-content'
 
 [!INCLUDE[applies-to-mysql-flexible-server](../includes/applies-to-mysql-flexible-server.md)]
 
-[![Distribuera till Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262843)
+[![Distribuera till Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2286232)
 
 I den här självstudien distribuerar du ett skalbart WordPress-program som skyddas via HTTPS i ett AKS-kluster (Azure Kubernetes Service) med Azure Database for MySQL – flexibel server med hjälp av Azure CLI.
 **[AKS](../../aks/intro-kubernetes.md)** är en hanterad Kubernetes-tjänst som gör att du snabbt kan distribuera och hantera kluster. **[Azure Database for MySQL – flexibel server](overview.md)** är en fullständigt hanterad databastjänst som är utformad för att ge mer detaljerad kontroll och flexibilitet över databashanteringsfunktioner och konfigurationsinställningar.
@@ -312,7 +312,7 @@ Nu i självstudien har du en AKS-webbapp med NGINX som ingresskontrollant och en
 
 ### Konfigurera Cert Manager
 
-För att lägga till HTTPS använder vi Cert Manager. Cert Manager är ett verktyg med öppen källkod för att hämta och hantera SSL-certifikat för Kubernetes-distributioner. Cert Manager hämtar certifikat från populära offentliga utfärdare och privata utfärdare, säkerställer att certifikaten är giltiga och uppdaterade och försöker förnya certifikat vid en konfigurerad tidpunkt innan de upphör att gälla.
+För att lägga till HTTPS använder vi Cert Manager. Cert Manager är ett öppen källkod verktyg för att hämta och hantera SSL-certifikat för Kubernetes-distributioner. Cert Manager hämtar certifikat från populära offentliga utfärdare och privata utfärdare, säkerställer att certifikaten är giltiga och uppdaterade och försöker förnya certifikat vid en konfigurerad tidpunkt innan de upphör att gälla.
 
 1. För att kunna installera cert-manager måste vi först skapa ett namnområde för att köra det i. I den här självstudien installeras cert-manager i certifikathanterarens namnområde. Du kan köra cert-manager i ett annat namnområde, men du måste göra ändringar i distributionsmanifesten.
 
