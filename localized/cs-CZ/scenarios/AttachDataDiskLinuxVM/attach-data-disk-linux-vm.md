@@ -12,6 +12,8 @@ ms.custom: 'mvc, devx-track-azurecli, mode-api, innovation-engine, linux-related
 
 # Rychlý start: Vytvoření virtuálního počítače s Ubuntu pomocí Azure CLI a připojení datového disku Azure
 
+[![Nasazení do Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2286318)
+
 V tomto rychlém startu se dozvíte, jak pomocí Azure CLI nasadit virtuální počítač s Ubuntu Linuxem v Azure a připojit k němu datový disk Azure. Azure CLI slouží k vytváření a správě prostředků Azure prostřednictvím příkazového řádku nebo skriptů.
 
 Pokud ještě nemáte předplatné Azure, vytvořte si napřed [bezplatný účet](https://azure.microsoft.com/free/?WT.mc_id=A261C142F).

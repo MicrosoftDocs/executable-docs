@@ -10,6 +10,8 @@ ms.custom: 'H1Hack27Feb2017, mvc, devcenter, devx-track-azurecli, mode-api, inno
 
 # Rychlý start: Nasazení clusteru Azure Kubernetes Service (AKS) pomocí Azure CLI
 
+[![Nasazení do Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2286152)
+
 Azure Kubernetes Service (AKS) je spravovaná služba Kubernetes, která umožňuje rychle nasazovat a spravovat clustery. V tomto rychlém startu se naučíte:
 
 - Nasaďte cluster AKS pomocí Azure CLI.
@@ -22,13 +24,13 @@ Azure Kubernetes Service (AKS) je spravovaná služba Kubernetes, která umožň
 
 Tento rychlý start předpokládá základní znalosti konceptů Kubernetes. Další informace najdete v tématu [Základní koncepty Kubernetes pro Službu Azure Kubernetes Service (AKS).][kubernetes-concepts]
 
-- [!INCLUDE [quickstarts-free-trial-note](../../../includes/quickstarts-free-trial-note.md)]
+- [!INCLUDE [quickstarts-free-trial-note](~/reusable-content/ce-skilling/azure/includes/quickstarts-free-trial-note.md)]
 
 [!INCLUDE [azure-cli-prepare-your-environment-no-header.md](~/reusable-content/azure-cli/azure-cli-prepare-your-environment-no-header.md)]
 
 - Tento článek vyžaduje verzi 2.0.64 nebo novější azure CLI. Pokud používáte Azure Cloud Shell, je tam už nainstalovaná nejnovější verze.
 - Ujistěte se, že identita, kterou používáte k vytvoření clusteru, má odpovídající minimální oprávnění. Další podrobnosti o přístupu a identitě pro AKS najdete v tématu [Možnosti přístupu a identit pro Službu Azure Kubernetes Service (AKS).](../concepts-identity.md)
-- Pokud máte více předplatných Azure, vyberte odpovídající ID předplatného, ve kterém se mají prostředky fakturovat pomocí [příkazu az account set](/cli/azure/account#az-account-set) .
+- Pokud máte více předplatných Azure, vyberte odpovídající ID předplatného, ve kterém se mají prostředky fakturovat pomocí [příkazu az account set](/cli/azure/account#az-account-set) . Další informace najdete v tématu [Správa předplatných Azure – Azure CLI](/cli/azure/manage-azure-subscriptions-azure-cli?tabs=bash#change-the-active-subscription).
 
 ## Definování proměnných prostředí
 
@@ -73,7 +75,11 @@ Výsledky:
 Pomocí příkazu vytvořte cluster [`az aks create`][az-aks-create] AKS. Následující příklad vytvoří cluster s jedním uzlem a povolí spravovanou identitu přiřazenou systémem.
 
 ```azurecli-interactive
-az aks create --resource-group $MY_RESOURCE_GROUP_NAME --name $MY_AKS_CLUSTER_NAME --enable-managed-identity --node-count 1 --generate-ssh-keys
+az aks create \
+    --resource-group $MY_RESOURCE_GROUP_NAME \
+    --name $MY_AKS_CLUSTER_NAME \
+    --node-count 1 \
+    --generate-ssh-keys
 ```
 
 > [!NOTE]
@@ -399,7 +405,7 @@ Výsledky:
 </html>
 ```
 
-```output
+```OUTPUT
 echo "You can now visit your web server at $IP_ADDRESS"
 ```
 
@@ -429,7 +435,7 @@ Pokud chcete získat další informace o AKS a projít si kompletní příklad n
 <!-- LINKS - internal -->
 [kubernetes-concepts]: ../concepts-clusters-workloads.md
 [aks-tutorial]: ../tutorial-kubernetes-prepare-app.md
-[azure-resource-group]: ../../azure-resource-manager/management/overview.md
+[azure-resource-group]: /azure/azure-resource-manager/management/overview
 [az-aks-create]: /cli/azure/aks#az-aks-create
 [az-aks-get-credentials]: /cli/azure/aks#az-aks-get-credentials
 [az-aks-install-cli]: /cli/azure/aks#az-aks-install-cli
