@@ -14,7 +14,7 @@ ms.custom: 'mvc, devx-track-azurecli, mode-api, innovation-engine, linux-related
 
 **적용 대상:** :heavy_check_mark: Linux VM
 
-[![Azure에 배포](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262692)
+[![Azure에 배포](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2286317)
 
 이 빠른 시작에서는 Azure CLI를 사용하여 Azure에서 Red Hat Enterprise Linux VM(가상 머신)을 배포하는 방법을 보여 줍니다. Azure CLI는 명령줄 또는 스크립트를 통해 Azure 리소스를 만들고 관리하는 데 사용됩니다.
 
@@ -72,9 +72,9 @@ Results:
 
 ## 가상 머신 만들기
 
-이 리소스 그룹에 VM을 만들려면 이 명령을 사용합니다 `vm create` . 
+이 리소스 그룹에서 VM을 만들려면 `vm create` 명령을 사용합니다. 
 
-다음 예제에서는 VM을 만들고 사용자 계정을 추가합니다. 매개 `--generate-ssh-keys` 변수를 사용하면 CLI에서 사용 가능한 ssh 키를 찾습니다 `~/.ssh`. 해당 키가 발견되면 해당 키가 사용됩니다. 그렇지 않은 경우 생성되어 에 `~/.ssh`저장됩니다. 매개 변수는 `--public-ip-sku Standard` 공용 IP 주소를 통해 컴퓨터에 액세스할 수 있도록 합니다. 마지막으로, 최신 `Ubuntu 22.04` 이미지를 배포합니다.
+다음 예제에서는 VM을 만들고 사용자 계정을 추가합니다. `--generate-ssh-keys` 매개 변수는 CLI가 `~/.ssh`에서 사용 가능한 ssh 키를 찾도록 합니다. 만약 하나가 발견되면 그 키가 사용됩니다. 그렇지 않은 경우, 하나가 생성되어 `~/.ssh`에 저장됩니다. `--public-ip-sku Standard` 매개 변수는 공용 IP 주소를 통해 컴퓨터에 액세스할 수 있음을 보장합니다. 마지막으로 최신 `Ubuntu 22.04` 이미지를 배포합니다.
 
 다른 모든 값은 환경 변수를 사용하여 구성됩니다.
 
@@ -107,9 +107,9 @@ Results:
 }
 ```
 
-## Azure에서 Linux 가상 머신에 Azure AD 로그인 사용
+## Azure에서 Linux 가상 머신에 대한 Azure AD 로그인 사용
 
-다음 코드 예제에서는 Linux VM을 배포한 다음 확장을 설치하여 Linux VM에 Azure AD 로그인을 사용하도록 설정합니다. VM 확장은 Azure 가상 머신에서 배포 후 구성 및 Automation 작업을 제공하는 작은 애플리케이션입니다.
+다음 코드 예에서는 Linux VM을 배포한 다음 확장을 설치하여 Linux VM에 대한 Azure AD 로그인을 사용하도록 설정합니다. VM 확장은 Azure 가상 머신에서 배포 후 구성 및 Automation 작업을 제공하는 작은 애플리케이션입니다.
 
 ```bash
 az vm extension set \
@@ -127,7 +127,7 @@ az vm extension set \
 export IP_ADDRESS=$(az vm show --show-details --resource-group $MY_RESOURCE_GROUP_NAME --name $MY_VM_NAME --query publicIps --output tsv)
 ```
 
-## VM에 대한 SSH
+## VM에 SSH 실행
 
 <!--## Export the SSH configuration for use with SSH clients that support OpenSSH & SSH into the VM.
 Log in to Azure Linux VMs with Azure AD supports exporting the OpenSSH certificate and configuration. That means you can use any SSH clients that support OpenSSH-based certificates to sign in through Azure AD. The following example exports the configuration for all IP addresses assigned to the VM:-->
@@ -138,7 +138,7 @@ yes | az ssh config --file ~/.ssh/config --name $MY_VM_NAME --resource-group $MY
 ```
 -->
 
-이제 선택한 ssh 클라이언트에서 다음 명령의 출력을 실행하여 VM에 SSH할 수 있습니다.
+이제 선택한 ssh 클라이언트에서 다음 명령의 출력을 실행하여 VM에 SSH를 실행할 수 있습니다.
 
 ```bash
 ssh -o StrictHostKeyChecking=no $MY_USERNAME@$IP_ADDRESS
@@ -147,6 +147,6 @@ ssh -o StrictHostKeyChecking=no $MY_USERNAME@$IP_ADDRESS
 ## 다음 단계
 
 * [가상 머신에 대해 알아보기](../index.yml)
-* [Cloud-Init를 사용하여 첫 번째 부팅 시 Linux VM 초기화](tutorial-automate-vm-deployment.md)
+* [처음 부팅 시 Cloud-Init을 사용하여 Linux VM 초기화](tutorial-automate-vm-deployment.md)
 * [사용자 지정 VM 이미지 만들기](tutorial-custom-images.md)
 * [VM 부하 분산](../../load-balancer/quickstart-load-balancer-standard-public-cli.md)

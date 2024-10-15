@@ -14,7 +14,7 @@ ms.custom: 'vc, devx-track-azurecli, innovation-engine, linux-related-content'
 
 [!INCLUDE[applies-to-mysql-flexible-server](../includes/applies-to-mysql-flexible-server.md)]
 
-[![Azure에 배포](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262843)
+[![Azure에 배포](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2286232)
 
 이 자습서에서는 Azure CLI를 사용하여 Azure Database for MySQL 유연한 서버가 있는 AKS(Azure Kubernetes Service) 클러스터에 HTTPS를 통해 보호되는 확장성 있는 WordPress 애플리케이션을 배포합니다.
 **[AKS](../../aks/intro-kubernetes.md)** 는 클러스터를 빠르게 배포하고 관리할 수 있는 관리형 Kubernetes 서비스입니다. **[Azure Database for MySQL 유연한 서버](overview.md)** 는 데이터베이스 관리 기능 및 구성 설정에 대한 보다 세부적인 제어와 유연성을 제공하도록 설계된 완전 관리형 데이터베이스 서비스입니다.

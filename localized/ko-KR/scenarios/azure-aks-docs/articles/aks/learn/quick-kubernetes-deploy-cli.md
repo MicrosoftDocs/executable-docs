@@ -10,6 +10,8 @@ ms.custom: 'H1Hack27Feb2017, mvc, devcenter, devx-track-azurecli, mode-api, inno
 
 # 빠른 시작: Azure CLI를 사용하여 AKS(Azure Kubernetes Service) 클러스터 배포
 
+[![Azure에 배포](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2286152)
+
 AKS(Azure Kubernetes Service)는 클러스터를 빠르게 배포하고 관리할 수 있는 관리형 Kubernetes 서비스입니다. 이 빠른 시작에서 다음을 수행하는 방법을 알아봅니다.
 
 - Azure CLI를 사용하여 AKS 클러스터를 배포합니다.
@@ -22,13 +24,13 @@ AKS(Azure Kubernetes Service)는 클러스터를 빠르게 배포하고 관리�
 
 이 빠른 시작에서는 Kubernetes 기본 개념을 이해하고 있다고 가정합니다. 자세한 내용은 [AKS(Azure Kubernetes Service)의 Kubernetes 핵심 개념][kubernetes-concepts]을 참조하세요.
 
-- [!INCLUDE [quickstarts-free-trial-note](../../../includes/quickstarts-free-trial-note.md)]
+- [!INCLUDE [quickstarts-free-trial-note](~/reusable-content/ce-skilling/azure/includes/quickstarts-free-trial-note.md)]
 
 [!INCLUDE [azure-cli-prepare-your-environment-no-header.md](~/reusable-content/azure-cli/azure-cli-prepare-your-environment-no-header.md)]
 
 - 이 문서에는 Azure CLI 버전 2.0.64 이상이 필요합니다. Azure Cloud Shell을 사용하는 경우 최신 버전이 이미 설치되어 있습니다.
 - 클러스터를 만드는 데 사용하는 ID에 적절한 최소 권한이 있는지 확인합니다. AKS의 액세스 및 ID에 대한 자세한 내용은 [AKS(Azure Kubernetes Service)에 대한 액세스 및 ID 옵션](../concepts-identity.md)을 참조하세요.
-- Azure 구독이 여러 개인 경우 [az account set](/cli/azure/account#az-account-set) 명령을 사용하여 리소스가 청구되어야 하는 적절한 구독 ID를 선택합니다.
+- Azure 구독이 여러 개인 경우 [az account set](/cli/azure/account#az-account-set) 명령을 사용하여 리소스가 청구되어야 하는 적절한 구독 ID를 선택합니다. 자세한 내용은 [Azure 구독 관리 방법 - Azure CLI](/cli/azure/manage-azure-subscriptions-azure-cli?tabs=bash#change-the-active-subscription)를 참조하세요.
 
 ## 환경 변수 정의
 
@@ -73,7 +75,11 @@ Results:
 [`az aks create`][az-aks-create] 명령을 사용하여 AKS 클러스터를 만듭니다. 다음 예에서는 노드가 1개 있는 클러스터를 만들고 시스템 할당 관리 ID를 사용하도록 설정합니다.
 
 ```azurecli-interactive
-az aks create --resource-group $MY_RESOURCE_GROUP_NAME --name $MY_AKS_CLUSTER_NAME --enable-managed-identity --node-count 1 --generate-ssh-keys
+az aks create \
+    --resource-group $MY_RESOURCE_GROUP_NAME \
+    --name $MY_AKS_CLUSTER_NAME \
+    --node-count 1 \
+    --generate-ssh-keys
 ```
 
 > [!NOTE]
@@ -399,7 +405,7 @@ Results:
 </html>
 ```
 
-```output
+```OUTPUT
 echo "You can now visit your web server at $IP_ADDRESS"
 ```
 
@@ -429,7 +435,7 @@ AKS에 대해 자세히 알아보고 배포 예제에 대한 전체 코드를 �
 <!-- LINKS - internal -->
 [kubernetes-concepts]: ../concepts-clusters-workloads.md
 [aks-tutorial]: ../tutorial-kubernetes-prepare-app.md
-[azure-resource-group]: ../../azure-resource-manager/management/overview.md
+[azure-resource-group]: /azure/azure-resource-manager/management/overview
 [az-aks-create]: /cli/azure/aks#az-aks-create
 [az-aks-get-credentials]: /cli/azure/aks#az-aks-get-credentials
 [az-aks-install-cli]: /cli/azure/aks#az-aks-install-cli

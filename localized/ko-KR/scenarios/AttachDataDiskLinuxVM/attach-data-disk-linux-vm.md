@@ -12,6 +12,8 @@ ms.custom: 'mvc, devx-track-azurecli, mode-api, innovation-engine, linux-related
 
 # 빠른 시작: Azure CLI를 사용하여 Ubuntu Virtual Machine 만들기 및 Azure 데이터 디스크 연결
 
+[![Azure에 배포](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2286318)
+
 이 빠른 시작에서는 Azure CLI를 사용하여 Azure에 Ubuntu Linux VM(가상 머신)을 배포하고 Azure 데이터 디스크를 가상 머신에 연결하는 방법을 보여 줍니다. Azure CLI는 명령줄 또는 스크립트를 통해 Azure 리소스를 만들고 관리하는 데 사용됩니다.
 
 Azure 구독이 없는 경우 시작하기 전에 [체험 계정](https://azure.microsoft.com/free/?WT.mc_id=A261C142F)을 만듭니다.
@@ -120,9 +122,9 @@ Results:
 }
 ```
 
-## Azure에서 Linux 가상 머신에 Azure AD 로그인 사용
+## Azure에서 Linux 가상 머신에 대한 Azure AD 로그인 사용
 
-다음 코드 예제에서는 Linux VM을 배포한 다음 확장을 설치하여 Linux VM에 Azure AD 로그인을 사용하도록 설정합니다. VM 확장은 Azure 가상 머신에서 배포 후 구성 및 Automation 작업을 제공하는 작은 애플리케이션입니다.
+다음 코드 예에서는 Linux VM을 배포한 다음 확장을 설치하여 Linux VM에 대한 Azure AD 로그인을 사용하도록 설정합니다. VM 확장은 Azure 가상 머신에서 배포 후 구성 및 Automation 작업을 제공하는 작은 애플리케이션입니다.
 
 ```bash
 az vm extension set \
@@ -397,7 +399,7 @@ Results:
 /dev/sde1 on /datadisk03 type xfs (rw,relatime)
 ```
 
-## VM에 대한 SSH
+## VM에 SSH 실행
 
 이제 선택한 ssh 클라이언트에서 다음 명령을 실행하여 VM에 SSH할 수 있습니다.
 
@@ -408,6 +410,6 @@ ssh -o StrictHostKeyChecking=no $MY_VM_USERNAME@$FQDN
 ## 다음 단계
 
 * [가상 머신에 대해 알아보기](../index.yml)
-* [Cloud-Init를 사용하여 첫 번째 부팅 시 Linux VM 초기화](tutorial-automate-vm-deployment.md)
+* [처음 부팅 시 Cloud-Init을 사용하여 Linux VM 초기화](tutorial-automate-vm-deployment.md)
 * [사용자 지정 VM 이미지 만들기](tutorial-custom-images.md)
 * [VM 부하 분산](../../load-balancer/quickstart-load-balancer-standard-public-cli.md)
