@@ -14,9 +14,9 @@ ms.custom: 'mvc, devx-track-azurecli, mode-api, innovation-engine, linux-related
 
 **Si applica a:** :heavy_check_mark: macchine virtuali Linux
 
-[![Distribuzione in Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262692)
+[![Distribuzione in Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2286317)
 
-Questa guida introduttiva illustra come usare l'interfaccia della riga di comando di Azure per distribuire una macchina virtuale Linux (VM) Red Hat Enterprise in Azure. L'interfaccia della riga di comando di Azure consente di creare e gestire le risorse di Azure sia tramite la riga di comando, sia tramite script.
+Questa guida introduttiva illustra come usare l'interfaccia della riga di comando di Azure per distribuire una macchina virtuale Linux (VM) Red Hat Enterprise in Azure. Viene usata l'interfaccia della riga di comando di Azure per creare e gestire le risorse di Azure dalla riga di comando o tramite script.
 
 Se non si ha una sottoscrizione di Azure, creare un [account gratuito](https://azure.microsoft.com/free/?WT.mc_id=A261C142F) prima di iniziare.
 
@@ -47,7 +47,7 @@ Per eseguire i comandi in Azure usando l'interfaccia della riga di comando, è p
 
 ## Creare un gruppo di risorse
 
-Un gruppo di risorse è un contenitore per risorse corrlate. Tutte le risorse devono essere posizionate in un gruppo di risorse. Il [comando az group create](/cli/azure/group) crea un gruppo di risorse con i parametri definiti in precedenza $MY_RESOURCE_GROUP_NAME e $REGION.
+Un gruppo di risorse è un contenitore per risorse corrlate. Tutte le risorse devono essere posizionate in un gruppo di risorse. Il comando [az group create](/cli/azure/group) crea un gruppo di risorse con i parametri $MY_RESOURCE_GROUP_NAME e $REGION definiti in precedenza.
 
 ```bash
 az group create --name $MY_RESOURCE_GROUP_NAME --location $REGION
@@ -72,9 +72,9 @@ Risultati:
 
 ## Creare la macchina virtuale
 
-Per creare una macchina virtuale in questo gruppo di risorse, usare il `vm create` comando . 
+Per creare una macchina virtuale in questo gruppo di risorse, usare il comando `vm create`. 
 
-Nell'esempio seguente viene creata una macchina virtuale e aggiunto un account utente. Il `--generate-ssh-keys` parametro fa in modo che l'interfaccia della riga di comando cerchi una chiave SSH disponibile in `~/.ssh`. Se ne viene trovata una, viene usata la chiave. In caso contrario, ne viene generato e archiviato in `~/.ssh`. Il `--public-ip-sku Standard` parametro garantisce che il computer sia accessibile tramite un indirizzo IP pubblico. Infine, viene distribuita l'immagine più recente `Ubuntu 22.04` .
+Nell'esempio seguente viene creata una macchina virtuale e aggiunto un account utente. Il parametro `--generate-ssh-keys` fa sì che l'interfaccia della riga di comando cerchi una chiave SSH disponibile in `~/.ssh`. Se ne viene trovata una, viene usata la chiave. In caso contrario, ne viene generato e archiviato uno in `~/.ssh`. Il parametro `--public-ip-sku Standard` garantisce che il computer sia accessibile tramite un indirizzo IP pubblico. Infine, distribuiamo l'immagine `Ubuntu 22.04` più recente.
 
 Tutti gli altri valori vengono configurati usando le variabili di ambiente.
 
@@ -119,7 +119,7 @@ az vm extension set \
     --vm-name $MY_VM_NAME
 ```
 
-## Archiviare l'indirizzo IP della macchina virtuale per ssh
+## Archiviare l'indirizzo IP della macchina virtuale per SSH
 
 Eseguire il comando seguente per archiviare l'indirizzo IP della macchina virtuale come variabile di ambiente:
 
@@ -127,7 +127,7 @@ Eseguire il comando seguente per archiviare l'indirizzo IP della macchina virtua
 export IP_ADDRESS=$(az vm show --show-details --resource-group $MY_RESOURCE_GROUP_NAME --name $MY_VM_NAME --query publicIps --output tsv)
 ```
 
-## SSH nella macchina virtuale
+## Accedere tramite SSH alla macchina virtuale
 
 <!--## Export the SSH configuration for use with SSH clients that support OpenSSH & SSH into the VM.
 Log in to Azure Linux VMs with Azure AD supports exporting the OpenSSH certificate and configuration. That means you can use any SSH clients that support OpenSSH-based certificates to sign in through Azure AD. The following example exports the configuration for all IP addresses assigned to the VM:-->
@@ -138,7 +138,7 @@ yes | az ssh config --file ~/.ssh/config --name $MY_VM_NAME --resource-group $MY
 ```
 -->
 
-È ora possibile eseguire SSH nella macchina virtuale eseguendo l'output del comando seguente nel client SSH scelto:
+È ora possibile eseguire l'accesso SSH nella macchina virtuale eseguendo l'output del comando seguente nel client SSH scelto:
 
 ```bash
 ssh -o StrictHostKeyChecking=no $MY_USERNAME@$IP_ADDRESS
