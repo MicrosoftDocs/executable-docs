@@ -465,5 +465,17 @@
         "configurations": {
             "region": "westeurope"
         }
+    },
+    {
+        "status": "active",
+        "key": "azure-compute-docs/articles/virtual-machine-scale-sets/flexible-virtual-machine-scale-sets-cli.md",
+        "title": "Create virtual machines in a Flexible scale set using Azure CLI",
+        "description": "Learn how to create a Virtual Machine Scale Set in Flexible orchestration mode using Azure CLI.",
+        "stackDetails": "",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-compute-docs/articles/virtual-machine-scale-sets/flexible-virtual-machine-scale-sets-cli.md",
+        "documentationUrl": "",
+        "configurations": {
+            "region": "EastUS"
+        }
     }
 ]
