@@ -1,6 +1,6 @@
 ---
 title: Краткое руководство. Создание виртуальной машины Ubuntu и подключение диска данных Azure с помощью Azure CLI
-description: 'Из этого краткого руководства вы узнаете, как использовать Azure CLI для создания виртуальной машины Ubuntu Linux'
+description: 'Из этого краткого руководства вы узнаете, как использовать Azure CLI для создания виртуальной машины Ubuntu Linux.'
 author: ajoian
 ms.service: virtual-machines
 ms.collection: linux
@@ -11,6 +11,8 @@ ms.custom: 'mvc, devx-track-azurecli, mode-api, innovation-engine, linux-related
 ---
 
 # Краткое руководство. Создание виртуальной машины Ubuntu и подключение диска данных Azure с помощью Azure CLI
+
+[![Развертывание в Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2286318)
 
 В этом кратком руководстве показано, как использовать Azure CLI для развертывания виртуальной машины Ubuntu Linux в Azure и подключения диска данных Azure к виртуальной машине. Azure CLI используется для создания ресурсов Azure и управления ими с помощью командной строки или скриптов.
 
