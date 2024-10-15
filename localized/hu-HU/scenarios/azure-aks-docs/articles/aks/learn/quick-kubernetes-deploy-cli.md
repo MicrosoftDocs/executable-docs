@@ -10,6 +10,8 @@ ms.custom: 'H1Hack27Feb2017, mvc, devcenter, devx-track-azurecli, mode-api, inno
 
 # Rövid útmutató: Azure Kubernetes Service- (AKS-) fürt üzembe helyezése az Azure CLI használatával
 
+[![Üzembe helyezés az Azure-ban](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2286152)
+
 Az Azure Kubernetes Service (AKS) egy felügyelt Kubernetes-szolgáltatás, amely lehetővé teszi a fürtök gyors üzembe helyezését és kezelését. Ezen rövid útmutató segítségével megtanulhatja a következőket:
 
 - AKS-fürt üzembe helyezése az Azure CLI használatával.
@@ -22,13 +24,13 @@ Az Azure Kubernetes Service (AKS) egy felügyelt Kubernetes-szolgáltatás, amel
 
 A rövid útmutató feltételezi, hogy rendelkezik a Kubernetes használatára vonatkozó alapvető ismeretekkel. További információkért tekintse meg [az Azure Kubernetes Service (AKS)][kubernetes-concepts] Kubernetes alapfogalmait.
 
-- [!INCLUDE [quickstarts-free-trial-note](../../../includes/quickstarts-free-trial-note.md)]
+- [!INCLUDE [quickstarts-free-trial-note](~/reusable-content/ce-skilling/azure/includes/quickstarts-free-trial-note.md)]
 
 [!INCLUDE [azure-cli-prepare-your-environment-no-header.md](~/reusable-content/azure-cli/azure-cli-prepare-your-environment-no-header.md)]
 
 - Ez a cikk az Azure CLI 2.0.64-es vagy újabb verzióját igényli. Az Azure Cloud Shell használata esetén a legújabb verzió már telepítve van.
 - Győződjön meg arról, hogy a fürt létrehozásához használt identitás rendelkezik a megfelelő minimális engedélyekkel. Az AKS-hez való hozzáféréssel és identitással kapcsolatos további részletekért tekintse meg [az Azure Kubernetes Service (AKS)](../concepts-identity.md) hozzáféréssel és identitással kapcsolatos lehetőségeit.
-- Ha több Azure-előfizetéssel rendelkezik, válassza ki a megfelelő előfizetés-azonosítót, amelyben az erőforrásokat az [az account set](/cli/azure/account#az-account-set) paranccsal kell számlázni.
+- Ha több Azure-előfizetéssel rendelkezik, válassza ki a megfelelő előfizetés-azonosítót, amelyben az erőforrásokat az [az account set](/cli/azure/account#az-account-set) paranccsal kell számlázni. További információ: [Azure-előfizetések kezelése – Azure CLI](/cli/azure/manage-azure-subscriptions-azure-cli?tabs=bash#change-the-active-subscription).
 
 ## Környezeti változók definiálása
 
@@ -73,7 +75,11 @@ Eredmények:
 Hozzon létre egy AKS-fürtöt a [`az aks create`][az-aks-create] paranccsal. Az alábbi példa egy egy csomóponttal rendelkező fürtöt hoz létre, és engedélyezi a rendszer által hozzárendelt felügyelt identitást.
 
 ```azurecli-interactive
-az aks create --resource-group $MY_RESOURCE_GROUP_NAME --name $MY_AKS_CLUSTER_NAME --enable-managed-identity --node-count 1 --generate-ssh-keys
+az aks create \
+    --resource-group $MY_RESOURCE_GROUP_NAME \
+    --name $MY_AKS_CLUSTER_NAME \
+    --node-count 1 \
+    --generate-ssh-keys
 ```
 
 > [!NOTE]
@@ -399,7 +405,7 @@ Eredmények:
 </html>
 ```
 
-```output
+```OUTPUT
 echo "You can now visit your web server at $IP_ADDRESS"
 ```
 
@@ -429,7 +435,7 @@ Ha többet szeretne megtudni az AKS-ről, és végig szeretne járni egy teljes 
 <!-- LINKS - internal -->
 [kubernetes-concepts]: ../concepts-clusters-workloads.md
 [aks-tutorial]: ../tutorial-kubernetes-prepare-app.md
-[azure-resource-group]: ../../azure-resource-manager/management/overview.md
+[azure-resource-group]: /azure/azure-resource-manager/management/overview
 [az-aks-create]: /cli/azure/aks#az-aks-create
 [az-aks-get-credentials]: /cli/azure/aks#az-aks-get-credentials
 [az-aks-install-cli]: /cli/azure/aks#az-aks-install-cli

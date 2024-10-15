@@ -3,7 +3,7 @@ title: Oktatóanyag – LEMP-verem üzembe helyezése a WordPress használatáva
 description: 'Ebben az oktatóanyagban megtudhatja, hogyan telepítheti a LEMP-vermet és a WordPresst egy Linux rendszerű virtuális gépre az Azure-ban.'
 author: fossygirl
 ms.collection: linux
-ms.service: virtual-machines
+ms.service: azure-virtual-machines
 ms.devlang: azurecli
 ms.custom: 'innovation-engine, linux-related-content, devx-track-azurecli'
 ms.topic: tutorial
@@ -16,7 +16,7 @@ ms.reviewer: jushim
 
 **A következőre vonatkozik:** :heavy_check_mark: Linux rendszerű virtuális gépek
 
-[![Üzembe helyezés az Azure-ban](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2275458)
+[![Üzembe helyezés az Azure-ban](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2286415)
 
 Ez a cikk bemutatja, hogyan helyezhet üzembe NGINX-webkiszolgálót, rugalmas Azure MySQL-kiszolgálót és PHP-t (a LEMP-vermet) egy Ubuntu Linux rendszerű virtuális gépen az Azure-ban. Ha szeretné működés közben megtekinteni a LEMP-kiszolgálót, telepíthet és konfigurálhat egy WordPress-webhelyet. Ezen oktatóanyag segítségével megtanulhatja a következőket:
 
@@ -521,7 +521,7 @@ Eredmények:
 
 ## Rugalmas Azure Database for MySQL-kiszolgáló létrehozása
 
-A rugalmas Azure Database for MySQL-kiszolgáló egy felügyelt szolgáltatás, amellyel magas rendelkezésre állású MySQL-kiszolgálókat futtathat, kezelhet és skálázhat a felhőben. Hozzon létre egy rugalmas kiszolgálót az az [mysql flexible-server create](../../mysql/flexible-server/quickstart-create-server-cli.md#create-an-azure-database-for-mysql-flexible-server) paranccsal. Egy kiszolgáló több adatbázist tartalmazhat. Az alábbi parancs létrehoz egy kiszolgálót az Azure CLI helyi környezetéből származó szolgáltatás alapértelmezései és változó értékei alapján:
+A rugalmas Azure Database for MySQL-kiszolgáló egy felügyelt szolgáltatás, amellyel magas rendelkezésre állású MySQL-kiszolgálókat futtathat, kezelhet és skálázhat a felhőben. Hozzon létre egy rugalmas kiszolgálót az az [mysql flexible-server create](/azure/mysql/flexible-server/quickstart-create-server-cli#create-an-azure-database-for-mysql-flexible-server) paranccsal. Egy kiszolgáló több adatbázist tartalmazhat. Az alábbi parancs létrehoz egy kiszolgálót az Azure CLI helyi környezetéből származó szolgáltatás alapértelmezései és változó értékei alapján:
 
 ```bash
 az mysql flexible-server create \
@@ -573,8 +573,8 @@ A létrehozott kiszolgáló az alábbi attribútumokkal rendelkezik:
 * Az alapértelmezett kapcsolati módszer a privát hozzáférés (VNet-integráció) egy csatolt virtuális hálózattal és egy automatikusan létrehozott alhálózattal.
 
 > [!NOTE]
-> A kapcsolati módszer nem módosítható a kiszolgáló létrehozása után. Ha például a létrehozás során van kiválasztva `Private access (VNet Integration)` , akkor a létrehozás után nem válthat rá `Public access (allowed IP addresses)` . Javasoljuk, hogy hozzon létre egy privát hozzáféréssel rendelkező kiszolgálót, hogy biztonságosan elérhesse a kiszolgálót a VNet-integráció használatával. További információ a privát hozzáférésről az [alapfogalmakról szóló cikkben](../../mysql/flexible-server/concepts-networking-vnet.md).
-Ha módosítani szeretné az alapértelmezett beállításokat, tekintse meg az Azure CLI [referenciadokumentációját](../../mysql/flexible-server/quickstart-create-server-cli.md) a konfigurálható CLI-paraméterek teljes listájához.
+> A kapcsolati módszer nem módosítható a kiszolgáló létrehozása után. Ha például a létrehozás során van kiválasztva `Private access (VNet Integration)` , akkor a létrehozás után nem válthat rá `Public access (allowed IP addresses)` . Javasoljuk, hogy hozzon létre egy privát hozzáféréssel rendelkező kiszolgálót, hogy biztonságosan elérhesse a kiszolgálót a VNet-integráció használatával. További információ a privát hozzáférésről az [alapfogalmakról szóló cikkben](/azure/mysql/flexible-server/concepts-networking-vnet).
+Ha módosítani szeretné az alapértelmezett beállításokat, tekintse meg az Azure CLI [referenciadokumentációját](/azure/mysql/flexible-server/quickstart-create-server-cli) a konfigurálható CLI-paraméterek teljes listájához.
 
 ## Ellenőrizze az Azure Database for MySQL rugalmas kiszolgálói állapotát
 
@@ -600,13 +600,13 @@ Az Azure Database for MySQL rugalmas kiszolgálókonfigurációját kiszolgáló
 
 Kiszolgálóparaméter részleteinek megjelenítése:
 
-Futtassa a [rugalmas mysql-kiszolgáló paraméter megjelenítési](../../mysql/flexible-server/how-to-configure-server-parameters-cli.md) parancsát a kiszolgáló bármely paraméterének részleteinek megjelenítéséhez.
+Futtassa a [rugalmas mysql-kiszolgáló paraméter megjelenítési](/azure/mysql/flexible-server/how-to-configure-server-parameters-cli) parancsát a kiszolgáló bármely paraméterének részleteinek megjelenítéséhez.
 
 ## Az Azure Database for MySQL letiltása – Rugalmas kiszolgálói SSL-kapcsolati paraméter a Wordpress-integrációhoz
 
 Kiszolgálóparaméter értékének módosítása:
 
-Módosíthatja egy adott kiszolgálóparaméter értékét is, amely frissíti a MySQL-kiszolgálómotor mögöttes konfigurációs értékét. A kiszolgálóparaméter frissítéséhez használja az az [mysql flexible-server paraméterkészlet](../../mysql/flexible-server/how-to-configure-server-parameters-cli.md#modify-a-server-parameter-value) parancsot.
+Módosíthatja egy adott kiszolgálóparaméter értékét is, amely frissíti a MySQL-kiszolgálómotor mögöttes konfigurációs értékét. A kiszolgálóparaméter frissítéséhez használja az az [mysql flexible-server paraméterkészlet](/azure/mysql/flexible-server/how-to-configure-server-parameters-cli#modify-a-server-parameter-value) parancsot.
 
 ```bash
 az mysql flexible-server parameter set \
@@ -641,7 +641,7 @@ Eredmények:
 
 Az alábbi példa létrehoz egy elnevezett `$MY_VM_NAME` virtuális gépet, és SSH-kulcsokat hoz létre, ha még nem léteznek alapértelmezett kulcshelyen. A parancs rendszergazdai felhasználónevet is beállít `$MY_VM_USERNAME` .
 
-Az Azure-beli Linux rendszerű virtuális gépek biztonságának javítása érdekében integrálható az Azure Active Directory-hitelesítéssel. Mostantól az Azure AD-t használhatja alapszintű hitelesítési platformként. Az Azure AD és az OpenSSH tanúsítványalapú hitelesítéssel SSH-t is használhat a Linux rendszerű virtuális gépre. Ez a funkció lehetővé teszi a szervezetek számára, hogy azure-beli szerepköralapú hozzáférés-vezérlési és feltételes hozzáférési szabályzatokkal kezeljék a virtuális gépekhez való hozzáférést.
+Az Azure-beli Linux rendszerű virtuális gépek biztonságának javítása érdekében integrálható a Microsoft Entra ID-hitelesítéssel. Mostantól a Microsoft Entra ID-t használhatja alapvető hitelesítési platformként. A Linux rendszerű virtuális gépbe a Microsoft Entra ID és az OpenSSH tanúsítványalapú hitelesítés használatával is bejelentkezhet. Ez a funkció lehetővé teszi a szervezetek számára, hogy azure-beli szerepköralapú hozzáférés-vezérlési és feltételes hozzáférési szabályzatokkal kezeljék a virtuális gépekhez való hozzáférést.
 
 Hozzon létre egy virtuális gépet az [az vm create](/cli/azure/vm#az-vm-create) paranccsal.
 
@@ -706,7 +706,7 @@ done
 ```
 
 <!--
-## Assign Azure AD RBAC for Azure AD login for Linux Virtual Machine
+## Assign Microsoft Entra ID RBAC for Microsoft Entra ID login for Linux Virtual Machine
 The below command uses [az role assignment create](https://learn.microsoft.com/cli/azure/role/assignment#az-role-assignment-create) to assign the `Virtual Machine Administrator Login` role to the VM for your current Azure user.
 ```bash
 export MY_RESOURCE_GROUP_ID=$(az group show --resource-group $MY_RESOURCE_GROUP_NAME --query id -o tsv)
@@ -741,15 +741,15 @@ Results:
 
 <!--
 ## Export the SSH configuration for use with SSH clients that support OpenSSH
-Login to Azure Linux VMs with Azure AD supports exporting the OpenSSH certificate and configuration. That means you can use any SSH clients that support OpenSSH-based certificates to sign in through Azure AD. The following example exports the configuration for all IP addresses assigned to the VM:
+Login to Azure Linux VMs with Microsoft Entra ID supports exporting the OpenSSH certificate and configuration. That means you can use any SSH clients that support OpenSSH-based certificates to sign in through Microsoft Entra ID. The following example exports the configuration for all IP addresses assigned to the VM:
 ```bash
 az ssh config --file ~/.ssh/azure-config --name $MY_VM_NAME --resource-group $MY_RESOURCE_GROUP_NAME
 ```
 -->
 
-## Azure AD-bejelentkezés engedélyezése Linux rendszerű virtuális gépekhez az Azure-ban
+## Microsoft Entra ID-bejelentkezés engedélyezése Linux rendszerű virtuális gépekhez az Azure-ban
 
-A következő telepíti a bővítményt, hogy engedélyezze az Azure AD-bejelentkezést linuxos virtuális gépeken. A virtuálisgép-bővítmények olyan kis alkalmazások, amelyek üzembe helyezés utáni konfigurációs és automatizálási feladatokat biztosítanak az Azure-beli virtuális gépeken.
+A következő telepíti a bővítményt, hogy engedélyezze a Microsoft Entra ID bejelentkezést linuxos virtuális gépeken. A virtuálisgép-bővítmények olyan kis alkalmazások, amelyek üzembe helyezés utáni konfigurációs és automatizálási feladatokat biztosítanak az Azure-beli virtuális gépeken.
 
 ```bash
 az vm extension set \
@@ -787,7 +787,7 @@ Eredmények:
 
 ## A WordPress webhelyének ellenőrzése és tallózása
 
-[A WordPress](https://www.wordpress.org) egy nyílt forráskód tartalomkezelő rendszer (CMS), amelyet a web több mint 40%-a használ webhelyek, blogok és egyéb alkalmazások létrehozásához. A WordPress több különböző Azure-szolgáltatáson is futtatható: [AKS](../../mysql/flexible-server/tutorial-deploy-wordpress-on-aks.md), Virtual Machines és App Service. Az Azure-beli WordPress-lehetőségek teljes listáját az Azure Marketplace-en[ található WordPressben találja](https://azuremarketplace.microsoft.com/marketplace/apps?page=1&search=wordpress).
+[A WordPress](https://www.wordpress.org) egy nyílt forráskód tartalomkezelő rendszer (CMS), amelyet a web több mint 40%-a használ webhelyek, blogok és egyéb alkalmazások létrehozásához. A WordPress több különböző Azure-szolgáltatáson is futtatható: [AKS](/azure/mysql/flexible-server/tutorial-deploy-wordpress-on-aks), Virtual Machines és App Service. Az Azure-beli WordPress-lehetőségek teljes listáját az Azure Marketplace-en[ található WordPressben találja](https://azuremarketplace.microsoft.com/marketplace/apps?page=1&search=wordpress).
 
 Ez a WordPress-telepítés csak a működés ellenőrzésére szolgál. A WordPress legfrissebb verziójának az ajánlott biztonsági beállításokkal való telepítéséhez tekintse meg [a WordPress dokumentációját](https://codex.wordpress.org/Main_Page).
 
