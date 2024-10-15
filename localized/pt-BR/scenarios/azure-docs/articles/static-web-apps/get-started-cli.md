@@ -3,7 +3,7 @@ title: 'Início Rápido: Como criar seu primeiro site estático com os Aplicativ
 description: Aprenda a implantar um site estático nos Aplicativos Web Estáticos do Azure com a CLI do Azure.
 services: static-web-apps
 author: craigshoemaker
-ms.service: static-web-apps
+ms.service: azure-static-web-apps
 ms.topic: quickstart
 ms.date: 03/21/2024
 ms.author: cshoe
@@ -13,7 +13,7 @@ ms.devlang: azurecli
 
 # Início Rápido: Como criar seu primeiro site estático usando a CLI do Azure
 
-[![Implantar no Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262845)
+[![Implantar no Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2286315)
 
 Os Aplicativos Web Estáticos do Azure publicam um site para produção pela criação de aplicativos por meio de um repositório de código.
 

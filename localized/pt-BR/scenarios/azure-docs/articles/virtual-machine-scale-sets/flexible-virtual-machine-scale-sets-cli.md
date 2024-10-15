@@ -4,7 +4,7 @@ description: Saiba como criar um conjunto de dimensionamento de máquinas virtua
 author: fitzgeraldsteele
 ms.author: fisteele
 ms.topic: how-to
-ms.service: virtual-machine-scale-sets
+ms.service: azure-virtual-machine-scale-sets
 ms.date: 06/14/2024
 ms.reviewer: jushiman
 ms.custom: 'mimckitt, devx-track-azurecli, vmss-flex, innovation-engine, linux-related-content'
@@ -12,7 +12,7 @@ ms.custom: 'mimckitt, devx-track-azurecli, vmss-flex, innovation-engine, linux-r
 
 # Criar máquinas virtuais em um conjunto de dimensionamento usando a CLI do Azure
 
-[![Implantar no Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262759)
+[![Implantar no Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2286316)
 
 Este artigo aborda a utilização da CLI do Azure para criar um conjunto de dimensionamento de máquinas virtuais.
 
