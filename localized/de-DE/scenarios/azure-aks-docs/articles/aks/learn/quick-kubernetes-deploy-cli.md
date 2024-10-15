@@ -10,6 +10,8 @@ ms.custom: 'H1Hack27Feb2017, mvc, devcenter, devx-track-azurecli, mode-api, inno
 
 # Schnellstart: Bereitstellen eines Azure Kubernetes Service-Clusters (AKS) mit Azure CLI
 
+[![Bereitstellung in Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2286152)
+
 Azure Kubernetes Service (AKS) ist ein verwalteter Kubernetes-Dienst, mit dem Sie schnell Cluster bereitstellen und verwalten können. In dieser Schnellstartanleitung wird Folgendes vermittelt:
 
 - Bereitstellen eines AKS-Clusters mithilfe der Azure CLI
@@ -22,13 +24,13 @@ Azure Kubernetes Service (AKS) ist ein verwalteter Kubernetes-Dienst, mit dem Si
 
 Für diese Schnellstartanleitung werden Grundkenntnisse in Bezug auf die Kubernetes-Konzepte vorausgesetzt. Weitere Informationen finden Sie unter [Grundlegende Kubernetes-Konzepte für Azure Kubernetes Service (AKS)][kubernetes-concepts].
 
-- [!INCLUDE [quickstarts-free-trial-note](../../../includes/quickstarts-free-trial-note.md)]
+- [!INCLUDE [quickstarts-free-trial-note](~/reusable-content/ce-skilling/azure/includes/quickstarts-free-trial-note.md)]
 
 [!INCLUDE [azure-cli-prepare-your-environment-no-header.md](~/reusable-content/azure-cli/azure-cli-prepare-your-environment-no-header.md)]
 
 - Für diesen Artikel ist mindestens Version 2.0.64 der Azure CLI erforderlich. Bei Verwendung von Azure Cloud Shell ist die aktuelle Version bereits installiert.
 - Stellen Sie sicher, dass die Identität, die Sie zum Erstellen Ihres Clusters verwenden, über die erforderlichen Mindestberechtigungen verfügt. Weitere Informationen zu Zugriff und Identität für AKS finden Sie unter [Zugriffs- und Identitätsoptionen für Azure Kubernetes Service (AKS)](../concepts-identity.md).
-- Wenn Sie über mehrere Azure-Abonnements verfügen, wählen Sie mithilfe des Befehls [az account set](/cli/azure/account#az-account-set) die ID des Abonnements aus, in dem die Ressourcen fakturiert werden sollen.
+- Wenn Sie über mehrere Azure-Abonnements verfügen, wählen Sie mithilfe des Befehls [az account set](/cli/azure/account#az-account-set) die ID des Abonnements aus, in dem die Ressourcen fakturiert werden sollen. Weitere Informationen finden Sie unter [Verwalten von Azure-Abonnementen – Azure CLI](/cli/azure/manage-azure-subscriptions-azure-cli?tabs=bash#change-the-active-subscription).
 
 ## Definieren von Umgebungsvariablen
 
@@ -73,7 +75,11 @@ Ergebnisse:
 Erstellen Sie mit dem Befehl [`az aks create`][az-aks-create] einen AKS-Cluster. Im folgenden Beispiel wird ein Cluster mit einem Knoten erstellt und eine systemseitig zugewiesene verwaltete Identität aktiviert.
 
 ```azurecli-interactive
-az aks create --resource-group $MY_RESOURCE_GROUP_NAME --name $MY_AKS_CLUSTER_NAME --enable-managed-identity --node-count 1 --generate-ssh-keys
+az aks create \
+    --resource-group $MY_RESOURCE_GROUP_NAME \
+    --name $MY_AKS_CLUSTER_NAME \
+    --node-count 1 \
+    --generate-ssh-keys
 ```
 
 > [!NOTE]
@@ -399,7 +405,7 @@ Ergebnisse:
 </html>
 ```
 
-```output
+```OUTPUT
 echo "You can now visit your web server at $IP_ADDRESS"
 ```
 
@@ -429,7 +435,7 @@ Weitere Informationen zu Azure Kubernetes Service (AKS) sowie ein vollständiges
 <!-- LINKS - internal -->
 [kubernetes-concepts]: ../concepts-clusters-workloads.md
 [aks-tutorial]: ../tutorial-kubernetes-prepare-app.md
-[azure-resource-group]: ../../azure-resource-manager/management/overview.md
+[azure-resource-group]: /azure/azure-resource-manager/management/overview
 [az-aks-create]: /cli/azure/aks#az-aks-create
 [az-aks-get-credentials]: /cli/azure/aks#az-aks-get-credentials
 [az-aks-install-cli]: /cli/azure/aks#az-aks-install-cli

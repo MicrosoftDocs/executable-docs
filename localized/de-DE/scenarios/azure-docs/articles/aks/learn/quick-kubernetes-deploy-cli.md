@@ -10,7 +10,7 @@ ms.custom: 'H1Hack27Feb2017, mvc, devcenter, devx-track-azurecli, mode-api, inno
 
 # Schnellstart: Bereitstellen eines Azure Kubernetes Service-Clusters (AKS) mit Azure CLI
 
-[![Bereitstellung in Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262758)
+[![Bereitstellung in Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2286152)
 
 Azure Kubernetes Service (AKS) ist ein verwalteter Kubernetes-Dienst, mit dem Sie schnell Cluster bereitstellen und verwalten können. In dieser Schnellstartanleitung wird Folgendes vermittelt:
 
