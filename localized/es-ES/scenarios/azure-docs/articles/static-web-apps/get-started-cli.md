@@ -3,7 +3,7 @@ title: 'Inicio rápido: creación del primer sitio estático con Azure Static We
 description: Aprenda a implementar un sitio estático en Azure Static Web Apps con la CLI de Azure.
 services: static-web-apps
 author: craigshoemaker
-ms.service: static-web-apps
+ms.service: azure-static-web-apps
 ms.topic: quickstart
 ms.date: 03/21/2024
 ms.author: cshoe
@@ -13,7 +13,7 @@ ms.devlang: azurecli
 
 # Inicio rápido: creación del primer sitio estático mediante la CLI de Azure
 
-[![Implementación en Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262845)
+[![Implementación en Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2286315)
 
 Azure Static Web Apps publica sitios web en un entorno de producción mediante la creación de aplicaciones desde un repositorio de código.
 
