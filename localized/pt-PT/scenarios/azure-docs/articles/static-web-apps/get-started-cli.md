@@ -3,7 +3,7 @@ title: 'Guia de início rápido: criando seu primeiro site estático com os Apli
 description: Aprenda a implantar um site estático nos Aplicativos Web Estáticos do Azure com a CLI do Azure.
 services: static-web-apps
 author: craigshoemaker
-ms.service: static-web-apps
+ms.service: azure-static-web-apps
 ms.topic: quickstart
 ms.date: 03/21/2024
 ms.author: cshoe
@@ -13,7 +13,7 @@ ms.devlang: azurecli
 
 # Guia de início rápido: criando seu primeiro site estático usando a CLI do Azure
 
-[![Implementar no Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262845)
+[![Implementar no Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2286315)
 
 Os Aplicativos Web Estáticos do Azure publicam sites para produção criando aplicativos a partir de um repositório de código.
 
@@ -136,7 +136,7 @@ Caso você queira usar o repositório de modelos do GitHub, siga estas etapas:
 
 Vá e https://github.com/login/device insira o código que você recebe do GitHub para ativar e recuperar seu token de acesso pessoal do GitHub.
 
-1. Aceder a https://github.com/login/device.
+1. Aceda a https://github.com/login/device.
 2. Insira o código de usuário conforme exibido na mensagem do console.
 3. Selecione `Continue`.
 4. Selecione `Authorize AzureAppServiceCLI`.
