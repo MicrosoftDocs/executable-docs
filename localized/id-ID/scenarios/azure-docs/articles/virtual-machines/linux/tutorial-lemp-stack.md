@@ -3,7 +3,7 @@ title: Tutorial - Menyebarkan tumpukan LEMP menggunakan WordPress pada VM
 description: 'Dalam tutorial ini, Anda mempelajari cara menginstal tumpukan LEMP, dan WordPress, pada komputer virtual Linux di Azure.'
 author: fossygirl
 ms.collection: linux
-ms.service: virtual-machines
+ms.service: azure-virtual-machines
 ms.devlang: azurecli
 ms.custom: 'innovation-engine, linux-related-content, devx-track-azurecli'
 ms.topic: tutorial
@@ -16,7 +16,7 @@ ms.reviewer: jushim
 
 **Berlaku untuk:** :heavy_check_mark: VM Linux
 
-[![Sebarkan ke Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2275458)
+[![Sebarkan ke Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2286415)
 
 Artikel ini memandu Anda melalui cara menyebarkan server web NGINX, Server Fleksibel Azure MySQL, dan PHP (tumpukan LEMP) pada VM Linux Ubuntu di Azure. Untuk melihat server LEMP beraksi, Anda dapat secara opsional menginstal dan mengonfigurasi situs WordPress. Dalam tutorial ini, Anda akan mempelajari cara:
 
@@ -521,7 +521,7 @@ Hasil:
 
 ## Membuat Server Fleksibel Azure Database for MySQL
 
-Azure Database for MySQL - Server Fleksibel adalah layanan terkelola yang dapat Anda gunakan untuk menjalankan, mengelola, dan menskalakan server MySQL yang sangat tersedia di cloud. Membuat server fleksibel dengan perintah [az mysql flexible-server create](../../mysql/flexible-server/quickstart-create-server-cli.md#create-an-azure-database-for-mysql-flexible-server). Server bisa berisi beberapa database. Perintah berikut membuat server menggunakan default layanan dan nilai variabel dari lingkungan lokal Azure CLI Anda:
+Azure Database for MySQL - Server Fleksibel adalah layanan terkelola yang dapat Anda gunakan untuk menjalankan, mengelola, dan menskalakan server MySQL yang sangat tersedia di cloud. Membuat server fleksibel dengan perintah [az mysql flexible-server create](/azure/mysql/flexible-server/quickstart-create-server-cli#create-an-azure-database-for-mysql-flexible-server). Server bisa berisi beberapa database. Perintah berikut membuat server menggunakan default layanan dan nilai variabel dari lingkungan lokal Azure CLI Anda:
 
 ```bash
 az mysql flexible-server create \
@@ -573,8 +573,8 @@ Server yang dibuat memiliki atribut di bawah ini:
 * Metode konektivitas default adalah Akses privat (Integrasi VNet) dengan jaringan virtual tertaut dan subnet yang dihasilkan secara otomatis.
 
 > [!NOTE]
-> Metode konektivitas tidak dapat diubah setelah membuat server. Misalnya, jika Anda memilih `Private access (VNet Integration)` selama pembuatan, Maka Anda tidak dapat mengubahnya `Public access (allowed IP addresses)` setelah membuat. Kami sangat menyarankan untuk membuat server dengan akses Pribadi untuk mengakses server Anda dengan aman menggunakan Integrasi VNet. Pelajari selengkapnya tentang akses Pribadi [di artikel konsep](../../mysql/flexible-server/concepts-networking-vnet.md).
-Jika Anda ingin mengubah default apa pun, lihat dokumentasi[ referensi Azure CLI ](../../mysql/flexible-server/quickstart-create-server-cli.md)untuk daftar lengkap parameter CLI yang dapat dikonfigurasi.
+> Metode konektivitas tidak dapat diubah setelah membuat server. Misalnya, jika Anda memilih `Private access (VNet Integration)` selama pembuatan, Maka Anda tidak dapat mengubahnya `Public access (allowed IP addresses)` setelah membuat. Kami sangat menyarankan untuk membuat server dengan akses Pribadi untuk mengakses server Anda dengan aman menggunakan Integrasi VNet. Pelajari selengkapnya tentang akses Pribadi [di artikel konsep](/azure/mysql/flexible-server/concepts-networking-vnet).
+Jika Anda ingin mengubah default apa pun, lihat dokumentasi[ referensi Azure CLI ](/azure/mysql/flexible-server/quickstart-create-server-cli)untuk daftar lengkap parameter CLI yang dapat dikonfigurasi.
 
 ## Periksa Status Azure Database for MySQL - Server Fleksibel
 
@@ -600,13 +600,13 @@ Anda dapat mengelola Konfigurasi Azure Database for MySQL - Server Fleksibel men
 
 Tampilkan detail parameter server:
 
-Jalankan [perintah az mysql flexible-server parameter show](../../mysql/flexible-server/how-to-configure-server-parameters-cli.md) untuk menampilkan detail tentang parameter tertentu untuk server.
+Jalankan [perintah az mysql flexible-server parameter show](/azure/mysql/flexible-server/how-to-configure-server-parameters-cli) untuk menampilkan detail tentang parameter tertentu untuk server.
 
 ## Nonaktifkan Azure Database for MySQL - Parameter koneksi SSL Server Fleksibel untuk integrasi Wordpress
 
 Ubah nilai parameter server:
 
-Anda juga dapat mengubah nilai parameter server tertentu, yang memperbarui nilai konfigurasi dasar untuk mesin server MySQL. Untuk memperbarui parameter server, gunakan perintah [az mysql flexible-server parameter set](../../mysql/flexible-server/how-to-configure-server-parameters-cli.md#modify-a-server-parameter-value).
+Anda juga dapat mengubah nilai parameter server tertentu, yang memperbarui nilai konfigurasi dasar untuk mesin server MySQL. Untuk memperbarui parameter server, gunakan perintah [az mysql flexible-server parameter set](/azure/mysql/flexible-server/how-to-configure-server-parameters-cli#modify-a-server-parameter-value).
 
 ```bash
 az mysql flexible-server parameter set \
@@ -641,7 +641,7 @@ Hasil:
 
 Contoh berikut membuat VM bernama `$MY_VM_NAME` dan membuat kunci SSH jika belum ada di lokasi kunci default. Perintah ini juga ditetapkan `$MY_VM_USERNAME` sebagai nama pengguna administrator.
 
-Untuk meningkatkan keamanan komputer virtual Linux di Azure, Anda dapat berintegrasi dengan autentikasi Azure Active Directory. Sekarang Anda dapat menggunakan Azure AD sebagai platform autentikasi inti. Anda juga dapat SSH ke VM Linux dengan menggunakan AAD dan autentikasi berbasis sertifikat OpenSSH. Fungsionalitas ini memungkinkan organisasi mengelola akses ke VM dengan kontrol akses berbasis peran Azure dan kebijakan Akses Bersyar.
+Untuk meningkatkan keamanan komputer virtual Linux di Azure, Anda dapat berintegrasi dengan autentikasi ID Microsoft Entra. Sekarang Anda dapat menggunakan ID Microsoft Entra sebagai platform autentikasi inti. Anda juga dapat SSH ke VM Linux dengan menggunakan ID Microsoft Entra dan autentikasi berbasis sertifikat OpenSSH. Fungsionalitas ini memungkinkan organisasi mengelola akses ke VM dengan kontrol akses berbasis peran Azure dan kebijakan Akses Bersyar.
 
 Buat VM dengan perintah [az vm create](/cli/azure/vm#az-vm-create).
 
@@ -706,7 +706,7 @@ done
 ```
 
 <!--
-## Assign Azure AD RBAC for Azure AD login for Linux Virtual Machine
+## Assign Microsoft Entra ID RBAC for Microsoft Entra ID login for Linux Virtual Machine
 The below command uses [az role assignment create](https://learn.microsoft.com/cli/azure/role/assignment#az-role-assignment-create) to assign the `Virtual Machine Administrator Login` role to the VM for your current Azure user.
 ```bash
 export MY_RESOURCE_GROUP_ID=$(az group show --resource-group $MY_RESOURCE_GROUP_NAME --query id -o tsv)
@@ -741,15 +741,15 @@ Results:
 
 <!--
 ## Export the SSH configuration for use with SSH clients that support OpenSSH
-Login to Azure Linux VMs with Azure AD supports exporting the OpenSSH certificate and configuration. That means you can use any SSH clients that support OpenSSH-based certificates to sign in through Azure AD. The following example exports the configuration for all IP addresses assigned to the VM:
+Login to Azure Linux VMs with Microsoft Entra ID supports exporting the OpenSSH certificate and configuration. That means you can use any SSH clients that support OpenSSH-based certificates to sign in through Microsoft Entra ID. The following example exports the configuration for all IP addresses assigned to the VM:
 ```bash
 az ssh config --file ~/.ssh/azure-config --name $MY_VM_NAME --resource-group $MY_RESOURCE_GROUP_NAME
 ```
 -->
 
-## Mengaktifkan login Azure ACTIVE Directory untuk Komputer Virtual Linux di Azure
+## Mengaktifkan login ID Microsoft Entra untuk Komputer Virtual Linux di Azure
 
-Berikut ini menginstal ekstensi untuk mengaktifkan login Azure AD untuk VM Linux. Ekstensi VM Azure adalah aplikasi kecil yang menyediakan konfigurasi pasca-penyebaran dan tugas otomatisasi pada komputer virtual Azure.
+Berikut ini menginstal ekstensi untuk mengaktifkan login ID Microsoft Entra untuk VM Linux. Ekstensi VM Azure adalah aplikasi kecil yang menyediakan konfigurasi pasca-penyebaran dan tugas otomatisasi pada komputer virtual Azure.
 
 ```bash
 az vm extension set \
@@ -787,7 +787,7 @@ Hasil:
 
 ## Periksa dan telusuri situs web WordPress Anda
 
-[WordPress](https://www.wordpress.org) adalah sistem manajemen konten (CMS) yang digunakan lebih dari 40% oleh web untuk membuat situs web, blog, dan aplikasi lainnya. WordPress dapat dijalankan pada beberapa layanan Azure yang berbeda: [AKS](../../mysql/flexible-server/tutorial-deploy-wordpress-on-aks.md), Virtual Machines, dan App Service. Untuk daftar lengkap opsi WordPress di Azure, lihat [WordPress di Marketplace Azure](https://azuremarketplace.microsoft.com/marketplace/apps?page=1&search=wordpress).
+[WordPress](https://www.wordpress.org) adalah sistem manajemen konten (CMS) yang digunakan lebih dari 40% oleh web untuk membuat situs web, blog, dan aplikasi lainnya. WordPress dapat dijalankan pada beberapa layanan Azure yang berbeda: [AKS](/azure/mysql/flexible-server/tutorial-deploy-wordpress-on-aks), Virtual Machines, dan App Service. Untuk daftar lengkap opsi WordPress di Azure, lihat [WordPress di Marketplace Azure](https://azuremarketplace.microsoft.com/marketplace/apps?page=1&search=wordpress).
 
 Penyiapan WordPress ini hanya untuk bukti konsep. Untuk menginstal WordPress terbaru dalam produksi dengan pengaturan keamanan yang direkomendasikan, lihat [Dokumentasi WordPress](https://codex.wordpress.org/Main_Page).
 

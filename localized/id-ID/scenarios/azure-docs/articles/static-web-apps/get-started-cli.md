@@ -3,7 +3,7 @@ title: 'Mulai Cepat: Membangun aplikasi web statis pertama Anda dengan Azure Sta
 description: Pelajari cara menyebarkan situs statis ke Azure Static Web Apps dengan Azure CLI.
 services: static-web-apps
 author: craigshoemaker
-ms.service: static-web-apps
+ms.service: azure-static-web-apps
 ms.topic: quickstart
 ms.date: 03/21/2024
 ms.author: cshoe
@@ -13,7 +13,7 @@ ms.devlang: azurecli
 
 # Mulai cepat: Membangun situs statis pertama Anda menggunakan Azure CLI
 
-[![Sebarkan ke Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262845)
+[![Sebarkan ke Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2286315)
 
 Azure Static Web Apps menerbitkan situs web ke produksi dengan membangun aplikasi dari repositori kode.
 
