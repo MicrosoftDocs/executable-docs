@@ -4,7 +4,7 @@ description: 了解如何使用 Azure CLI 以彈性協調流程模式來建立�
 author: fitzgeraldsteele
 ms.author: fisteele
 ms.topic: how-to
-ms.service: virtual-machine-scale-sets
+ms.service: azure-virtual-machine-scale-sets
 ms.date: 06/14/2024
 ms.reviewer: jushiman
 ms.custom: 'mimckitt, devx-track-azurecli, vmss-flex, innovation-engine, linux-related-content'
@@ -12,7 +12,7 @@ ms.custom: 'mimckitt, devx-track-azurecli, vmss-flex, innovation-engine, linux-r
 
 # 使用 Azure CLI 在擴展集中建立虛擬機器
 
-[![部署至 Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262759)
+[![部署至 Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2286316)
 
 本文將逐步解說如何使用 Azure CLI 來建立虛擬機器擴展集。
 
@@ -73,7 +73,7 @@ az group create --name $MY_RESOURCE_GROUP_NAME --location $REGION -o JSON
 
 ## 建立網路資源 
 
-現在您將建立網路資源。 在此步驟中，您將建立虛擬網路、一個子網 1 用於 應用程式閘道，以及一個適用於 VM 的子網。 您也需要有公用IP來連結您的 應用程式閘道，才能從因特網連線到 Web 應用程式。 
+現在您將建立網路資源。 在此步驟中，您將建立虛擬網路、一個子網 1 用於 應用程式閘道，以及一個 VM 的子網。 您也需要有公用IP來連結您的 應用程式閘道，才能從因特網連線到 Web 應用程式。 
 
 #### 建立虛擬網路和子網
 
@@ -183,7 +183,7 @@ az network public-ip create  --resource-group $MY_RESOURCE_GROUP_NAME --name $MY
 }
 ```
 
-在此步驟中，您會建立要與虛擬機擴展集整合的 應用程式閘道。 此範例會建立具有Standard_v2 SKU 的區域備援 應用程式閘道，並啟用 應用程式閘道 的 Http 通訊。 在上一個步驟中建立的公用IP$MY_APPGW_PUBLIC_IP_NAME 會附加至 應用程式閘道。 
+在此步驟中，您會建立要與虛擬機擴展集整合的 應用程式閘道。 此範例會建立具有 Standard_v2 SKU 的區域備援 應用程式閘道，並啟用 應用程式閘道 的 Http 通訊。 在上一個步驟中建立的公用IP$MY_APPGW_PUBLIC_IP_NAME 會附加至 應用程式閘道。 
 
 ```bash
 az network application-gateway create   --name $MY_APPGW_NAME --location $REGION --resource-group $MY_RESOURCE_GROUP_NAME --vnet-name $MY_VNET_NAME --subnet $MY_APPGW_SN_NAME --capacity 2  --zones 1 2 3 --sku Standard_v2   --http-settings-cookie-based-affinity Disabled   --frontend-port 80 --http-settings-port 80   --http-settings-protocol Http --public-ip-address $MY_APPGW_PUBLIC_IP_NAME --priority 1001 -o JSON
@@ -385,7 +385,7 @@ az network application-gateway create   --name $MY_APPGW_NAME --location $REGION
 >自 2023 年 11 月起，如果未指定協調流程模式，則使用 PowerShell 和 Azure CLI 建立的 VM 擴展集會預設為彈性協調流程模式。 如需此變更的詳細資訊，以及您應該採取的動作，請移至 [針對 VMSS PowerShell/CLI 客戶的中斷性變更 - Microsoft 社群中樞](
 https://techcommunity.microsoft.com/t5/azure-compute-blog/breaking-change-for-vmss-powershell-cli-customers/ba-p/3818295) (英文)
 
-現在使用 [az vmss create](/cli/azure/vmss) 建立虛擬機器擴展集。 下列範例會建立區域備援擴展集，其實例計數為 *2*，且子網中的公用 IP 位於資源群組$MY_VM_SN_NAME 中，$MY_RESOURCE_GROUP_NAME、整合 應用程式閘道，併產生 SSH 密鑰。 如果您需要透過 ssh 登入 VM，請務必儲存 SSH 金鑰。
+現在使用 [az vmss create](/cli/azure/vmss) 建立虛擬機器擴展集。 下列範例會建立區域備援擴展集，其實例計數為 *2*，且子網中具有公用 IP 的子網$MY_VM_SN_NAME，$MY_RESOURCE_GROUP_NAME、整合 應用程式閘道，併產生 SSH 密鑰。 如果您需要透過 ssh 登入 VM，請務必儲存 SSH 金鑰。
 
 ```bash
 az vmss create --name $MY_VMSS_NAME --resource-group $MY_RESOURCE_GROUP_NAME --image $MY_VM_IMAGE --admin-username $MY_USERNAME --generate-ssh-keys --public-ip-per-vm --orchestration-mode Uniform --instance-count 2 --zones 1 2 3 --vnet-name $MY_VNET_NAME --subnet $MY_VM_SN_NAME --vm-sku Standard_DS2_v2 --upgrade-policy-mode Automatic --app-gateway $MY_APPGW_NAME --backend-pool-name appGatewayBackendPool -o JSON

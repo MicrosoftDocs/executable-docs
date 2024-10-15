@@ -3,7 +3,7 @@ title: 教學課程 - 在 VM 上使用 WordPress 部署 LEMP 堆棧
 description: 在本教學課程中，您將瞭解如何在 Azure 中的 Linux 虛擬機上安裝 LEMP 堆疊和 WordPress。
 author: fossygirl
 ms.collection: linux
-ms.service: virtual-machines
+ms.service: azure-virtual-machines
 ms.devlang: azurecli
 ms.custom: 'innovation-engine, linux-related-content, devx-track-azurecli'
 ms.topic: tutorial
@@ -16,7 +16,7 @@ ms.reviewer: jushim
 
 **適用於：：** heavy_check_mark：Linux VM
 
-[![部署至 Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2275458)
+[![部署至 Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2286415)
 
 本文將逐步引導您如何在 Azure 中的 Ubuntu Linux VM 上部署 NGINX Web 伺服器、Azure MySQL 彈性伺服器和 PHP （LEMP 堆棧）。 若要查看 LEMP 伺服器運作情形，您可以選擇性地安裝及設定 WordPress 網站。 在本教學課程中，您將了解如何：
 
@@ -521,7 +521,7 @@ az network private-dns zone create \
 
 ## 建立適用於 MySQL 的 Azure 資料庫 - 彈性伺服器
 
-適用於 MySQL 的 Azure 資料庫 - 彈性伺服器是受控服務，可用來在雲端中執行、管理及調整高可用性 MySQL 伺服器。 使用 [az mysql flexible-server create](../../mysql/flexible-server/quickstart-create-server-cli.md#create-an-azure-database-for-mysql-flexible-server) 命令建立彈性伺服器。 一部伺服器可以包含多個資料庫。 下列命令會使用 Azure CLI 本機環境的服務預設值和變數值來建立伺服器：
+適用於 MySQL 的 Azure 資料庫 - 彈性伺服器是受控服務，可用來在雲端中執行、管理及調整高可用性 MySQL 伺服器。 使用 [az mysql flexible-server create](/azure/mysql/flexible-server/quickstart-create-server-cli#create-an-azure-database-for-mysql-flexible-server) 命令建立彈性伺服器。 一部伺服器可以包含多個資料庫。 下列命令會使用 Azure CLI 本機環境的服務預設值和變數值來建立伺服器：
 
 ```bash
 az mysql flexible-server create \
@@ -573,8 +573,8 @@ echo "Your MySQL user $MY_MYSQL_ADMIN_USERNAME password is: $MY_WP_ADMIN_PW"
 * 默認的連線方法是私人存取（VNet 整合）與鏈接的虛擬網路和自動產生的子網。
 
 > [!NOTE]
-> 建立伺服器後，就無法變更連線方法。 例如，如果您在建立期間選取 `Private access (VNet Integration)` ，則無法在建立之後變更為 `Public access (allowed IP addresses)` 。 強烈建議您建立具有私人存取權的伺服器，才能使用 VNet 整合安全地存取您的伺服器。 若要深入了解私人存取，請參閱[概念文章](../../mysql/flexible-server/concepts-networking-vnet.md)。
-如果您想要變更任何預設值，請參閱 Azure CLI [參考文件](../../mysql/flexible-server/quickstart-create-server-cli.md) (部分機器翻譯)，以取得可設定的 CLI 參數完整清單。
+> 建立伺服器後，就無法變更連線方法。 例如，如果您在建立期間選取 `Private access (VNet Integration)` ，則無法在建立之後變更為 `Public access (allowed IP addresses)` 。 強烈建議您建立具有私人存取權的伺服器，才能使用 VNet 整合安全地存取您的伺服器。 若要深入了解私人存取，請參閱[概念文章](/azure/mysql/flexible-server/concepts-networking-vnet)。
+如果您想要變更任何預設值，請參閱 Azure CLI [參考文件](/azure/mysql/flexible-server/quickstart-create-server-cli) (部分機器翻譯)，以取得可設定的 CLI 參數完整清單。
 
 ## 確認適用於 MySQL 的 Azure 資料庫 - 彈性伺服器狀態
 
@@ -600,13 +600,13 @@ done
 
 顯示伺服器參數詳細資料：
 
-[執行 az mysql flexible-server parameter show](../../mysql/flexible-server/how-to-configure-server-parameters-cli.md) 命令，以顯示伺服器任何特定參數的詳細數據。
+[執行 az mysql flexible-server parameter show](/azure/mysql/flexible-server/how-to-configure-server-parameters-cli) 命令，以顯示伺服器任何特定參數的詳細數據。
 
 ## 停用 適用於 MySQL 的 Azure 資料庫 - Wordpress 整合的彈性伺服器 SSL 連線參數
 
 變更伺服器參數值：
 
-您也可以修改特定伺服器參數的值，以更新 MySQL 伺服器引擎的基礎組態值。 若要更新伺服器參數，請使用 [az mysql flexible-server parameter set](../../mysql/flexible-server/how-to-configure-server-parameters-cli.md#modify-a-server-parameter-value) 命令。
+您也可以修改特定伺服器參數的值，以更新 MySQL 伺服器引擎的基礎組態值。 若要更新伺服器參數，請使用 [az mysql flexible-server parameter set](/azure/mysql/flexible-server/how-to-configure-server-parameters-cli#modify-a-server-parameter-value) 命令。
 
 ```bash
 az mysql flexible-server parameter set \
@@ -641,7 +641,7 @@ az mysql flexible-server parameter set \
 
 下列範例會建立名為 `$MY_VM_NAME` 的 VM，並建立 SSH 金鑰 (如果它們不存在於預設金鑰位置)。 此命令也會設定 `$MY_VM_USERNAME` 為系統管理員用戶名稱。
 
-若要改善 Azure 中 Linux 虛擬機的安全性，您可以與 Azure Active Directory 驗證整合。 現在您可以使用 Azure AD 作為核心驗證平臺。 您也可以使用 Azure AD 和 OpenSSH 憑證型驗證，透過 SSH 連線到 Linux VM。 此功能可讓組織使用 Azure 角色型存取控制和條件式存取原則來管理 VM 的存取權。
+若要改善 Azure 中 Linux 虛擬機的安全性，您可以與 Microsoft Entra ID 驗證整合。 現在您可以使用 Microsoft Entra ID 作為核心驗證平臺。 您也可以使用 Microsoft Entra ID 和 OpenSSH 憑證型驗證，透過 SSH 連線到 Linux VM。 此功能可讓組織使用 Azure 角色型存取控制和條件式存取原則來管理 VM 的存取權。
 
 使用 [az vm create](/cli/azure/vm#az-vm-create) 命令來建立 VM。
 
@@ -706,7 +706,7 @@ done
 ```
 
 <!--
-## Assign Azure AD RBAC for Azure AD login for Linux Virtual Machine
+## Assign Microsoft Entra ID RBAC for Microsoft Entra ID login for Linux Virtual Machine
 The below command uses [az role assignment create](https://learn.microsoft.com/cli/azure/role/assignment#az-role-assignment-create) to assign the `Virtual Machine Administrator Login` role to the VM for your current Azure user.
 ```bash
 export MY_RESOURCE_GROUP_ID=$(az group show --resource-group $MY_RESOURCE_GROUP_NAME --query id -o tsv)
@@ -741,15 +741,15 @@ Results:
 
 <!--
 ## Export the SSH configuration for use with SSH clients that support OpenSSH
-Login to Azure Linux VMs with Azure AD supports exporting the OpenSSH certificate and configuration. That means you can use any SSH clients that support OpenSSH-based certificates to sign in through Azure AD. The following example exports the configuration for all IP addresses assigned to the VM:
+Login to Azure Linux VMs with Microsoft Entra ID supports exporting the OpenSSH certificate and configuration. That means you can use any SSH clients that support OpenSSH-based certificates to sign in through Microsoft Entra ID. The following example exports the configuration for all IP addresses assigned to the VM:
 ```bash
 az ssh config --file ~/.ssh/azure-config --name $MY_VM_NAME --resource-group $MY_RESOURCE_GROUP_NAME
 ```
 -->
 
-## 在 Azure 中啟用 Linux 虛擬機的 Azure AD 登入
+## 在 Azure 中為 Linux 虛擬機啟用 Microsoft Entra ID 登入
 
-下列會安裝擴充功能，以啟用Linux VM的 Azure AD 登入。 VM 擴充功能是小型的應用程式，可在「Azure 虛擬機器」上提供部署後設定及自動化工作。
+下列會安裝擴充功能，以啟用Linux VM的 Microsoft Entra ID 登入。 VM 擴充功能是小型的應用程式，可在「Azure 虛擬機器」上提供部署後設定及自動化工作。
 
 ```bash
 az vm extension set \
@@ -787,7 +787,7 @@ az vm extension set \
 
 ## 檢查並流覽您的 WordPress 網站
 
-[WordPress](https://www.wordpress.org) 是一種 開放原始碼 內容管理系統（CMS），由超過 40% 的網站、部落格和其他應用程式使用。 WordPress 可以在幾個不同的 Azure 服務上執行：[AKS](../../mysql/flexible-server/tutorial-deploy-wordpress-on-aks.md)、虛擬機器 和 App Service。 如需 Azure 上的 WordPress 完整選項清單，請參閱 [Azure Marketplace 上的 WordPress](https://azuremarketplace.microsoft.com/marketplace/apps?page=1&search=wordpress)。
+[WordPress](https://www.wordpress.org) 是一種 開放原始碼 內容管理系統（CMS），由超過 40% 的網站、部落格和其他應用程式使用。 WordPress 可以在幾個不同的 Azure 服務上執行：[AKS](/azure/mysql/flexible-server/tutorial-deploy-wordpress-on-aks)、虛擬機器 和 App Service。 如需 Azure 上的 WordPress 完整選項清單，請參閱 [Azure Marketplace 上的 WordPress](https://azuremarketplace.microsoft.com/marketplace/apps?page=1&search=wordpress)。
 
 此 WordPress 設定只適用於概念證明。 若要在生產環境中使用建議的安全性設定安裝最新的 WordPress，請參閱 [WordPress 文件](https://codex.wordpress.org/Main_Page)。
 
