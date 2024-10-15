@@ -4,7 +4,7 @@ description: Azure CLI kullanarak Esnek düzenleme modunda Sanal Makine Ölçek 
 author: fitzgeraldsteele
 ms.author: fisteele
 ms.topic: how-to
-ms.service: virtual-machine-scale-sets
+ms.service: azure-virtual-machine-scale-sets
 ms.date: 06/14/2024
 ms.reviewer: jushiman
 ms.custom: 'mimckitt, devx-track-azurecli, vmss-flex, innovation-engine, linux-related-content'
@@ -12,7 +12,7 @@ ms.custom: 'mimckitt, devx-track-azurecli, vmss-flex, innovation-engine, linux-r
 
 # Azure CLI kullanarak ölçek kümesinde sanal makineler oluşturma
 
-[![Azure’a dağıtın](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262759)
+[![Azure’a dağıtın](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2286316)
 
 Bu makale, Sanal Makine Ölçek Kümesi oluşturmak için Azure CLI'yi kullanma adımlarını gösterir.
 

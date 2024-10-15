@@ -10,8 +10,6 @@ ms.custom: 'H1Hack27Feb2017, mvc, devcenter, devx-track-azurecli, mode-api, inno
 
 # Hızlı Başlangıç: Azure CLI kullanarak Azure Kubernetes Service (AKS) kümesi dağıtma
 
-[![Azure’a dağıtın](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262758)
-
 Azure Kubernetes Service (AKS), kümeleri hızla dağıtmanızı ve yönetmenizi sağlayan yönetilen bir Kubernetes hizmetidir. Bu hızlı başlangıçta şunları yapmayı öğrenirsiniz:
 
 - Azure CLI kullanarak aks kümesi dağıtma.

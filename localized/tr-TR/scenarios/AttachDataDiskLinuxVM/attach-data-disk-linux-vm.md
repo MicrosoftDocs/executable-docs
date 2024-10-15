@@ -1,6 +1,6 @@
 ---
 title: 'Hızlı Başlangıç: Ubuntu Sanal Makinesi oluşturmak ve Azure Veri Diski eklemek için Azure CLI''yi kullanma'
-description: 'Bu hızlı başlangıçta, Ubuntu Linux sanal makinesi oluşturmak için Azure CLI kullanmayı öğreneceksiniz'
+description: 'Bu hızlı başlangıçta, Ubuntu Linux sanal makinesi oluşturmak için Azure CLI kullanmayı öğreneceksiniz.'
 author: ajoian
 ms.service: virtual-machines
 ms.collection: linux
@@ -11,6 +11,8 @@ ms.custom: 'mvc, devx-track-azurecli, mode-api, innovation-engine, linux-related
 ---
 
 # Hızlı Başlangıç: Ubuntu Sanal Makinesi oluşturmak ve Azure Veri Diski eklemek için Azure CLI'yi kullanma
+
+[![Azure’a dağıtın](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2286318)
 
 Bu hızlı başlangıçta, Azure CLI kullanarak Azure'da bir Ubuntu Linux sanal makinesi (VM) dağıtma ve sanal makineye Azure Veri Diski ekleme adımları gösterilmektedir. Azure CLI, komut satırı veya betikler aracılığıyla Azure kaynakları oluşturmak ve yönetmek için kullanılır.
 

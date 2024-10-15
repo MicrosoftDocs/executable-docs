@@ -14,7 +14,7 @@ ms.custom: 'vc, devx-track-azurecli, innovation-engine, linux-related-content'
 
 [!INCLUDE[applies-to-mysql-flexible-server](../includes/applies-to-mysql-flexible-server.md)]
 
-[![Azure’a dağıtın](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262843)
+[![Azure’a dağıtın](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2286232)
 
 Bu öğreticide, Azure CLI kullanarak esnek MySQL için Azure Veritabanı sunucuya sahip bir Azure Kubernetes Service (AKS) kümesinde HTTPS aracılığıyla güvenliği sağlanan ölçeklenebilir bir WordPress uygulaması dağıtacaksınız.
 **[AKS](../../aks/intro-kubernetes.md)** , kümeleri hızla dağıtmanıza ve yönetmenize olanak tanıyan yönetilen bir Kubernetes hizmetidir. **[esnek sunucu](overview.md)** MySQL için Azure Veritabanı , veritabanı yönetimi işlevleri ve yapılandırma ayarları üzerinde daha ayrıntılı denetim ve esneklik sağlamak için tasarlanmış tam olarak yönetilen bir veritabanı hizmetidir.
