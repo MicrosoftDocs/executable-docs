@@ -10,8 +10,6 @@ ms.custom: 'H1Hack27Feb2017, mvc, devcenter, devx-track-azurecli, mode-api, inno
 
 # Démarrage rapide : Déployer un cluster AKS (Azure Kubernetes Service) avec Azure CLI
 
-[![Déployer dans Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262758)
-
 AKS (Azure Kubernetes Service) est un service Kubernetes managé qui vous permet de déployer et de gérer rapidement des clusters. Dans ce guide de démarrage rapide, vous apprenez à :
 
 - Déployer un cluster AKS dans le portail Azure.

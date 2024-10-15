@@ -14,7 +14,7 @@ ms.custom: 'vc, devx-track-azurecli, innovation-engine, linux-related-content'
 
 [!INCLUDE[applies-to-mysql-flexible-server](../includes/applies-to-mysql-flexible-server.md)]
 
-[![Déployer dans Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262843)
+[![Déployer dans Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2286232)
 
 Dans ce tutoriel, vous déployez une application WordPress évolutive sécurisée via HTTPS sur un cluster AKS (Azure Kubernetes Service) avec un serveur flexible Azure Database pour MySQL à l’aide d’Azure CLI.
 **[AKS](../../aks/intro-kubernetes.md)** est un service Kubernetes managé qui vous permet de déployer et gérer rapidement des clusters. Un **[serveur flexible Azure Database pour MySQL](overview.md)** est un service de base de données complètement managé conçu pour offrir un contrôle et une flexibilité plus granulaires des fonctions de gestion de base de données et des paramètres de configuration.

@@ -1,6 +1,6 @@
 ---
 title: 'Démarrage rapide : Utiliser Azure CLI pour créer une machine virtuelle Ubuntu et attacher un disque de données Azure'
-description: 'Dans ce guide de démarrage rapide, vous allez apprendre à utiliser Azure CLI pour créer une machine virtuelle Ubuntu Linux'
+description: 'Dans ce guide de démarrage rapide, vous allez apprendre à utiliser Azure CLI pour créer une machine virtuelle Ubuntu Linux.'
 author: ajoian
 ms.service: virtual-machines
 ms.collection: linux
@@ -11,6 +11,8 @@ ms.custom: 'mvc, devx-track-azurecli, mode-api, innovation-engine, linux-related
 ---
 
 # Démarrage rapide : Utiliser Azure CLI pour créer une machine virtuelle Ubuntu et attacher un disque de données Azure
+
+[![Déployer dans Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2286318)
 
 Ce guide de démarrage rapide vous montre comment utiliser Azure CLI pour déployer une machine virtuelle Linux Ubuntu dans Azure et attacher un disque de données Azure à la machine virtuelle. L’interface Azure CLI permet de créer et gérer des ressources Azure par le biais de la ligne de commande ou de scripts.
 

@@ -4,7 +4,7 @@ description: Découvrez comment créer un groupe de machines virtuelles identiqu
 author: fitzgeraldsteele
 ms.author: fisteele
 ms.topic: how-to
-ms.service: virtual-machine-scale-sets
+ms.service: azure-virtual-machine-scale-sets
 ms.date: 06/14/2024
 ms.reviewer: jushiman
 ms.custom: 'mimckitt, devx-track-azurecli, vmss-flex, innovation-engine, linux-related-content'
@@ -12,7 +12,7 @@ ms.custom: 'mimckitt, devx-track-azurecli, vmss-flex, innovation-engine, linux-r
 
 # Créer des machines virtuelles dans un groupe identique à l’aide d’Azure CLI
 
-[![Déployer dans Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262759)
+[![Déployer dans Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2286316)
 
 Cet article explique comment créer un groupe identique de machines virtuelles à l’aide d’Azure CLI.
 
