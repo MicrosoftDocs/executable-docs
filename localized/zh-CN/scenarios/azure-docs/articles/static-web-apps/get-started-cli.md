@@ -3,7 +3,7 @@ title: 快速入门：通过 CLI 使用 Azure Static Web Apps 生成你的第一
 description: 了解如何使用 Azure CLI 将静态站点部署到 Azure Static Web Apps。
 services: static-web-apps
 author: craigshoemaker
-ms.service: static-web-apps
+ms.service: azure-static-web-apps
 ms.topic: quickstart
 ms.date: 03/21/2024
 ms.author: cshoe
@@ -13,7 +13,7 @@ ms.devlang: azurecli
 
 # 快速入门：使用 Azure CLI 生成你的第一个静态站点
 
-[![部署到 Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262845)
+[![部署到 Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2286315)
 
 Azure Static Web Apps 通过从代码存储库生成应用来将网站发布到生产环境。
 

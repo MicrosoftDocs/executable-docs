@@ -10,6 +10,8 @@ ms.custom: 'H1Hack27Feb2017, mvc, devcenter, devx-track-azurecli, mode-api, inno
 
 # 快速入门：使用 Azure CLI 部署 Azure Kubernetes 服务 (AKS) 群集
 
+[![部署到 Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2286152)
+
 Azure Kubernetes 服务 (AKS) 是可用于快速部署和管理群集的托管式 Kubernetes 服务。 此快速入门介绍如何：
 
 - 使用 Azure CLI 部署 AKS 群集。
@@ -22,13 +24,13 @@ Azure Kubernetes 服务 (AKS) 是可用于快速部署和管理群集的托管�
 
 本快速入门假设读者基本了解 Kubernetes 的概念。 有关详细信息，请参阅 [Azure Kubernetes 服务 (AKS) 的 Kubernetes 核心概念][kubernetes-concepts]。
 
-- [!INCLUDE [quickstarts-free-trial-note](../../../includes/quickstarts-free-trial-note.md)]
+- [!INCLUDE [quickstarts-free-trial-note](~/reusable-content/ce-skilling/azure/includes/quickstarts-free-trial-note.md)]
 
 [!INCLUDE [azure-cli-prepare-your-environment-no-header.md](~/reusable-content/azure-cli/azure-cli-prepare-your-environment-no-header.md)]
 
 - 本文需要 Azure CLI 版本 2.0.64 或更高版本。 如果你使用的是 Azure Cloud Shell，则表示已安装最新版本。
 - 确保用于创建群集的标识具有合适的的最低权限。 有关 AKS 访问和标识的详细信息，请参阅 [Azure Kubernetes Service (AKS) 的访问和标识选项](../concepts-identity.md)。
-- 如果有多个 Azure 订阅，请使用 [az account set](/cli/azure/account#az-account-set) 命令选择应在其中计收资源费用的相应订阅 ID。
+- 如果有多个 Azure 订阅，请使用 [az account set](/cli/azure/account#az-account-set) 命令选择应在其中计收资源费用的相应订阅 ID。 有关详细信息，请参阅[如何管理 Azure 订阅 – Azure CLI](/cli/azure/manage-azure-subscriptions-azure-cli?tabs=bash#change-the-active-subscription)。
 
 ## 定义环境变量
 
@@ -73,7 +75,11 @@ az group create --name $MY_RESOURCE_GROUP_NAME --location $REGION
 使用 [`az aks create`][az-aks-create] 命令创建 AKS 群集。 以下示例使用一个节点创建一个群集，并启用系统分配的托管标识。
 
 ```azurecli-interactive
-az aks create --resource-group $MY_RESOURCE_GROUP_NAME --name $MY_AKS_CLUSTER_NAME --enable-managed-identity --node-count 1 --generate-ssh-keys
+az aks create \
+    --resource-group $MY_RESOURCE_GROUP_NAME \
+    --name $MY_AKS_CLUSTER_NAME \
+    --node-count 1 \
+    --generate-ssh-keys
 ```
 
 > [!NOTE]
@@ -399,7 +405,7 @@ curl $IP_ADDRESS
 </html>
 ```
 
-```output
+```OUTPUT
 echo "You can now visit your web server at $IP_ADDRESS"
 ```
 
@@ -429,7 +435,7 @@ echo "You can now visit your web server at $IP_ADDRESS"
 <!-- LINKS - internal -->
 [kubernetes-concepts]: ../concepts-clusters-workloads.md
 [aks-tutorial]: ../tutorial-kubernetes-prepare-app.md
-[azure-resource-group]: ../../azure-resource-manager/management/overview.md
+[azure-resource-group]: /azure/azure-resource-manager/management/overview
 [az-aks-create]: /cli/azure/aks#az-aks-create
 [az-aks-get-credentials]: /cli/azure/aks#az-aks-get-credentials
 [az-aks-install-cli]: /cli/azure/aks#az-aks-install-cli

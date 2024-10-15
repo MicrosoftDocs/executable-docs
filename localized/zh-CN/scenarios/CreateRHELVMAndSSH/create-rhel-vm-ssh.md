@@ -14,7 +14,7 @@ ms.custom: 'mvc, devx-track-azurecli, mode-api, innovation-engine, linux-related
 
 适用于：:heavy_check_mark: Linux VM****
 
-[![部署到 Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262692)
+[![部署到 Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2286317)
 
 本快速入门介绍如何使用 Azure CLI 在 Azure 中部署 Red Hat Enterprise Linux 虚拟机（VM）。 Azure CLI 用于从命令行或脚本创建和管理 Azure 资源。
 
