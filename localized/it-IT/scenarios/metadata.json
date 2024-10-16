@@ -565,5 +565,17 @@
         "configurations": {
             "region": "eastus"
         }
+    },
+    {
+        "status": "active",
+        "key": "azure-aks-docs/articles/aks/postgresql-ha-overview.md",
+        "title": "Panoramica della distribuzione di un database PostgreSQL a disponibilit\u00e0 elevata nel servizio Azure Kubernetes con l'interfaccia della riga di comando di Azure",
+        "description": "Informazioni su come distribuire un database PostgreSQL a disponibilit\u00e0 elevata nel servizio Azure Kubernetes usando l'operatore CloudNativePG.",
+        "stackDetails": "",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/localized/it-IT/scenarios/azure-aks-docs/articles/aks/postgresql-ha-overview.md",
+        "documentationUrl": "",
+        "configurations": {
+            "region": ""
+        }
     }
 ]
