@@ -25,33 +25,14 @@ The Azure Cloud Shell is a free interactive shell that you can use to run the st
 
 To open the Cloud Shell, select **Open Cloud Shell** from the upper right corner of a code block. You can also launch Cloud Shell in a separate browser tab by going to [https://shell.azure.com/cli](https://shell.azure.com/cli). Select **Copy** to copy the blocks of code, paste it into the Cloud Shell, and press enter to run it.
 
-## Define environment variables
-
-Define environment variables as follows.
-
-```bash
-export RANDOM_ID="$(openssl rand -hex 3)"
-export MY_RESOURCE_GROUP_NAME="myVMSSResourceGroup$RANDOM_ID"
-export REGION=EastUS
-export MY_VMSS_NAME="myVMSS$RANDOM_ID"
-export MY_USERNAME=azureuser
-export MY_VM_IMAGE="Ubuntu2204"
-export MY_VNET_NAME="myVNet$RANDOM_ID"
-export NETWORK_PREFIX="$(($RANDOM % 254 + 1))"
-export MY_VNET_PREFIX="10.$NETWORK_PREFIX.0.0/16"
-export MY_VM_SN_NAME="myVMSN$RANDOM_ID"
-export MY_VM_SN_PREFIX="10.$NETWORK_PREFIX.0.0/24"
-export MY_APPGW_SN_NAME="myAPPGWSN$RANDOM_ID"
-export MY_APPGW_SN_PREFIX="10.$NETWORK_PREFIX.1.0/24"
-export MY_APPGW_NAME="myAPPGW$RANDOM_ID"
-export MY_APPGW_PUBLIC_IP_NAME="myAPPGWPublicIP$RANDOM_ID"
-```
-
 ## Create a resource group
 
 A resource group is a logical container into which Azure resources are deployed and managed. All resources must be placed in a resource group. The following command creates a resource group with the previously defined $MY_RESOURCE_GROUP_NAME and $REGION parameters.
 
 ```bash
+export RANDOM_ID="$(openssl rand -hex 3)"
+export MY_RESOURCE_GROUP_NAME="myVMSSResourceGroup$RANDOM_ID"
+export REGION=EastUS
 az group create --name $MY_RESOURCE_GROUP_NAME --location $REGION -o JSON
 ```
 
@@ -78,6 +59,11 @@ Now you'll create network resources. In this step you're going to create a virtu
 #### Create virtual network and subnet
 
 ```bash
+export MY_VNET_NAME="myVNet$RANDOM_ID"
+export NETWORK_PREFIX="$(($RANDOM % 254 + 1))"
+export MY_VNET_PREFIX="10.$NETWORK_PREFIX.0.0/16"
+export MY_VM_SN_NAME="myVMSN$RANDOM_ID"
+export MY_VM_SN_PREFIX="10.$NETWORK_PREFIX.0.0/24"
 az network vnet create  --name $MY_VNET_NAME  --resource-group $MY_RESOURCE_GROUP_NAME --location $REGION  --address-prefix $MY_VNET_PREFIX  --subnet-name $MY_VM_SN_NAME --subnet-prefix $MY_VM_SN_PREFIX -o JSON
 ```
 
@@ -124,6 +110,10 @@ Results:
 Azure Application Gateway requires a dedicated subnet within your virtual network. The following command creates a subnet named $MY_APPGW_SN_NAME with a specified address prefix named $MY_APPGW_SN_PREFIX in your virtual network $MY_VNET_NAME.
 
 ```bash
+export MY_APPGW_SN_NAME="myAPPGWSN$RANDOM_ID"
+export MY_APPGW_SN_PREFIX="10.$NETWORK_PREFIX.1.0/24"
+export MY_APPGW_NAME="myAPPGW$RANDOM_ID"
+export MY_APPGW_PUBLIC_IP_NAME="myAPPGWPublicIP$RANDOM_ID"
 az network vnet subnet create  --name $MY_APPGW_SN_NAME  --resource-group $MY_RESOURCE_GROUP_NAME --vnet-name  $MY_VNET_NAME --address-prefix  $MY_APPGW_SN_PREFIX -o JSON
 ```
 
@@ -388,6 +378,9 @@ https://techcommunity.microsoft.com/t5/azure-compute-blog/breaking-change-for-vm
 Now create a Virtual Machine Scale Set with [az vmss create](/cli/azure/vmss). The following example creates a zone redundant scale set with an instance count of *2* with public IP in subnet $MY_VM_SN_NAME within your resource group $MY_RESOURCE_GROUP_NAME, integrates the Application Gateway, and generates SSH keys. Make sure to save the SSH keys if you need to log into your VMs via ssh.
 
 ```bash
+export MY_VMSS_NAME="myVMSS$RANDOM_ID"
+export MY_USERNAME=azureuser
+export MY_VM_IMAGE="Ubuntu2204"
 az vmss create --name $MY_VMSS_NAME --resource-group $MY_RESOURCE_GROUP_NAME --image $MY_VM_IMAGE --admin-username $MY_USERNAME --generate-ssh-keys --public-ip-per-vm --orchestration-mode Uniform --instance-count 2 --zones 1 2 3 --vnet-name $MY_VNET_NAME --subnet $MY_VM_SN_NAME --vm-sku Standard_DS2_v2 --upgrade-policy-mode Automatic --app-gateway $MY_APPGW_NAME --backend-pool-name appGatewayBackendPool -o JSON
  ```
 
