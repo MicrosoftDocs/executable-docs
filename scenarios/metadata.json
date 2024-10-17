@@ -48,6 +48,26 @@
                 "Microsoft.ContainerService/managedClusters/listClusterAdminCredential/action",
                 "Microsoft.ContainerService/managedClusters/GetAccessProfiles/action",
                 "Microsoft.Network/publicIPAddresses/list/action"
+            ],
+            "configurableParams": [
+                {
+                    "inputType": "textInput",
+                    "commandKey": "MY_RESOURCE_GROUP_NAME",
+                    "title": "Resource Group Name",
+                    "defaultValue": ""
+                },
+                {
+                    "inputType": "textInput",
+                    "commandKey": "REGION",
+                    "title": "Region",
+                    "defaultValue": ""
+                },
+                {
+                    "inputType": "textInput",
+                    "commandKey": "MY_AKS_CLUSTER_NAME",
+                    "title": "AKS Cluster Name",
+                    "defaultValue": ""
+                }
             ]
         }
     },
