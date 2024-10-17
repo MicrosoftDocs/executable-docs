@@ -58,12 +58,6 @@
                 },
                 {
                     "inputType": "textInput",
-                    "commandKey": "REGION",
-                    "title": "Region",
-                    "defaultValue": ""
-                },
-                {
-                    "inputType": "textInput",
                     "commandKey": "MY_AKS_CLUSTER_NAME",
                     "title": "AKS Cluster Name",
                     "defaultValue": ""
