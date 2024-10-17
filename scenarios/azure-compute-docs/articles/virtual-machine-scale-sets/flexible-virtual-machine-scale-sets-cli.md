@@ -12,7 +12,7 @@ ms.custom: mimckitt, devx-track-azurecli, vmss-flex, innovation-engine, linux-re
 
 # Create virtual machines in a scale set using Azure CLI
 
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262759)
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2286316)
 
 This article steps through using the Azure CLI to create a Virtual Machine Scale Set.
 

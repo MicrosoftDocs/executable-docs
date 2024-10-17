@@ -14,7 +14,7 @@ ms.custom: 'mvc, devx-track-azurecli, mode-api, innovation-engine, linux-related
 
 **Berlaku untuk:** :heavy_check_mark: VM Linux
 
-[![Sebarkan ke Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262692)
+[![Sebarkan ke Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2286317)
 
 Mulai cepat ini menunjukkan kepada Anda cara menggunakan Azure CLI untuk menyebarkan komputer virtual (VM) Red Hat Enterprise Linux di Azure. Azure CLI digunakan untuk membuat dan mengelola sumber daya Azure melalui baris perintah atau skrip.
 

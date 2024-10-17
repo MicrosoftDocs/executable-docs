@@ -14,7 +14,7 @@ ms.custom: 'vc, devx-track-azurecli, innovation-engine, linux-related-content'
 
 [!INCLUDE[applies-to-mysql-flexible-server](../includes/applies-to-mysql-flexible-server.md)]
 
-[![Sebarkan ke Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262843)
+[![Sebarkan ke Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2286232)
 
 Dalam tutorial ini, Anda menyebarkan aplikasi WordPress yang dapat diskalakan yang diamankan melalui HTTPS pada kluster Azure Kubernetes Service (AKS) dengan server fleksibel Azure Database for MySQL menggunakan Azure CLI.
 **[AKS](../../aks/intro-kubernetes.md)** adalah layanan Kubernetes terkelola yang memungkinkan Anda menyebarkan dan mengelola kluster dengan cepat. **[Server](overview.md)** fleksibel Azure Database for MySQL adalah layanan database terkelola penuh yang dirancang untuk memberikan kontrol dan fleksibilitas yang lebih terperinci atas fungsi manajemen database dan pengaturan konfigurasi.

@@ -48,8 +48,7 @@
                 "Microsoft.ContainerService/managedClusters/listClusterAdminCredential/action",
                 "Microsoft.ContainerService/managedClusters/GetAccessProfiles/action",
                 "Microsoft.Network/publicIPAddresses/list/action"
-            ],
-            "region": "eastus"
+            ]
         }
     },
     {
@@ -124,8 +123,7 @@
                 "Microsoft.Authorization/roleAssignments/read",
                 "Microsoft.Authorization/roleDefinitions/read",
                 "Microsoft.Authorization/roleDefinitions/write"
-            ],
-            "region": "eastus"
+            ]
         }
     },
     {
@@ -143,7 +141,6 @@
             }
         ],
         "configurations": {
-            "region": "EastUS2"
         }
     },
     {
@@ -169,7 +166,6 @@
             }
         ],
         "configurations": {
-            "region": "EastUS"
         }
     },
     {
@@ -215,8 +211,7 @@
                 "Microsoft.Compute/virtualMachines/read",
                 "Microsoft.Network/publicIPAddresses/read",
                 "Microsoft.Compute/virtualMachines/instanceView/read"
-            ],
-            "region": "EastUS"
+            ]
         }
     },
     {
@@ -243,7 +238,6 @@
             
         ],
         "configurations": {
-            "region": "westeurope"
         }
     },
     {
@@ -269,7 +263,6 @@
             }
         ],
         "configurations": {
-            "region": "eastus"
         }
     },
     {
@@ -299,7 +292,6 @@
             }
         ],
         "configurations": {
-            "region": "eastus"
         }
     },
     {
@@ -329,7 +321,6 @@
             }
         ],
         "configurations": {
-            "region": "westeurope"
         }
     },
     {
@@ -359,8 +350,7 @@
             }
         ],
         "configurations": {
-            "permissions": [],
-            "region": "australiaeast"
+            "permissions": []
         }
     },
     {
@@ -378,8 +368,7 @@
             }
         ],
         "configurations": {
-            "permissions": [],
-            "region": "westeurope"
+            "permissions": []
         }
     },
     {
@@ -391,7 +380,6 @@
         "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/ObtainPerformanceMetricsLinuxSustem/obtain-performance-metrics-linux-system.md",
         "documentationUrl": "",
         "configurations": {
-            "region": "EastUS2"
         }
     },
     {
@@ -403,7 +391,6 @@
         "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-aks-docs/articles/aks/create-postgresql-ha.md",
         "documentationUrl": "",
         "configurations": {
-            "region": "westus3"
         }
     },
     {
@@ -415,7 +402,6 @@
         "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-aks-docs/articles/aks/deploy-postgresql-ha.md",
         "documentationUrl": "",
         "configurations": {
-            "region": "EastUS2"
         }
     },
     {
@@ -427,7 +413,6 @@
         "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-aks-docs/articles/aks/postgresql-ha-overview.md",
         "documentationUrl": "",
         "configurations": {
-            "region": "EastUS2"
         }
     },
     {
@@ -439,7 +424,6 @@
         "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/CreateContainerAppDeploymentFromSource/create-container-app-deployment-from-source.md",
         "documentationUrl": "",
         "configurations": {
-            "region": "westus"
         }
     },
     {
@@ -455,7 +439,6 @@
         "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/DeployHAPGonARO/deploy-ha-pg-aro.md",
         "documentationUrl": "",
         "configurations": {
-            "region": "eastus2"
         }
     },
     {
@@ -468,8 +451,7 @@
         "documentationUrl": "",
         "nextSteps": [],
         "configurations": {
-            "permissions": [],
-            "region": "EastUS2"
+            "permissions": []
         }
     },
     {
@@ -482,8 +464,7 @@
         "documentationUrl": "https://learn.microsoft.com/en-us/azure/app-service/configure-language-python",
         "nextSteps": [],
         "configurations": {
-            "permissions": [],
-            "region": "EastUS2"
+            "permissions": []
         }
     },
     {
@@ -496,8 +477,7 @@
         "documentationUrl": "https://learn.microsoft.com/en-us/azure/ai-services/speech-service/spx-basics?tabs=windowsinstall%2Cterminal",
         "nextSteps": [],
         "configurations": {
-            "permissions": [],
-            "region": "EastUS2"
+            "permissions": []
         }
     },
     {
@@ -510,8 +490,7 @@
         "documentationUrl": "",
         "nextSteps": [],
         "configurations": {
-            "permissions": [],
-            "region": "EastUS2"
+            "permissions": []
         }
     },
     {
@@ -524,8 +503,7 @@
         "documentationUrl": "https://learn.microsoft.com/en-us/azure/virtual-machines/disks-deploy-premium-v2?tabs=azure-cli",
         "nextSteps": [],
         "configurations": {
-            "permissions": [],
-            "region": "EastUS2"
+            "permissions": []
         }
     },
     {
@@ -538,8 +516,7 @@
         "documentationUrl": "https://learn.microsoft.com/en-us/azure/aks/gpu-multi-instance?tabs=azure-cli",
         "nextSteps": [],
         "configurations": {
-            "permissions": [],
-            "region": "EastUS2"
+            "permissions": []
         }
     },
     {
@@ -552,8 +529,7 @@
         "documentationUrl": "",
         "nextSteps": [],
         "configurations": {
-            "permissions": [],
-            "region": "centralus"
+            "permissions": []
         }
     },
     {
@@ -566,8 +542,7 @@
         "documentationUrl": "",
         "nextSteps": [],
         "configurations": {
-            "permissions": [],
-            "region": "EastUS2"
+            "permissions": []
         }
     }
 ]

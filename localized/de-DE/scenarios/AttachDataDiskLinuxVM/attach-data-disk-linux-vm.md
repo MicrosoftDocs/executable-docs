@@ -12,6 +12,8 @@ ms.custom: 'mvc, devx-track-azurecli, mode-api, innovation-engine, linux-related
 
 # Schnellstart: Verwenden der Azure CLI zum Erstellen eines virtuellen Ubuntu-Computers und Anfügen eines Azure-Datenträgers
 
+[![Bereitstellung in Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2286318)
+
 In dieser Schnellstartanleitung erfahren Sie, wie Sie die Azure CLI verwenden, um einen virtuellen Ubuntu-Linux-Computer (VM) in Azure bereitzustellen und einen Azure-Datenträger an den virtuellen Computer anzufügen. Die Azure-Befehlszeilenschnittstelle dient zum Erstellen und Verwalten von Azure-Ressourcen über die Befehlszeile oder mit Skripts.
 
 Wenn Sie kein Azure-Abonnement besitzen, können Sie ein [kostenloses Konto](https://azure.microsoft.com/free/?WT.mc_id=A261C142F) erstellen, bevor Sie beginnen.

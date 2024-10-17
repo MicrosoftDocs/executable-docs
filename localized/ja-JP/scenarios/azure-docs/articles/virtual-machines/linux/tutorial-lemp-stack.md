@@ -3,7 +3,7 @@ title: チュートリアル - WordPress を使用して VM に LEMP スタッ�
 description: このチュートリアルでは、Azure 内の Linux 仮想マシンに LEMP スタックと WordPress をインストールする方法について説明します。
 author: fossygirl
 ms.collection: linux
-ms.service: virtual-machines
+ms.service: azure-virtual-machines
 ms.devlang: azurecli
 ms.custom: 'innovation-engine, linux-related-content, devx-track-azurecli'
 ms.topic: tutorial
@@ -16,7 +16,7 @@ ms.reviewer: jushim
 
 **適用対象:** :heavy_check_mark: Linux VM
 
-[![Azure に配置する](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2275458)
+[![Azure に配置する](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2286415)
 
 この記事では、NGINX Web サーバー、Azure MySQL フレキシブル サーバー、PHP (LEMP スタック) を Azure 上の Ubuntu Linux VM にデプロイする方法について説明します。 LEMP サーバーの動作を確認するために、WordPress サイトをインストールし、構成することもできます。 このチュートリアルで学習する内容は次のとおりです。
 
@@ -521,7 +521,7 @@ az network private-dns zone create \
 
 ## Azure Database for MySQL - フレキシブル サーバーを作成する
 
-Azure Database for MySQL - フレキシブル サーバーは、高可用性 MySQL サーバーをクラウドで実行、管理、スケーリングするために使用できる管理サービスです。 [az mysql flexible-server create](../../mysql/flexible-server/quickstart-create-server-cli.md#create-an-azure-database-for-mysql-flexible-server) コマンドを使用して、フレキシブル サーバーを作成します。 1 つのサーバーに複数のデータベースを含めることができます。 次のコマンドでは、サービスの既定値と Azure CLI のローカル環境からの変数値を使用してサーバーを作成します。
+Azure Database for MySQL - フレキシブル サーバーは、高可用性 MySQL サーバーをクラウドで実行、管理、スケーリングするために使用できる管理サービスです。 [az mysql flexible-server create](/azure/mysql/flexible-server/quickstart-create-server-cli#create-an-azure-database-for-mysql-flexible-server) コマンドを使用して、フレキシブル サーバーを作成します。 1 つのサーバーに複数のデータベースを含めることができます。 次のコマンドでは、サービスの既定値と Azure CLI のローカル環境からの変数値を使用してサーバーを作成します。
 
 ```bash
 az mysql flexible-server create \
@@ -573,8 +573,8 @@ echo "Your MySQL user $MY_MYSQL_ADMIN_USERNAME password is: $MY_WP_ADMIN_PW"
 * 既定の接続方法は、リンクされた仮想ネットワークと自動生成されたサブネットを使うプライベート アクセス (VNet 統合) です。
 
 > [!NOTE]
-> サーバーの作成後に接続方法を変更することはできません。 たとえば、作成中に `Private access (VNet Integration)` を選択した場合は、作成後に `Public access (allowed IP addresses)` に変更することはできません。 VNet 統合を使用してサーバーに安全にアクセスするには、プライベート アクセスを指定してサーバーを作成することを強くお勧めします。 プライベート アクセスの詳細については、[概念に関する記事](../../mysql/flexible-server/concepts-networking-vnet.md)を参照してください。
-既定値を変更したい場合は、Azure CLI の[リファレンス ドキュメント](../../mysql/flexible-server/quickstart-create-server-cli.md)で、構成可能なすべての CLI パラメーターの一覧を参照してください。
+> サーバーの作成後に接続方法を変更することはできません。 たとえば、作成中に `Private access (VNet Integration)` を選択した場合は、作成後に `Public access (allowed IP addresses)` に変更することはできません。 VNet 統合を使用してサーバーに安全にアクセスするには、プライベート アクセスを指定してサーバーを作成することを強くお勧めします。 プライベート アクセスの詳細については、[概念に関する記事](/azure/mysql/flexible-server/concepts-networking-vnet)を参照してください。
+既定値を変更したい場合は、Azure CLI の[リファレンス ドキュメント](/azure/mysql/flexible-server/quickstart-create-server-cli)で、構成可能なすべての CLI パラメーターの一覧を参照してください。
 
 ## Azure Database for MySQL の確認 - フレキシブル サーバー状態
 
@@ -600,13 +600,13 @@ done
 
 サーバー パラメーターの詳細を表示する:
 
-サーバーの特定のパラメーターについての詳細を表示するには、[az mysql flexible-server parameter show](../../mysql/flexible-server/how-to-configure-server-parameters-cli.md) コマンドを実行します。
+サーバーの特定のパラメーターについての詳細を表示するには、[az mysql flexible-server parameter show](/azure/mysql/flexible-server/how-to-configure-server-parameters-cli) コマンドを実行します。
 
 ## Wordpress 統合のために Azure Database for MySQL - フレキシブル サーバー SSL 接続パラメーターを無効にする
 
 サーバー パラメーターの値を変更する:
 
-特定のサーバー パラメーターの値を変更することもできます。これによって MySQL サーバー エンジンの基盤となる構成値が更新されます。 サーバー パラメーターを更新するには、[az mysql flexible-server parameter set](../../mysql/flexible-server/how-to-configure-server-parameters-cli.md#modify-a-server-parameter-value) コマンドを使用します。
+特定のサーバー パラメーターの値を変更することもできます。これによって MySQL サーバー エンジンの基盤となる構成値が更新されます。 サーバー パラメーターを更新するには、[az mysql flexible-server parameter set](/azure/mysql/flexible-server/how-to-configure-server-parameters-cli#modify-a-server-parameter-value) コマンドを使用します。
 
 ```bash
 az mysql flexible-server parameter set \
@@ -641,7 +641,7 @@ az mysql flexible-server parameter set \
 
 次の例では、`$MY_VM_NAME` という名前の VM を作成し、既定のキーの場所にまだ SSH キーが存在しない場合は SSH キーを作成します。 このコマンドは、管理者ユーザー名として `$MY_VM_USERNAME` も設定します。
 
-Azure の Linux 仮想マシンのセキュリティを強化するために、Azure Active Directory の認証と統合できます。 これで、コア認証プラットフォームとして Azure AD を使用できるようになります。 Azure AD と OpenSSH 証明書ベースの認証を使って、Linux VM に SSH 接続することもできます。 この機能により、組織は、Azure ロールベースのアクセス制御ポリシーと条件付きアクセス ポリシーを使用して、VM へのアクセスを管理できます。
+Azure の Linux 仮想マシンのセキュリティを強化するために、Microsoft Entra ID 認証と統合できます。 これで、コア認証プラットフォームとして Microsoft Entra ID を使用できるようになります。 Microsoft Entra ID と OpenSSH 証明書ベースの認証を使って、Linux VM に SSH 接続することもできます。 この機能により、組織は、Azure ロールベースのアクセス制御ポリシーと条件付きアクセス ポリシーを使用して、VM へのアクセスを管理できます。
 
 [az vm create](/cli/azure/vm#az-vm-create) コマンドで VM を作成します。
 
@@ -706,7 +706,7 @@ done
 ```
 
 <!--
-## Assign Azure AD RBAC for Azure AD login for Linux Virtual Machine
+## Assign Microsoft Entra ID RBAC for Microsoft Entra ID login for Linux Virtual Machine
 The below command uses [az role assignment create](https://learn.microsoft.com/cli/azure/role/assignment#az-role-assignment-create) to assign the `Virtual Machine Administrator Login` role to the VM for your current Azure user.
 ```bash
 export MY_RESOURCE_GROUP_ID=$(az group show --resource-group $MY_RESOURCE_GROUP_NAME --query id -o tsv)
@@ -741,15 +741,15 @@ Results:
 
 <!--
 ## Export the SSH configuration for use with SSH clients that support OpenSSH
-Login to Azure Linux VMs with Azure AD supports exporting the OpenSSH certificate and configuration. That means you can use any SSH clients that support OpenSSH-based certificates to sign in through Azure AD. The following example exports the configuration for all IP addresses assigned to the VM:
+Login to Azure Linux VMs with Microsoft Entra ID supports exporting the OpenSSH certificate and configuration. That means you can use any SSH clients that support OpenSSH-based certificates to sign in through Microsoft Entra ID. The following example exports the configuration for all IP addresses assigned to the VM:
 ```bash
 az ssh config --file ~/.ssh/azure-config --name $MY_VM_NAME --resource-group $MY_RESOURCE_GROUP_NAME
 ```
 -->
 
-## Azure 内の Linux 仮想マシンに対して Azure AD ログインを有効にする
+## Azure 内の Linux 仮想マシンに対して Microsoft Entra ID ログインを有効にする
 
-次の例では、拡張機能をインストールして、Linux VM に対して Azure AD ログインを有効にします。 VM 拡張機能は、Azure 仮想マシンでのデプロイ後の構成と自動タスクを提供する小さなアプリケーションです。
+次の例では、拡張機能をインストールして、Linux VM に対して Microsoft Entra ID ログインを有効にします。 VM 拡張機能は、Azure 仮想マシンでのデプロイ後の構成と自動タスクを提供する小さなアプリケーションです。
 
 ```bash
 az vm extension set \
@@ -787,7 +787,7 @@ az vm extension set \
 
 ## WordPress Web サイトの確認と閲覧
 
-[WordPress](https://www.wordpress.org)は、Web サイト、ブログ、その他のアプリケーションの作成において、Web の 40% 以上で使用されているオープンソースのコンテンツ管理システム (CMS) です。 WordPress は、いくつかの異なる Azure サービス ([AKS](../../mysql/flexible-server/tutorial-deploy-wordpress-on-aks.md)、Virtual Machines、App Service) で実行できます。 Azure の WordPress オプションの完全な一覧については、[Azure Marketplace の WordPress](https://azuremarketplace.microsoft.com/marketplace/apps?page=1&search=wordpress) に関するページを参照してください。
+[WordPress](https://www.wordpress.org)は、Web サイト、ブログ、その他のアプリケーションの作成において、Web の 40% 以上で使用されているオープンソースのコンテンツ管理システム (CMS) です。 WordPress は、いくつかの異なる Azure サービス ([AKS](/azure/mysql/flexible-server/tutorial-deploy-wordpress-on-aks)、Virtual Machines、App Service) で実行できます。 Azure の WordPress オプションの完全な一覧については、[Azure Marketplace の WordPress](https://azuremarketplace.microsoft.com/marketplace/apps?page=1&search=wordpress) に関するページを参照してください。
 
 ここで行う WordPress のセットアップは、概念実証だけを目的としています。 推奨されるセキュリティ設定で運用環境に最新の WordPress をインストールする場合は、[WordPress のドキュメント](https://codex.wordpress.org/Main_Page)をご覧ください。
 

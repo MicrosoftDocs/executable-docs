@@ -1,6 +1,6 @@
 ---
 title: 快速入門：使用 Azure CLI 建立 Ubuntu 虛擬機並連結 Azure 數據磁碟
-description: 在本快速入門中，您將瞭解如何使用 Azure CLI 來建立 Ubuntu Linux 虛擬機
+description: 在本快速入門中，您將瞭解如何使用 Azure CLI 來建立 Ubuntu Linux 虛擬機。
 author: ajoian
 ms.service: virtual-machines
 ms.collection: linux
@@ -11,6 +11,8 @@ ms.custom: 'mvc, devx-track-azurecli, mode-api, innovation-engine, linux-related
 ---
 
 # 快速入門：使用 Azure CLI 建立 Ubuntu 虛擬機並連結 Azure 數據磁碟
+
+[![部署至 Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2286318)
 
 本快速入門說明如何使用 Azure CLI 在 Azure 中部署 Ubuntu Linux 虛擬機（VM），並將 Azure 數據磁碟連結至虛擬機。 Azure CLI 可用來透過命令列或指令碼建立和管理 Azure 資源。
 
@@ -120,9 +122,9 @@ az vm create \
 }
 ```
 
-## 在 Azure 中啟用 Linux 虛擬機的 Azure AD 登入
+## 在 Azure 中為 Linux 虛擬機器啟用 Azure AD 登入
 
-下列程式代碼範例會部署Linux VM，然後安裝擴充功能，以啟用Linux VM的 Azure AD 登入。 VM 擴充功能是小型應用程式，可在 Azure 虛擬機上提供部署後設定和自動化工作。
+下列程式碼範例會部署 Linux VM，然後安裝延伸模組以為 Linux VM 啟用 Azure AD 登入。 VM 擴充功能是小型的應用程式，可在「Azure 虛擬機器」上提供部署後設定及自動化工作。
 
 ```bash
 az vm extension set \
@@ -407,7 +409,7 @@ ssh -o StrictHostKeyChecking=no $MY_VM_USERNAME@$FQDN
 
 ## 後續步驟
 
-* [瞭解虛擬機](../index.yml)
+* [了解虛擬機器](../index.yml)
 * [使用 Cloud-Init 在第一次開機時初始化 Linux VM](tutorial-automate-vm-deployment.md)
 * [建立自訂的 VM 映像](tutorial-custom-images.md)
-* [負載平衡 VM](../../load-balancer/quickstart-load-balancer-standard-public-cli.md)
+* [平衡 VM 的負載](../../load-balancer/quickstart-load-balancer-standard-public-cli.md)

@@ -14,7 +14,7 @@ ms.custom: 'vc, devx-track-azurecli, innovation-engine, linux-related-content'
 
 [!INCLUDE[applies-to-mysql-flexible-server](../includes/applies-to-mysql-flexible-server.md)]
 
-[![Implementeren naar Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262843)
+[![Implementeren naar Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2286232)
 
 In deze zelfstudie implementeert u een schaalbare WordPress-toepassing die is beveiligd via HTTPS op een AKS-cluster (Azure Kubernetes Service) met Azure Database for MySQL flexibele server met behulp van de Azure CLI.
 **[AKS](../../aks/intro-kubernetes.md)** is een beheerde Kubernetes-service waarmee u snel clusters kunt implementeren en beheren. **[Azure Database for MySQL flexibele server](overview.md)** is een volledig beheerde databaseservice die is ontworpen om gedetailleerdere controle en flexibiliteit te bieden voor databasebeheerfuncties en configuratie-instellingen.

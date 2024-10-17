@@ -4,7 +4,7 @@ description: 'Erfahren Sie, wie Sie im Orchestrierungsmodus „Flexibel“ eine 
 author: fitzgeraldsteele
 ms.author: fisteele
 ms.topic: how-to
-ms.service: virtual-machine-scale-sets
+ms.service: azure-virtual-machine-scale-sets
 ms.date: 06/14/2024
 ms.reviewer: jushiman
 ms.custom: 'mimckitt, devx-track-azurecli, vmss-flex, innovation-engine, linux-related-content'
@@ -12,7 +12,7 @@ ms.custom: 'mimckitt, devx-track-azurecli, vmss-flex, innovation-engine, linux-r
 
 # Erstellen von VMs in einer Skalierungsgruppe mit der Azure CLI
 
-[![Bereitstellung in Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262759)
+[![Bereitstellung in Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2286316)
 
 In diesem Artikel wird beschrieben, wie Sie mithilfe der Azure CLI eine VM-Skalierungsgruppe erstellen.
 

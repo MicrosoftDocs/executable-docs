@@ -1,6 +1,6 @@
 ---
 title: 'Guida introduttiva: Usare l''interfaccia della riga di comando di Azure per creare una macchina virtuale Ubuntu e collegare un disco dati di Azure'
-description: Questa guida introduttiva illustra come usare l'interfaccia della riga di comando di Azure per creare una macchina virtuale Ubuntu Linux
+description: Questa guida introduttiva illustra come usare l'interfaccia della riga di comando di Azure per creare una macchina virtuale Ubuntu Linux.
 author: ajoian
 ms.service: virtual-machines
 ms.collection: linux
@@ -12,7 +12,9 @@ ms.custom: 'mvc, devx-track-azurecli, mode-api, innovation-engine, linux-related
 
 # Guida introduttiva: Usare l'interfaccia della riga di comando di Azure per creare una macchina virtuale Ubuntu e collegare un disco dati di Azure
 
-Questa guida introduttiva illustra come usare l'interfaccia della riga di comando di Azure per distribuire una macchina virtuale Ubuntu Linux in Azure e collegare un disco dati di Azure alla macchina virtuale. L'interfaccia della riga di comando di Azure consente di creare e gestire le risorse di Azure sia tramite la riga di comando, sia tramite script.
+[![Distribuzione in Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2286318)
+
+Questa guida introduttiva illustra come usare l'interfaccia della riga di comando di Azure per distribuire una macchina virtuale Ubuntu Linux in Azure e collegare un disco dati di Azure alla macchina virtuale. Viene usata l'interfaccia della riga di comando di Azure per creare e gestire le risorse di Azure dalla riga di comando o tramite script.
 
 Se non si ha una sottoscrizione di Azure, creare un [account gratuito](https://azure.microsoft.com/free/?WT.mc_id=A261C142F) prima di iniziare.
 
@@ -30,7 +32,7 @@ Per eseguire i comandi in Azure usando l'interfaccia della riga di comando, è p
 
 ## Creare un gruppo di risorse
 
-Un gruppo di risorse è un contenitore per risorse corrlate. Tutte le risorse devono essere posizionate in un gruppo di risorse. Il [comando az group create](/cli/azure/group) crea un gruppo di risorse con i parametri definiti in precedenza $MY_RESOURCE_GROUP_NAME e $REGION.
+Un gruppo di risorse è un contenitore per risorse corrlate. Tutte le risorse devono essere posizionate in un gruppo di risorse. Il comando [az group create](/cli/azure/group) crea un gruppo di risorse con i parametri $MY_RESOURCE_GROUP_NAME e $REGION definiti in precedenza.
 
 ```bash
 export RANDOM_ID="$(openssl rand -hex 3)"
@@ -397,7 +399,7 @@ Risultati:
 /dev/sde1 on /datadisk03 type xfs (rw,relatime)
 ```
 
-## SSH nella macchina virtuale
+## Accedere tramite SSH alla macchina virtuale
 
 È ora possibile eseguire SSH nella macchina virtuale eseguendo il comando seguente nel client SSH preferito:
 

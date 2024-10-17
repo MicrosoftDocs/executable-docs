@@ -14,7 +14,7 @@ ms.custom: 'mvc, devx-track-azurecli, mode-api, innovation-engine, linux-related
 
 **Se aplica a:** :heavy_check_mark: Máquinas virtuales Linux
 
-[![Implementación en Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262692)
+[![Implementación en Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2286317)
 
 En este inicio rápido se muestra cómo usar la CLI de Azure para implementar una máquina virtual (VM) De Red Hat Enterprise Linux en Azure. La CLI de Azure se usa para crear y administrar recursos de Azure mediante la línea de comandos o scripts.
 

@@ -10,8 +10,6 @@ ms.custom: 'H1Hack27Feb2017, mvc, devcenter, devx-track-azurecli, mode-api, inno
 
 # Snabbstart: Distribuera ett AKS-kluster (Azure Kubernetes Service) med Azure CLI
 
-[![Distribuera till Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262758)
-
 Azure Kubernetes Service (AKS) är en hanterad Kubernetes-tjänst som gör att du snabbt kan distribuera och hantera kluster. I den här snabbstarten lär du dig att:
 
 - Distribuera ett AKS-kluster med hjälp av Azure CLI.

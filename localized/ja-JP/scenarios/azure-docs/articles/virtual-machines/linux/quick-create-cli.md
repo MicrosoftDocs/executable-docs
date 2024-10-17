@@ -2,7 +2,7 @@
 title: 'クイック スタート: Azure CLI を使用して Linux 仮想マシンを作成する'
 description: このクイック スタートでは、Azure CLI を使用して Linux 仮想マシンを作成する方法について説明します。
 author: ju-shim
-ms.service: virtual-machines
+ms.service: azure-virtual-machines
 ms.collection: linux
 ms.topic: quickstart
 ms.date: 03/11/2024
@@ -14,7 +14,7 @@ ms.custom: 'mvc, devx-track-azurecli, mode-api, innovation-engine, linux-related
 
 **適用対象:** :heavy_check_mark: Linux VM
 
-[![Azure に配置する](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262692)
+[![Azure に配置する](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2285977)
 
 このクイック スタートでは、Azure CLI を使用して、Linux 仮想マシン (VM) を Azure にデプロイする方法を示します。 Azure CLI は、コマンド ラインまたはスクリプトで Azure リソースを作成および管理するために使用します。
 

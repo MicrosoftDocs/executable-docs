@@ -2,7 +2,7 @@
 title: 'Mulai cepat: Menggunakan Azure CLI untuk membuat Komputer Virtual Linux'
 description: 'Dalam mulai cepat ini, Anda mempelajari cara menggunakan Azure CLI untuk membuat komputer virtual Linux'
 author: ju-shim
-ms.service: virtual-machines
+ms.service: azure-virtual-machines
 ms.collection: linux
 ms.topic: quickstart
 ms.date: 03/11/2024
@@ -14,7 +14,7 @@ ms.custom: 'mvc, devx-track-azurecli, mode-api, innovation-engine, linux-related
 
 **Berlaku untuk:** :heavy_check_mark: VM Linux
 
-[![Sebarkan ke Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262692)
+[![Sebarkan ke Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2285977)
 
 Mulai cepat ini menunjukkan kepada Anda cara menggunakan modul Azure PowerShell untuk menyebarkan komputer virtual Linux (VM) di Azure. Azure CLI digunakan untuk membuat dan mengelola sumber daya Azure melalui baris perintah atau skrip.
 

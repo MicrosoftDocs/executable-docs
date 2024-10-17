@@ -10,7 +10,7 @@ ms.custom: innovation-engine
 
 # Snabbstart: Distribuera ett skalbart och säkert Azure Kubernetes Service-kluster med hjälp av Azure CLI
 
-[![Distribuera till Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/?Microsoft_Azure_CloudNative_clientoptimizations=false&feature.canmodifyextensions=true#view/Microsoft_Azure_CloudNative/SubscriptionSelectionPage.ReactView/tutorialKey/CreateAKSDeployment)
+[![Distribuera till Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2286416)
 
 Välkommen till den här självstudien där vi tar dig steg för steg när du skapar ett Azure Kubernetes-webbprogram som skyddas via https. Den här självstudien förutsätter att du redan är inloggad i Azure CLI och har valt en prenumeration som ska användas med CLI. Det förutsätter också att du har Helm installerat ([instruktioner finns här](https://helm.sh/docs/intro/install/)).
 
@@ -213,109 +213,229 @@ cat << EOF > azure-vote-start.yml
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: azure-vote-back
-  namespace: default
+  name: rabbitmq
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: azure-vote-back
+      app: rabbitmq
   template:
     metadata:
       labels:
-        app: azure-vote-back
+        app: rabbitmq
     spec:
       nodeSelector:
         "kubernetes.io/os": linux
       containers:
-      - name: azure-vote-back
-        image: docker.io/bitnami/redis:6.0.8
+      - name: rabbitmq
+        image: mcr.microsoft.com/mirror/docker/library/rabbitmq:3.10-management-alpine
+        ports:
+        - containerPort: 5672
+          name: rabbitmq-amqp
+        - containerPort: 15672
+          name: rabbitmq-http
         env:
-        - name: ALLOW_EMPTY_PASSWORD
-          value: "yes"
+        - name: RABBITMQ_DEFAULT_USER
+          value: "username"
+        - name: RABBITMQ_DEFAULT_PASS
+          value: "password"
         resources:
           requests:
-            cpu: 100m
+            cpu: 10m
             memory: 128Mi
           limits:
             cpu: 250m
             memory: 256Mi
-        ports:
-        - containerPort: 6379
-          name: redis
+        volumeMounts:
+        - name: rabbitmq-enabled-plugins
+          mountPath: /etc/rabbitmq/enabled_plugins
+          subPath: enabled_plugins
+      volumes:
+      - name: rabbitmq-enabled-plugins
+        configMap:
+          name: rabbitmq-enabled-plugins
+          items:
+          - key: rabbitmq_enabled_plugins
+            path: enabled_plugins
+---
+apiVersion: v1
+data:
+  rabbitmq_enabled_plugins: |
+    [rabbitmq_management,rabbitmq_prometheus,rabbitmq_amqp1_0].
+kind: ConfigMap
+metadata:
+  name: rabbitmq-enabled-plugins
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: azure-vote-back
-  namespace: default
+  name: rabbitmq
 spec:
-  ports:
-  - port: 6379
   selector:
-    app: azure-vote-back
+    app: rabbitmq
+  ports:
+    - name: rabbitmq-amqp
+      port: 5672
+      targetPort: 5672
+    - name: rabbitmq-http
+      port: 15672
+      targetPort: 15672
+  type: ClusterIP
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: azure-vote-front
-  namespace: default
+  name: order-service
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: azure-vote-front
+      app: order-service
   template:
     metadata:
       labels:
-        app: azure-vote-front
+        app: order-service
     spec:
       nodeSelector:
         "kubernetes.io/os": linux
       containers:
-      - name: azure-vote-front
-        image: mcr.microsoft.com/azuredocs/azure-vote-front:v1
+      - name: order-service
+        image: ghcr.io/azure-samples/aks-store-demo/order-service:latest
+        ports:
+        - containerPort: 3000
+        env:
+        - name: ORDER_QUEUE_HOSTNAME
+          value: "rabbitmq"
+        - name: ORDER_QUEUE_PORT
+          value: "5672"
+        - name: ORDER_QUEUE_USERNAME
+          value: "username"
+        - name: ORDER_QUEUE_PASSWORD
+          value: "password"
+        - name: ORDER_QUEUE_NAME
+          value: "orders"
+        - name: FASTIFY_ADDRESS
+          value: "0.0.0.0"
         resources:
           requests:
-            cpu: 100m
-            memory: 128Mi
+            cpu: 1m
+            memory: 50Mi
           limits:
-            cpu: 250m
-            memory: 256Mi
-        ports:
-        - containerPort: 80
-        env:
-        - name: REDIS
-          value: "azure-vote-back"
+            cpu: 75m
+            memory: 128Mi
+      initContainers:
+      - name: wait-for-rabbitmq
+        image: busybox
+        command: ['sh', '-c', 'until nc -zv rabbitmq 5672; do echo waiting for rabbitmq; sleep 2; done;']
+        resources:
+          requests:
+            cpu: 1m
+            memory: 50Mi
+          limits:
+            cpu: 75m
+            memory: 128Mi
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: azure-vote-front
-  namespace: default
+  name: order-service
+spec:
+  type: ClusterIP
+  ports:
+  - name: http
+    port: 3000
+    targetPort: 3000
+  selector:
+    app: order-service
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: product-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: product-service
+  template:
+    metadata:
+      labels:
+        app: product-service
+    spec:
+      nodeSelector:
+        "kubernetes.io/os": linux
+      containers:
+      - name: product-service
+        image: ghcr.io/azure-samples/aks-store-demo/product-service:latest
+        ports:
+        - containerPort: 3002
+        resources:
+          requests:
+            cpu: 1m
+            memory: 1Mi
+          limits:
+            cpu: 1m
+            memory: 7Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: product-service
+spec:
+  type: ClusterIP
+  ports:
+  - name: http
+    port: 3002
+    targetPort: 3002
+  selector:
+    app: product-service
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: store-front
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: store-front
+  template:
+    metadata:
+      labels:
+        app: store-front
+    spec:
+      nodeSelector:
+        "kubernetes.io/os": linux
+      containers:
+      - name: store-front
+        image: ghcr.io/azure-samples/aks-store-demo/store-front:latest
+        ports:
+        - containerPort: 8080
+          name: store-front
+        env:
+        - name: VUE_APP_ORDER_SERVICE_URL
+          value: "http://order-service:3000/"
+        - name: VUE_APP_PRODUCT_SERVICE_URL
+          value: "http://product-service:3002/"
+        resources:
+          requests:
+            cpu: 1m
+            memory: 200Mi
+          limits:
+            cpu: 1000m
+            memory: 512Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: store-front
 spec:
   ports:
   - port: 80
+    targetPort: 8080
   selector:
-    app: azure-vote-front
----
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: vote-ingress
-  namespace: default
-spec:
-  ingressClassName: nginx
-  rules:
-  - http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: azure-vote-front
-            port:
-              number: 80
+    app: store-front
+  type: LoadBalancer
 EOF
 ```
 
@@ -391,7 +511,7 @@ Nu i självstudien har du en AKS-webbapp med NGINX som ingresskontrollant och en
 
 ## Konfigurera Cert Manager
 
-För att lägga till HTTPS använder vi Cert Manager. Cert Manager är ett verktyg med öppen källkod som används för att hämta och hantera SSL-certifikat för Kubernetes-distributioner. Cert Manager hämtar certifikat från en mängd olika utfärdare, både populära offentliga utfärdare och privata utfärdare, och ser till att certifikaten är giltiga och uppdaterade och försöker förnya certifikat vid en konfigurerad tidpunkt innan de upphör att gälla.
+För att lägga till HTTPS använder vi Cert Manager. Cert Manager är ett öppen källkod verktyg som används för att hämta och hantera SSL-certifikat för Kubernetes-distributioner. Cert Manager hämtar certifikat från en mängd olika utfärdare, både populära offentliga utfärdare och privata utfärdare, och ser till att certifikaten är giltiga och uppdaterade och försöker förnya certifikat vid en konfigurerad tidpunkt innan de upphör att gälla.
 
 1. För att kunna installera cert-manager måste vi först skapa ett namnområde för att köra det i. I den här självstudien installeras cert-manager i namnområdet cert-manager. Det går att köra cert-manager i ett annat namnområde, men du måste göra ändringar i distributionsmanifesten.
 

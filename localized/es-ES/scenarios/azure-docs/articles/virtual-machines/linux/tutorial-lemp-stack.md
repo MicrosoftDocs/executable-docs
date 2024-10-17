@@ -3,7 +3,7 @@ title: 'Tutorial: Implementación de una pila LEMP mediante WordPress en una má
 description: 'En este tutorial, aprenderá a instalar la pila LEMP y WordPress en una máquina virtual Linux de Azure.'
 author: fossygirl
 ms.collection: linux
-ms.service: virtual-machines
+ms.service: azure-virtual-machines
 ms.devlang: azurecli
 ms.custom: 'innovation-engine, linux-related-content, devx-track-azurecli'
 ms.topic: tutorial
@@ -16,7 +16,7 @@ ms.reviewer: jushim
 
 **Se aplica a:** :heavy_check_mark: Máquinas virtuales Linux
 
-[![Implementación en Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2275458)
+[![Implementación en Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2286415)
 
 En este artículo se ofrecen instrucciones paso a paso para implementar un servidor web NGINX, servidor flexible de Azure MySQL y PHP (la pila LEMP) en una máquina virtual de Ubuntu Linux en Azure. Para ver el servidor LEMP en acción, si lo desea, puede instalar y configurar un sitio de WordPress. En este tutorial, aprenderá a:
 
@@ -521,7 +521,7 @@ Resultados:
 
 ## Creación de un Servidor flexible de Azure Database for MySQL
 
-Servidor flexible de Azure Database for MySQL es un servicio administrado que se usa para ejecutar, administrar y escalar servidores MySQL de alta disponibilidad en la nube. Cree un servidor flexible con el comando [az mysql flexible-server create](../../mysql/flexible-server/quickstart-create-server-cli.md#create-an-azure-database-for-mysql-flexible-server). Un servidor puede contener varias bases de datos. El siguiente comando crea un servidor mediante valores predeterminados de servicio y variables desde el entorno local de la CLI de Azure:
+Servidor flexible de Azure Database for MySQL es un servicio administrado que se usa para ejecutar, administrar y escalar servidores MySQL de alta disponibilidad en la nube. Cree un servidor flexible con el comando [az mysql flexible-server create](/azure/mysql/flexible-server/quickstart-create-server-cli#create-an-azure-database-for-mysql-flexible-server). Un servidor puede contener varias bases de datos. El siguiente comando crea un servidor mediante valores predeterminados de servicio y variables desde el entorno local de la CLI de Azure:
 
 ```bash
 az mysql flexible-server create \
@@ -573,8 +573,8 @@ El servidor creado tiene los siguientes atributos:
 * El método de conectividad predeterminado es Acceso privado (integración con red virtual) con una red virtual vinculada y una subred generada automáticamente.
 
 > [!NOTE]
-> El método de conectividad no se puede cambiar después de crear el servidor. Por ejemplo, si seleccionó `Private access (VNet Integration)` durante la creación, no puede cambiar a `Public access (allowed IP addresses)` después de la creación. Se recomienda encarecidamente crear un servidor con acceso privado para acceder de forma segura a su servidor mediante la integración con la red virtual. Obtenga más información sobre el acceso privado en el [artículo de conceptos](../../mysql/flexible-server/concepts-networking-vnet.md).
-Si quiere cambiar algún valor predeterminado, consulte en la [documentación de referencia](../../mysql/flexible-server/quickstart-create-server-cli.md) de la CLI de Azure la lista completa de parámetros configurables de la CLI.
+> El método de conectividad no se puede cambiar después de crear el servidor. Por ejemplo, si seleccionó `Private access (VNet Integration)` durante la creación, no puede cambiar a `Public access (allowed IP addresses)` después de la creación. Se recomienda encarecidamente crear un servidor con acceso privado para acceder de forma segura a su servidor mediante la integración con la red virtual. Obtenga más información sobre el acceso privado en el [artículo de conceptos](/azure/mysql/flexible-server/concepts-networking-vnet).
+Si quiere cambiar algún valor predeterminado, consulte en la [documentación de referencia](/azure/mysql/flexible-server/quickstart-create-server-cli) de la CLI de Azure la lista completa de parámetros configurables de la CLI.
 
 ## Comprobación del Azure Database for MySQL: estado del servidor flexible
 
@@ -600,13 +600,13 @@ Es posible administrar la configuración de Azure Database for MySQL: servidor f
 
 Muestre los detalles de los parámetros de servidor:
 
-Para mostrar los detalles de cualquier parámetro del servidor, ejecute el comando [az mysql flexible-server parameter show](../../mysql/flexible-server/how-to-configure-server-parameters-cli.md).
+Para mostrar los detalles de cualquier parámetro del servidor, ejecute el comando [az mysql flexible-server parameter show](/azure/mysql/flexible-server/how-to-configure-server-parameters-cli).
 
 ## Deshabilitación de Azure Database for MySQL: parámetro de conexión SSL de servidor flexible para la integración de Wordpress
 
 Modifique un valor de los parámetros del servidor:
 
-También puede modificar el valor de un determinado parámetro del servidor; esta acción actualizará el valor de configuración subyacente del motor del servidor MySQL. Para actualizar el parámetro, use el comando [az mysql flexible-server parameter set](../../mysql/flexible-server/how-to-configure-server-parameters-cli.md#modify-a-server-parameter-value).
+También puede modificar el valor de un determinado parámetro del servidor; esta acción actualizará el valor de configuración subyacente del motor del servidor MySQL. Para actualizar el parámetro, use el comando [az mysql flexible-server parameter set](/azure/mysql/flexible-server/how-to-configure-server-parameters-cli#modify-a-server-parameter-value).
 
 ```bash
 az mysql flexible-server parameter set \
@@ -641,7 +641,7 @@ Resultados:
 
 En el ejemplo siguiente se crea una máquina virtual denominada "`$MY_VM_NAME`" y las claves SSH si aún no existen en una ubicación de claves predeterminada. El comando también establece `$MY_VM_USERNAME` como nombre de usuario administrador.
 
-Para mejorar la seguridad de las máquinas virtuales Linux en Azure, puede integrarse con la autenticación de Azure Active Directory. Ahora puede usar Azure AD como plataforma de autenticación principal. También puede usar SSH en la máquina virtual Linux mediante la autenticación basada en certificados de Azure AD y OpenSSH. Esta funcionalidad permite a las organizaciones administrar el acceso a las máquinas virtuales con el control de acceso basado en roles de Azure y las directivas de acceso condicional.
+Para mejorar la seguridad de las máquinas virtuales Linux en Azure, puede integrarlas con la autenticación de Microsoft Entra ID. Ahora puede usar Microsoft Entra ID como plataforma de autenticación principal. También puede usar SSH en la máquina virtual Linux mediante la autenticación basada en certificados de Microsoft Entra ID y OpenSSH. Esta funcionalidad permite a las organizaciones administrar el acceso a las máquinas virtuales con el control de acceso basado en roles de Azure y las directivas de acceso condicional.
 
 Cree la máquina virtual con el comando [az vm create](/cli/azure/vm#az-vm-create).
 
@@ -706,7 +706,7 @@ done
 ```
 
 <!--
-## Assign Azure AD RBAC for Azure AD login for Linux Virtual Machine
+## Assign Microsoft Entra ID RBAC for Microsoft Entra ID login for Linux Virtual Machine
 The below command uses [az role assignment create](https://learn.microsoft.com/cli/azure/role/assignment#az-role-assignment-create) to assign the `Virtual Machine Administrator Login` role to the VM for your current Azure user.
 ```bash
 export MY_RESOURCE_GROUP_ID=$(az group show --resource-group $MY_RESOURCE_GROUP_NAME --query id -o tsv)
@@ -741,15 +741,15 @@ Results:
 
 <!--
 ## Export the SSH configuration for use with SSH clients that support OpenSSH
-Login to Azure Linux VMs with Azure AD supports exporting the OpenSSH certificate and configuration. That means you can use any SSH clients that support OpenSSH-based certificates to sign in through Azure AD. The following example exports the configuration for all IP addresses assigned to the VM:
+Login to Azure Linux VMs with Microsoft Entra ID supports exporting the OpenSSH certificate and configuration. That means you can use any SSH clients that support OpenSSH-based certificates to sign in through Microsoft Entra ID. The following example exports the configuration for all IP addresses assigned to the VM:
 ```bash
 az ssh config --file ~/.ssh/azure-config --name $MY_VM_NAME --resource-group $MY_RESOURCE_GROUP_NAME
 ```
 -->
 
-## Habilitación del inicio de sesión de Azure AD para una máquina virtual Linux en Azure
+## Habilitación del inicio de sesión de Microsoft Entra ID para una máquina virtual Linux en Azure
 
-A continuación se instala la extensión para habilitar el inicio de sesión de Azure AD para una máquina virtual Linux. Las extensiones de máquina virtual son aplicaciones pequeñas que realizan tareas de automatización y configuración posterior a la implementación en máquinas virtuales de Azure.
+A continuación se instala la extensión para habilitar el inicio de sesión de Microsoft Entra ID para una máquina virtual Linux. Las extensiones de máquina virtual son aplicaciones pequeñas que realizan tareas de automatización y configuración posterior a la implementación en máquinas virtuales de Azure.
 
 ```bash
 az vm extension set \
@@ -787,7 +787,7 @@ Resultados:
 
 ## Comprobar y examinar su sitio web de WordPress
 
-[WordPress](https://www.wordpress.org) es un sistema de administración de contenido (CMS) de código abierto que más del 40 % de la web usa para crear sitios web, blogs y otras aplicaciones. WordPress se puede ejecutar en algunos servicios de Azure: [AKS](../../mysql/flexible-server/tutorial-deploy-wordpress-on-aks.md), Virtual Machines y App Service. Para obtener una lista completa de las opciones de WordPress en Azure, consulte [WordPress en Azure Marketplace](https://azuremarketplace.microsoft.com/marketplace/apps?page=1&search=wordpress).
+[WordPress](https://www.wordpress.org) es un sistema de administración de contenido (CMS) de código abierto que más del 40 % de la web usa para crear sitios web, blogs y otras aplicaciones. WordPress se puede ejecutar en algunos servicios de Azure: [AKS](/azure/mysql/flexible-server/tutorial-deploy-wordpress-on-aks), Virtual Machines y App Service. Para obtener una lista completa de las opciones de WordPress en Azure, consulte [WordPress en Azure Marketplace](https://azuremarketplace.microsoft.com/marketplace/apps?page=1&search=wordpress).
 
 Esta instalación de WordPress es solo para la prueba de concepto. Para instalar la versión más reciente de WordPress en producción con la configuración de seguridad recomendada, consulte la [documentación de WordPress](https://codex.wordpress.org/Main_Page).
 

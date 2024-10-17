@@ -1,6 +1,6 @@
 ---
 title: 'Rövid útmutató: Ubuntu virtuális gép létrehozása és Azure Data Disk csatolása az Azure CLI használatával'
-description: 'Ebben a rövid útmutatóban megtudhatja, hogyan hozhat létre Ubuntu Linux rendszerű virtuális gépet az Azure CLI használatával'
+description: 'Ebben a rövid útmutatóban megtudhatja, hogyan hozhat létre Ubuntu Linux rendszerű virtuális gépet az Azure CLI használatával.'
 author: ajoian
 ms.service: virtual-machines
 ms.collection: linux
@@ -11,6 +11,8 @@ ms.custom: 'mvc, devx-track-azurecli, mode-api, innovation-engine, linux-related
 ---
 
 # Rövid útmutató: Ubuntu virtuális gép létrehozása és Azure Data Disk csatolása az Azure CLI használatával
+
+[![Üzembe helyezés az Azure-ban](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2286318)
 
 Ez a rövid útmutató bemutatja, hogyan helyezhet üzembe Ubuntu Linux rendszerű virtuális gépet (VM-et) az Azure CLI használatával, és hogyan csatolhat Azure Data Disket a virtuális géphez. Az Azure CLI használatával azure-erőforrások hozhatók létre és kezelhetők parancssoron vagy szkripteken keresztül.
 

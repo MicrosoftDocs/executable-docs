@@ -2,7 +2,7 @@
 title: 'Hızlı Başlangıç: Linux Sanal Makinesi oluşturmak için Azure CLI''yi kullanma'
 description: Bu hızlı başlangıçta Azure CLI’yi kullanarak Linux sanal makinesi oluşturmayı öğrenirsiniz
 author: ju-shim
-ms.service: virtual-machines
+ms.service: azure-virtual-machines
 ms.collection: linux
 ms.topic: quickstart
 ms.date: 03/11/2024
@@ -14,7 +14,7 @@ ms.custom: 'mvc, devx-track-azurecli, mode-api, innovation-engine, linux-related
 
 **Şunlar için geçerlidir:** :heavy_check_mark: Linux VM'leri
 
-[![Azure’a dağıtın](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262692)
+[![Azure’a dağıtın](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2285977)
 
 Bu hızlı başlangıçta Azure CLI kullanarak Azure’da bir Linux sanal makinesinin (VM) nasıl dağıtılacağı gösterilir. Azure CLI, komut satırı veya betikler aracılığıyla Azure kaynakları oluşturmak ve yönetmek için kullanılır.
 

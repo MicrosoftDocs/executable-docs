@@ -12,6 +12,8 @@ ms.custom: 'mvc, devx-track-azurecli, mode-api, innovation-engine, linux-related
 
 # Inicio rápido: Uso de la CLI de Azure para crear una máquina virtual Ubuntu y conectar un disco de datos de Azure
 
+[![Implementación en Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2286318)
+
 En este inicio rápido se muestra cómo usar la CLI de Azure para implementar una máquina virtual Ubuntu Linux en Azure y conectar un disco de datos de Azure a la máquina virtual. La CLI de Azure se usa para crear y administrar recursos de Azure mediante la línea de comandos o scripts.
 
 Si no tiene una suscripción a Azure, cree una cuenta [gratuita](https://azure.microsoft.com/free/?WT.mc_id=A261C142F) antes de empezar.
@@ -192,7 +194,7 @@ mkdir: created directory '/datadisk01'
 mount: /dev/sdc1 mounted on /datadisk01.
 ```
 
-En oder para actualizar el archivo /etcetera/fstab, puede usar el siguiente comando y montar el LUN1 mediante su identificador único (UUID) junto con la opción de montaje de descarte:
+En oder para actualizar el archivo /etc/fstab, puede usar el siguiente comando y montar el LUN1 mediante su identificador único (UUID) junto con la opción de montaje de descarte:
 
 ```bash
 ssh $MY_VM_USERNAME@$FQDN -- \
@@ -255,7 +257,7 @@ mkdir: created directory '/datadisk02'
 mount: /dev/sdd1 mounted on /datadisk02.
 ```
 
-En oder para actualizar el archivo /etcetera/fstab, puede usar el siguiente comando y montar el LUN1 mediante su identificador único (UUID) junto con la opción de montaje de descarte:
+En oder para actualizar el archivo /etc/fstab, puede usar el siguiente comando y montar el LUN1 mediante su identificador único (UUID) junto con la opción de montaje de descarte:
 
 ```bash
 ssh $MY_VM_USERNAME@$FQDN -- \
@@ -366,7 +368,7 @@ mkdir: created directory '/datadisk03'
 mount: /dev/sde1 mounted on /datadisk03.
 ```
 
-En oder para actualizar el archivo /etcetera/fstab, puede usar el siguiente comando y montar el LUN1 mediante su identificador único (UUID) junto con la opción de montaje de descarte:
+En oder para actualizar el archivo /etc/fstab, puede usar el siguiente comando y montar el LUN1 mediante su identificador único (UUID) junto con la opción de montaje de descarte:
 
 ```bash
 ssh -o StrictHostKeyChecking=no $MY_VM_USERNAME@$FQDN -- \

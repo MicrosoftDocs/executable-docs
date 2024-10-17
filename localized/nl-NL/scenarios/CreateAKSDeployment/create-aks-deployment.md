@@ -10,8 +10,6 @@ ms.custom: 'H1Hack27Feb2017, mvc, devcenter, devx-track-azurecli, mode-api, inno
 
 # Quickstart: Een AKS-cluster (Azure Kubernetes Service) implementeren met behulp van Azure CLI
 
-[![Implementeren naar Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262758)
-
 Azure Kubernetes Service (AKS) is een beheerde Kubernetes-service waarmee u snel clusters kunt implementeren en beheren. In deze snelstart leert u de volgende zaken:
 
 - Implementeer een AKS-cluster met behulp van de Azure CLI.

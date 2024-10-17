@@ -10,7 +10,7 @@ ms.custom: innovation-engine
 
 # 빠른 시작: Azure Kubernetes Service 클러스터에 Inspektor 가젯 배포
 
-[![Azure에 배포](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262844)
+[![Azure에 배포](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2276309)
 
 kubectl 플러그 인`gadget`을 사용하여 AKS(Azure Kubernetes Service) 클러스터에 Inspektor 가젯[을 배포하는 ](https://www.inspektor-gadget.io/)단계를 단계별로 수행하는 이 자습서를 시작합니다. 이 자습서에서는 사용자가 이미 Azure CLI에 로그인하고 CLI와 함께 사용할 구독을 선택했다고 가정합니다.
 

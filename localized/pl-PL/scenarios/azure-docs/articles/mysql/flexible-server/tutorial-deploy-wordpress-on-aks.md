@@ -14,7 +14,7 @@ ms.custom: 'vc, devx-track-azurecli, innovation-engine, linux-related-content'
 
 [!INCLUDE[applies-to-mysql-flexible-server](../includes/applies-to-mysql-flexible-server.md)]
 
-[![Wdróż na platformie Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262843)
+[![Wdróż na platformie Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2286232)
 
 W tym samouczku wdrożysz skalowalną aplikację WordPress zabezpieczoną za pośrednictwem protokołu HTTPS w klastrze usługi Azure Kubernetes Service (AKS) przy użyciu elastycznego serwera usługi Azure Database for MySQL przy użyciu interfejsu wiersza polecenia platformy Azure.
 **[Usługa AKS](../../aks/intro-kubernetes.md)** to zarządzana usługa Kubernetes, która umożliwia szybkie wdrażanie klastrów i zarządzanie nimi. **[Serwer elastyczny](overview.md)** usługi Azure Database for MySQL to w pełni zarządzana usługa bazy danych, która zapewnia bardziej szczegółową kontrolę i elastyczność funkcji zarządzania bazami danych i ustawień konfiguracji.

@@ -14,7 +14,7 @@ ms.custom: 'vc, devx-track-azurecli, innovation-engine, linux-related-content'
 
 [!INCLUDE[applies-to-mysql-flexible-server](../includes/applies-to-mysql-flexible-server.md)]
 
-[![Üzembe helyezés az Azure-ban](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262843)
+[![Üzembe helyezés az Azure-ban](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2286232)
 
 Ebben az oktatóanyagban egy skálázható, HTTPS-en keresztül védett WordPress-alkalmazást helyez üzembe egy Rugalmas Azure Database for MySQL-kiszolgálóval rendelkező Azure Kubernetes Service-fürtön az Azure CLI használatával.
 **[Az AKS](../../aks/intro-kubernetes.md)** egy felügyelt Kubernetes-szolgáltatás, amely lehetővé teszi a fürtök gyors üzembe helyezését és kezelését. **[A rugalmas Azure Database for MySQL-kiszolgáló](overview.md)** egy teljes mértékben felügyelt adatbázis-szolgáltatás, amely részletesebb vezérlést és rugalmasságot biztosít az adatbázis-kezelési funkciók és a konfigurációs beállítások felett.

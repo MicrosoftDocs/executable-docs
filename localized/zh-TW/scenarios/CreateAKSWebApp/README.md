@@ -10,7 +10,7 @@ ms.custom: innovation-engine
 
 # 快速入門：使用 Azure CLI 部署可調整且安全的 Azure Kubernetes Service 叢集
 
-[![部署至 Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/?Microsoft_Azure_CloudNative_clientoptimizations=false&feature.canmodifyextensions=true#view/Microsoft_Azure_CloudNative/SubscriptionSelectionPage.ReactView/tutorialKey/CreateAKSDeployment)
+[![部署至 Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2286416)
 
 歡迎使用本教學課程，我們將逐步逐步建立透過 HTTPs 保護的 Azure Kubernetes Web 應用程式。 本教學課程假設您已登入 Azure CLI，並已選取要搭配 CLI 使用的訂用帳戶。 它也假設您已安裝 Helm （[指示可以在這裡](https://helm.sh/docs/intro/install/)找到）。
 
@@ -213,109 +213,229 @@ cat << EOF > azure-vote-start.yml
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: azure-vote-back
-  namespace: default
+  name: rabbitmq
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: azure-vote-back
+      app: rabbitmq
   template:
     metadata:
       labels:
-        app: azure-vote-back
+        app: rabbitmq
     spec:
       nodeSelector:
         "kubernetes.io/os": linux
       containers:
-      - name: azure-vote-back
-        image: docker.io/bitnami/redis:6.0.8
+      - name: rabbitmq
+        image: mcr.microsoft.com/mirror/docker/library/rabbitmq:3.10-management-alpine
+        ports:
+        - containerPort: 5672
+          name: rabbitmq-amqp
+        - containerPort: 15672
+          name: rabbitmq-http
         env:
-        - name: ALLOW_EMPTY_PASSWORD
-          value: "yes"
+        - name: RABBITMQ_DEFAULT_USER
+          value: "username"
+        - name: RABBITMQ_DEFAULT_PASS
+          value: "password"
         resources:
           requests:
-            cpu: 100m
+            cpu: 10m
             memory: 128Mi
           limits:
             cpu: 250m
             memory: 256Mi
-        ports:
-        - containerPort: 6379
-          name: redis
+        volumeMounts:
+        - name: rabbitmq-enabled-plugins
+          mountPath: /etc/rabbitmq/enabled_plugins
+          subPath: enabled_plugins
+      volumes:
+      - name: rabbitmq-enabled-plugins
+        configMap:
+          name: rabbitmq-enabled-plugins
+          items:
+          - key: rabbitmq_enabled_plugins
+            path: enabled_plugins
+---
+apiVersion: v1
+data:
+  rabbitmq_enabled_plugins: |
+    [rabbitmq_management,rabbitmq_prometheus,rabbitmq_amqp1_0].
+kind: ConfigMap
+metadata:
+  name: rabbitmq-enabled-plugins
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: azure-vote-back
-  namespace: default
+  name: rabbitmq
 spec:
-  ports:
-  - port: 6379
   selector:
-    app: azure-vote-back
+    app: rabbitmq
+  ports:
+    - name: rabbitmq-amqp
+      port: 5672
+      targetPort: 5672
+    - name: rabbitmq-http
+      port: 15672
+      targetPort: 15672
+  type: ClusterIP
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: azure-vote-front
-  namespace: default
+  name: order-service
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: azure-vote-front
+      app: order-service
   template:
     metadata:
       labels:
-        app: azure-vote-front
+        app: order-service
     spec:
       nodeSelector:
         "kubernetes.io/os": linux
       containers:
-      - name: azure-vote-front
-        image: mcr.microsoft.com/azuredocs/azure-vote-front:v1
+      - name: order-service
+        image: ghcr.io/azure-samples/aks-store-demo/order-service:latest
+        ports:
+        - containerPort: 3000
+        env:
+        - name: ORDER_QUEUE_HOSTNAME
+          value: "rabbitmq"
+        - name: ORDER_QUEUE_PORT
+          value: "5672"
+        - name: ORDER_QUEUE_USERNAME
+          value: "username"
+        - name: ORDER_QUEUE_PASSWORD
+          value: "password"
+        - name: ORDER_QUEUE_NAME
+          value: "orders"
+        - name: FASTIFY_ADDRESS
+          value: "0.0.0.0"
         resources:
           requests:
-            cpu: 100m
-            memory: 128Mi
+            cpu: 1m
+            memory: 50Mi
           limits:
-            cpu: 250m
-            memory: 256Mi
-        ports:
-        - containerPort: 80
-        env:
-        - name: REDIS
-          value: "azure-vote-back"
+            cpu: 75m
+            memory: 128Mi
+      initContainers:
+      - name: wait-for-rabbitmq
+        image: busybox
+        command: ['sh', '-c', 'until nc -zv rabbitmq 5672; do echo waiting for rabbitmq; sleep 2; done;']
+        resources:
+          requests:
+            cpu: 1m
+            memory: 50Mi
+          limits:
+            cpu: 75m
+            memory: 128Mi
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: azure-vote-front
-  namespace: default
+  name: order-service
+spec:
+  type: ClusterIP
+  ports:
+  - name: http
+    port: 3000
+    targetPort: 3000
+  selector:
+    app: order-service
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: product-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: product-service
+  template:
+    metadata:
+      labels:
+        app: product-service
+    spec:
+      nodeSelector:
+        "kubernetes.io/os": linux
+      containers:
+      - name: product-service
+        image: ghcr.io/azure-samples/aks-store-demo/product-service:latest
+        ports:
+        - containerPort: 3002
+        resources:
+          requests:
+            cpu: 1m
+            memory: 1Mi
+          limits:
+            cpu: 1m
+            memory: 7Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: product-service
+spec:
+  type: ClusterIP
+  ports:
+  - name: http
+    port: 3002
+    targetPort: 3002
+  selector:
+    app: product-service
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: store-front
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: store-front
+  template:
+    metadata:
+      labels:
+        app: store-front
+    spec:
+      nodeSelector:
+        "kubernetes.io/os": linux
+      containers:
+      - name: store-front
+        image: ghcr.io/azure-samples/aks-store-demo/store-front:latest
+        ports:
+        - containerPort: 8080
+          name: store-front
+        env:
+        - name: VUE_APP_ORDER_SERVICE_URL
+          value: "http://order-service:3000/"
+        - name: VUE_APP_PRODUCT_SERVICE_URL
+          value: "http://product-service:3002/"
+        resources:
+          requests:
+            cpu: 1m
+            memory: 200Mi
+          limits:
+            cpu: 1000m
+            memory: 512Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: store-front
 spec:
   ports:
   - port: 80
+    targetPort: 8080
   selector:
-    app: azure-vote-front
----
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: vote-ingress
-  namespace: default
-spec:
-  ingressClassName: nginx
-  rules:
-  - http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: azure-vote-front
-            port:
-              number: 80
+    app: store-front
+  type: LoadBalancer
 EOF
 ```
 
@@ -391,15 +511,15 @@ curl "http://$FQDN"
 
 ## 設定 Cert Manager
 
-為了新增 HTTPS，我們將使用 Cert Manager。 Cert Manager 是 開放原始碼 工具，可用來取得和管理 Kubernetes 部署的 SSL 憑證。 憑證管理員會從各種簽發者取得憑證，包括熱門的公用簽發者以及私人簽發者，並確保憑證有效且最新，而且會在到期前嘗試在設定的某個時間更新憑證。
+為了新增 HTTPS，我們將使用 Cert Manager。 Cert Manager 是一種 開放原始碼 工具，可用來取得和管理 Kubernetes 部署的 SSL 憑證。 憑證管理員會從各種簽發者取得憑證，包括熱門的公用簽發者以及私人簽發者，並確保憑證有效且最新，而且會在到期前嘗試在設定的某個時間更新憑證。
 
-1. 若要安裝 cert-manager，我們必須先建立命名空間來執行它。 本教學課程會將 cert-manager 安裝到 cert-manager 命名空間。 您可以在不同的命名空間中執行 cert-manager，不過您必須對部署指令清單進行修改。
+1. 若要安裝 cert-manager，我們必須先建立用於執行的命名空間。 本教學課程會將 cert-manager 安裝到 cert-manager 命名空間。 您可以在不同的命名空間中執行 cert-manager，不過您必須對部署指令清單進行修改。
 
    ```bash
    kubectl create namespace cert-manager
    ```
 
-2. 我們現在可以安裝 cert-manager。 所有資源都包含在單一 YAML 指令清單檔案中。 您可以執行下列命令來安裝：
+2. 我們現在可以安裝 cert-manager。 所有資源都包含在單一 YAML 資訊清單檔中。 您可以執行下列命令來安裝：
 
    ```bash
    kubectl apply -f https://github.com/jetstack/cert-manager/releases/download/v1.7.0/cert-manager.crds.yaml
@@ -415,11 +535,11 @@ curl "http://$FQDN"
 
 Helm 是 Kubernetes 部署工具，可將應用程式和服務的建立、封裝、組態和部署自動化至 Kubernetes 叢集。
 
-Cert-manager 提供 Helm 圖表作為 Kubernetes 上安裝的一流方法。
+Cert-manager 提供 Helm 圖表作為 Kubernetes 上安裝的最佳方法。
 
 1. 新增 Jetstack Helm 存放庫
 
-   此存放庫是唯一支援的憑證管理員圖表來源。 因特網上有一些其他鏡像和複本，但這些鏡像是完全非官方的，而且可能會造成安全性風險。
+   此存放庫是唯一支援的 cert-manager 圖表來源。 因特網上有一些其他鏡像和複本，但這些鏡像是完全非官方的，而且可能會造成安全性風險。
 
    ```bash
    helm repo add jetstack https://charts.jetstack.io
@@ -439,7 +559,7 @@ Cert-manager 提供 Helm 圖表作為 Kubernetes 上安裝的一流方法。
 
 4. 套用憑證簽發者 YAML 檔案
 
-   ClusterIssuers 是 Kubernetes 資源，代表能夠藉由接受憑證簽署要求來產生已簽署憑證的證書頒發機構單位 （CA）。 所有憑證管理員憑證都需要處於就緒條件的參考簽發者，才能嘗試接受要求。
+   ClusterIssuers 是 Kubernetes 資源，代表能夠藉由接受憑證簽署要求來產生已簽署憑證的證書頒發機構單位 （CA）。 所有 cert-manager 憑證都需要有處於就緒條件的參考簽發者，才能嘗試接受要求。
    我們所使用的簽發者可以在 中找到 `cluster-issuer-prod.yml file`
         
     ```bash

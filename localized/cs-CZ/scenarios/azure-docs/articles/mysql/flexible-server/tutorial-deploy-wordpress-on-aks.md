@@ -14,7 +14,7 @@ ms.custom: 'vc, devx-track-azurecli, innovation-engine, linux-related-content'
 
 [!INCLUDE[applies-to-mysql-flexible-server](../includes/applies-to-mysql-flexible-server.md)]
 
-[![Nasazení do Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262843)
+[![Nasazení do Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2286232)
 
 V tomto kurzu nasadíte škálovatelnou aplikaci WordPress zabezpečenou přes HTTPS v clusteru Azure Kubernetes Service (AKS) s flexibilním serverem Azure Database for MySQL pomocí Azure CLI.
 **[AKS](../../aks/intro-kubernetes.md)** je spravovaná služba Kubernetes, která umožňuje rychle nasazovat a spravovat clustery. **[Flexibilní server](overview.md)** Azure Database for MySQL je plně spravovaná databázová služba navržená tak, aby poskytovala podrobnější kontrolu a flexibilitu nad funkcemi správy databází a nastavením konfigurace.

@@ -10,8 +10,6 @@ ms.custom: 'H1Hack27Feb2017, mvc, devcenter, devx-track-azurecli, mode-api, inno
 
 # Guida introduttiva: distribuire un cluster del servizio Azure Kubernetes (AKS) con l’interfaccia della riga di comando di Azure
 
-[![Distribuzione in Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262758)
-
 Il servizio Azure Kubernetes è un servizio Kubernetes gestito che permette di distribuire e gestire rapidamente i cluster. In questa guida introduttiva si apprende come:
 
 - Distribuire un cluster del servizio Azure Kubernetes usando l'interfaccia della riga di comando di Azure.
@@ -34,7 +32,7 @@ Questa guida introduttiva presuppone una comprensione di base dei concetti relat
 
 ## Definire le variabili di ambiente
 
-Definire le variabili di ambiente seguenti da usare in questa guida introduttiva:
+Definire le variabili d'ambiente seguenti da usare in questo avvio rapido:
 
 ```azurecli-interactive
 export RANDOM_ID="$(openssl rand -hex 3)"
@@ -83,7 +81,7 @@ az aks create --resource-group $MY_RESOURCE_GROUP_NAME --name $MY_AKS_CLUSTER_NA
 
 ## Stabilire la connessione al cluster
 
-Per gestire un cluster Kubernetes, usare il client da riga di comando kubernetes [kubectl][kubectl]. `kubectl` è già installato se si usa Azure Cloud Shell. Per eseguire l'installazione `kubectl` in locale, usare il [`az aks install-cli`][az-aks-install-cli] comando .
+Per gestire un cluster Kubernetes, usare il client da riga di comando kubernetes [kubectl][kubectl]. `kubectl` è già installato se si usa Azure Cloud Shell. Per installare `kubectl` in locale, usare il comando [`az aks install-cli`][az-aks-install-cli].
 
 1. Configurare `kubectl` per connettersi al cluster Kubernetes usando il comando [az aks get-credentials][az-aks-get-credentials]. Questo comando scarica le credenziali e configura l'interfaccia della riga di comando di Kubernetes per usarli.
 
@@ -354,9 +352,9 @@ Per distribuire l'applicazione, usare un file manifesto per creare tutti gli ogg
 
 ## Testare l'applicazione
 
-È possibile verificare che l'applicazione sia in esecuzione visitando l'indirizzo IP pubblico o l'URL dell'applicazione.
+È possibile convalidare che l'applicazione sia in esecuzione visitando l'indirizzo IP pubblico o l'URL dell'applicazione.
 
-Ottenere l'URL dell'applicazione usando i comandi seguenti:
+Ottenere l’URL dell'applicazione usando i comandi seguenti:
 
 ```azurecli-interactive
 runtime="5 minutes"
@@ -409,7 +407,7 @@ echo "You can now visit your web server at $IP_ADDRESS"
 
 ## Eliminare il cluster
 
-Se non si prevede di eseguire l'[esercitazione del servizio Azure Kubernetes][aks-tutorial], ripulire le risorse non necessarie per evitare addebiti di Azure. È possibile rimuovere il gruppo di risorse, il servizio contenitore e tutte le risorse correlate usando il [`az group delete`][az-group-delete] comando .
+Se non si prevede di eseguire l'[esercitazione del servizio Azure Kubernetes][aks-tutorial], ripulire le risorse non necessarie per evitare addebiti di Azure. È possibile rimuovere il gruppo di risorse, il servizio contenitore e tutte le risorse correlate usando il comando [`az group delete`][az-group-delete].
 
 > [!NOTE]
 > Il cluster del servizio Azure Kubernetes è stato creato con un'identità gestita assegnata dal sistema, che è l'opzione di identità predefinita usata in questo avvio rapido. Questa identità è gestita dalla piattaforma, pertanto non è necessario rimuoverla manualmente.

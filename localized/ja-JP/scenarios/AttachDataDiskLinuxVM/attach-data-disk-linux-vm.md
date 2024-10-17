@@ -1,6 +1,6 @@
 ---
 title: 'クイック スタート: Azure CLI を使用して Ubuntu 仮想マシンを作成し、Azure データ ディスクを接続する'
-description: このクイックスタートでは、Azure CLI を使用して Ubuntu Linux 仮想マシンを作成する方法について説明します
+description: このクイック スタートでは、Azure CLI を使用して Ubuntu Linux 仮想マシンを作成する方法について説明します。
 author: ajoian
 ms.service: virtual-machines
 ms.collection: linux
@@ -11,6 +11,8 @@ ms.custom: 'mvc, devx-track-azurecli, mode-api, innovation-engine, linux-related
 ---
 
 # クイック スタート: Azure CLI を使用して Ubuntu 仮想マシンを作成し、Azure データ ディスクを接続する
+
+[![Azure に配置する](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2286318)
 
 このクイックスタートでは、Azure CLI を使用して Azure に Ubuntu Linux 仮想マシン (VM) をデプロイし、Azure データ ディスクを仮想マシンに接続する方法について説明します。 Azure CLI は、コマンド ラインまたはスクリプトで Azure リソースを作成および管理するために使用します。
 

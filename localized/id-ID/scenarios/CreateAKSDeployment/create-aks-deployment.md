@@ -10,8 +10,6 @@ ms.custom: 'H1Hack27Feb2017, mvc, devcenter, devx-track-azurecli, mode-api, inno
 
 # Mulai cepat: Menyebarkan kluster Azure Kubernetes Service (AKS) menggunakan Azure CLI
 
-[![Sebarkan ke Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262758)
-
 Azure Kubernetes Service (AKS) merupakan layanan Kube terkelola yang memungkinkan Anda menyebarkan dan mengelola kluster dengan cepat. Dalam panduan mulai cepat ini, Anda belajar cara:
 
 - Menyebarkan kluster AKS menggunakan Azure CLI.

@@ -2,7 +2,7 @@
 title: Краткое руководство. Создание виртуальной машины Linux с помощью Azure CLI
 description: 'Из этого краткого руководства вы узнаете, как с помощью Azure CLI создать виртуальную машину Linux.'
 author: ju-shim
-ms.service: virtual-machines
+ms.service: azure-virtual-machines
 ms.collection: linux
 ms.topic: quickstart
 ms.date: 03/11/2024
@@ -14,7 +14,7 @@ ms.custom: 'mvc, devx-track-azurecli, mode-api, innovation-engine, linux-related
 
 **Применимо к:** :heavy_check_mark: виртуальным машинам Linux
 
-[![Развертывание в Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262692)
+[![Развертывание в Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2285977)
 
 В этом кратком руководстве показано, как с помощью Azure CLI развернуть в Azure виртуальную машину Linux. Azure CLI используется для создания ресурсов Azure и управления ими с помощью командной строки или скриптов.
 

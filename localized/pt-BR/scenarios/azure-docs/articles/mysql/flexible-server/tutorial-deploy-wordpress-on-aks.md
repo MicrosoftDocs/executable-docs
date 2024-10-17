@@ -14,7 +14,7 @@ ms.custom: 'vc, devx-track-azurecli, innovation-engine, linux-related-content'
 
 [!INCLUDE[applies-to-mysql-flexible-server](../includes/applies-to-mysql-flexible-server.md)]
 
-[![Implantar no Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262843)
+[![Implantar no Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2286232)
 
 Neste tutorial, você implantará um aplicativo WordPress escalonável protegido por HTTPS em um cluster do AKS (Serviço de Kubernetes do Azure) com o servidor flexível do Banco de Dados do Azure para MySQL usando a CLI do Azure.
 O **[AKS](../../aks/intro-kubernetes.md)** é um serviço de Kubernetes gerenciado que permite a implantação e o gerenciamento de clusters rapidamente. O **[Banco de Dados do Azure para MySQL – Servidor Flexível](overview.md)** é um serviço de banco de dados totalmente gerenciado, projetado para fornecer controle e flexibilidade mais granulares em relação às funções de gerenciamento de banco de dados e definições de configuração.

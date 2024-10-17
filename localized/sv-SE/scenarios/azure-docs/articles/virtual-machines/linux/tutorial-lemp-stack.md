@@ -3,7 +3,7 @@ title: Självstudie – Distribuera en LEMP-stack med Hjälp av WordPress på en
 description: I den här självstudien får du lära dig hur du installerar LEMP-stacken och WordPress på en virtuell Linux-dator i Azure.
 author: fossygirl
 ms.collection: linux
-ms.service: virtual-machines
+ms.service: azure-virtual-machines
 ms.devlang: azurecli
 ms.custom: 'innovation-engine, linux-related-content, devx-track-azurecli'
 ms.topic: tutorial
@@ -16,7 +16,7 @@ ms.reviewer: jushim
 
 **Gäller för:** :heavy_check_mark: Virtuella Linux-datorer
 
-[![Distribuera till Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2275458)
+[![Distribuera till Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2286415)
 
 Den här artikeln beskriver hur du distribuerar en NGINX-webbserver, Azure MySQL – flexibel server och PHP (LEMP-stacken) på en virtuell Ubuntu Linux-dator i Azure. Om du vill se LEMP-servern i praktiken kan du installera och konfigurera en WordPress-webbplats. I den här självstudiekursen får du lära du dig att:
 
@@ -156,7 +156,7 @@ Resultat:
 Använd [az network public-ip create](/cli/azure/network/public-ip#az-network-public-ip-create) för att skapa en standardzonredundant offentlig IPv4-adress med namnet `MY_PUBLIC_IP_NAME` i `$MY_RESOURCE_GROUP_NAME`.
 
 >[!NOTE]
->Alternativen nedan för zoner är endast giltiga val i regioner med [tillgänglighetszoner](../../reliability/availability-zones-service-support.md).
+>Alternativen nedan för zoner är bara giltiga val i regioner med [Tillgänglighetszoner](../../reliability/availability-zones-service-support.md).
 ```bash
 az network public-ip create \
     --name $MY_PUBLIC_IP_NAME \
@@ -488,9 +488,9 @@ runcmd:
 EOF
 ```
 
-## Skapa en Azure Private DNS-zon för Azure MySQL – flexibel server
+## Skapa en Flexibel Azure Privat DNS-zon för Azure MySQL – flexibel server
 
-Med Integrering av privat DNS-zon i Azure kan du matcha den privata DNS i det aktuella virtuella nätverket eller ett peer-kopplat virtuellt nätverk i regionen där den privata DNS-zonen är länkad. Använd [az network private-dns zone create](/cli/azure/network/private-dns/zone#az-network-private-dns-zone-create) för att skapa den privata DNS-zonen.
+Med Azure Privat DNS Zone-integrering kan du matcha den privata DNS i det aktuella virtuella nätverket eller ett peer-kopplat virtuellt nätverk i regionen där den privata DNS-zonen är länkad. Använd [az network private-dns zone create](/cli/azure/network/private-dns/zone#az-network-private-dns-zone-create) för att skapa den privata DNS-zonen.
 
 ```bash
 az network private-dns zone create \
@@ -521,7 +521,7 @@ Resultat:
 
 ## Skapa en Azure Database for MySQL – flexibel server
 
-Azure Database for MySQL – Flexibel server är en hanterad tjänst som du kan använda för att köra, hantera och skala MySQL-servrar med hög tillgänglighet i molnet. Skapa en flexibel server med [kommandot az mysql flexible-server create](../../mysql/flexible-server/quickstart-create-server-cli.md#create-an-azure-database-for-mysql-flexible-server) . En server kan innehålla flera databaser. Följande kommando skapar en server med tjänstens standardvärden och variabelvärden från azure CLI:s lokala miljö:
+Azure Database for MySQL – Flexibel server är en hanterad tjänst som du kan använda för att köra, hantera och skala MySQL-servrar med hög tillgänglighet i molnet. Skapa en flexibel server med [kommandot az mysql flexible-server create](/azure/mysql/flexible-server/quickstart-create-server-cli#create-an-azure-database-for-mysql-flexible-server) . En server kan innehålla flera databaser. Följande kommando skapar en server med tjänstens standardvärden och variabelvärden från azure CLI:s lokala miljö:
 
 ```bash
 az mysql flexible-server create \
@@ -573,8 +573,8 @@ Servern som skapades har följande attribut:
 * Standardanslutningsmetoden är Privat åtkomst (VNet-integrering) med ett länkat virtuellt nätverk och ett automatiskt genererat undernät.
 
 > [!NOTE]
-> Det går inte att ändra anslutningsmetoden när servern har skapats. Om du till exempel valde `Private access (VNet Integration)` under skapande kan du inte ändra till efter att `Public access (allowed IP addresses)` du har skapat. Vi rekommenderar starkt att du skapar en server med privat åtkomst för säker åtkomst till servern med hjälp av VNet-integrering. Läs mer om privat åtkomst i begreppsartikeln[](../../mysql/flexible-server/concepts-networking-vnet.md).
-Om du vill ändra några standardvärden läser du referensdokumentationen[ för Azure CLI ](../../mysql/flexible-server/quickstart-create-server-cli.md)för den fullständiga listan över konfigurerbara CLI-parametrar.
+> Det går inte att ändra anslutningsmetoden när servern har skapats. Om du till exempel valde `Private access (VNet Integration)` under skapande kan du inte ändra till efter att `Public access (allowed IP addresses)` du har skapat. Vi rekommenderar starkt att du skapar en server med privat åtkomst för säker åtkomst till servern med hjälp av VNet-integrering. Läs mer om privat åtkomst i begreppsartikeln[](/azure/mysql/flexible-server/concepts-networking-vnet).
+Om du vill ändra några standardvärden läser du referensdokumentationen[ för Azure CLI ](/azure/mysql/flexible-server/quickstart-create-server-cli)för den fullständiga listan över konfigurerbara CLI-parametrar.
 
 ## Kontrollera Status för Azure Database for MySQL – flexibel server
 
@@ -600,13 +600,13 @@ Du kan hantera Azure Database for MySQL – flexibel serverkonfiguration med hj�
 
 Visa information om serverparametern:
 
-[Kör kommandot az mysql flexible-server show](../../mysql/flexible-server/how-to-configure-server-parameters-cli.md) för att visa information om en viss parameter för servern.
+[Kör kommandot az mysql flexible-server show](/azure/mysql/flexible-server/how-to-configure-server-parameters-cli) för att visa information om en viss parameter för servern.
 
 ## Inaktivera Azure Database for MySQL – SSL-anslutningsparameter för flexibel server för Wordpress-integrering
 
 Ändra ett serverparametervärde:
 
-Du kan också ändra värdet för en viss serverparameter, vilket uppdaterar det underliggande konfigurationsvärdet för MySQL-servermotorn. Om du vill uppdatera serverparametern använder du [kommandot az mysql flexible-server parameter set](../../mysql/flexible-server/how-to-configure-server-parameters-cli.md#modify-a-server-parameter-value) .
+Du kan också ändra värdet för en viss serverparameter, vilket uppdaterar det underliggande konfigurationsvärdet för MySQL-servermotorn. Om du vill uppdatera serverparametern använder du [kommandot az mysql flexible-server parameter set](/azure/mysql/flexible-server/how-to-configure-server-parameters-cli#modify-a-server-parameter-value) .
 
 ```bash
 az mysql flexible-server parameter set \
@@ -641,7 +641,7 @@ Resultat:
 
 I följande exempel skapas en virtuell dator med namnet `$MY_VM_NAME` och SSH-nycklar skapas om de inte redan finns på en standardnyckelplats. Kommandot anger `$MY_VM_USERNAME` även som administratörsanvändarnamn.
 
-För att förbättra säkerheten för virtuella Linux-datorer i Azure kan du integrera med Azure Active Directory-autentisering. Nu kan du använda Azure AD som en grundläggande autentiseringsplattform. Du kan också SSH till den virtuella Linux-datorn med hjälp av Azure AD- och OpenSSH-certifikatbaserad autentisering. Med den här funktionen kan organisationer hantera åtkomst till virtuella datorer med rollbaserad åtkomstkontroll i Azure och principer för villkorsstyrd åtkomst.
+För att förbättra säkerheten för virtuella Linux-datorer i Azure kan du integrera med Microsoft Entra ID-autentisering. Nu kan du använda Microsoft Entra-ID som en grundläggande autentiseringsplattform. Du kan också SSH till den virtuella Linux-datorn med hjälp av Microsoft Entra-ID och OpenSSH-certifikatbaserad autentisering. Med den här funktionen kan organisationer hantera åtkomst till virtuella datorer med rollbaserad åtkomstkontroll i Azure och principer för villkorsstyrd åtkomst.
 
 Skapa en virtuell dator med kommandot [az vm create](/cli/azure/vm#az-vm-create).
 
@@ -706,7 +706,7 @@ done
 ```
 
 <!--
-## Assign Azure AD RBAC for Azure AD login for Linux Virtual Machine
+## Assign Microsoft Entra ID RBAC for Microsoft Entra ID login for Linux Virtual Machine
 The below command uses [az role assignment create](https://learn.microsoft.com/cli/azure/role/assignment#az-role-assignment-create) to assign the `Virtual Machine Administrator Login` role to the VM for your current Azure user.
 ```bash
 export MY_RESOURCE_GROUP_ID=$(az group show --resource-group $MY_RESOURCE_GROUP_NAME --query id -o tsv)
@@ -741,15 +741,15 @@ Results:
 
 <!--
 ## Export the SSH configuration for use with SSH clients that support OpenSSH
-Login to Azure Linux VMs with Azure AD supports exporting the OpenSSH certificate and configuration. That means you can use any SSH clients that support OpenSSH-based certificates to sign in through Azure AD. The following example exports the configuration for all IP addresses assigned to the VM:
+Login to Azure Linux VMs with Microsoft Entra ID supports exporting the OpenSSH certificate and configuration. That means you can use any SSH clients that support OpenSSH-based certificates to sign in through Microsoft Entra ID. The following example exports the configuration for all IP addresses assigned to the VM:
 ```bash
 az ssh config --file ~/.ssh/azure-config --name $MY_VM_NAME --resource-group $MY_RESOURCE_GROUP_NAME
 ```
 -->
 
-## Aktivera Azure AD-inloggning för en virtuell Linux-dator i Azure
+## Aktivera Microsoft Entra-ID-inloggning för en virtuell Linux-dator i Azure
 
-Följande installerar tillägget för att aktivera Azure AD-inloggning för en virtuell Linux-dator. VM-tillägg är små program som tillhandahåller konfigurations- och automatiseringsuppgifter efter distributionen på virtuella Azure-datorer.
+Följande installerar tillägget för att aktivera Microsoft Entra-ID-inloggning för en virtuell Linux-dator. VM-tillägg är små program som tillhandahåller konfigurations- och automatiseringsuppgifter efter distributionen på virtuella Azure-datorer.
 
 ```bash
 az vm extension set \
@@ -787,7 +787,7 @@ Resultat:
 
 ## Kontrollera och bläddra på din WordPress-webbplats
 
-[WordPress](https://www.wordpress.org) är ett system för innehållshantering med öppen källkod (CMS) som används av över 40 % av webben för att skapa webbplatser, bloggar och andra program. WordPress kan köras på några olika Azure-tjänster: [AKS](../../mysql/flexible-server/tutorial-deploy-wordpress-on-aks.md), Virtuella datorer och App Service. En fullständig lista över WordPress-alternativ i Azure finns [i WordPress på Azure Marketplace](https://azuremarketplace.microsoft.com/marketplace/apps?page=1&search=wordpress).
+[WordPress](https://www.wordpress.org) är ett öppen källkod innehållshanteringssystem (CMS) som används av över 40 % av webben för att skapa webbplatser, bloggar och andra program. WordPress kan köras på några olika Azure-tjänster: [AKS](/azure/mysql/flexible-server/tutorial-deploy-wordpress-on-aks), Virtuella datorer och App Service. En fullständig lista över WordPress-alternativ i Azure finns [i WordPress på Azure Marketplace](https://azuremarketplace.microsoft.com/marketplace/apps?page=1&search=wordpress).
 
 Den här WordPress-installationen är endast avsedd för ”Proof of concept”. Om du vill installera senaste WordPress i produktion med rekommenderade säkerhetsinställningar läser du [WordPress-dokumentationen](https://codex.wordpress.org/Main_Page).
 

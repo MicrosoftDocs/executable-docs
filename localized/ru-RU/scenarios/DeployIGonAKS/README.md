@@ -10,7 +10,7 @@ ms.custom: innovation-engine
 
 # Краткое руководство. Развертывание гаджета Inspektor в кластере Служба Azure Kubernetes
 
-[![Развертывание в Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262844)
+[![Развертывание в Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2276309)
 
 Добро пожаловать в это руководство, где мы пошаговые инструкции по развертыванию [Inspektor Gadget](https://www.inspektor-gadget.io/) в кластере Служба Azure Kubernetes (AKS) с подключаемым модулем kubectl: `gadget` В этом руководстве предполагается, что вы уже вошли в Azure CLI и выбрали подписку для использования с интерфейсом командной строки.
 

@@ -10,8 +10,6 @@ ms.custom: 'H1Hack27Feb2017, mvc, devcenter, devx-track-azurecli, mode-api, inno
 
 # 快速入门：使用 Azure CLI 部署 Azure Kubernetes 服务 (AKS) 群集
 
-[![部署到 Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262758)
-
 Azure Kubernetes 服务 (AKS) 是可用于快速部署和管理群集的托管式 Kubernetes 服务。 此快速入门介绍如何：
 
 - 使用 Azure CLI 部署 AKS 群集。

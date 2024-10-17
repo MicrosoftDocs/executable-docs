@@ -3,7 +3,7 @@ title: 'Szybki start: tworzenie pierwszej statycznej witryny przy użyciu usług
 description: 'Dowiedz się, jak wdrożyć statyczną witrynę w usłudze Azure Static Web Apps przy użyciu interfejsu wiersza polecenia platformy Azure.'
 services: static-web-apps
 author: craigshoemaker
-ms.service: static-web-apps
+ms.service: azure-static-web-apps
 ms.topic: quickstart
 ms.date: 03/21/2024
 ms.author: cshoe
@@ -13,7 +13,7 @@ ms.devlang: azurecli
 
 # Szybki start: tworzenie pierwszej witryny statycznej przy użyciu interfejsu wiersza polecenia platformy Azure
 
-[![Wdróż na platformie Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262845)
+[![Wdróż na platformie Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2286315)
 
 Usługa Azure Static Web Apps publikuje witryny internetowe w środowisku produkcyjnym, tworząc aplikacje z repozytorium kodu.
 

@@ -3,7 +3,7 @@ title: 'Hızlı Başlangıç: CLI kullanarak Azure Static Web Apps ile ilk stati
 description: Azure CLI ile Azure Static Web Apps'e statik site dağıtmayı öğrenin.
 services: static-web-apps
 author: craigshoemaker
-ms.service: static-web-apps
+ms.service: azure-static-web-apps
 ms.topic: quickstart
 ms.date: 03/21/2024
 ms.author: cshoe
@@ -13,7 +13,7 @@ ms.devlang: azurecli
 
 # Hızlı Başlangıç: Azure CLI kullanarak ilk statik sitenizi oluşturma
 
-[![Azure’a dağıtın](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262845)
+[![Azure’a dağıtın](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2286315)
 
 Azure Static Web Apps, bir kod deposundan uygulama oluşturarak web sitelerini üretim ortamında yayımlar.
 
@@ -136,7 +136,7 @@ GitHub şablon deposunu kullanmak istiyorsanız şu adımları izleyin:
 
 https://github.com/login/device GitHub kişisel erişim belirtecinizi etkinleştirmek ve almak için GitHub'dan aldığınız kodu girin.
 
-1. Şuraya git: https://github.com/login/device.
+1. Şuraya git: https://github.com/login/device .
 2. Konsolunuzun iletisinin görüntülendiği kullanıcı kodunu girin.
 3. `Continue` öğesini seçin.
 4. `Authorize AzureAppServiceCLI` öğesini seçin.

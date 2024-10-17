@@ -14,7 +14,7 @@ ms.custom: 'vc, devx-track-azurecli, innovation-engine, linux-related-content'
 
 [!INCLUDE[applies-to-mysql-flexible-server](../includes/applies-to-mysql-flexible-server.md)]
 
-[![Развертывание в Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262843)
+[![Развертывание в Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2286232)
 
 В этом руководстве вы развернете масштабируемое приложение WordPress, защищенное через HTTPS, в кластере Служба Azure Kubernetes (AKS) с База данных Azure для MySQL гибким сервером с помощью Azure CLI.
 **[AKS](../../aks/intro-kubernetes.md)**  — это управляемая служба Kubernetes, которая позволяет быстро развертывать кластеры и управлять ими. **[гибкий сервер](overview.md)** База данных Azure для MySQL — это полностью управляемая служба базы данных, предназначенная для более детального управления и гибкости функций управления базами данных и параметров конфигурации.
