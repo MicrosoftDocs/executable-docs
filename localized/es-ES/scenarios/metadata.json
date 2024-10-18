@@ -565,5 +565,17 @@
         "configurations": {
             "region": "eastus"
         }
+    },
+    {
+        "status": "active",
+        "key": "azure-aks-docs/articles/aks/deploy-postgresql-ha.md",
+        "title": "Implementaci\u00f3n de una base de datos PostgreSQL de alta disponibilidad en AKS con la CLI de Azure",
+        "description": "En este art\u00edculo, implementar\u00e1 una base de datos PostgreSQL de alta disponibilidad en AKS mediante el operador CloudNativePG.",
+        "stackDetails": "",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/localized/es-ES/scenarios/azure-aks-docs/articles/aks/deploy-postgresql-ha.md",
+        "documentationUrl": "",
+        "configurations": {
+            "region": ""
+        }
     }
 ]

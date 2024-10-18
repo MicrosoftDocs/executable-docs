@@ -565,5 +565,17 @@
         "configurations": {
             "region": "eastus"
         }
+    },
+    {
+        "status": "active",
+        "key": "azure-aks-docs/articles/aks/deploy-postgresql-ha.md",
+        "title": "Wdra\u017canie bazy danych PostgreSQL o wysokiej dost\u0119pno\u015bci w us\u0142udze AKS przy u\u017cyciu interfejsu wiersza polecenia platformy Azure",
+        "description": "W tym artykule wdro\u017cysz baz\u0119 danych PostgreSQL o wysokiej dost\u0119pno\u015bci w us\u0142udze AKS przy u\u017cyciu operatora CloudNativePG.",
+        "stackDetails": "",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/localized/pl-PL/scenarios/azure-aks-docs/articles/aks/deploy-postgresql-ha.md",
+        "documentationUrl": "",
+        "configurations": {
+            "region": ""
+        }
     }
 ]
