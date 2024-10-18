@@ -565,5 +565,17 @@
         "configurations": {
             "region": "eastus"
         }
+    },
+    {
+        "status": "active",
+        "key": "azure-aks-docs/articles/aks/deploy-postgresql-ha.md",
+        "title": "\u4f7f\u7528 Azure CLI \u5728 AKS \u4e0a\u90e8\u7f72\u9ad8\u53ef\u7528\u6027 PostgreSQL \u8cc7\u6599\u5eab",
+        "description": "\u5728\u672c\u6587\u4e2d\uff0c\u60a8\u6703\u4f7f\u7528 CloudNativePG \u904b\u7b97\u5b50\uff0c\u5728 AKS \u4e0a\u90e8\u7f72\u9ad8\u53ef\u7528\u6027 PostgreSQL \u8cc7\u6599\u5eab\u3002",
+        "stackDetails": "",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/localized/zh-TW/scenarios/azure-aks-docs/articles/aks/deploy-postgresql-ha.md",
+        "documentationUrl": "",
+        "configurations": {
+            "region": ""
+        }
     }
 ]
