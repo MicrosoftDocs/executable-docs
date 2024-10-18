@@ -565,5 +565,17 @@
         "configurations": {
             "region": "eastus"
         }
+    },
+    {
+        "status": "active",
+        "key": "azure-aks-docs/articles/aks/learn/quick-kubernetes-deploy-cli.md",
+        "title": "R\u00f6vid \u00fatmutat\u00f3: Azure Kubernetes Service- (AKS-) f\u00fcrt \u00fczembe helyez\u00e9se az Azure CLI haszn\u00e1lat\u00e1val",
+        "description": "Megtudhatja, hogyan helyezhet \u00fczembe gyorsan egy Kubernetes-f\u00fcrt\u00f6t, \u00e9s hogyan helyezhet \u00fczembe alkalmaz\u00e1sokat az Azure Kubernetes Service-ben (AKS) az Azure CLI haszn\u00e1lat\u00e1val.",
+        "stackDetails": "",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/localized/hu-HU/scenarios/azure-aks-docs/articles/aks/learn/quick-kubernetes-deploy-cli.md",
+        "documentationUrl": "",
+        "configurations": {
+            "region": "westeurope"
+        }
     }
 ]
