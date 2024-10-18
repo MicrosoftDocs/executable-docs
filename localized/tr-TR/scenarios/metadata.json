@@ -565,5 +565,17 @@
         "configurations": {
             "region": "eastus"
         }
+    },
+    {
+        "status": "active",
+        "key": "azure-aks-docs/articles/aks/postgresql-ha-overview.md",
+        "title": "Azure CLI ile AKS'de y\u00fcksek oranda kullan\u0131labilir bir PostgreSQL veritaban\u0131 da\u011f\u0131tmaya genel bak\u0131\u015f",
+        "description": "CloudNativePG i\u015flecini kullanarak AKS'de y\u00fcksek oranda kullan\u0131labilir bir PostgreSQL veritaban\u0131 da\u011f\u0131tmay\u0131 \u00f6\u011frenin.",
+        "stackDetails": "",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/localized/tr-TR/scenarios/azure-aks-docs/articles/aks/postgresql-ha-overview.md",
+        "documentationUrl": "",
+        "configurations": {
+            "region": ""
+        }
     }
 ]

@@ -565,5 +565,17 @@
         "configurations": {
             "region": "eastus"
         }
+    },
+    {
+        "status": "active",
+        "key": "azure-aks-docs/articles/aks/postgresql-ha-overview.md",
+        "title": "Overzicht van het implementeren van een maximaal beschikbare PostgreSQL-database op AKS met Azure CLI",
+        "description": "Meer informatie over het implementeren van een maximaal beschikbare PostgreSQL-database op AKS met behulp van de CloudNativePG-operator.",
+        "stackDetails": "",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/localized/nl-NL/scenarios/azure-aks-docs/articles/aks/postgresql-ha-overview.md",
+        "documentationUrl": "",
+        "configurations": {
+            "region": ""
+        }
     }
 ]
