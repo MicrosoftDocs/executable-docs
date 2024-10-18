@@ -565,5 +565,17 @@
         "configurations": {
             "region": "eastus"
         }
+    },
+    {
+        "status": "active",
+        "key": "azure-aks-docs/articles/aks/learn/quick-kubernetes-deploy-cli.md",
+        "title": "Szybki start: wdra\u017canie klastra us\u0142ugi Azure Kubernetes Service (AKS) przy u\u017cyciu interfejsu wiersza polecenia platformy Azure",
+        "description": "Dowiedz si\u0119, jak szybko wdro\u017cy\u0107 klaster Kubernetes i wdro\u017cy\u0107 aplikacj\u0119 w us\u0142udze Azure Kubernetes Service (AKS) przy u\u017cyciu interfejsu wiersza polecenia platformy Azure.",
+        "stackDetails": "",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/localized/pl-PL/scenarios/azure-aks-docs/articles/aks/learn/quick-kubernetes-deploy-cli.md",
+        "documentationUrl": "",
+        "configurations": {
+            "region": "westeurope"
+        }
     }
 ]
