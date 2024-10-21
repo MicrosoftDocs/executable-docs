@@ -9,16 +9,6 @@ ms.author: schaffererin
 
 ---
 
-## Quickstart: Create a Linux virtual machine with the Azure CLI on Azure
-
-**Applies to:** :heavy_check_mark: Linux VMs
-
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262692)
-
-This quickstart shows you how to use the Azure CLI to deploy a Linux virtual machine (VM) in Azure. The Azure CLI is used to create and manage Azure resources via either the command line or scripts.
-
-If you don't have an Azure subscription, create a [free account](https://azure.microsoft.com/free/?WT.mc_id=A261C142F) before you begin.
-
 ## Deploy an AI model on Azure Kubernetes Service (AKS) with the AI toolchain operator (preview)
 
 The AI toolchain operator (KAITO) is a managed add-on for AKS that simplifies the experience of running OSS AI models on your AKS clusters. The AI toolchain operator automatically provisions the necessary GPU nodes and sets up the associated inference server as an endpoint server to your AI models. Using this add-on reduces your onboarding time and enables you to focus on AI model usage and development rather than infrastructure setup.
