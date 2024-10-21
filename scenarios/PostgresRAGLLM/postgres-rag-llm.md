@@ -8,29 +8,19 @@ ms.author: ariaamini
 ms.custom: innovation-engine, linux-related-content 
 ---
 
-# Quickstart: Create a Linux virtual machine with the Azure CLI on Azure
+## Introduction
 
-**Applies to:** :heavy_check_mark: Linux VMs
-
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262692)
-
-This quickstart shows you how to use the Azure CLI to deploy a Linux virtual machine (VM) in Azure. The Azure CLI is used to create and manage Azure resources via either the command line or scripts.
-
-If you don't have an Azure subscription, create a [free account](https://azure.microsoft.com/free/?WT.mc_id=A261C142F) before you begin.
-
-## Launch Azure Cloud Shell
-
-The Azure Cloud Shell is a free interactive shell that you can use to run the steps in this article. It has common Azure tools preinstalled and configured to use with your account. 
-
-To open the Cloud Shell, just select **Try it** from the upper right corner of a code block. You can also open Cloud Shell in a separate browser tab by going to [https://shell.azure.com/bash](https://shell.azure.com/bash). Select **Copy** to copy the blocks of code, paste it into the Cloud Shell, and select **Enter** to run it.
-
-If you prefer to install and use the CLI locally, this quickstart requires Azure CLI version 2.0.30 or later. Run `az --version` to find the version. If you need to install or upgrade, see [Install Azure CLI]( /cli/azure/install-azure-cli).
-
-## Log in to Azure using the CLI
-
-In order to run commands in Azure using the CLI, you need to log in first. Log in using the `az login` command.
+In this doc, we go over how to host the infrastructure required to run a basic LLM model with RAG capabilities on Azure.
+We first set up a Postgres database capable of storing vector embeddings for documents/knowledge files that we want to use to
+augment our queries. We then create an Azure OpenAI deployment capable of generating embeddings and answering questions using the latest 'gpt-4-turbo' model.
+We then use a python script to fill our postgres database with embeddings from a sample "knowledge.txt" file containing information about an imaginary
+resource called 'Zytonium'. Once the database is filled with those embeddings, we use the same python script to answer any
+questions we have about 'Zytonium'. The script will search the database for relevant information for our query using an embeddings search and
+then augment our query with that relevant information before being sent our LLM to answer.
 
 ## Set up resource group
+
+Set up a resource group with a random ID.
 
 ```bash
 export RANDOM_ID="$(openssl rand -hex 3)"
@@ -39,10 +29,56 @@ export REGION="centralus"
 
 az group create \
     --name $RG_NAME \
-    --location $REGION 
+    --location $REGION \
+```
+
+## Create OpenAI resources
+
+Create the openai resource
+
+```bash
+export OPEN_AI_SERVICE_NAME="openai-service-$RANDOM_ID"
+export EMBEDDING_MODEL="text-embedding-ada-002"
+export CHAT_MODEL="gpt-4-turbo-2024-04-09"
+
+az cognitiveservices account create \
+    --name $OPEN_AI_SERVICE_NAME \
+    --resource-group $RG_NAME \
+    --location westus \
+    --kind OpenAI \
+    --sku s0 \
+```
+
+## Create OpenAI deployments
+
+```bash
+export EMBEDDING_MODEL="text-embedding-ada-002"
+export CHAT_MODEL="gpt-4"
+
+az cognitiveservices account deployment create \
+    --name $OPEN_AI_SERVICE_NAME \
+    --resource-group  $RG_NAME \
+    --deployment-name $EMBEDDING_MODEL \
+    --model-name $EMBEDDING_MODEL \
+    --model-version "2"  \
+    --model-format OpenAI \
+    --sku-capacity "1" \
+    --sku-name "Standard"
+
+az cognitiveservices account deployment create \
+    --name $OPEN_AI_SERVICE_NAME \
+    --resource-group  $RG_NAME \
+    --deployment-name $CHAT_MODEL \
+    --model-name $CHAT_MODEL \
+    --model-version "turbo-2024-04-09" \
+    --model-format OpenAI \
+    --sku-capacity "1" \
+    --sku-name "Standard"
 ```
 
 ## Create Database
+
+Create an Azure postgres database.
 
 ```bash
 export POSTGRES_SERVER_NAME="mydb$RANDOM_ID"
@@ -66,10 +102,15 @@ az postgres flexible-server create \
     --version 16 \
     --yes -o JSON \
     --public-access 0.0.0.0
+```
 
+## Enable postgres vector extension
+
+Set up the vector extension for postgres to allow storing vectors/embeddings.
+
+```bash
 az postgres flexible-server parameter set \
     --resource-group $RG_NAME \
-    --subscription $SUBSCRIPTION_ID \
     --server-name $POSTGRES_SERVER_NAME \
     --name azure.extensions --value vector
 
@@ -80,46 +121,29 @@ psql \
     -c "CREATE INDEX ON embeddings USING hnsw (embedding vector_ip_ops);"
 ```
 
-## Set up OpenAI resource
+## Populate with data from knowledge file
+
+The chat bot uses a local file called "knowledge.txt" as the sample document to generate embeddings for
+and to store those embeddings in the newly created postgres database. Then any questions you ask will
+be augmented with context from the "knowledge.txt" after searching the document for the most relevant
+pieces of context using the embeddings. The "knowledge.txt" is about a fictional material called Zytonium.
+You can view the full knowledge.txt and the code for the chatbot by looking in the "scenarios/PostgresRagLlmDemo" directory.
 
 ```bash
-export OPEN_AI_SERVICE_NAME="openai-service-$RANDOM_ID"
-export EMBEDDING_MODEL="text-embedding-ada-002"
-export CHAT_MODEL="gpt-4-turbo-2024-04-09"
+export ENDPOINT=$(az cognitiveservices account show --name $OPEN_AI_SERVICE_NAME --resource-group $RG_NAME | jq -r .properties.endpoint)
+export API_KEY=$(az cognitiveservices account keys list --name $OPEN_AI_SERVICE_NAME --resource-group $RG_NAME | jq -r .key1)
 
-az cognitiveservices account create \
-    --name $OPEN_AI_SERVICE_NAME \
-    --resource-group $RG_NAME \
-    --location $REGION \
-    --kind OpenAI \
-    --sku s0 \
-    --subscription $SUBSCRIPTION_ID
-
-az cognitiveservices account deployment create \
-    --name $OPEN_AI_SERVICE_NAME \
-    --resource-group  $RG_NAME \
-    --deployment-name $EMBEDDING_MODEL \
-    --model-name $EMBEDDING_MODEL \
-    --model-version "1"  \
-    --model-format OpenAI \
-    --sku-capacity "1" \
-    --sku-name "Standard"
-
-az cognitiveservices account deployment create \
-    --name $OPEN_AI_SERVICE_NAME \
-    --resource-group  $RG_NAME \
-    --deployment-name $CHAT_MODEL \
-    --model-name $CHAT_MODEL \
-    --model-version "0125-Preview" \
-    --model-format OpenAI \
-    --sku-capacity "1" \
-    --sku-name "Standard"
+cd ~/scenarios/PostgresRagLlmDemo
+pip install -r requirements.txt
+python chat.py --populate --api-key $API_KEY --endpoint $ENDPOINT --pguser $PGUSER --phhost $PGHOST --pgpassword $PGPASSWORD --pgdatabase $PGDATABASE
 ```
 
-## Clone and run chatbot code
+## Run Chat bot
+
+This final step prints out the command you can copy/paste into the terminal to run the chatbot. `cd ~/scenarios/PostgresRagLlmDemo && python chat.py --api-key $API_KEY --endpoint $ENDPOINT --pguser $PGUSER --phhost $PGHOST --pgpassword $PGPASSWORD --pgdatabase $PGDATABASE`
 
 ```bash
-git clone https://github.com/aamini7/postgres-rag-llm-demo
-pip install -r requirements
-python chat.py --populate
+echo "
+To run the chatbot, see the last step for more info.
+"
 ```
