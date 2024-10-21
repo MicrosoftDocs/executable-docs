@@ -465,5 +465,17 @@
         "configurations": {
             "region": "westeurope"
         }
+    },
+    {
+        "status": "inactive",
+        "key": "PostgresRagLlmDemo/README.md",
+        "title": "Quickstart: Deploy a Postgres vector database",
+        "description": "Setup a Postgres vector database and openai resources to run a RAG-LLM model",
+        "stackDetails": "",
+        "sourceUrl": "https://raw.githubusercontent.com/aamini7/postgres-rag-llm-demo/main/README.md",
+        "documentationUrl": "",
+        "configurations": {
+            "region": "centralus"
+        }
     }
 ]
