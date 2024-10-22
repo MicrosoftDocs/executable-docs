@@ -108,29 +108,15 @@ Configure `kubectl` to connect to your cluster using the [az aks get-credentials
 az aks get-credentials --resource-group ${AZURE_RESOURCE_GROUP} --name ${CLUSTER_NAME}
 ```
 
-## Create role assignment for the service principal
+## Establish a federated identity credential
+
+Create the federated identity credential between the managed identity, AKS OIDC issuer, and subject using the [az identity federated-credential create](https://learn.microsoft.com/en-us/cli/azure/identity/federated-credential?view=azure-cli-latest) command.
 
 ```bash
 export MC_RESOURCE_GROUP=$(az aks show --resource-group ${AZURE_RESOURCE_GROUP} \
     --name ${CLUSTER_NAME} \
     --query nodeResourceGroup \
     -o tsv)
-
-export PRINCIPAL_ID=$(az identity show --name "ai-toolchain-operator-${CLUSTER_NAME}" \
-    --resource-group "${MC_RESOURCE_GROUP}" \
-    --query 'principalId' \
-    -o tsv)
-
-az role assignment create --role "Contributor" \
-    --assignee "${PRINCIPAL_ID}" \
-    --scope "/subscriptions/${SUBSCRIPTION_ID}/resourcegroups/${AZURE_RESOURCE_GROUP}"
-```
-
-## Establish a federated identity credential
-
-Create the federated identity credential between the managed identity, AKS OIDC issuer, and subject using the [az identity federated-credential create](https://learn.microsoft.com/en-us/cli/azure/identity/federated-credential?view=azure-cli-latest) command.
-
-```bash
 export KAITO_IDENTITY_NAME="ai-toolchain-operator-${CLUSTER_NAME}"
 export AKS_OIDC_ISSUER=$(az aks show --resource-group "${AZURE_RESOURCE_GROUP}" \
     --name "${CLUSTER_NAME}" \
