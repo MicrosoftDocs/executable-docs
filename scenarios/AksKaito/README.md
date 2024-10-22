@@ -45,7 +45,6 @@ export RANDOM_ID="$(openssl rand -hex 3)"
 export AZURE_RESOURCE_GROUP="myKaitoResourceGroup$RANDOM_ID"
 export REGION="centralus"
 export CLUSTER_NAME="myClusterName$RANDOM_ID"
-export SUBSCRIPTION_ID="0c8875c7-e423-4caa-827a-1f0350bd8dd3"
 
 az group create \
     --name $AZURE_RESOURCE_GROUP \
@@ -117,13 +116,6 @@ export MC_RESOURCE_GROUP=$(az aks show --resource-group ${AZURE_RESOURCE_GROUP} 
     --query nodeResourceGroup \
     -o tsv)
 
-export KAITO_IDENTITY_NAME="ai-toolchain-operator-${CLUSTER_NAME}"
-
-export AKS_OIDC_ISSUER=$(az aks show --resource-group "${AZURE_RESOURCE_GROUP}" \
-    --name "${CLUSTER_NAME}" \
-    --query "oidcIssuerProfile.issuerUrl" \
-    -o tsv)
-
 export PRINCIPAL_ID=$(az identity show --name "ai-toolchain-operator-${CLUSTER_NAME}" \
     --resource-group "${MC_RESOURCE_GROUP}" \
     --query 'principalId' \
@@ -139,6 +131,12 @@ az role assignment create --role "Contributor" \
 Create the federated identity credential between the managed identity, AKS OIDC issuer, and subject using the [az identity federated-credential create](https://learn.microsoft.com/en-us/cli/azure/identity/federated-credential?view=azure-cli-latest) command.
 
 ```bash
+export KAITO_IDENTITY_NAME="ai-toolchain-operator-${CLUSTER_NAME}"
+export AKS_OIDC_ISSUER=$(az aks show --resource-group "${AZURE_RESOURCE_GROUP}" \
+    --name "${CLUSTER_NAME}" \
+    --query "oidcIssuerProfile.issuerUrl" \
+    -o tsv)
+
 az identity federated-credential create --name "kaito-federated-identity" \
     --identity-name "${KAITO_IDENTITY_NAME}" \
     -g "${MC_RESOURCE_GROUP}" \
