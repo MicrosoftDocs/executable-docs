@@ -565,5 +565,17 @@
         "configurations": {
             "region": "eastus"
         }
+    },
+    {
+        "status": "active",
+        "key": "azure-aks-docs/articles/aks/deploy-postgresql-ha.md",
+        "title": "Magas rendelkez\u00e9sre \u00e1ll\u00e1s\u00fa PostgreSQL-adatb\u00e1zis \u00fczembe helyez\u00e9se az AKS-ben az Azure CLI-vel",
+        "description": "Ebben a cikkben egy magas rendelkez\u00e9sre \u00e1ll\u00e1s\u00fa PostgreSQL-adatb\u00e1zist helyez \u00fczembe az AKS-en a CloudNativePG oper\u00e1tor haszn\u00e1lat\u00e1val.",
+        "stackDetails": "",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/localized/hu-HU/scenarios/azure-aks-docs/articles/aks/deploy-postgresql-ha.md",
+        "documentationUrl": "",
+        "configurations": {
+            "region": ""
+        }
     }
 ]
