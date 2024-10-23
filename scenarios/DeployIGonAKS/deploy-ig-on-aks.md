@@ -14,22 +14,14 @@ ms.custom: innovation-engine
 
 Welcome to this tutorial where we will take you step by step in deploying [Inspektor Gadget](https://www.inspektor-gadget.io/) in an Azure Kubernetes Service (AKS) cluster with the kubectl plugin: `gadget`. This tutorial assumes you are logged into Azure CLI already and have selected a subscription to use with the CLI.
 
-## Define Environment Variables
-
-The First step in this tutorial is to define environment variables:
-
-```bash
-export RANDOM_ID="$(openssl rand -hex 3)"
-export MY_RESOURCE_GROUP_NAME="myResourceGroup$RANDOM_ID"
-export REGION="eastus"
-export MY_AKS_CLUSTER_NAME="myAKSCluster$RANDOM_ID"
-```
-
 ## Create a resource group
 
 A resource group is a container for related resources. All resources must be placed in a resource group. We will create one for this tutorial. The following command creates a resource group with the previously defined $MY_RESOURCE_GROUP_NAME and $REGION parameters.
 
 ```bash
+export RANDOM_ID="$(openssl rand -hex 3)"
+export MY_RESOURCE_GROUP_NAME="myResourceGroup$RANDOM_ID"
+export REGION="eastus"
 az group create --name $MY_RESOURCE_GROUP_NAME --location $REGION
 ```
 
@@ -57,6 +49,7 @@ Create an AKS cluster using the az aks create command.
 This will take a few minutes.
 
 ```bash
+export MY_AKS_CLUSTER_NAME="myAKSCluster$RANDOM_ID"
 az aks create \
   --resource-group $MY_RESOURCE_GROUP_NAME \
   --name $MY_AKS_CLUSTER_NAME \

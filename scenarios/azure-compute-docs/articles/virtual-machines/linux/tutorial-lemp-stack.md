@@ -30,41 +30,9 @@ This article walks you through how to deploy an NGINX web server, Azure MySQL Fl
 > * Install WordPress
 This setup is for quick tests or proof of concept. For more on the LEMP stack, including recommendations for a production environment, see the [Ubuntu documentation](https://help.ubuntu.com/community/ApacheMySQLPHP).
 
-This tutorial uses the CLI within the [Azure Cloud Shell](../../cloud-shell/overview.md), which is constantly updated to the latest version. To open the Cloud Shell, select **Try it** from the top of any code block.
+This tutorial uses the CLI within the [Azure Cloud Shell](/azure/cloud-shell/overview), which is constantly updated to the latest version. To open the Cloud Shell, select **Try it** from the top of any code block.
 
 If you choose to install and use the CLI locally, this tutorial requires that you're running the Azure CLI version 2.0.30 or later. Find the version by running the `az --version` command. If you need to install or upgrade, see [Install Azure CLI]( /cli/azure/install-azure-cli).
-
-## Variable declaration
-
-First we need to define a few variables that help with the configuration of the LEMP workload.
-
-```bash
-export NETWORK_PREFIX="$(($RANDOM % 254 + 1))"
-export RANDOM_ID="$(openssl rand -hex 3)"
-export MY_RESOURCE_GROUP_NAME="myLEMPResourceGroup$RANDOM_ID"
-export REGION="westeurope"
-export MY_VM_NAME="myVM$RANDOM_ID"
-export MY_VM_USERNAME="azureadmin"
-export MY_VM_SIZE='Standard_DS2_v2'
-export MY_VM_IMAGE='Canonical:0001-com-ubuntu-minimal-jammy:minimal-22_04-lts-gen2:latest'
-export MY_PUBLIC_IP_NAME="myPublicIP$RANDOM_ID"
-export MY_DNS_LABEL="mydnslabel$RANDOM_ID"
-export MY_NSG_NAME="myNSG$RANDOM_ID"
-export MY_NSG_SSH_RULE="Allow-Access$RANDOM_ID"
-export MY_VM_NIC_NAME="myVMNic$RANDOM_ID"
-export MY_VNET_NAME="myVNet$RANDOM_ID"
-export MY_VNET_PREFIX="10.$NETWORK_PREFIX.0.0/22"
-export MY_SN_NAME="mySN$RANDOM_ID"
-export MY_SN_PREFIX="10.$NETWORK_PREFIX.0.0/24"
-export MY_MYSQL_DB_NAME="mydb$RANDOM_ID"
-export MY_MYSQL_ADMIN_USERNAME="dbadmin$RANDOM_ID"
-export MY_MYSQL_ADMIN_PW="$(openssl rand -base64 32)"
-export MY_MYSQL_SN_NAME="myMySQLSN$RANDOM_ID"
-export MY_WP_ADMIN_PW="$(openssl rand -base64 32)"
-export MY_WP_ADMIN_USER="wpcliadmin"
-export MY_AZURE_USER=$(az account show --query user.name --output tsv)
-export FQDN="${MY_DNS_LABEL}.${REGION}.cloudapp.azure.com"
-```
 
 <!--
 ```bash
@@ -78,6 +46,9 @@ Create a resource group with the [az group create](/cli/azure/group#az-group-cre
 The following example creates a resource group named `$MY_RESOURCE_GROUP_NAME` in the `eastus` location.
 
 ```bash
+export RANDOM_ID="$(openssl rand -hex 3)"
+export MY_RESOURCE_GROUP_NAME="myLEMPResourceGroup$RANDOM_ID"
+export REGION="westeurope"
 az group create \
     --name $MY_RESOURCE_GROUP_NAME \
     --location $REGION -o JSON
@@ -108,6 +79,11 @@ A virtual network is the fundamental building block for private networks in Azur
 Use [az network vnet create](/cli/azure/network/vnet#az-network-vnet-create) to create a virtual network named `$MY_VNET_NAME` with a subnet named `$MY_SN_NAME` in the `$MY_RESOURCE_GROUP_NAME` resource group.
 
 ```bash
+export NETWORK_PREFIX="$(($RANDOM % 254 + 1))"
+export MY_VNET_NAME="myVNet$RANDOM_ID"
+export MY_VNET_PREFIX="10.$NETWORK_PREFIX.0.0/22"
+export MY_SN_NAME="mySN$RANDOM_ID"
+export MY_SN_PREFIX="10.$NETWORK_PREFIX.0.0/24"
 az network vnet create \
     --name $MY_VNET_NAME \
     --resource-group $MY_RESOURCE_GROUP_NAME \
@@ -158,8 +134,10 @@ Results:
 Use [az network public-ip create](/cli/azure/network/public-ip#az-network-public-ip-create) to create a standard zone-redundant public IPv4 address named `MY_PUBLIC_IP_NAME` in `$MY_RESOURCE_GROUP_NAME`.
 
 >[!NOTE]
->The below options for zones are only valid selections in regions with [Availability Zones](../../reliability/availability-zones-service-support.md).
+>The below options for zones are only valid selections in regions with [Availability Zones](/azure/reliability/availability-zones-service-support).
 ```bash
+export MY_PUBLIC_IP_NAME="myPublicIP$RANDOM_ID"
+export MY_DNS_LABEL="mydnslabel$RANDOM_ID"
 az network public-ip create \
     --name $MY_PUBLIC_IP_NAME \
     --location $REGION \
@@ -209,9 +187,10 @@ Results:
 
 ## Create an Azure Network Security Group
 
-Security rules in network security groups enable you to filter the type of network traffic that can flow in and out of virtual network subnets and network interfaces. To learn more about network security groups, see [Network security group overview](../../virtual-network/network-security-groups-overview.md).
+Security rules in network security groups enable you to filter the type of network traffic that can flow in and out of virtual network subnets and network interfaces. To learn more about network security groups, see [Network security group overview](/azure/virtual-network/network-security-groups-overview).
 
 ```bash
+export MY_NSG_NAME="myNSG$RANDOM_ID"
 az network nsg create \
     --name $MY_NSG_NAME \
     --resource-group $MY_RESOURCE_GROUP_NAME \
@@ -261,6 +240,7 @@ Results:
 Create a rule to allow connections to the virtual machine on port 22 for SSH and ports 80, 443 for HTTP and HTTPS. An extra rule is created to allow all ports for outbound connections. Use [az network nsg rule create](/cli/azure/network/nsg/rule#az-network-nsg-rule-create) to create a network security group rule.
 
 ```bash
+export MY_NSG_SSH_RULE="Allow-Access$RANDOM_ID"
 az network nsg rule create \
     --resource-group $MY_RESOURCE_GROUP_NAME \
     --nsg-name $MY_NSG_NAME \
@@ -308,6 +288,7 @@ Results:
 Use [az network nic create](/cli/azure/network/nic#az-network-nic-create) to create the network interface for the virtual machine. The public IP addresses and the NSG created previously are associated with the NIC. The network interface is attached to the virtual network you created previously.
 
 ```bash
+export MY_VM_NIC_NAME="myVMNic$RANDOM_ID"
 az network nic create \
     --resource-group $MY_RESOURCE_GROUP_NAME \
     --name $MY_VM_NIC_NAME \
@@ -381,6 +362,14 @@ We're working with our partners to get cloud-init included and working in the im
 To see cloud-init in action, create a VM that installs a LEMP stack and runs a simple Wordpress app secured with an SSL certificate. The following cloud-init configuration installs the required packages, creates the Wordpress website, then initialize and starts the website.
 
 ```bash
+export MY_MYSQL_DB_NAME="mydb$RANDOM_ID"
+export MY_MYSQL_ADMIN_USERNAME="dbadmin$RANDOM_ID"
+export MY_MYSQL_ADMIN_PW="$(openssl rand -base64 32)"
+export MY_WP_ADMIN_PW="$(openssl rand -base64 32)"
+export MY_WP_ADMIN_USER="wpcliadmin"
+export MY_AZURE_USER=$(az account show --query user.name --output tsv)
+export FQDN="${MY_DNS_LABEL}.${REGION}.cloudapp.azure.com"
+
 cat << EOF > cloud-init.txt
 #cloud-config
 # Install, update, and upgrade packages
@@ -526,6 +515,7 @@ Results:
 Azure Database for MySQL - Flexible Server is a managed service that you can use to run, manage, and scale highly available MySQL servers in the cloud. Create a flexible server with the [az mysql flexible-server create](/azure/mysql/flexible-server/quickstart-create-server-cli#create-an-azure-database-for-mysql-flexible-server) command. A server can contain multiple databases. The following command creates a server using service defaults and variable values from your Azure CLI's local environment:
 
 ```bash
+export MY_MYSQL_SN_NAME="myMySQLSN$RANDOM_ID"
 az mysql flexible-server create \
     --admin-password $MY_MYSQL_ADMIN_PW \
     --admin-user $MY_MYSQL_ADMIN_USERNAME \
@@ -648,6 +638,10 @@ To improve the security of Linux virtual machines in Azure, you can integrate wi
 Create a VM with the [az vm create](/cli/azure/vm#az-vm-create) command.
 
 ```bash
+export MY_VM_NAME="myVM$RANDOM_ID"
+export MY_VM_USERNAME="azureadmin"
+export MY_VM_SIZE='Standard_DS2_v2'
+export MY_VM_IMAGE='Canonical:0001-com-ubuntu-minimal-jammy:minimal-22_04-lts-gen2:latest'
 az vm create \
     --name $MY_VM_NAME \
     --resource-group $MY_RESOURCE_GROUP_NAME \
