@@ -565,5 +565,17 @@
         "configurations": {
             "region": "eastus"
         }
+    },
+    {
+        "status": "active",
+        "key": "azure-aks-docs/articles/aks/postgresql-ha-overview.md",
+        "title": "Azure CLI\ub97c \uc0ac\uc6a9\ud558\uc5ec AKS\uc5d0 \uace0\uac00\uc6a9\uc131 PostgreSQL \ub370\uc774\ud130\ubca0\uc774\uc2a4 \ubc30\ud3ec \uac1c\uc694",
+        "description": "CloudNativePG \uc5f0\uc0b0\uc790\ub97c \uc0ac\uc6a9\ud558\uc5ec AKS\uc5d0 \uace0\uac00\uc6a9\uc131 PostgreSQL \ub370\uc774\ud130\ubca0\uc774\uc2a4\ub97c \ubc30\ud3ec\ud558\ub294 \ubc29\ubc95\uc744 \uc54c\uc544\ubd05\ub2c8\ub2e4.",
+        "stackDetails": "",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/localized/ko-KR/scenarios/azure-aks-docs/articles/aks/postgresql-ha-overview.md",
+        "documentationUrl": "",
+        "configurations": {
+            "region": ""
+        }
     }
 ]

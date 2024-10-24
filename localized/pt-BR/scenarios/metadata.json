@@ -565,5 +565,17 @@
         "configurations": {
             "region": "eastus"
         }
+    },
+    {
+        "status": "active",
+        "key": "azure-aks-docs/articles/aks/postgresql-ha-overview.md",
+        "title": "Vis\u00e3o geral da implanta\u00e7\u00e3o de um banco de dados PostgreSQL altamente dispon\u00edvel no AKS com a CLI do Azure",
+        "description": "Saiba como implantar um banco de dados PostgreSQL altamente dispon\u00edvel no AKS usando o operador CloudNativePG.",
+        "stackDetails": "",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/localized/pt-BR/scenarios/azure-aks-docs/articles/aks/postgresql-ha-overview.md",
+        "documentationUrl": "",
+        "configurations": {
+            "region": ""
+        }
     }
 ]

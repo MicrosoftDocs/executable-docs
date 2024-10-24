@@ -565,5 +565,17 @@
         "configurations": {
             "region": "eastus"
         }
+    },
+    {
+        "status": "active",
+        "key": "azure-aks-docs/articles/aks/postgresql-ha-overview.md",
+        "title": "\u00dcbersicht \u00fcber die Bereitstellung einer hochverf\u00fcgbaren PostgreSQL-Datenbank in AKS mithilfe der Azure CLI",
+        "description": "Hier erfahren Sie, wie Sie mithilfe des CloudNativePG-Operators eine hochverf\u00fcgbare PostgreSQL-Datenbank in AKS bereitstellen.",
+        "stackDetails": "",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/localized/de-DE/scenarios/azure-aks-docs/articles/aks/postgresql-ha-overview.md",
+        "documentationUrl": "",
+        "configurations": {
+            "region": ""
+        }
     }
 ]

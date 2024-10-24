@@ -565,5 +565,17 @@
         "configurations": {
             "region": "eastus"
         }
+    },
+    {
+        "status": "active",
+        "key": "azure-aks-docs/articles/aks/postgresql-ha-overview.md",
+        "title": "P\u0159ehled nasazen\u00ed vysoce dostupn\u00e9 datab\u00e1ze PostgreSQL v AKS pomoc\u00ed Azure CLI",
+        "description": "Zjist\u011bte, jak nasadit vysoce dostupnou datab\u00e1zi PostgreSQL v AKS pomoc\u00ed oper\u00e1toru CloudNativePG.",
+        "stackDetails": "",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/localized/cs-CZ/scenarios/azure-aks-docs/articles/aks/postgresql-ha-overview.md",
+        "documentationUrl": "",
+        "configurations": {
+            "region": ""
+        }
     }
 ]
