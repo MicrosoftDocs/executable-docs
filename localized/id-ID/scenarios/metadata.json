@@ -565,5 +565,17 @@
         "configurations": {
             "region": "eastus"
         }
+    },
+    {
+        "status": "active",
+        "key": "azure-aks-docs/articles/aks/deploy-postgresql-ha.md",
+        "title": "Menyebarkan database PostgreSQL yang sangat tersedia di AKS dengan Azure CLI",
+        "description": "Dalam artikel ini, Anda menyebarkan database PostgreSQL yang sangat tersedia di AKS menggunakan operator CloudNativePG.",
+        "stackDetails": "",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/localized/id-ID/scenarios/azure-aks-docs/articles/aks/deploy-postgresql-ha.md",
+        "documentationUrl": "",
+        "configurations": {
+            "region": ""
+        }
     }
 ]
