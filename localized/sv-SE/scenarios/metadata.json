@@ -565,5 +565,17 @@
         "configurations": {
             "region": "eastus"
         }
+    },
+    {
+        "status": "active",
+        "key": "azure-aks-docs/articles/aks/postgresql-ha-overview.md",
+        "title": "\u00d6versikt \u00f6ver distribution av en PostgreSQL-databas med h\u00f6g tillg\u00e4nglighet p\u00e5 AKS med Azure CLI",
+        "description": "L\u00e4r dig hur du distribuerar en PostgreSQL-databas med h\u00f6g tillg\u00e4nglighet p\u00e5 AKS med hj\u00e4lp av CloudNativePG-operatorn.",
+        "stackDetails": "",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/localized/sv-SE/scenarios/azure-aks-docs/articles/aks/postgresql-ha-overview.md",
+        "documentationUrl": "",
+        "configurations": {
+            "region": ""
+        }
     }
 ]
