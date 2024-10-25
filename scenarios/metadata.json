@@ -53,7 +53,7 @@
         }
     },
     {
-        "status": "inactive",
+        "status": "active",
         "key": "azure-docs/articles/mysql/flexible-server/tutorial-deploy-wordpress-on-aks.md",
         "title": "Tutorial: Deploy WordPress on AKS cluster by using Azure CLI",
         "description": "Learn how to quickly build and deploy WordPress on AKS with Azure Database for MySQL - Flexible Server.",
