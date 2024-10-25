@@ -64,32 +64,36 @@ az aks create \
   --no-ssh-key
 ```
 
-## Connect to the cluster
+## Install kubectl
 
 To manage a Kubernetes cluster, use the Kubernetes command-line client, kubectl. kubectl is already installed if you use Azure Cloud Shell.
+Install az aks CLI locally using the az aks install-cli command
 
-1. Install az aks CLI locally using the az aks install-cli command
+  ```bash
+  if ! [ -x "$(command -v kubectl)" ]; then az aks install-cli; fi
+  ```
 
-    ```bash
-    if ! [ -x "$(command -v kubectl)" ]; then az aks install-cli; fi
-    ```
+## Configure credentials
 
-2. Configure kubectl to connect to your Kubernetes cluster using the az aks get-credentials command. The following command:
-    - Downloads credentials and configures the Kubernetes CLI to use them.
-    - Uses ~/.kube/config, the default location for the Kubernetes configuration file. Specify a different location for your Kubernetes configuration file using --file argument.
+Configure kubectl to connect to your Kubernetes cluster using the az aks get-credentials command. The following command:
 
-    > [!WARNING]
-    > This will overwrite any existing credentials with the same entry
+- Downloads credentials and configures the Kubernetes CLI to use them.
+- Uses ~/.kube/config, the default location for the Kubernetes configuration file. Specify a different location for your Kubernetes configuration file using --file argument.
 
-    ```bash
-    az aks get-credentials --resource-group $MY_RESOURCE_GROUP_NAME --name $MY_AKS_CLUSTER_NAME --overwrite-existing
-    ```
+> [!WARNING]
+> This will overwrite any existing credentials with the same entry
 
-3. Verify the connection to your cluster using the kubectl get command. This command returns a list of the cluster nodes.
+```bash
+az aks get-credentials --resource-group $MY_RESOURCE_GROUP_NAME --name $MY_AKS_CLUSTER_NAME --overwrite-existing
+```
 
-    ```bash
-    kubectl get nodes
-    ```
+## Veryify conncetion
+
+Verify the connection to your cluster using the kubectl get command. This command returns a list of the cluster nodes.
+
+```bash
+kubectl get nodes
+```
 
 ## Install Inspektor Gadget
 
