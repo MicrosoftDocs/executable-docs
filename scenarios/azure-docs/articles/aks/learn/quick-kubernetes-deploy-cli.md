@@ -382,7 +382,7 @@ do
    fi
 done
 
-curl $IP_ADDRESS
+curl $IP_ADDRESS --connect-timeout 200 --max-time 200
 ```
 
 Results:
