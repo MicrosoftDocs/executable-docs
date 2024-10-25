@@ -119,7 +119,7 @@ Results:
 }
 ```
 
-### Create Application Gateway resources
+### Create Subnet
 
 Azure Application Gateway requires a dedicated subnet within your virtual network. The following command creates a subnet named $MY_APPGW_SN_NAME with a specified address prefix named $MY_APPGW_SN_PREFIX in your virtual network $MY_VNET_NAME.
 
@@ -143,6 +143,9 @@ Results:
   "type": "Microsoft.Network/virtualNetworks/subnets"
 }
 ```
+
+### Create Static IP
+
 The following command creates a standard, zone redundant, static, public IPv4 in your resource group.  
 
 ```bash
@@ -182,6 +185,8 @@ Results:
   }
 }
 ```
+
+### Create Application Gateway
 
 In this step, you create an Application Gateway that you're going to integrate with your Virtual Machine Scale Set. This example creates a zone redundant Application Gateway with Standard_v2 SKU and enables Http communication for the Application Gateway. The public IP $MY_APPGW_PUBLIC_IP_NAME created in previous step is attached to the Application Gateway. 
 
