@@ -565,5 +565,17 @@
         "configurations": {
             "region": "eastus"
         }
+    },
+    {
+        "status": "active",
+        "key": "azure-aks-docs/articles/aks/learn/quick-kubernetes-deploy-cli.md",
+        "title": "\ube60\ub978 \uc2dc\uc791: Azure CLI\ub97c \uc0ac\uc6a9\ud558\uc5ec AKS(Azure Kubernetes Service) \ud074\ub7ec\uc2a4\ud130 \ubc30\ud3ec",
+        "description": "Azure CLI\ub97c \uc0ac\uc6a9\ud558\uc5ec Kubernetes \ud074\ub7ec\uc2a4\ud130\ub97c \ube60\ub974\uac8c \ubc30\ud3ec\ud558\uace0 AKS(Azure Kubernetes Service)\uc5d0\uc11c \uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc744 \ubc30\ud3ec\ud558\ub294 \ubc29\ubc95\uc744 \uc54c\uc544\ubd05\ub2c8\ub2e4.",
+        "stackDetails": "",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/localized/ko-KR/scenarios/azure-aks-docs/articles/aks/learn/quick-kubernetes-deploy-cli.md",
+        "documentationUrl": "",
+        "configurations": {
+            "region": "westeurope"
+        }
     }
 ]

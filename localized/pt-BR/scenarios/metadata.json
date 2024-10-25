@@ -565,5 +565,17 @@
         "configurations": {
             "region": "eastus"
         }
+    },
+    {
+        "status": "active",
+        "key": "azure-aks-docs/articles/aks/learn/quick-kubernetes-deploy-cli.md",
+        "title": "In\u00edcio R\u00e1pido: implantar um cluster do AKS (Servi\u00e7o de Kubernetes do Azure) usando a CLI do Azure",
+        "description": "Saiba como implantar rapidamente um cluster Kubernetes e implantar um aplicativo no Servi\u00e7o de Kubernetes do Azure (AKS) usando a CLI do Azure.",
+        "stackDetails": "",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/localized/pt-BR/scenarios/azure-aks-docs/articles/aks/learn/quick-kubernetes-deploy-cli.md",
+        "documentationUrl": "",
+        "configurations": {
+            "region": "westeurope"
+        }
     }
 ]

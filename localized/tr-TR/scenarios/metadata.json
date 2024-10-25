@@ -565,5 +565,17 @@
         "configurations": {
             "region": "eastus"
         }
+    },
+    {
+        "status": "active",
+        "key": "azure-aks-docs/articles/aks/learn/quick-kubernetes-deploy-cli.md",
+        "title": "H\u0131zl\u0131 Ba\u015flang\u0131\u00e7: Azure CLI kullanarak Azure Kubernetes Service (AKS) k\u00fcmesi da\u011f\u0131tma",
+        "description": "Azure CLI kullanarak Bir Kubernetes k\u00fcmesini h\u0131zla da\u011f\u0131tmay\u0131 ve Azure Kubernetes Service'te (AKS) uygulama da\u011f\u0131tmay\u0131 \u00f6\u011frenin.",
+        "stackDetails": "",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/localized/tr-TR/scenarios/azure-aks-docs/articles/aks/learn/quick-kubernetes-deploy-cli.md",
+        "documentationUrl": "",
+        "configurations": {
+            "region": "westeurope"
+        }
     }
 ]
