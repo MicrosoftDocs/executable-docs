@@ -565,5 +565,17 @@
         "configurations": {
             "region": "eastus"
         }
+    },
+    {
+        "status": "active",
+        "key": "azure-aks-docs/articles/aks/learn/quick-kubernetes-deploy-cli.md",
+        "title": "Guida introduttiva: distribuire un cluster del servizio Azure Kubernetes (AKS) con l\u2019interfaccia della riga di comando di Azure",
+        "description": "Informazioni su come distribuire rapidamente un cluster Kubernetes e un'applicazione nel servizio Azure Kubernetes (AKS), usando l\u2019interfaccia della riga di comando di Azure.",
+        "stackDetails": "",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/localized/it-IT/scenarios/azure-aks-docs/articles/aks/learn/quick-kubernetes-deploy-cli.md",
+        "documentationUrl": "",
+        "configurations": {
+            "region": "westeurope"
+        }
     }
 ]
