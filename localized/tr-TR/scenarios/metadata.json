@@ -565,5 +565,17 @@
         "configurations": {
             "region": "eastus"
         }
+    },
+    {
+        "status": "active",
+        "key": "azure-aks-docs/articles/aks/deploy-postgresql-ha.md",
+        "title": "Azure CLI ile AKS \u00fczerinde y\u00fcksek oranda kullan\u0131labilir bir PostgreSQL veritaban\u0131 da\u011f\u0131tma",
+        "description": "Bu makalede CloudNativePG i\u015flecini kullanarak AKS \u00fczerinde y\u00fcksek oranda kullan\u0131labilir bir PostgreSQL veritaban\u0131 da\u011f\u0131tacaks\u0131n\u0131z.",
+        "stackDetails": "",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/localized/tr-TR/scenarios/azure-aks-docs/articles/aks/deploy-postgresql-ha.md",
+        "documentationUrl": "",
+        "configurations": {
+            "region": ""
+        }
     }
 ]
