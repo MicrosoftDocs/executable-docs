@@ -564,10 +564,6 @@ Results:
 }
 ```
 
-```bash
-echo "Your MySQL user $MY_MYSQL_ADMIN_USERNAME password is: $MY_WP_ADMIN_PW"
-```
-
 The server created has the below attributes:
 
 * The server name, admin username, admin password, resource group name, location are already specified in local context environment of the cloud shell. They're created in the same location as your resource group and other Azure components.
@@ -806,6 +802,8 @@ while [[ $(date -u +%s) -le $endtime ]]; do
         sleep 10
     fi;
 done
+
+echo "You can now visit your web server at https://$FQDN"
 ```
 
 Results:
@@ -821,8 +819,4 @@ Results:
 <title>Azure hosted blog</title>
 <link rel="alternate" type="application/rss+xml" title="Azure hosted blog &raquo; Feed" href="https://mydnslabelxxxxxx.eastus.cloudapp.azure.com/?feed=rss2" />
 <link rel="alternate" type="application/rss+xml" title="Azure hosted blog &raquo; Comments Feed" href="https://mydnslabelxxxxxx.eastus.cloudapp.azure.com/?feed=comments-rss2" />
-```
-
-```bash
-echo "You can now visit your web server at https://$FQDN"
 ```
