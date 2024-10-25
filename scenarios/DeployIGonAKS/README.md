@@ -118,11 +118,7 @@ IG_ARCH=amd64
 mkdir -p $HOME/.local/bin
 export PATH=$PATH:$HOME/.local/bin
 curl -sL https://github.com/inspektor-gadget/inspektor-gadget/releases/download/${IG_VERSION}/kubectl-gadget-linux-${IG_ARCH}-${IG_VERSION}.tar.gz  | tar -C $HOME/.local/bin -xzf - kubectl-gadget
-```
 
-Now, let’s verify the installation by running the `version` command:
-
-```bash
 kubectl gadget version
 ```
 
@@ -143,11 +139,6 @@ The following command will deploy the DaemonSet:
 
 ```bash
 kubectl gadget deploy
-```
-
-Now, let’s verify the installation by running the `version` command again:
-
-```bash
 kubectl gadget version
 ```
 
@@ -157,12 +148,6 @@ This time, the client and server will be correctly installed:
 ```text
 Client version: vX.Y.Z
 Server version: vX.Y.Z
-```
-
-You can now start running the gadgets:
-
-```bash
-kubectl gadget help
 ```
 
 <!--
