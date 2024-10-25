@@ -565,5 +565,17 @@
         "configurations": {
             "region": "eastus"
         }
+    },
+    {
+        "status": "active",
+        "key": "azure-aks-docs/articles/aks/learn/quick-kubernetes-deploy-cli.md",
+        "title": "Snabbstart: Distribuera ett AKS-kluster (Azure Kubernetes Service) med Azure CLI",
+        "description": "L\u00e4r dig hur du snabbt distribuerar ett Kubernetes-kluster och distribuerar ett program i Azure Kubernetes Service (AKS) med Azure CLI.",
+        "stackDetails": "",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/localized/sv-SE/scenarios/azure-aks-docs/articles/aks/learn/quick-kubernetes-deploy-cli.md",
+        "documentationUrl": "",
+        "configurations": {
+            "region": "westeurope"
+        }
     }
 ]
