@@ -215,6 +215,9 @@ ssh -o StrictHostKeyChecking=no $MY_VM_USERNAME@$FQDN -- "sudo partprobe -s /dev
 ssh -o StrictHostKeyChecking=no $MY_VM_USERNAME@$FQDN -- "sudo mkfs.xfs /dev/disk/azure/scsi1/lun2-part1"
 ssh -o StrictHostKeyChecking=no $MY_VM_USERNAME@$FQDN -- "sudo mkdir -v /datadisk03"
 ssh -o StrictHostKeyChecking=no $MY_VM_USERNAME@$FQDN -- "sudo mount -v /dev/disk/azure/scsi1/lun2-part1 /datadisk03"
+
+ssh -o StrictHostKeyChecking=no $MY_VM_USERNAME@$FQDN -- \
+    'echo "UUID=$(sudo blkid -s UUID -o value /dev/disk/azure/scsi1/lun2-part1) /datadisk03 xfs defaults,discard 0 0" | sudo tee -a /etc/fstab'
 ```
 
 Results:
@@ -239,11 +242,6 @@ mount: /dev/sde1 mounted on /datadisk03.
 ```
 
 In oder to update the /etc/fstab file, you can use the following command, and mount the LUN1 using it's unique identifier (UUID) together with the discard mount option:
-
-```bash
-ssh -o StrictHostKeyChecking=no $MY_VM_USERNAME@$FQDN -- \
-    'echo "UUID=$(sudo blkid -s UUID -o value /dev/disk/azure/scsi1/lun2-part1) /datadisk03 xfs defaults,discard 0 0" | sudo tee -a /etc/fstab'
-```
 
 Results:
 
