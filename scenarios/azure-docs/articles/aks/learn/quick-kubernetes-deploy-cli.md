@@ -381,9 +381,7 @@ do
       sleep 10
    fi
 done
-```
 
-```azurecli-interactive
 curl $IP_ADDRESS
 ```
 
