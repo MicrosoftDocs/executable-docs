@@ -149,31 +149,29 @@ az aks create \
 
 ## Connect to the cluster
 
-To manage a Kubernetes cluster, use the Kubernetes command-line client, kubectl. kubectl is already installed if you use Azure Cloud Shell.
+Install az aks CLI locally using the az aks install-cli command
 
-1. Install az aks CLI locally using the az aks install-cli command
+```bash
+if ! [ -x "$(command -v kubectl)" ]; then az aks install-cli; fi
+```
 
-   ```bash
-   if ! [ -x "$(command -v kubectl)" ]; then az aks install-cli; fi
-   ```
+## Configure kubectl to connect to your Kubernetes cluster using the az aks get-credentials command. The following command:
 
-2. Configure kubectl to connect to your Kubernetes cluster using the az aks get-credentials command. The following command:
+- Downloads credentials and configures the Kubernetes CLI to use them.
+- Uses ~/.kube/config, the default location for the Kubernetes configuration file. Specify a different location for your Kubernetes configuration file using --file argument.
 
-   - Downloads credentials and configures the Kubernetes CLI to use them.
-   - Uses ~/.kube/config, the default location for the Kubernetes configuration file. Specify a different location for your Kubernetes configuration file using --file argument.
+> [!WARNING]
+> This will overwrite any existing credentials with the same entry
 
-   > [!WARNING]
-   > This will overwrite any existing credentials with the same entry
+```bash
+az aks get-credentials --resource-group $MY_RESOURCE_GROUP_NAME --name $MY_AKS_CLUSTER_NAME --overwrite-existing
+```
 
-   ```bash
-   az aks get-credentials --resource-group $MY_RESOURCE_GROUP_NAME --name $MY_AKS_CLUSTER_NAME --overwrite-existing
-   ```
+## Verify the connection to your cluster using the kubectl get command. This command returns a list of the cluster nodes.
 
-3. Verify the connection to your cluster using the kubectl get command. This command returns a list of the cluster nodes.
-
-   ```bash
-   kubectl get nodes
-   ```
+```bash
+kubectl get nodes
+```
 
 ## Install NGINX Ingress Controller
 
@@ -437,11 +435,7 @@ spec:
     app: store-front
   type: LoadBalancer
 EOF
-```
 
-To deploy this app, run the following command
-
-```bash
 kubectl apply -f azure-vote-start.yml
 ```
 
@@ -463,46 +457,8 @@ while [[ $(date -u +%s) -le $endtime ]]; do
       sleep 10;
    fi;
 done
-```
 
-```bash
 curl "http://$FQDN"
-```
-
-Results:
-
-<!-- expected_similarity=0.3 -->
-
-```HTML
-<!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-    <link rel="stylesheet" type="text/css" href="/static/default.css">
-    <title>Azure Voting App</title>
-
-    <script language="JavaScript">
-        function send(form){
-        }
-    </script>
-
-</head>
-<body>
-    <div id="container">
-        <form id="form" name="form" action="/"" method="post"><center>
-        <div id="logo">Azure Voting App</div>
-        <div id="space"></div>
-        <div id="form">
-        <button name="vote" value="Cats" onclick="send()" class="button button1">Cats</button>
-        <button name="vote" value="Dogs" onclick="send()" class="button button2">Dogs</button>
-        <button name="vote" value="reset" onclick="send()" class="button button3">Reset</button>
-        <div id="space"></div>
-        <div id="space"></div>
-        <div id="results"> Cats - 0 | Dogs - 0 </div>
-        </form>
-        </div>
-    </div>
-</body>
-</html>
 ```
 
 ## Add HTTPS termination to custom domain
@@ -515,21 +471,16 @@ In order to add HTTPS we are going to use Cert Manager. Cert Manager is an open 
 
 1. In order to install cert-manager, we must first create a namespace to run it in. This tutorial will install cert-manager into the cert-manager namespace. It is possible to run cert-manager in a different namespace, although you will need to make modifications to the deployment manifests.
 
-   ```bash
-   kubectl create namespace cert-manager
-   ```
+```bash
+kubectl create namespace cert-manager
 
-2. We can now install cert-manager. All resources are included in a single YAML manifest file. This can be installed by running the following:
+# We can now install cert-manager. All resources are included in a single YAML manifest file. This can be installed by running the following:
+kubectl apply -f https://github.com/jetstack/cert-manager/releases/download/v1.7.0/cert-manager.crds.yaml
+ 
+#Add the certmanager.k8s.io/disable-validation: "true" label to the cert-manager namespace by running the following. This will allow the system resources that cert-manager requires to bootstrap TLS to be created in its own namespace.
 
-   ```bash
-   kubectl apply -f https://github.com/jetstack/cert-manager/releases/download/v1.7.0/cert-manager.crds.yaml
-   ```
-
-3. Add the certmanager.k8s.io/disable-validation: "true" label to the cert-manager namespace by running the following. This will allow the system resources that cert-manager requires to bootstrap TLS to be created in its own namespace.
-
-   ```bash
-   kubectl label namespace cert-manager certmanager.k8s.io/disable-validation=true
-   ```
+kubectl label namespace cert-manager certmanager.k8s.io/disable-validation=true
+```
 
 ## Obtain certificate via Helm Charts
 
@@ -537,74 +488,58 @@ Helm is a Kubernetes deployment tool for automating creation, packaging, configu
 
 Cert-manager provides Helm charts as a first-class method of installation on Kubernetes.
 
-1. Add the Jetstack Helm repository
-
-   This repository is the only supported source of cert-manager charts. There are some other mirrors and copies across the internet, but those are entirely unofficial and could present a security risk.
-
-   ```bash
-   helm repo add jetstack https://charts.jetstack.io
-   ```
-
-2. Update local Helm Chart repository cache
-
-   ```bash
-   helm repo update
-   ```
-
-3. Install Cert-Manager addon via helm by running the following:
-
-   ```bash
-   helm install cert-manager jetstack/cert-manager --namespace cert-manager --version v1.7.0
-   ```
-
-4. Apply Certificate Issuer YAML File
-
-   ClusterIssuers are Kubernetes resources that represent certificate authorities (CAs) that are able to generate signed certificates by honoring certificate signing requests. All cert-manager certificates require a referenced issuer that is in a ready condition to attempt to honor the request.
-   The issuer we are using can be found in the `cluster-issuer-prod.yml file`
-        
-    ```bash
-    cat <<EOF > cluster-issuer-prod.yml
-    apiVersion: cert-manager.io/v1
-    kind: ClusterIssuer
-    metadata:
-      name: letsencrypt-prod
-    spec:
-      acme:
-        # You must replace this email address with your own.
-        # Let's Encrypt will use this to contact you about expiring
-        # certificates, and issues related to your account.
-        email: $SSL_EMAIL_ADDRESS
-        # ACME server URL for Let’s Encrypt’s prod environment.
-        # The staging environment will not issue trusted certificates but is
-        # used to ensure that the verification process is working properly
-        # before moving to production
-        server: https://acme-v02.api.letsencrypt.org/directory
-        # Secret resource used to store the account's private key.
-        privateKeySecretRef:
-          name: letsencrypt
-        # Enable the HTTP-01 challenge provider
-        # you prove ownership of a domain by ensuring that a particular
-        # file is present at the domain
-        solvers:
-        - http01:
-            ingress:
-              class: nginx
-            podTemplate:
-              spec:
-                nodeSelector:
-                  "kubernetes.io/os": linux
-    EOF
-    ```
-
-    ```bash
-    cluster_issuer_variables=$(<cluster-issuer-prod.yml)
-    ```
-
-5. Upate Voting App Application to use Cert-Manager to obtain an SSL Certificate.
-
-   The full YAML file can be found in `azure-vote-nginx-ssl.yml`
-
 ```bash
+# Add the Jetstack Helm repository
+# This repository is the only supported source of cert-manager charts. There are some other mirrors and copies across the internet, but those are entirely unofficial and could present a security risk.
+
+helm repo add jetstack https://charts.jetstack.io
+
+# Update local Helm Chart repository cache
+helm repo update
+
+# Install Cert-Manager addon via helm by running the following
+helm install cert-manager jetstack/cert-manager --namespace cert-manager --version v1.7.0
+
+# ClusterIssuers are Kubernetes resources that represent certificate authorities (CAs) that are able to generate signed certificates by honoring certificate signing requests. All cert-manager certificates require a referenced issuer that is in a ready condition to attempt to honor the request.
+# The issuer we are using can be found in the `cluster-issuer-prod.yml file`
+        
+cat <<EOF > cluster-issuer-prod.yml
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: letsencrypt-prod
+spec:
+  acme:
+    # You must replace this email address with your own.
+    # Let's Encrypt will use this to contact you about expiring
+    # certificates, and issues related to your account.
+    email: $SSL_EMAIL_ADDRESS
+    # ACME server URL for Let’s Encrypt’s prod environment.
+    # The staging environment will not issue trusted certificates but is
+    # used to ensure that the verification process is working properly
+    # before moving to production
+    server: https://acme-v02.api.letsencrypt.org/directory
+    # Secret resource used to store the account's private key.
+    privateKeySecretRef:
+      name: letsencrypt
+    # Enable the HTTP-01 challenge provider
+    # you prove ownership of a domain by ensuring that a particular
+    # file is present at the domain
+    solvers:
+    - http01:
+        ingress:
+          class: nginx
+        podTemplate:
+          spec:
+            nodeSelector:
+              "kubernetes.io/os": linux
+EOF
+
+cluster_issuer_variables=$(<cluster-issuer-prod.yml)
+
+# Upate Voting App Application to use Cert-Manager to obtain an SSL Certificate.
+# The full YAML file can be found in `azure-vote-nginx-ssl.yml`
+
 cat << EOF > azure-vote-nginx-ssl.yml
 ---
 # INGRESS WITH SSL PROD
@@ -635,38 +570,10 @@ spec:
               port:
                 number: 80
 EOF
+
+azure_vote_nginx_ssl_variables=$(<azure-vote-nginx-ssl.yml)
+echo "${azure_vote_nginx_ssl_variables//\$FQDN/$FQDN}" | kubectl apply -f -
 ```
-
-    ```bash
-    azure_vote_nginx_ssl_variables=$(<azure-vote-nginx-ssl.yml)
-    echo "${azure_vote_nginx_ssl_variables//\$FQDN/$FQDN}" | kubectl apply -f -
-    ```
-
-<!--## Validate application is working
-
-Wait for the SSL certificate to issue. The following command will query the 
-status of the SSL certificate for 3 minutes. In rare occasions it may take up to 
-15 minutes for Lets Encrypt to issue a successful challenge and 
-the ready state to be 'True'
-
-```bash
-runtime="10 minute"; endtime=$(date -ud "$runtime" +%s); while [[ $(date -u +%s) -le $endtime ]]; do STATUS=$(kubectl get certificate --output jsonpath={..status.conditions[0].status}); echo $STATUS; if [ "$STATUS" = 'True' ]; then break; else sleep 10; fi; done
-```
-
-Validate SSL certificate is True by running the follow command:
-
-```bash
-kubectl get certificate --output jsonpath={..status.conditions[0].status}
-```
-
-Results:
-
-<!-- expected_similarity=0.3 -->
-<!--
-```ASCII
-True
-```
--->
 
 ## Browse your AKS Deployment Secured via HTTPS
 
@@ -687,9 +594,7 @@ while [[ $(date -u +%s) -le $endtime ]]; do
       sleep 10;
    fi;
 done
-```
 
-```bash
 echo "You can now visit your web server at https://$FQDN"
 ```
 
