@@ -381,8 +381,6 @@ do
       sleep 10
    fi
 done
-
-curl --connect-timeout 200 --max-time 200 $IP_ADDRESS
 ```
 
 Results:
