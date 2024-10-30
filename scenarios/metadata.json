@@ -49,7 +49,6 @@
                 "Microsoft.ContainerService/managedClusters/GetAccessProfiles/action",
                 "Microsoft.Network/publicIPAddresses/list/action"
             ],
-            "region": "eastus",
             "configurableParams": [
                 {
                     "inputType": "textInput",
@@ -80,9 +79,7 @@
                 "url": "https://learn.microsoft.com/en-us/azure/static-web-apps/add-api"
             }
         ],
-        "configurations": {
-            "region": "EastUS2"
-        }
+        "configurations": {}
     },
     {
         "status": "active",
@@ -106,9 +103,7 @@
                 "url": "https://learn.microsoft.com/en-us/azure/virtual-machine-scale-sets/tutorial-autoscale-cli"
             }
         ],
-        "configurations": {
-            "region": "EastUS"
-        }
+        "configurations": {}
     },
     {
         "status": "active",
@@ -153,8 +148,7 @@
                 "Microsoft.Compute/virtualMachines/read",
                 "Microsoft.Network/publicIPAddresses/read",
                 "Microsoft.Compute/virtualMachines/instanceView/read"
-            ],
-            "region": "EastUS"
+            ]
         }
     },
     {
@@ -165,9 +159,7 @@
         "stackDetails": "",
         "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-docs/articles/virtual-machines/linux/tutorial-lemp-stack.md",
         "documentationUrl": "https://learn.microsoft.com/en-us/azure/virtual-machines/linux/tutorial-lemp-stack",
-        "configurations": {
-            "region": "westeurope"
-        }
+        "configurations": {}
     },
     {
         "status": "active",
@@ -191,9 +183,7 @@
                 "url": "https://go.microsoft.com/fwlink/p/?linkid=2259865"
             }
         ],
-        "configurations": {
-            "region": "eastus"
-        }
+        "configurations": {}
     },
     {
         "status": "active",
@@ -221,9 +211,7 @@
                 "url": "https://learn.microsoft.com/azure/aks/tutorial-kubernetes-app-update?tabs=azure-cli"
             }
         ],
-        "configurations": {
-            "region": "eastus"
-        }
+        "configurations": {}
     },
     {
         "status": "active",
@@ -233,9 +221,7 @@
         "stackDetails": "",
         "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/CreateRHELVMAndSSH/create-rhel-vm-ssh.md",
         "documentationUrl": "",
-        "configurations": {
-            "region": "westeurope"
-        }
+        "configurations": {}
     },
     {
         "status": "active",
@@ -264,8 +250,7 @@
             }
         ],
         "configurations": {
-            "permissions": [],
-            "region": "australiaeast"
+            "permissions": []
         }
     },
     {
@@ -276,9 +261,7 @@
         "stackDetails": "",
         "sourceUrl": "https://raw.githubusercontent.com/aamini7/postgres-rag-llm-demo/main/README.md",
         "documentationUrl": "",
-        "configurations": {
-            "region": "centralus"
-        }
+        "configurations": {}
     },
     {
         "status": "active",
@@ -288,8 +271,6 @@
         "stackDetails": "",
         "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/azure-aks-docs/refs/heads/main/articles/aks/ai-toolchain-operator.md",
         "documentationUrl": "",
-        "configurations": {
-            "region": "westus"
-        }
+        "configurations": {}
     }
 ]
