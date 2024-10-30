@@ -10,7 +10,7 @@ ms.custom: 'H1Hack27Feb2017, mvc, devcenter, devx-track-azurecli, mode-api, inno
 
 # Rychlý start: Nasazení clusteru Azure Kubernetes Service (AKS) pomocí Azure CLI
 
-[![Nasazení do Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262758)
+[![Nasazení do Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2286152)
 
 Azure Kubernetes Service (AKS) je spravovaná služba Kubernetes, která umožňuje rychle nasazovat a spravovat clustery. V tomto rychlém startu se naučíte:
 

@@ -10,7 +10,7 @@ ms.custom: 'H1Hack27Feb2017, mvc, devcenter, devx-track-azurecli, mode-api, inno
 
 # Rövid útmutató: Azure Kubernetes Service- (AKS-) fürt üzembe helyezése az Azure CLI használatával
 
-[![Üzembe helyezés az Azure-ban](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262758)
+[![Üzembe helyezés az Azure-ban](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2286152)
 
 Az Azure Kubernetes Service (AKS) egy felügyelt Kubernetes-szolgáltatás, amely lehetővé teszi a fürtök gyors üzembe helyezését és kezelését. Ezen rövid útmutató segítségével megtanulhatja a következőket:
 

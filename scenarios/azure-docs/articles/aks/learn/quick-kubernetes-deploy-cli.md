@@ -11,7 +11,7 @@ ms.custom: H1Hack27Feb2017, mvc, devcenter, devx-track-azurecli, mode-api, innov
 
 # Quickstart: Deploy an Azure Kubernetes Service (AKS) cluster using Azure CLI
 
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262758)
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2286152)
 
 Azure Kubernetes Service (AKS) is a managed Kubernetes service that lets you quickly deploy and manage clusters. In this quickstart, you learn how to:
 
@@ -86,21 +86,23 @@ az aks create \
 > [!NOTE]
 > When you create a new cluster, AKS automatically creates a second resource group to store the AKS resources. For more information, see [Why are two resource groups created with AKS?](../faq.md#why-are-two-resource-groups-created-with-aks)
 
+## Download credentials
+
+Configure `kubectl` to connect to your Kubernetes cluster using the [az aks get-credentials][az-aks-get-credentials] command. This command downloads credentials and configures the Kubernetes CLI to use them.
+
+```azurecli-interactive
+az aks get-credentials --resource-group $MY_RESOURCE_GROUP_NAME --name $MY_AKS_CLUSTER_NAME
+```
+
 ## Connect to the cluster
 
 To manage a Kubernetes cluster, use the Kubernetes command-line client, [kubectl][kubectl]. `kubectl` is already installed if you use Azure Cloud Shell. To install `kubectl` locally, use the [`az aks install-cli`][az-aks-install-cli] command.
 
-1. Configure `kubectl` to connect to your Kubernetes cluster using the [az aks get-credentials][az-aks-get-credentials] command. This command downloads credentials and configures the Kubernetes CLI to use them.
+Verify the connection to your cluster using the [kubectl get][kubectl-get] command. This command returns a list of the cluster nodes.
 
-    ```azurecli-interactive
-    az aks get-credentials --resource-group $MY_RESOURCE_GROUP_NAME --name $MY_AKS_CLUSTER_NAME
-    ```
-
-1. Verify the connection to your cluster using the [kubectl get][kubectl-get] command. This command returns a list of the cluster nodes.
-
-    ```azurecli-interactive
-    kubectl get nodes
-    ```
+```azurecli-interactive
+kubectl get nodes
+```
 
 ## Deploy the application
 
@@ -379,10 +381,6 @@ do
       sleep 10
    fi
 done
-```
-
-```azurecli-interactive
-curl $IP_ADDRESS
 ```
 
 Results:

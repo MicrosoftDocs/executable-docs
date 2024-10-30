@@ -3,7 +3,7 @@ title: Kurz – Nasazení zásobníku LEMP pomocí WordPressu na virtuálním po
 description: 'V tomto kurzu se dozvíte, jak nainstalovat zásobník LEMP a WordPress na virtuální počítač s Linuxem v Azure.'
 author: fossygirl
 ms.collection: linux
-ms.service: virtual-machines
+ms.service: azure-virtual-machines
 ms.devlang: azurecli
 ms.custom: 'innovation-engine, linux-related-content, devx-track-azurecli'
 ms.topic: tutorial
@@ -16,7 +16,7 @@ ms.reviewer: jushim
 
 **Platí pro:** :heavy_check_mark: virtuální počítače s Linuxem
 
-[![Nasazení do Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2275458)
+[![Nasazení do Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2286415)
 
 Tento článek vás provede nasazením webového serveru NGINX, flexibilního serveru Azure MySQL a PHP (zásobník LEMP) na virtuálním počítači s Ubuntu Linuxem v Azure. Pokud chcete zobrazit server LEMP v akci, můžete volitelně nainstalovat a nakonfigurovat web WordPress. V tomto kurzu se naučíte:
 
@@ -521,7 +521,7 @@ Výsledky:
 
 ## Vytvoření flexibilního serveru Azure Database for MySQL
 
-Flexibilní server Azure Database for MySQL je spravovaná služba, kterou můžete použít ke spouštění, správě a škálování vysoce dostupných serverů MySQL v cloudu. Vytvořte flexibilní server pomocí [příkazu az mysql flexible-server create](../../mysql/flexible-server/quickstart-create-server-cli.md#create-an-azure-database-for-mysql-flexible-server) . Server může obsahovat více databází. Následující příkaz vytvoří server s použitím výchozích hodnot služby a proměnných z místního prostředí Azure CLI:
+Flexibilní server Azure Database for MySQL je spravovaná služba, kterou můžete použít ke spouštění, správě a škálování vysoce dostupných serverů MySQL v cloudu. Vytvořte flexibilní server pomocí [příkazu az mysql flexible-server create](/azure/mysql/flexible-server/quickstart-create-server-cli#create-an-azure-database-for-mysql-flexible-server) . Server může obsahovat více databází. Následující příkaz vytvoří server s použitím výchozích hodnot služby a proměnných z místního prostředí Azure CLI:
 
 ```bash
 az mysql flexible-server create \
@@ -573,8 +573,8 @@ Vytvořený server má následující atributy:
 * Výchozí metoda připojení je privátní přístup (integrace virtuální sítě) s propojenou virtuální sítí a automaticky vygenerovanou podsítí.
 
 > [!NOTE]
-> Po vytvoření serveru nelze změnit metodu připojení. Pokud jste například vybrali `Private access (VNet Integration)` během vytváření, nemůžete po vytvoření změnit.`Public access (allowed IP addresses)` Důrazně doporučujeme vytvořit server s privátním přístupem pro bezpečný přístup k vašemu serveru pomocí integrace virtuální sítě. Další informace o privátním přístupu najdete v [článku](../../mysql/flexible-server/concepts-networking-vnet.md) o konceptech.
-Pokud chcete změnit výchozí hodnoty, projděte si referenční dokumentaci[ k Azure CLI](../../mysql/flexible-server/quickstart-create-server-cli.md), kde najdete úplný seznam konfigurovatelných parametrů rozhraní příkazového řádku.
+> Po vytvoření serveru nelze změnit metodu připojení. Pokud jste například vybrali `Private access (VNet Integration)` během vytváření, nemůžete po vytvoření změnit.`Public access (allowed IP addresses)` Důrazně doporučujeme vytvořit server s privátním přístupem pro bezpečný přístup k vašemu serveru pomocí integrace virtuální sítě. Další informace o privátním přístupu najdete v [článku](/azure/mysql/flexible-server/concepts-networking-vnet) o konceptech.
+Pokud chcete změnit výchozí hodnoty, projděte si referenční dokumentaci[ k Azure CLI](/azure/mysql/flexible-server/quickstart-create-server-cli), kde najdete úplný seznam konfigurovatelných parametrů rozhraní příkazového řádku.
 
 ## Kontrola stavu flexibilního serveru Azure Database for MySQL
 
@@ -600,13 +600,13 @@ Konfiguraci flexibilního serveru Azure Database for MySQL můžete spravovat po
 
 Zobrazení podrobností o parametrech serveru:
 
-[Spusťte příkaz az mysql flexible-server show](../../mysql/flexible-server/how-to-configure-server-parameters-cli.md) command to show details about any particular parameter for the server.
+[Spusťte příkaz az mysql flexible-server show](/azure/mysql/flexible-server/how-to-configure-server-parameters-cli) command to show details about any particular parameter for the server.
 
 ## Zakázání parametru připojení SSL flexibilního serveru azure Database for MySQL pro integraci Wordpressu
 
 Úprava hodnoty parametru serveru:
 
-Můžete také upravit hodnotu určitého parametru serveru, který aktualizuje základní konfigurační hodnotu pro serverový stroj MySQL. Pokud chcete aktualizovat parametr serveru, použijte [příkaz az mysql flexible-server parameter set](../../mysql/flexible-server/how-to-configure-server-parameters-cli.md#modify-a-server-parameter-value) .
+Můžete také upravit hodnotu určitého parametru serveru, který aktualizuje základní konfigurační hodnotu pro serverový stroj MySQL. Pokud chcete aktualizovat parametr serveru, použijte [příkaz az mysql flexible-server parameter set](/azure/mysql/flexible-server/how-to-configure-server-parameters-cli#modify-a-server-parameter-value) .
 
 ```bash
 az mysql flexible-server parameter set \
@@ -641,7 +641,7 @@ Výsledky:
 
 Následující příklad vytvoří virtuální počítač s názvem `$MY_VM_NAME` a vytvoří klíče SSH, pokud ještě neexistují ve výchozím umístění klíče. Příkaz se také nastaví `$MY_VM_USERNAME` jako uživatelské jméno správce.
 
-Pokud chcete zlepšit zabezpečení virtuálních počítačů s Linuxem v Azure, můžete provést integraci s ověřováním Azure Active Directory. Teď můžete azure AD používat jako základní ověřovací platformu. SSH můžete do virtuálního počítače s Linuxem použít také ověřování založené na certifikátech Azure AD a OpenSSH. Tato funkce umožňuje organizacím spravovat přístup k virtuálním počítačům pomocí řízení přístupu na základě role Azure a zásad podmíněného přístupu.
+Pokud chcete zlepšit zabezpečení virtuálních počítačů s Linuxem v Azure, můžete se integrovat s ověřováním Microsoft Entra ID. Teď můžete použít Microsoft Entra ID jako základní ověřovací platformu. Do virtuálního počítače s Linuxem můžete také SSH použít ověřování založené na certifikátech Microsoft Entra ID a OpenSSH. Tato funkce umožňuje organizacím spravovat přístup k virtuálním počítačům pomocí řízení přístupu na základě role Azure a zásad podmíněného přístupu.
 
 Vytvořte virtuální počítač pomocí příkazu [az vm create](/cli/azure/vm#az-vm-create).
 
@@ -706,7 +706,7 @@ done
 ```
 
 <!--
-## Assign Azure AD RBAC for Azure AD login for Linux Virtual Machine
+## Assign Microsoft Entra ID RBAC for Microsoft Entra ID login for Linux Virtual Machine
 The below command uses [az role assignment create](https://learn.microsoft.com/cli/azure/role/assignment#az-role-assignment-create) to assign the `Virtual Machine Administrator Login` role to the VM for your current Azure user.
 ```bash
 export MY_RESOURCE_GROUP_ID=$(az group show --resource-group $MY_RESOURCE_GROUP_NAME --query id -o tsv)
@@ -741,15 +741,15 @@ Results:
 
 <!--
 ## Export the SSH configuration for use with SSH clients that support OpenSSH
-Login to Azure Linux VMs with Azure AD supports exporting the OpenSSH certificate and configuration. That means you can use any SSH clients that support OpenSSH-based certificates to sign in through Azure AD. The following example exports the configuration for all IP addresses assigned to the VM:
+Login to Azure Linux VMs with Microsoft Entra ID supports exporting the OpenSSH certificate and configuration. That means you can use any SSH clients that support OpenSSH-based certificates to sign in through Microsoft Entra ID. The following example exports the configuration for all IP addresses assigned to the VM:
 ```bash
 az ssh config --file ~/.ssh/azure-config --name $MY_VM_NAME --resource-group $MY_RESOURCE_GROUP_NAME
 ```
 -->
 
-## Povolení přihlášení k Azure AD pro virtuální počítač s Linuxem v Azure
+## Povolení přihlášení Microsoft Entra ID pro virtuální počítač s Linuxem v Azure
 
-Následující instalace rozšíření povolí přihlášení k Azure AD pro virtuální počítač s Linuxem. Rozšíření virtuálních počítačů jsou malé aplikace, které poskytují úlohy konfigurace a automatizace po nasazení na virtuálních počítačích Azure.
+Následující nainstaluje rozšíření, které povolí přihlášení k ID Microsoft Entra pro virtuální počítač s Linuxem. Rozšíření virtuálních počítačů jsou malé aplikace, které poskytují úlohy konfigurace a automatizace po nasazení na virtuálních počítačích Azure.
 
 ```bash
 az vm extension set \
@@ -787,7 +787,7 @@ Výsledky:
 
 ## Kontrola a procházení webu WordPress
 
-[WordPress](https://www.wordpress.org) je opensourcový systém pro správu obsahu (CMS) používaný více než 40 % webu k vytváření webů, blogů a dalších aplikací. WordPress je možné spustit na několika různých službách Azure: [AKS](../../mysql/flexible-server/tutorial-deploy-wordpress-on-aks.md), Virtual Machines a App Service. Úplný seznam možností WordPressu v Azure najdete v tématu [WordPress na Azure Marketplace](https://azuremarketplace.microsoft.com/marketplace/apps?page=1&search=wordpress).
+[WordPress](https://www.wordpress.org) je opensourcový systém pro správu obsahu (CMS) používaný více než 40 % webu k vytváření webů, blogů a dalších aplikací. WordPress je možné spustit na několika různých službách Azure: [AKS](/azure/mysql/flexible-server/tutorial-deploy-wordpress-on-aks), Virtual Machines a App Service. Úplný seznam možností WordPressu v Azure najdete v tématu [WordPress na Azure Marketplace](https://azuremarketplace.microsoft.com/marketplace/apps?page=1&search=wordpress).
 
 Tato instalace WordPressu slouží pouze pro účely testování konceptu. Pokud chcete nainstalovat nejnovější produkční verzi WordPressu s doporučeným nastavením zabezpečení, přečtěte si [dokumentaci WordPressu](https://codex.wordpress.org/Main_Page).
 

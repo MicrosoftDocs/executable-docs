@@ -1,6 +1,6 @@
 ---
 title: 'Mulai cepat: Menggunakan Azure CLI untuk membuat Ubuntu Virtual Machine dan melampirkan Azure Data Disk'
-description: 'Dalam mulai cepat ini, Anda mempelajari cara menggunakan Azure CLI untuk membuat komputer virtual Linux Ubuntu'
+description: 'Dalam mulai cepat ini, Anda mempelajari cara menggunakan Azure CLI untuk membuat komputer virtual Linux Ubuntu.'
 author: ajoian
 ms.service: virtual-machines
 ms.collection: linux
@@ -11,6 +11,8 @@ ms.custom: 'mvc, devx-track-azurecli, mode-api, innovation-engine, linux-related
 ---
 
 # Mulai cepat: Menggunakan Azure CLI untuk membuat Ubuntu Virtual Machine dan melampirkan Azure Data Disk
+
+[![Sebarkan ke Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2286318)
 
 Mulai cepat ini menunjukkan kepada Anda cara menggunakan Azure CLI untuk menyebarkan komputer virtual (VM) Linux Ubuntu di Azure dan melampirkan Azure Data Disk ke komputer virtual. Azure CLI digunakan untuk membuat dan mengelola sumber daya Azure melalui baris perintah atau skrip.
 

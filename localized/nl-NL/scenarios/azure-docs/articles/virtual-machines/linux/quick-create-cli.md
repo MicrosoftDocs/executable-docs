@@ -2,7 +2,7 @@
 title: 'Quickstart: De Azure CLI gebruiken om een virtuele Linux-machine te maken'
 description: In deze snelstartgids leert u hoe u de Azure CLI gebruikt om een virtuele Linux-machine te maken
 author: ju-shim
-ms.service: virtual-machines
+ms.service: azure-virtual-machines
 ms.collection: linux
 ms.topic: quickstart
 ms.date: 03/11/2024
@@ -14,7 +14,7 @@ ms.custom: 'mvc, devx-track-azurecli, mode-api, innovation-engine, linux-related
 
 **Van toepassing op:** :heavy_check_mark: Virtuele Linux-machines
 
-[![Implementeren naar Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262692)
+[![Implementeren naar Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2285977)
 
 In deze snelstartgids wordt beschreven hoe u de Azure CLI gebruikt om een virtuele Linux-machine (VM) in Azure te implementeren. De Azure CLI wordt gebruikt om Azure-resources te maken en te beheren via de opdrachtregel of scripts.
 

@@ -14,7 +14,7 @@ ms.custom: 'mvc, devx-track-azurecli, mode-api, innovation-engine, linux-related
 
 **A következőre vonatkozik:** :heavy_check_mark: Linux rendszerű virtuális gépek
 
-[![Üzembe helyezés az Azure-ban](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262692)
+[![Üzembe helyezés az Azure-ban](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2286317)
 
 Ez a rövid útmutató bemutatja, hogyan helyezhet üzembe Red Hat Enterprise Linux rendszerű virtuális gépet az Azure-ban az Azure CLI használatával. Az Azure CLI használatával azure-erőforrások hozhatók létre és kezelhetők parancssoron vagy szkripteken keresztül.
 

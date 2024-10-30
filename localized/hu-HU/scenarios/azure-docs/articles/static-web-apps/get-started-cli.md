@@ -3,7 +3,7 @@ title: 'Rövid útmutató: Az első statikus webhely létrehozása az Azure Stat
 description: 'Ismerje meg, hogyan helyezhet üzembe statikus webhelyet az Azure Static Web Appsben az Azure CLI-vel.'
 services: static-web-apps
 author: craigshoemaker
-ms.service: static-web-apps
+ms.service: azure-static-web-apps
 ms.topic: quickstart
 ms.date: 03/21/2024
 ms.author: cshoe
@@ -13,7 +13,7 @@ ms.devlang: azurecli
 
 # Rövid útmutató: Az első statikus webhely létrehozása az Azure CLI használatával
 
-[![Üzembe helyezés az Azure-ban](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262845)
+[![Üzembe helyezés az Azure-ban](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2286315)
 
 Az Azure Static Web Apps egy kódtárból származó alkalmazások létrehozásával teszi közzé a webhelyeket az éles környezetben.
 
@@ -136,7 +136,7 @@ Ha a GitHub-sablontárházat szeretné használni, kövesse az alábbi lépések
 
 Nyissa meg https://github.com/login/device és adja meg a GitHubról kapott kódot a GitHub személyes hozzáférési jogkivonatának aktiválásához és lekéréséhez.
 
-1. Odamegy https://github.com/login/device.
+1. Lépjen a következőre: https://github.com/login/device .
 2. Adja meg a felhasználói kódot a konzol üzenetének megfelelően.
 3. Válassza ki `Continue`.
 4. Válassza ki `Authorize AzureAppServiceCLI`.

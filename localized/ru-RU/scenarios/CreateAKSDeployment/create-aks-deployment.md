@@ -10,8 +10,6 @@ ms.custom: 'H1Hack27Feb2017, mvc, devcenter, devx-track-azurecli, mode-api, inno
 
 # Краткое руководство. Развертывание кластера Служба Azure Kubernetes (AKS) с помощью Azure CLI
 
-[![Развертывание в Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262758)
-
 Служба Azure Kubernetes (AKS) — это управляемая служба Kubernetes, которая позволяет быстро развертывать кластеры и управлять ими. Из этого краткого руководства вы узнаете, как выполнять следующие задачи:
 
 - Развертывание кластера AKS с помощью Azure CLI.

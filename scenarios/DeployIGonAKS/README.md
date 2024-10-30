@@ -10,7 +10,7 @@ ms.custom: innovation-engine
 
 # Quickstart: Deploy Inspektor Gadget in an Azure Kubernetes Service cluster
 
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262844)
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2276309)
 
 Welcome to this tutorial where we will take you step by step in deploying [Inspektor Gadget](https://www.inspektor-gadget.io/) in an Azure Kubernetes Service (AKS) cluster with the kubectl plugin: `gadget`. This tutorial assumes you are logged into Azure CLI already and have selected a subscription to use with the CLI.
 
@@ -64,32 +64,36 @@ az aks create \
   --no-ssh-key
 ```
 
-## Connect to the cluster
+## Install kubectl
 
 To manage a Kubernetes cluster, use the Kubernetes command-line client, kubectl. kubectl is already installed if you use Azure Cloud Shell.
+Install az aks CLI locally using the az aks install-cli command
 
-1. Install az aks CLI locally using the az aks install-cli command
+  ```bash
+  if ! [ -x "$(command -v kubectl)" ]; then az aks install-cli; fi
+  ```
 
-    ```bash
-    if ! [ -x "$(command -v kubectl)" ]; then az aks install-cli; fi
-    ```
+## Configure credentials
 
-2. Configure kubectl to connect to your Kubernetes cluster using the az aks get-credentials command. The following command:
-    - Downloads credentials and configures the Kubernetes CLI to use them.
-    - Uses ~/.kube/config, the default location for the Kubernetes configuration file. Specify a different location for your Kubernetes configuration file using --file argument.
+Configure kubectl to connect to your Kubernetes cluster using the az aks get-credentials command. The following command:
 
-    > [!WARNING]
-    > This will overwrite any existing credentials with the same entry
+- Downloads credentials and configures the Kubernetes CLI to use them.
+- Uses ~/.kube/config, the default location for the Kubernetes configuration file. Specify a different location for your Kubernetes configuration file using --file argument.
 
-    ```bash
-    az aks get-credentials --resource-group $MY_RESOURCE_GROUP_NAME --name $MY_AKS_CLUSTER_NAME --overwrite-existing
-    ```
+> [!WARNING]
+> This will overwrite any existing credentials with the same entry
 
-3. Verify the connection to your cluster using the kubectl get command. This command returns a list of the cluster nodes.
+```bash
+az aks get-credentials --resource-group $MY_RESOURCE_GROUP_NAME --name $MY_AKS_CLUSTER_NAME --overwrite-existing
+```
 
-    ```bash
-    kubectl get nodes
-    ```
+## Veryify conncetion
+
+Verify the connection to your cluster using the kubectl get command. This command returns a list of the cluster nodes.
+
+```bash
+kubectl get nodes
+```
 
 ## Install Inspektor Gadget
 
@@ -114,11 +118,7 @@ IG_ARCH=amd64
 mkdir -p $HOME/.local/bin
 export PATH=$PATH:$HOME/.local/bin
 curl -sL https://github.com/inspektor-gadget/inspektor-gadget/releases/download/${IG_VERSION}/kubectl-gadget-linux-${IG_ARCH}-${IG_VERSION}.tar.gz  | tar -C $HOME/.local/bin -xzf - kubectl-gadget
-```
 
-Now, let’s verify the installation by running the `version` command:
-
-```bash
 kubectl gadget version
 ```
 
@@ -139,11 +139,6 @@ The following command will deploy the DaemonSet:
 
 ```bash
 kubectl gadget deploy
-```
-
-Now, let’s verify the installation by running the `version` command again:
-
-```bash
 kubectl gadget version
 ```
 
@@ -153,12 +148,6 @@ This time, the client and server will be correctly installed:
 ```text
 Client version: vX.Y.Z
 Server version: vX.Y.Z
-```
-
-You can now start running the gadgets:
-
-```bash
-kubectl gadget help
 ```
 
 <!--

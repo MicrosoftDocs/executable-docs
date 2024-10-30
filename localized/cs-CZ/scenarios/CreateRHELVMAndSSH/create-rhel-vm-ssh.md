@@ -14,7 +14,7 @@ ms.custom: 'mvc, devx-track-azurecli, mode-api, innovation-engine, linux-related
 
 **Platí pro:** :heavy_check_mark: virtuální počítače s Linuxem
 
-[![Nasazení do Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262692)
+[![Nasazení do Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2286317)
 
 V tomto rychlém startu se dozvíte, jak pomocí Azure CLI nasadit virtuální počítač s Red Hat Enterprise Linuxem v Azure. Azure CLI slouží k vytváření a správě prostředků Azure prostřednictvím příkazového řádku nebo skriptů.
 

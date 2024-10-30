@@ -4,7 +4,7 @@ description: Aprenda a crear conjuntos de escalado de máquinas virtuales en mod
 author: fitzgeraldsteele
 ms.author: fisteele
 ms.topic: how-to
-ms.service: virtual-machine-scale-sets
+ms.service: azure-virtual-machine-scale-sets
 ms.date: 06/14/2024
 ms.reviewer: jushiman
 ms.custom: 'mimckitt, devx-track-azurecli, vmss-flex, innovation-engine, linux-related-content'
@@ -12,7 +12,7 @@ ms.custom: 'mimckitt, devx-track-azurecli, vmss-flex, innovation-engine, linux-r
 
 # Creación de máquinas virtuales en un conjunto de escalado mediante la CLI de Azure
 
-[![Implementación en Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262759)
+[![Implementación en Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2286316)
 
 En este artículo se describe el uso de la CLI de Azure para crear conjuntos de escalado de máquinas virtuales.
 

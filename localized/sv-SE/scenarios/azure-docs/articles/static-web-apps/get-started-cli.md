@@ -3,7 +3,7 @@ title: 'Snabbstart: Skapa din första statiska webbplats med Azure Static Web Ap
 description: Lär dig hur du distribuerar en statisk webbplats till Azure Static Web Apps med Azure CLI.
 services: static-web-apps
 author: craigshoemaker
-ms.service: static-web-apps
+ms.service: azure-static-web-apps
 ms.topic: quickstart
 ms.date: 03/21/2024
 ms.author: cshoe
@@ -13,7 +13,7 @@ ms.devlang: azurecli
 
 # Snabbstart: Skapa din första statiska webbplats med hjälp av Azure CLI
 
-[![Distribuera till Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262845)
+[![Distribuera till Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2286315)
 
 Azure Static Web Apps publicerar webbplatser till produktion genom att skapa appar från en kodlagringsplats.
 

@@ -13,7 +13,7 @@ ms.devlang: azurecli
 
 # Quickstart: Building your first static site using the Azure CLI
 
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262845)
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2286315)
 
 Azure Static Web Apps publishes websites to production by building apps from a code repository.
 
@@ -50,11 +50,9 @@ export MY_STATIC_WEB_APP_NAME="myStaticWebApp$RANDOM_ID"
 
 3. Select **Create repository**.
 
-## Deploy a Static Web App
+## Create resource group
 
-Deploy the app as a static web app from the Azure CLI.
-
-1. Create a resource group.
+Create a resource group.
 
 ```bash
 az group create \
@@ -78,7 +76,9 @@ Results:
 }
 ```
 
-2. Deploy a new static web app from your repository.
+## Deploy a new static web app from your repository
+
+Deploy the app as a static web app from the Azure CLI.
 
 ```bash
 az staticwebapp create \
@@ -87,17 +87,13 @@ az staticwebapp create \
     --location $REGION 
 ```
 
-There are two aspects to deploying a static app. The first operation creates the underlying Azure resources that make up your app. The second is a workflow that builds and publishes your application.
+## Wait for deployment
 
-Before you can go to your new static site, the deployment build must first finish running.
-
-3. Return to your console window and run the following command to list the website's URL.
+There are two aspects to deploying a static app. The first operation creates the underlying Azure resources that make up your app. The second is a workflow that builds and publishes your application. Before you can go to your new static site, the deployment build must first finish running.
 
 ```bash
 export MY_STATIC_WEB_APP_URL=$(az staticwebapp show --name  $MY_STATIC_WEB_APP_NAME --resource-group $MY_RESOURCE_GROUP_NAME --query "defaultHostname" -o tsv)
-```
 
-```bash
 runtime="1 minute";
 endtime=$(date -ud "$runtime" +%s);
 while [[ $(date -u +%s) -le $endtime ]]; do
@@ -123,6 +119,8 @@ Results:
 <link rel="shortcut icon" href=https://appservice.azureedge.net/images/static-apps/v3/favicon.svg type=image/x-icon />
 <link rel=stylesheet href=https://ajax.aspnetcdn.com/ajax/bootstrap/4.1.1/css/bootstrap.min.css crossorigin=anonymous />
 ```
+
+## Get URL
 
 ```bash
 echo "You can now visit your web server at https://$MY_STATIC_WEB_APP_URL"

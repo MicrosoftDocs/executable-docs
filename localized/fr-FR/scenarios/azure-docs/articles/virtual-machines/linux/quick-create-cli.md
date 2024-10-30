@@ -2,7 +2,7 @@
 title: 'Démarrage rapide : utiliser l’interface Azure CLI pour créer une machine virtuelle Linux'
 description: 'Dans ce guide de démarrage rapide, vous allez apprendre à utiliser Azure CLI pour créer une machine virtuelle Linux'
 author: ju-shim
-ms.service: virtual-machines
+ms.service: azure-virtual-machines
 ms.collection: linux
 ms.topic: quickstart
 ms.date: 03/11/2024
@@ -14,7 +14,7 @@ ms.custom: 'mvc, devx-track-azurecli, mode-api, innovation-engine, linux-related
 
 **S’applique à :** :heavy_check_mark : machines virtuelles Linux
 
-[![Déployer dans Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262692)
+[![Déployer dans Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2285977)
 
 Ce démarrage rapide explique comment utiliser Azure CLI pour déployer dans Azure une machine virtuelle Linux. L’interface Azure CLI permet de créer et gérer des ressources Azure par le biais de la ligne de commande ou de scripts.
 

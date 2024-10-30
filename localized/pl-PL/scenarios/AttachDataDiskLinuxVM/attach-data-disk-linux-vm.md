@@ -1,6 +1,6 @@
 ---
 title: 'Szybki start: tworzenie maszyny wirtualnej z systemem Ubuntu przy użyciu interfejsu wiersza polecenia platformy Azure i dołączanie dysku danych platformy Azure'
-description: 'Z tego przewodnika Szybki start dowiesz się, jak utworzyć maszynę wirtualną z systemem Ubuntu Linux przy użyciu interfejsu wiersza polecenia platformy Azure'
+description: 'Z tego przewodnika Szybki start dowiesz się, jak utworzyć maszynę wirtualną z systemem Ubuntu Linux przy użyciu interfejsu wiersza polecenia platformy Azure.'
 author: ajoian
 ms.service: virtual-machines
 ms.collection: linux
@@ -11,6 +11,8 @@ ms.custom: 'mvc, devx-track-azurecli, mode-api, innovation-engine, linux-related
 ---
 
 # Szybki start: tworzenie maszyny wirtualnej z systemem Ubuntu przy użyciu interfejsu wiersza polecenia platformy Azure i dołączanie dysku danych platformy Azure
+
+[![Wdróż na platformie Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2286318)
 
 W tym przewodniku Szybki start pokazano, jak za pomocą interfejsu wiersza polecenia platformy Azure wdrożyć maszynę wirtualną z systemem Ubuntu Linux na platformie Azure i dołączyć dysk danych platformy Azure do maszyny wirtualnej. Interfejs wiersza polecenia platformy Azure służy do tworzenia zasobów platformy Azure i zarządzania nimi za pośrednictwem wiersza polecenia lub skryptów.
 

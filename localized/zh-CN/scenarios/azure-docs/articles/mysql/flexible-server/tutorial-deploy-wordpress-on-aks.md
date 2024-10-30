@@ -14,7 +14,7 @@ ms.custom: 'vc, devx-track-azurecli, innovation-engine, linux-related-content'
 
 [!INCLUDE[applies-to-mysql-flexible-server](../includes/applies-to-mysql-flexible-server.md)]
 
-[![部署到 Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262843)
+[![部署到 Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2286232)
 
 在本教程中，你将使用 Azure CLI 通过 Azure Kubernetes 服务 (AKS) 群集上的 HTTPS 保护的可缩放 WordPress 应用程序部署到 Azure Database for MySQL 灵活服务器。
 [AKS](../../aks/intro-kubernetes.md) 是可用于快速部署和管理群集的托管式 Kubernetes 服务。 **[Azure Database for MySQL 灵活服务器](overview.md)** 是一种完全托管的数据库服务，旨在针对数据库管理功能和配置设置提供更精细的控制和更大的灵活性。

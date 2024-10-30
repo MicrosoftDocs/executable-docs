@@ -14,7 +14,7 @@ ms.custom: 'mvc, devx-track-azurecli, mode-api, innovation-engine, linux-related
 
 **Şunlar için geçerlidir:** :heavy_check_mark: Linux VM'leri
 
-[![Azure’a dağıtın](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262692)
+[![Azure’a dağıtın](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2286317)
 
 Bu hızlı başlangıçta, Azure CLI kullanarak Azure'da Red Hat Enterprise Linux sanal makinesi (VM) dağıtma işlemi gösterilmektedir. Azure CLI, komut satırı veya betikler aracılığıyla Azure kaynakları oluşturmak ve yönetmek için kullanılır.
 

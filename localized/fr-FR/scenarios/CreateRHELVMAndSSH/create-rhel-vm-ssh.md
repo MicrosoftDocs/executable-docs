@@ -14,7 +14,7 @@ ms.custom: 'mvc, devx-track-azurecli, mode-api, innovation-engine, linux-related
 
 **S’applique à :** :heavy_check_mark : machines virtuelles Linux
 
-[![Déployer dans Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262692)
+[![Déployer dans Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2286317)
 
 Ce guide de démarrage rapide vous montre comment utiliser Azure CLI pour déployer une machine virtuelle Red Hat Enterprise Linux dans Azure. L’interface Azure CLI permet de créer et gérer des ressources Azure par le biais de la ligne de commande ou de scripts.
 

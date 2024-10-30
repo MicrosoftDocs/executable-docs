@@ -1,6 +1,6 @@
 ---
 title: 'Snabbstart: Använd Azure CLI för att skapa en virtuell Ubuntu-dator och ansluta en Azure Data Disk'
-description: I den här snabbstarten lär du dig hur du använder Azure CLI för att skapa en virtuell Ubuntu Linux-dator
+description: I den här snabbstarten lär du dig hur du använder Azure CLI för att skapa en virtuell Ubuntu Linux-dator.
 author: ajoian
 ms.service: virtual-machines
 ms.collection: linux
@@ -11,6 +11,8 @@ ms.custom: 'mvc, devx-track-azurecli, mode-api, innovation-engine, linux-related
 ---
 
 # Snabbstart: Använd Azure CLI för att skapa en virtuell Ubuntu-dator och ansluta en Azure Data Disk
+
+[![Distribuera till Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2286318)
 
 Den här snabbstarten visar hur du använder Azure CLI för att distribuera en virtuell Ubuntu Linux-dator (VM) i Azure och koppla en Azure Data Disk till den virtuella datorn. Azure CLI används för att skapa och hantera Azure-resurser via antingen kommandoraden eller skripten.
 
@@ -208,7 +210,7 @@ UUID=1095e29c-07db-47ec-8b19-1ffcaf4f5628 /datadisk01 xfs defaults,discard 0 0
 
 ## Ansluta en ny disk till en virtuell dator
 
-Om du vill lägga till en ny, tom datadisk på den virtuella datorn använder [du kommandot az vm disk attach](/cli/azure/vm/disk) med parametern `--new` . Om den virtuella datorn finns i en tillgänglighetszon skapas disken automatiskt i samma zon som den virtuella datorn. Mer information finns i [Översikt över tillgänglighetszoner](../../availability-zones/az-overview.md). I följande exempel skapas en disk med namnet *$LUN 2_NAME* som är 50 Gb i storlek:
+Om du vill lägga till en ny, tom datadisk på den virtuella datorn använder [du kommandot az vm disk attach](/cli/azure/vm/disk) med parametern `--new` . Om den virtuella datorn finns i en tillgänglighetszon skapas disken automatiskt i samma zon som den virtuella datorn. Mer information finns i [Översikt över Tillgänglighetszoner](../../availability-zones/az-overview.md). I följande exempel skapas en disk med namnet *$LUN 2_NAME* som är 50 Gb i storlek:
 
 ```bash
 export LUN1_NAME="ZRS-$RANDOM_ID"

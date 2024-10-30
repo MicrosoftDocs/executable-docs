@@ -10,7 +10,7 @@ ms.custom: innovation-engine
 
 # クイック スタート: Inspektor Gadget を Azure Kubernetes Service クラスターにデプロイする
 
-[![Azure に配置する](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262844)
+[![Azure に配置する](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2276309)
 
 このチュートリアルでは、kubectl プラグイン `gadget` を使って Azure Kubernetes Service (AKS) クラスターに [Inspektor Gadget](https://www.inspektor-gadget.io/) をデプロイする手順を説明します。 このチュートリアルは、既に Azure CLI にログインしており、CLI で使用するサブスクリプションが選択されていることを前提としています。
 

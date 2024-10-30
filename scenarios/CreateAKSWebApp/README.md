@@ -10,7 +10,7 @@ ms.custom: innovation-engine
 
 # Quickstart: Deploy a Scalable & Secure Azure Kubernetes Service cluster using the Azure CLI
 
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/?Microsoft_Azure_CloudNative_clientoptimizations=false&feature.canmodifyextensions=true#view/Microsoft_Azure_CloudNative/SubscriptionSelectionPage.ReactView/tutorialKey/CreateAKSDeployment)
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2286416)
 
 Welcome to this tutorial where we will take you step by step in creating an Azure Kubernetes Web Application that is secured via https. This tutorial assumes you are logged into Azure CLI already and have selected a subscription to use with the CLI. It also assumes that you have Helm installed ([Instructions can be found here](https://helm.sh/docs/intro/install/)).
 
@@ -149,31 +149,29 @@ az aks create \
 
 ## Connect to the cluster
 
-To manage a Kubernetes cluster, use the Kubernetes command-line client, kubectl. kubectl is already installed if you use Azure Cloud Shell.
+Install az aks CLI locally using the az aks install-cli command
 
-1. Install az aks CLI locally using the az aks install-cli command
+```bash
+if ! [ -x "$(command -v kubectl)" ]; then az aks install-cli; fi
+```
 
-   ```bash
-   if ! [ -x "$(command -v kubectl)" ]; then az aks install-cli; fi
-   ```
+## Configure kubectl to connect to your Kubernetes cluster using the az aks get-credentials command. The following command:
 
-2. Configure kubectl to connect to your Kubernetes cluster using the az aks get-credentials command. The following command:
+- Downloads credentials and configures the Kubernetes CLI to use them.
+- Uses ~/.kube/config, the default location for the Kubernetes configuration file. Specify a different location for your Kubernetes configuration file using --file argument.
 
-   - Downloads credentials and configures the Kubernetes CLI to use them.
-   - Uses ~/.kube/config, the default location for the Kubernetes configuration file. Specify a different location for your Kubernetes configuration file using --file argument.
+> [!WARNING]
+> This will overwrite any existing credentials with the same entry
 
-   > [!WARNING]
-   > This will overwrite any existing credentials with the same entry
+```bash
+az aks get-credentials --resource-group $MY_RESOURCE_GROUP_NAME --name $MY_AKS_CLUSTER_NAME --overwrite-existing
+```
 
-   ```bash
-   az aks get-credentials --resource-group $MY_RESOURCE_GROUP_NAME --name $MY_AKS_CLUSTER_NAME --overwrite-existing
-   ```
+## Verify the connection to your cluster using the kubectl get command. This command returns a list of the cluster nodes.
 
-3. Verify the connection to your cluster using the kubectl get command. This command returns a list of the cluster nodes.
-
-   ```bash
-   kubectl get nodes
-   ```
+```bash
+kubectl get nodes
+```
 
 ## Install NGINX Ingress Controller
 
@@ -213,115 +211,231 @@ cat << EOF > azure-vote-start.yml
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: azure-vote-back
-  namespace: default
+  name: rabbitmq
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: azure-vote-back
+      app: rabbitmq
   template:
     metadata:
       labels:
-        app: azure-vote-back
+        app: rabbitmq
     spec:
       nodeSelector:
         "kubernetes.io/os": linux
       containers:
-      - name: azure-vote-back
-        image: docker.io/bitnami/redis:6.0.8
+      - name: rabbitmq
+        image: mcr.microsoft.com/mirror/docker/library/rabbitmq:3.10-management-alpine
+        ports:
+        - containerPort: 5672
+          name: rabbitmq-amqp
+        - containerPort: 15672
+          name: rabbitmq-http
         env:
-        - name: ALLOW_EMPTY_PASSWORD
-          value: "yes"
+        - name: RABBITMQ_DEFAULT_USER
+          value: "username"
+        - name: RABBITMQ_DEFAULT_PASS
+          value: "password"
         resources:
           requests:
-            cpu: 100m
+            cpu: 10m
             memory: 128Mi
           limits:
             cpu: 250m
             memory: 256Mi
-        ports:
-        - containerPort: 6379
-          name: redis
+        volumeMounts:
+        - name: rabbitmq-enabled-plugins
+          mountPath: /etc/rabbitmq/enabled_plugins
+          subPath: enabled_plugins
+      volumes:
+      - name: rabbitmq-enabled-plugins
+        configMap:
+          name: rabbitmq-enabled-plugins
+          items:
+          - key: rabbitmq_enabled_plugins
+            path: enabled_plugins
+---
+apiVersion: v1
+data:
+  rabbitmq_enabled_plugins: |
+    [rabbitmq_management,rabbitmq_prometheus,rabbitmq_amqp1_0].
+kind: ConfigMap
+metadata:
+  name: rabbitmq-enabled-plugins
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: azure-vote-back
-  namespace: default
+  name: rabbitmq
 spec:
-  ports:
-  - port: 6379
   selector:
-    app: azure-vote-back
+    app: rabbitmq
+  ports:
+    - name: rabbitmq-amqp
+      port: 5672
+      targetPort: 5672
+    - name: rabbitmq-http
+      port: 15672
+      targetPort: 15672
+  type: ClusterIP
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: azure-vote-front
-  namespace: default
+  name: order-service
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: azure-vote-front
+      app: order-service
   template:
     metadata:
       labels:
-        app: azure-vote-front
+        app: order-service
     spec:
       nodeSelector:
         "kubernetes.io/os": linux
       containers:
-      - name: azure-vote-front
-        image: mcr.microsoft.com/azuredocs/azure-vote-front:v1
+      - name: order-service
+        image: ghcr.io/azure-samples/aks-store-demo/order-service:latest
+        ports:
+        - containerPort: 3000
+        env:
+        - name: ORDER_QUEUE_HOSTNAME
+          value: "rabbitmq"
+        - name: ORDER_QUEUE_PORT
+          value: "5672"
+        - name: ORDER_QUEUE_USERNAME
+          value: "username"
+        - name: ORDER_QUEUE_PASSWORD
+          value: "password"
+        - name: ORDER_QUEUE_NAME
+          value: "orders"
+        - name: FASTIFY_ADDRESS
+          value: "0.0.0.0"
         resources:
           requests:
-            cpu: 100m
-            memory: 128Mi
+            cpu: 1m
+            memory: 50Mi
           limits:
-            cpu: 250m
-            memory: 256Mi
-        ports:
-        - containerPort: 80
-        env:
-        - name: REDIS
-          value: "azure-vote-back"
+            cpu: 75m
+            memory: 128Mi
+      initContainers:
+      - name: wait-for-rabbitmq
+        image: busybox
+        command: ['sh', '-c', 'until nc -zv rabbitmq 5672; do echo waiting for rabbitmq; sleep 2; done;']
+        resources:
+          requests:
+            cpu: 1m
+            memory: 50Mi
+          limits:
+            cpu: 75m
+            memory: 128Mi
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: azure-vote-front
-  namespace: default
+  name: order-service
+spec:
+  type: ClusterIP
+  ports:
+  - name: http
+    port: 3000
+    targetPort: 3000
+  selector:
+    app: order-service
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: product-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: product-service
+  template:
+    metadata:
+      labels:
+        app: product-service
+    spec:
+      nodeSelector:
+        "kubernetes.io/os": linux
+      containers:
+      - name: product-service
+        image: ghcr.io/azure-samples/aks-store-demo/product-service:latest
+        ports:
+        - containerPort: 3002
+        resources:
+          requests:
+            cpu: 1m
+            memory: 1Mi
+          limits:
+            cpu: 1m
+            memory: 7Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: product-service
+spec:
+  type: ClusterIP
+  ports:
+  - name: http
+    port: 3002
+    targetPort: 3002
+  selector:
+    app: product-service
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: store-front
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: store-front
+  template:
+    metadata:
+      labels:
+        app: store-front
+    spec:
+      nodeSelector:
+        "kubernetes.io/os": linux
+      containers:
+      - name: store-front
+        image: ghcr.io/azure-samples/aks-store-demo/store-front:latest
+        ports:
+        - containerPort: 8080
+          name: store-front
+        env:
+        - name: VUE_APP_ORDER_SERVICE_URL
+          value: "http://order-service:3000/"
+        - name: VUE_APP_PRODUCT_SERVICE_URL
+          value: "http://product-service:3002/"
+        resources:
+          requests:
+            cpu: 1m
+            memory: 200Mi
+          limits:
+            cpu: 1000m
+            memory: 512Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: store-front
 spec:
   ports:
   - port: 80
+    targetPort: 8080
   selector:
-    app: azure-vote-front
----
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: vote-ingress
-  namespace: default
-spec:
-  ingressClassName: nginx
-  rules:
-  - http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: azure-vote-front
-            port:
-              number: 80
+    app: store-front
+  type: LoadBalancer
 EOF
-```
 
-To deploy this app, run the following command
-
-```bash
 kubectl apply -f azure-vote-start.yml
 ```
 
@@ -343,46 +457,8 @@ while [[ $(date -u +%s) -le $endtime ]]; do
       sleep 10;
    fi;
 done
-```
 
-```bash
 curl "http://$FQDN"
-```
-
-Results:
-
-<!-- expected_similarity=0.3 -->
-
-```HTML
-<!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-    <link rel="stylesheet" type="text/css" href="/static/default.css">
-    <title>Azure Voting App</title>
-
-    <script language="JavaScript">
-        function send(form){
-        }
-    </script>
-
-</head>
-<body>
-    <div id="container">
-        <form id="form" name="form" action="/"" method="post"><center>
-        <div id="logo">Azure Voting App</div>
-        <div id="space"></div>
-        <div id="form">
-        <button name="vote" value="Cats" onclick="send()" class="button button1">Cats</button>
-        <button name="vote" value="Dogs" onclick="send()" class="button button2">Dogs</button>
-        <button name="vote" value="reset" onclick="send()" class="button button3">Reset</button>
-        <div id="space"></div>
-        <div id="space"></div>
-        <div id="results"> Cats - 0 | Dogs - 0 </div>
-        </form>
-        </div>
-    </div>
-</body>
-</html>
 ```
 
 ## Add HTTPS termination to custom domain
@@ -395,21 +471,16 @@ In order to add HTTPS we are going to use Cert Manager. Cert Manager is an open 
 
 1. In order to install cert-manager, we must first create a namespace to run it in. This tutorial will install cert-manager into the cert-manager namespace. It is possible to run cert-manager in a different namespace, although you will need to make modifications to the deployment manifests.
 
-   ```bash
-   kubectl create namespace cert-manager
-   ```
+```bash
+kubectl create namespace cert-manager
 
-2. We can now install cert-manager. All resources are included in a single YAML manifest file. This can be installed by running the following:
+# We can now install cert-manager. All resources are included in a single YAML manifest file. This can be installed by running the following:
+kubectl apply -f https://github.com/jetstack/cert-manager/releases/download/v1.7.0/cert-manager.crds.yaml
+ 
+#Add the certmanager.k8s.io/disable-validation: "true" label to the cert-manager namespace by running the following. This will allow the system resources that cert-manager requires to bootstrap TLS to be created in its own namespace.
 
-   ```bash
-   kubectl apply -f https://github.com/jetstack/cert-manager/releases/download/v1.7.0/cert-manager.crds.yaml
-   ```
-
-3. Add the certmanager.k8s.io/disable-validation: "true" label to the cert-manager namespace by running the following. This will allow the system resources that cert-manager requires to bootstrap TLS to be created in its own namespace.
-
-   ```bash
-   kubectl label namespace cert-manager certmanager.k8s.io/disable-validation=true
-   ```
+kubectl label namespace cert-manager certmanager.k8s.io/disable-validation=true
+```
 
 ## Obtain certificate via Helm Charts
 
@@ -417,74 +488,58 @@ Helm is a Kubernetes deployment tool for automating creation, packaging, configu
 
 Cert-manager provides Helm charts as a first-class method of installation on Kubernetes.
 
-1. Add the Jetstack Helm repository
-
-   This repository is the only supported source of cert-manager charts. There are some other mirrors and copies across the internet, but those are entirely unofficial and could present a security risk.
-
-   ```bash
-   helm repo add jetstack https://charts.jetstack.io
-   ```
-
-2. Update local Helm Chart repository cache
-
-   ```bash
-   helm repo update
-   ```
-
-3. Install Cert-Manager addon via helm by running the following:
-
-   ```bash
-   helm install cert-manager jetstack/cert-manager --namespace cert-manager --version v1.7.0
-   ```
-
-4. Apply Certificate Issuer YAML File
-
-   ClusterIssuers are Kubernetes resources that represent certificate authorities (CAs) that are able to generate signed certificates by honoring certificate signing requests. All cert-manager certificates require a referenced issuer that is in a ready condition to attempt to honor the request.
-   The issuer we are using can be found in the `cluster-issuer-prod.yml file`
-        
-    ```bash
-    cat <<EOF > cluster-issuer-prod.yml
-    apiVersion: cert-manager.io/v1
-    kind: ClusterIssuer
-    metadata:
-      name: letsencrypt-prod
-    spec:
-      acme:
-        # You must replace this email address with your own.
-        # Let's Encrypt will use this to contact you about expiring
-        # certificates, and issues related to your account.
-        email: $SSL_EMAIL_ADDRESS
-        # ACME server URL for Let’s Encrypt’s prod environment.
-        # The staging environment will not issue trusted certificates but is
-        # used to ensure that the verification process is working properly
-        # before moving to production
-        server: https://acme-v02.api.letsencrypt.org/directory
-        # Secret resource used to store the account's private key.
-        privateKeySecretRef:
-          name: letsencrypt
-        # Enable the HTTP-01 challenge provider
-        # you prove ownership of a domain by ensuring that a particular
-        # file is present at the domain
-        solvers:
-        - http01:
-            ingress:
-              class: nginx
-            podTemplate:
-              spec:
-                nodeSelector:
-                  "kubernetes.io/os": linux
-    EOF
-    ```
-
-    ```bash
-    cluster_issuer_variables=$(<cluster-issuer-prod.yml)
-    ```
-
-5. Upate Voting App Application to use Cert-Manager to obtain an SSL Certificate.
-
-   The full YAML file can be found in `azure-vote-nginx-ssl.yml`
-
 ```bash
+# Add the Jetstack Helm repository
+# This repository is the only supported source of cert-manager charts. There are some other mirrors and copies across the internet, but those are entirely unofficial and could present a security risk.
+
+helm repo add jetstack https://charts.jetstack.io
+
+# Update local Helm Chart repository cache
+helm repo update
+
+# Install Cert-Manager addon via helm by running the following
+helm install cert-manager jetstack/cert-manager --namespace cert-manager --version v1.7.0
+
+# ClusterIssuers are Kubernetes resources that represent certificate authorities (CAs) that are able to generate signed certificates by honoring certificate signing requests. All cert-manager certificates require a referenced issuer that is in a ready condition to attempt to honor the request.
+# The issuer we are using can be found in the `cluster-issuer-prod.yml file`
+        
+cat <<EOF > cluster-issuer-prod.yml
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: letsencrypt-prod
+spec:
+  acme:
+    # You must replace this email address with your own.
+    # Let's Encrypt will use this to contact you about expiring
+    # certificates, and issues related to your account.
+    email: $SSL_EMAIL_ADDRESS
+    # ACME server URL for Let’s Encrypt’s prod environment.
+    # The staging environment will not issue trusted certificates but is
+    # used to ensure that the verification process is working properly
+    # before moving to production
+    server: https://acme-v02.api.letsencrypt.org/directory
+    # Secret resource used to store the account's private key.
+    privateKeySecretRef:
+      name: letsencrypt
+    # Enable the HTTP-01 challenge provider
+    # you prove ownership of a domain by ensuring that a particular
+    # file is present at the domain
+    solvers:
+    - http01:
+        ingress:
+          class: nginx
+        podTemplate:
+          spec:
+            nodeSelector:
+              "kubernetes.io/os": linux
+EOF
+
+cluster_issuer_variables=$(<cluster-issuer-prod.yml)
+
+# Upate Voting App Application to use Cert-Manager to obtain an SSL Certificate.
+# The full YAML file can be found in `azure-vote-nginx-ssl.yml`
+
 cat << EOF > azure-vote-nginx-ssl.yml
 ---
 # INGRESS WITH SSL PROD
@@ -515,38 +570,10 @@ spec:
               port:
                 number: 80
 EOF
+
+azure_vote_nginx_ssl_variables=$(<azure-vote-nginx-ssl.yml)
+echo "${azure_vote_nginx_ssl_variables//\$FQDN/$FQDN}" | kubectl apply -f -
 ```
-
-    ```bash
-    azure_vote_nginx_ssl_variables=$(<azure-vote-nginx-ssl.yml)
-    echo "${azure_vote_nginx_ssl_variables//\$FQDN/$FQDN}" | kubectl apply -f -
-    ```
-
-<!--## Validate application is working
-
-Wait for the SSL certificate to issue. The following command will query the 
-status of the SSL certificate for 3 minutes. In rare occasions it may take up to 
-15 minutes for Lets Encrypt to issue a successful challenge and 
-the ready state to be 'True'
-
-```bash
-runtime="10 minute"; endtime=$(date -ud "$runtime" +%s); while [[ $(date -u +%s) -le $endtime ]]; do STATUS=$(kubectl get certificate --output jsonpath={..status.conditions[0].status}); echo $STATUS; if [ "$STATUS" = 'True' ]; then break; else sleep 10; fi; done
-```
-
-Validate SSL certificate is True by running the follow command:
-
-```bash
-kubectl get certificate --output jsonpath={..status.conditions[0].status}
-```
-
-Results:
-
-<!-- expected_similarity=0.3 -->
-<!--
-```ASCII
-True
-```
--->
 
 ## Browse your AKS Deployment Secured via HTTPS
 
@@ -567,9 +594,7 @@ while [[ $(date -u +%s) -le $endtime ]]; do
       sleep 10;
    fi;
 done
-```
 
-```bash
 echo "You can now visit your web server at https://$FQDN"
 ```
 

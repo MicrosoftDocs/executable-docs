@@ -4,7 +4,7 @@ description: 'Dowiedz się, jak utworzyć zestaw skalowania maszyn wirtualnych w
 author: fitzgeraldsteele
 ms.author: fisteele
 ms.topic: how-to
-ms.service: virtual-machine-scale-sets
+ms.service: azure-virtual-machine-scale-sets
 ms.date: 06/14/2024
 ms.reviewer: jushiman
 ms.custom: 'mimckitt, devx-track-azurecli, vmss-flex, innovation-engine, linux-related-content'
@@ -12,7 +12,7 @@ ms.custom: 'mimckitt, devx-track-azurecli, vmss-flex, innovation-engine, linux-r
 
 # Tworzenie maszyn wirtualnych w zestawie skalowania przy użyciu interfejsu wiersza polecenia platformy Azure
 
-[![Wdróż na platformie Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262759)
+[![Wdróż na platformie Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2286316)
 
 W tym artykule przedstawiono procedurę tworzenia zestawu skalowania maszyn wirtualnych przy użyciu interfejsu wiersza polecenia platformy Azure.
 

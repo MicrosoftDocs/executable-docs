@@ -14,7 +14,7 @@ ms.custom: 'mvc, devx-track-azurecli, mode-api, innovation-engine, linux-related
 
 **Применимо к:** :heavy_check_mark: виртуальным машинам Linux
 
-[![Развертывание в Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262692)
+[![Развертывание в Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2286317)
 
 В этом кратком руководстве показано, как использовать Azure CLI для развертывания виртуальной машины Red Hat Enterprise Linux в Azure. Azure CLI используется для создания ресурсов Azure и управления ими с помощью командной строки или скриптов.
 

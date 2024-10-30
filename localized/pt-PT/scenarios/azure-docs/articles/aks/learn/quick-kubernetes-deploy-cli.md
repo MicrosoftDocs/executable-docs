@@ -10,7 +10,7 @@ ms.custom: 'H1Hack27Feb2017, mvc, devcenter, devx-track-azurecli, mode-api, inno
 
 # Guia de início rápido: implantar um cluster do Serviço Kubernetes do Azure (AKS) usando a CLI do Azure
 
-[![Implementar no Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262758)
+[![Implementar no Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2286152)
 
 O Serviço Kubernetes do Azure (AKS) é um serviço Kubernetes gerenciado que permite implantar e gerenciar clusters rapidamente. Neste início rápido, vai aprender a:
 

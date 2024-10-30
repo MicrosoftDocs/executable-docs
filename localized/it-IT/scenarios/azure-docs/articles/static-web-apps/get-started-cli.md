@@ -3,7 +3,7 @@ title: 'Guida introduttiva: Creazione del primo sito statico con il App Web stat
 description: Informazioni su come distribuire un sito statico in App Web statiche di Azure con l'interfaccia della riga di comando di Azure.
 services: static-web-apps
 author: craigshoemaker
-ms.service: static-web-apps
+ms.service: azure-static-web-apps
 ms.topic: quickstart
 ms.date: 03/21/2024
 ms.author: cshoe
@@ -13,7 +13,7 @@ ms.devlang: azurecli
 
 # Guida introduttiva: Creazione del primo sito statico con l'interfaccia della riga di comando di Azure
 
-[![Distribuzione in Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262845)
+[![Distribuzione in Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2286315)
 
 App Web statiche di Azure pubblica siti Web in produzione creando app da un repository di codice.
 
@@ -40,7 +40,7 @@ export MY_STATIC_WEB_APP_NAME="myStaticWebApp$RANDOM_ID"
 
 ## Creare un repository (facoltativo)
 
-(Facoltativo) Questo articolo usa un repository di modelli GitHub come un altro modo per semplificare l'avvio. Il modello include un'app iniziale da distribuire in App Web statiche di Azure.
+(Facoltativo) Questo articolo usa un repository di modelli GitHub come un altro modo per semplificare l'avvio. Il modello include un'app di avvio da distribuire in App Web statiche di Azure.
 
 1. Passare al percorso seguente per creare un nuovo repository: https://github.com/staticwebdev/vanilla-basic/generate.
 2. Assegnare al repository `my-first-static-web-app`il nome .
@@ -54,7 +54,7 @@ export MY_STATIC_WEB_APP_NAME="myStaticWebApp$RANDOM_ID"
 
 Distribuire l'app come app Web statica dall'interfaccia della riga di comando di Azure.
 
-1. Crea un gruppo di risorse.
+1. Creare un gruppo di risorse.
 
 ```bash
 az group create \
@@ -89,7 +89,7 @@ az staticwebapp create \
 
 La distribuzione di un'app statica è un processo in due passaggi. La prima operazione crea le risorse di Azure sottostanti che costituiscono l'app. Il secondo è un flusso di lavoro che compila e pubblica l'applicazione.
 
-Prima di poter passare al nuovo sito statico, la compilazione della distribuzione deve prima terminare l'esecuzione.
+Prima di poter andare al nuovo sito statico, deve terminare l'esecuzione della compilazione di distribuzione.
 
 3. Tornare alla finestra della console ed eseguire il comando seguente per elencare l'URL del sito Web.
 

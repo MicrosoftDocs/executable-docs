@@ -3,7 +3,7 @@ title: 快速入門：使用 CLI 使用 Azure Static Web Apps 建置您的第一
 description: 瞭解如何使用 Azure CLI 將靜態網站部署至 Azure Static Web Apps。
 services: static-web-apps
 author: craigshoemaker
-ms.service: static-web-apps
+ms.service: azure-static-web-apps
 ms.topic: quickstart
 ms.date: 03/21/2024
 ms.author: cshoe
@@ -13,7 +13,7 @@ ms.devlang: azurecli
 
 # 快速入門：使用 Azure CLI 建置您的第一個靜態網站
 
-[![部署至 Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262845)
+[![部署至 Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2286315)
 
 Azure Static Web Apps 會透過從程式代碼存放庫建置應用程式，將網站發佈至生產環境。
 
@@ -40,13 +40,13 @@ export MY_STATIC_WEB_APP_NAME="myStaticWebApp$RANDOM_ID"
 
 ## 建立存放庫 （選擇性）
 
-（選擇性）本文使用 GitHub 範本存放庫作為另一種方式，讓您輕鬆開始使用。 此範本包含要部署至 Azure Static Web Apps 的入門應用程式。
+（選擇性）本文使用 GitHub 範本存放庫作為另一種方式，讓您輕鬆開始使用。 範本具有可部署至 Azure Static Web Apps 的入門應用程式。
 
 1. 流覽至下列位置以建立新的存放庫： https://github.com/staticwebdev/vanilla-basic/generate。
-2. 將您的存放函式庫 `my-first-static-web-app`命名為 。
+2. 將您的存放庫命名為 `my-first-static-web-app`。
 
 > [!NOTE]
-> Azure Static Web Apps 至少需要一個 HTML 檔案才能建立 Web 應用程式。 您在此步驟中建立的存放庫包含單 `index.html` 一檔案。
+> Azure Static Web Apps 需要至少一個 HTML 檔案，才能建立 Web 應用程式。 您在此步驟中建立的存放庫包含單 `index.html` 一檔案。
 
 3. 選取 [建立存放庫]****。
 
@@ -87,9 +87,9 @@ az staticwebapp create \
     --location $REGION 
 ```
 
-部署靜態應用程式有兩個層面。 第一個作業會建立構成您應用程式的基礎 Azure 資源。 第二個是建置和發佈應用程式的工作流程。
+部署靜態應用程式有兩個層面。 第一個作業會建立構成您應用程式的基礎 Azure 資源。 第二個層面是會建置及發佈您的應用程式的工作流程。
 
-您必須先完成執行部署組建，才能移至新的靜態月臺。
+在您可以移至新的靜態網站之前，部署建置必須先完成執行。
 
 3. 返回主控台視窗，然後執行下列命令以列出網站的URL。
 
@@ -157,7 +157,7 @@ echo "You can now visit your web server at https://$MY_STATIC_WEB_APP_URL"
 ```
 5. 將 URL 複製到瀏覽器以移至您的網站。
 
-## 清除資源 （選擇性）
+## 清理資源 (選擇性)
 
 如果您不打算繼續使用此應用程式，請使用 az group delete[ 命令刪除資源群組和靜態 Web 應用程式](/cli/azure/group#az-group-delete)。
 

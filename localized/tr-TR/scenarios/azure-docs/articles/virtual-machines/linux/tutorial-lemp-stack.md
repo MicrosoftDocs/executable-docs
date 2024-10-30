@@ -3,7 +3,7 @@ title: Öğretici - VM'de WordPress kullanarak LEMP yığını dağıtma
 description: 'Bu öğreticide, Azure''da bir Linux sanal makinesine LEMP yığınını ve WordPress''i yüklemeyi öğreneceksiniz.'
 author: fossygirl
 ms.collection: linux
-ms.service: virtual-machines
+ms.service: azure-virtual-machines
 ms.devlang: azurecli
 ms.custom: 'innovation-engine, linux-related-content, devx-track-azurecli'
 ms.topic: tutorial
@@ -16,7 +16,7 @@ ms.reviewer: jushim
 
 **Şunlar için geçerlidir:** :heavy_check_mark: Linux VM'leri
 
-[![Azure’a dağıtın](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2275458)
+[![Azure’a dağıtın](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2286415)
 
 Bu makalede, Azure'da Ubuntu Linux VM'sinde NGINX web sunucusu, Azure MySQL Esnek Sunucusu ve PHP (LEMP yığını) dağıtma adımları anlatılmaktadır. LEMP sunucusunu çalışır halde görmek için, isteğe bağlı olarak bir WordPress sitesi yükleyip yapılandırabilirsiniz. Bu öğreticide şunların nasıl yapıldığını öğrenirsiniz:
 
@@ -521,7 +521,7 @@ Sonuçlar:
 
 ## MySQL için Azure Veritabanı Oluşturma - Esnek Sunucu
 
-MySQL için Azure Veritabanı - Esnek Sunucu, bulutta yüksek oranda kullanılabilir MySQL sunucularını çalıştırmak, yönetmek ve ölçeklendirmek için kullanabileceğiniz bir yönetilen hizmettir. az mysql flexible-server create komutuyla [esnek bir sunucu oluşturun](../../mysql/flexible-server/quickstart-create-server-cli.md#create-an-azure-database-for-mysql-flexible-server) . Bir sunucu birden çok veritabanı içerebilir. Aşağıdaki komut, Azure CLI'nızın yerel ortamındaki hizmet varsayılanlarını ve değişken değerlerini kullanarak bir sunucu oluşturur:
+MySQL için Azure Veritabanı - Esnek Sunucu, bulutta yüksek oranda kullanılabilir MySQL sunucularını çalıştırmak, yönetmek ve ölçeklendirmek için kullanabileceğiniz bir yönetilen hizmettir. az mysql flexible-server create komutuyla [esnek bir sunucu oluşturun](/azure/mysql/flexible-server/quickstart-create-server-cli#create-an-azure-database-for-mysql-flexible-server) . Bir sunucu birden çok veritabanı içerebilir. Aşağıdaki komut, Azure CLI'nızın yerel ortamındaki hizmet varsayılanlarını ve değişken değerlerini kullanarak bir sunucu oluşturur:
 
 ```bash
 az mysql flexible-server create \
@@ -573,8 +573,8 @@ Oluşturulan sunucu aşağıdaki özniteliklere sahiptir:
 * Varsayılan bağlantı yöntemi, bağlı bir sanal ağ ve otomatik olarak oluşturulan bir alt ağ ile Özel erişim (VNet Tümleştirmesi) yöntemidir.
 
 > [!NOTE]
-> Sunucu oluşturulduktan sonra bağlantı yöntemi değiştirilemez. Örneğin, oluşturma sırasında seçtiyseniz `Private access (VNet Integration)` , oluşturma sonrasında olarak `Public access (allowed IP addresses)` değiştiremezsiniz. Sanal Ağ Tümleştirmesi'ni kullanarak sunucunuza güvenli bir şekilde erişmek için Özel erişimli bir sunucu oluşturmanızı kesinlikle öneririz. Kavramlar makalesinde [](../../mysql/flexible-server/concepts-networking-vnet.md)Özel erişim hakkında daha fazla bilgi edinin.
-Varsayılan değerleri değiştirmek isterseniz, yapılandırılabilir CLI parametrelerinin tam listesi için Azure CLI [başvuru belgelerine bakın](../../mysql/flexible-server/quickstart-create-server-cli.md) .
+> Sunucu oluşturulduktan sonra bağlantı yöntemi değiştirilemez. Örneğin, oluşturma sırasında seçtiyseniz `Private access (VNet Integration)` , oluşturma sonrasında olarak `Public access (allowed IP addresses)` değiştiremezsiniz. Sanal Ağ Tümleştirmesi'ni kullanarak sunucunuza güvenli bir şekilde erişmek için Özel erişimli bir sunucu oluşturmanızı kesinlikle öneririz. Kavramlar makalesinde [](/azure/mysql/flexible-server/concepts-networking-vnet)Özel erişim hakkında daha fazla bilgi edinin.
+Varsayılan değerleri değiştirmek isterseniz, yapılandırılabilir CLI parametrelerinin tam listesi için Azure CLI [başvuru belgelerine bakın](/azure/mysql/flexible-server/quickstart-create-server-cli) .
 
 ## MySQL için Azure Veritabanı - Esnek Sunucu durumunu denetleyin
 
@@ -600,13 +600,13 @@ Sunucu parametrelerini kullanarak MySQL için Azure Veritabanı - Esnek Sunucu y
 
 Sunucu parametresi ayrıntılarını göster:
 
-Sunucunun [belirli bir parametresi hakkındaki ayrıntıları göstermek için az mysql flexible-server parameter show](../../mysql/flexible-server/how-to-configure-server-parameters-cli.md) komutunu çalıştırın.
+Sunucunun [belirli bir parametresi hakkındaki ayrıntıları göstermek için az mysql flexible-server parameter show](/azure/mysql/flexible-server/how-to-configure-server-parameters-cli) komutunu çalıştırın.
 
 ## wordpress tümleştirmesi için MySQL için Azure Veritabanı - Esnek Sunucu SSL bağlantı parametresini devre dışı bırakma
 
 Sunucu parametresi değerini değiştirme:
 
-Ayrıca, MySQL sunucu altyapısı için temel yapılandırma değerini güncelleştiren belirli bir sunucu parametresinin değerini de değiştirebilirsiniz. Sunucu parametresini güncelleştirmek için az mysql flexible-server parameter set[ komutunu kullanın](../../mysql/flexible-server/how-to-configure-server-parameters-cli.md#modify-a-server-parameter-value).
+Ayrıca, MySQL sunucu altyapısı için temel yapılandırma değerini güncelleştiren belirli bir sunucu parametresinin değerini de değiştirebilirsiniz. Sunucu parametresini güncelleştirmek için az mysql flexible-server parameter set[ komutunu kullanın](/azure/mysql/flexible-server/how-to-configure-server-parameters-cli#modify-a-server-parameter-value).
 
 ```bash
 az mysql flexible-server parameter set \
@@ -641,7 +641,7 @@ Sonuçlar:
 
 Aşağıdaki örnek adlı `$MY_VM_NAME` bir VM oluşturur ve varsayılan anahtar konumunda yoksa SSH anahtarları oluşturur. Komut, yönetici kullanıcı adı olarak da ayarlanır `$MY_VM_USERNAME` .
 
-Azure'da Linux sanal makinelerinin güvenliğini geliştirmek için Azure Active Directory kimlik doğrulamasıyla tümleştirebilirsiniz. Artık Azure AD'i çekirdek kimlik doğrulama platformu olarak kullanabilirsiniz. Ayrıca Azure AD ve OpenSSH sertifika tabanlı kimlik doğrulamasını kullanarak Linux VM'ye SSH de ekleyebilirsiniz. Bu işlevsellik, kuruluşların Azure rol tabanlı erişim denetimi ve Koşullu Erişim ilkeleriyle VM'lere erişimi yönetmesine olanak tanır.
+Azure'da Linux sanal makinelerinin güvenliğini geliştirmek için Microsoft Entra ID kimlik doğrulaması ile tümleştirebilirsiniz. Artık Microsoft Entra ID'yi çekirdek kimlik doğrulama platformu olarak kullanabilirsiniz. Ayrıca Microsoft Entra ID ve OpenSSH sertifika tabanlı kimlik doğrulamasını kullanarak Linux VM'de SSH de kullanabilirsiniz. Bu işlevsellik, kuruluşların Azure rol tabanlı erişim denetimi ve Koşullu Erişim ilkeleriyle VM'lere erişimi yönetmesine olanak tanır.
 
 [az vm create](/cli/azure/vm#az-vm-create) komutuyla bir sanal makine oluşturun.
 
@@ -706,7 +706,7 @@ done
 ```
 
 <!--
-## Assign Azure AD RBAC for Azure AD login for Linux Virtual Machine
+## Assign Microsoft Entra ID RBAC for Microsoft Entra ID login for Linux Virtual Machine
 The below command uses [az role assignment create](https://learn.microsoft.com/cli/azure/role/assignment#az-role-assignment-create) to assign the `Virtual Machine Administrator Login` role to the VM for your current Azure user.
 ```bash
 export MY_RESOURCE_GROUP_ID=$(az group show --resource-group $MY_RESOURCE_GROUP_NAME --query id -o tsv)
@@ -741,15 +741,15 @@ Results:
 
 <!--
 ## Export the SSH configuration for use with SSH clients that support OpenSSH
-Login to Azure Linux VMs with Azure AD supports exporting the OpenSSH certificate and configuration. That means you can use any SSH clients that support OpenSSH-based certificates to sign in through Azure AD. The following example exports the configuration for all IP addresses assigned to the VM:
+Login to Azure Linux VMs with Microsoft Entra ID supports exporting the OpenSSH certificate and configuration. That means you can use any SSH clients that support OpenSSH-based certificates to sign in through Microsoft Entra ID. The following example exports the configuration for all IP addresses assigned to the VM:
 ```bash
 az ssh config --file ~/.ssh/azure-config --name $MY_VM_NAME --resource-group $MY_RESOURCE_GROUP_NAME
 ```
 -->
 
-## Azure'da Linux Sanal Makinesi için Azure AD oturum açma özelliğini etkinleştirme
+## Azure'da Linux Sanal Makinesi için Microsoft Entra ID oturum açma özelliğini etkinleştirme
 
-Aşağıda, Linux VM için Azure AD oturum açma özelliğini etkinleştirmek için uzantı yüklenir. VM uzantıları, Azure sanal makinelerinde dağıtım sonrası yapılandırma ve otomasyon görevleri sağlayan küçük uygulamalardır.
+Aşağıda, Linux VM için Microsoft Entra ID oturum açma özelliğini etkinleştirmek üzere uzantı yüklenir. VM uzantıları, Azure sanal makinelerinde dağıtım sonrası yapılandırma ve otomasyon görevleri sağlayan küçük uygulamalardır.
 
 ```bash
 az vm extension set \
@@ -787,7 +787,7 @@ Sonuçlar:
 
 ## WordPress web sitenizi kontrol edin ve göz atın
 
-[WordPress](https://www.wordpress.org), web sitelerinin, blogların ve diğer uygulamaların oluşturulması için web'in %40'ının üzerinde kullanılan bir açık kaynak içerik yönetim sistemidir (CMS). WordPress birkaç farklı Azure hizmetinde çalıştırılabilir: [AKS](../../mysql/flexible-server/tutorial-deploy-wordpress-on-aks.md), Sanal Makineler ve App Service. Azure'da WordPress seçeneklerinin tam listesi için bkz[. Azure Market](https://azuremarketplace.microsoft.com/marketplace/apps?page=1&search=wordpress) üzerinde WordPress.
+[WordPress](https://www.wordpress.org), web sitelerinin, blogların ve diğer uygulamaların oluşturulması için web'in %40'ının üzerinde kullanılan bir açık kaynak içerik yönetim sistemidir (CMS). WordPress birkaç farklı Azure hizmetinde çalıştırılabilir: [AKS](/azure/mysql/flexible-server/tutorial-deploy-wordpress-on-aks), Sanal Makineler ve App Service. Azure'da WordPress seçeneklerinin tam listesi için bkz[. Azure Market](https://azuremarketplace.microsoft.com/marketplace/apps?page=1&search=wordpress) üzerinde WordPress.
 
 Bu WordPress kurulumu yalnızca kavram kanıtı amaçlıdır. En güncel WordPress sürümünü önerilen güvenlik ayarlarıyla üretim ortamına yüklemek için bkz. [WordPress belgeleri](https://codex.wordpress.org/Main_Page).
 

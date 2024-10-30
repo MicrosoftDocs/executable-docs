@@ -4,7 +4,7 @@ description: Azure CLI를 사용하여 유연한 오케스트레이션 모드에
 author: fitzgeraldsteele
 ms.author: fisteele
 ms.topic: how-to
-ms.service: virtual-machine-scale-sets
+ms.service: azure-virtual-machine-scale-sets
 ms.date: 06/14/2024
 ms.reviewer: jushiman
 ms.custom: 'mimckitt, devx-track-azurecli, vmss-flex, innovation-engine, linux-related-content'
@@ -12,7 +12,7 @@ ms.custom: 'mimckitt, devx-track-azurecli, vmss-flex, innovation-engine, linux-r
 
 # Azure CLI를 사용하여 확장 집합에서 가상 머신 만들기
 
-[![Azure에 배포](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262759)
+[![Azure에 배포](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2286316)
 
 이 문서에서는 Azure CLI를 사용하여 가상 머신 확장 집합을 만드는 단계를 안내합니다.
 
@@ -379,7 +379,7 @@ az network application-gateway create   --name $MY_APPGW_NAME --location $REGION
 }
 ```
 
-## 가상 머신 크기 집합 만들기
+## Virtual Machine Scale Set 만들기
 
 > [!IMPORTANT]
 >2023년 11월부터 PowerShell 및 Azure CLI를 사용하여 만들어진 VM Scale Sets는 오케스트레이션 모드가 지정되지 않은 경우 기본적으로 유연한 오케스트레이션 모드로 설정됩니다. 이 변경 내용과 수행해야 할 작업에 대한 자세한 내용은 [Breaking Change for VMSS PowerShell/CLI Customers - Microsoft Community Hub](

@@ -14,7 +14,7 @@ ms.custom: 'mvc, devx-track-azurecli, mode-api, innovation-engine, linux-related
 
 **Gilt für**: :heavy_check_mark: Linux-VMs
 
-[![Bereitstellung in Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262692)
+[![Bereitstellung in Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2286317)
 
 In dieser Schnellstartanleitung erfahren Sie, wie Sie die Azure CLI zum Bereitstellen eines virtuellen Red Hat Enterprise Linux-Computers (VM) in Azure verwenden. Die Azure-Befehlszeilenschnittstelle dient zum Erstellen und Verwalten von Azure-Ressourcen über die Befehlszeile oder mit Skripts.
 

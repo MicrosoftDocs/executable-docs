@@ -1,9 +1,9 @@
 ---
 title: 'Rychlý start: Vytvoření prvního statického webu pomocí Azure Static Web Apps pomocí rozhraní příkazového řádku'
-description: Naučte se nasadit statický web do Azure Static Web Apps pomocí Azure CLI
+description: Naučte se nasadit statický web do Azure Static Web Apps pomocí Azure CLI.
 services: static-web-apps
 author: craigshoemaker
-ms.service: static-web-apps
+ms.service: azure-static-web-apps
 ms.topic: quickstart
 ms.date: 03/21/2024
 ms.author: cshoe
@@ -13,7 +13,7 @@ ms.devlang: azurecli
 
 # Rychlý start: Vytvoření prvního statického webu pomocí Azure CLI
 
-[![Nasazení do Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262845)
+[![Nasazení do Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2286315)
 
 Azure Static Web Apps publikuje weby do produkčního prostředí vytvořením aplikací z úložiště kódu.
 
@@ -136,7 +136,7 @@ Pokud chcete použít úložiště šablon GitHubu, postupujte takto:
 
 Přejděte a https://github.com/login/device zadejte kód, který získáte z GitHubu, a aktivujte a načtěte svůj osobní přístupový token GitHubu.
 
-1. Přejděte na https://github.com/login/device.
+1. Přejděte na https://github.com/login/device .
 2. Zadejte uživatelský kód tak, jak se zobrazí zpráva konzoly.
 3. Vyberte možnost `Continue`.
 4. Vyberte možnost `Authorize AzureAppServiceCLI`.

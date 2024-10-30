@@ -3,7 +3,7 @@ title: '빠른 시작: CLI를 사용하여 Azure Static Web Apps를 통해 첫 �
 description: Azure CLI를 사용하여 정적 사이트를 Azure Static Web Apps에 배포하는 방법을 알아봅니다.
 services: static-web-apps
 author: craigshoemaker
-ms.service: static-web-apps
+ms.service: azure-static-web-apps
 ms.topic: quickstart
 ms.date: 03/21/2024
 ms.author: cshoe
@@ -13,7 +13,7 @@ ms.devlang: azurecli
 
 # 빠른 시작: Azure CLI를 사용하여 첫 번째 정적 사이트 빌드
 
-[![Azure에 배포](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262845)
+[![Azure에 배포](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2286315)
 
 Azure Static Web Apps는 코드 리포지토리에서 앱을 빌드하여 프로덕션 환경에 웹 사이트를 게시합니다.
 

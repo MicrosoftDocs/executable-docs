@@ -10,7 +10,7 @@ ms.custom: 'H1Hack27Feb2017, mvc, devcenter, devx-track-azurecli, mode-api, inno
 
 # 快速入門：使用 Azure CLI 部署 Azure Kubernetes Service (AKS) 叢集
 
-[![部署至 Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262758)
+[![部署至 Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2286152)
 
 Azure Kubernetes Service (AKS) 是受控 Kubernetes 服務，可讓您快速部署及管理叢集。 在此快速入門中，您可了解如何：
 
@@ -34,7 +34,7 @@ Azure Kubernetes Service (AKS) 是受控 Kubernetes 服務，可讓您快速部�
 
 ## 定義環境變數
 
-定義下列環境變數，以用於本快速入門：
+定義下列環境變數，以在整個快速入門中使用：
 
 ```azurecli-interactive
 export RANDOM_ID="$(openssl rand -hex 3)"
@@ -358,9 +358,9 @@ az aks create \
 
 ## 測試應用程式
 
-您可以造訪公用IP位址或應用程式URL來驗證應用程式是否正在執行。
+您可以造訪公用 IP 位址或應用程式 URL 來驗證應用程式是否正在執行。
 
-使用下列指令取得應用程式 URL：
+使用下列命令取得應用程式 URL：
 
 ```azurecli-interactive
 runtime="5 minutes"
@@ -413,7 +413,7 @@ echo "You can now visit your web server at $IP_ADDRESS"
 
 ## 選取叢集
 
-如果您不打算進行後續的 [AKS 教學課程][aks-tutorial]，請清除不必要資源以避免 Azure 費用。 您可以使用 命令來移除資源群組、容器服務和所有相關資源 [`az group delete`][az-group-delete] 。
+如果您不打算進行後續的 [AKS 教學課程][aks-tutorial]，請清除不必要資源以避免 Azure 費用。 您可以使用 [`az group delete`][az-group-delete] (部分機器翻譯) 命令移除資源群組、容器服務和所有相關資源。
 
 > [!NOTE]
 > 在本快速入門中，是以系統指派的受控識別 (預設身分識別選項) 來建立 AKS 叢集。 平台會管理這個身分識別，您不需要手動移除它。

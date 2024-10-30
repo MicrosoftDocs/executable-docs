@@ -1,6 +1,6 @@
 ---
 title: 快速入门：使用 Azure CLI 创建 Ubuntu 虚拟机并附加 Azure 数据磁盘
-description: 本快速入门介绍如何使用 Azure CLI 创建 Ubuntu Linux 虚拟机
+description: 本快速入门介绍如何使用 Azure CLI 创建 Ubuntu Linux 虚拟机。
 author: ajoian
 ms.service: virtual-machines
 ms.collection: linux
@@ -11,6 +11,8 @@ ms.custom: 'mvc, devx-track-azurecli, mode-api, innovation-engine, linux-related
 ---
 
 # 快速入门：使用 Azure CLI 创建 Ubuntu 虚拟机并附加 Azure 数据磁盘
+
+[![部署到 Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2286318)
 
 本快速入门介绍如何使用 Azure CLI 在 Azure 中部署 Ubuntu Linux 虚拟机（VM），并将 Azure 数据磁盘附加到虚拟机。 Azure CLI 用于从命令行或脚本创建和管理 Azure 资源。
 

@@ -1,0 +1,356 @@
+{
+    "name": "Quickstart: Deploy Inspektor Gadget in an Azure Kubernetes Service cluster",
+    "properties": {
+        "author": "josebl",
+        "description": "This tutorial shows how to deploy Inspektor Gadget in an AKS cluster",
+        "ms.author": "josebl",
+        "ms.custom": "innovation-engine",
+        "ms.date": "12/06/2023",
+        "ms.topic": "article",
+        "title": "Deploy Inspektor Gadget in an Azure Kubernetes Service cluster"
+    },
+    "environmentVariables": {
+        "AKS_CLUSTER_NAME": "aks-cnpg-3cee3l",
+        "AKS_CLUSTER_VERSION": "1.29",
+        "AKS_MANAGED_IDENTITY_NAME": "mi-aks-cnpg-3cee3l",
+        "AKS_NODE_COUNT": "2",
+        "AKS_PRIMARY_CLUSTER_FED_CREDENTIAL_NAME": "pg-primary-fedcred1-cnpg-l1tsugyd",
+        "AKS_PRIMARY_CLUSTER_NAME": "aks-primary-cnpg-l1tsugyd",
+        "AKS_PRIMARY_CLUSTER_PG_DNSPREFIX": "a33a3d08c14",
+        "AKS_PRIMARY_MANAGED_RG_NAME": "rg-cnpg-primary-aksmanaged-l1tsugyd",
+        "AKS_UAMI_CLUSTER_IDENTITY_NAME": "mi-aks-cnpg-l1tsugyd",
+        "BARMAN_CONTAINER_NAME": "barman",
+        "CLUSTER_VERSION": "1.27",
+        "ENABLE_AZURE_PVC_UPDATES": "true",
+        "ERROR": "\u001b[31m",
+        "IP_ADDRESS": "52.233.203.69",
+        "KEYVAULT_NAME": "kv-cnpg-3cee3l",
+        "LOCAL_NAME": "cnpg",
+        "LOCATION": "eastus",
+        "MOTD_SHOWN": "update-motd",
+        "MY_AKS_CLUSTER_NAME": "myAKSClusterb60d78",
+        "MY_COMPUTER_VISION_NAME": "computervisiont6xygvc3",
+        "MY_CONTAINER_APP_ENV_NAME": "containerappenvt6xygvc3",
+        "MY_CONTAINER_APP_NAME": "containerappt6xygvc3",
+        "MY_DATABASE_NAME": "dbt6xygvc3",
+        "MY_DATABASE_PASSWORD": "dbpasst6xygvc3",
+        "MY_DATABASE_SERVER_NAME": "dbservert6xygvc3",
+        "MY_DATABASE_USERNAME": "dbusert6xygvc3",
+        "MY_DNS_LABEL": "mydnslabel3f8d9e",
+        "MY_RESOURCE_GROUP_NAME": "myResourceGroupb60d78",
+        "MY_STATIC_WEB_APP_NAME": "myStaticWebApp85f4f3",
+        "MY_STORAGE_ACCOUNT_NAME": "storaget6xygvc3",
+        "MY_USERNAME": "azureuser",
+        "MY_VM_IMAGE": "Canonical:0001-com-ubuntu-minimal-jammy:minimal-22_04-lts-gen2:latest",
+        "MY_VM_NAME": "myVMecb9fc",
+        "MyAction": "allow",
+        "MyAddressPrefix": "0.0.0.0/0",
+        "MyAddressPrefixes1": "10.0.0.0/8",
+        "MyAddressPrefixes2": "10.10.1.0/24",
+        "MyAddressPrefixes3": "10.20.1.0/24",
+        "MyAddressPrefixes4": "10.100.1.0/26",
+        "MyAddressPrefixes5": "10.30.1.0/24",
+        "MyAdminUsername": "d95734",
+        "MyApiserverVisibility": "Private",
+        "MyCollectionName1": "AROd95734",
+        "MyCollectionName2": "Dockerd95734",
+        "MyCustomData": "cloud_init_upgrade.txt",
+        "MyDearmor": "-o",
+        "MyDisablePrivateLinkServiceNetworkPolicies": "true",
+        "MyGenerateSshKeys": "export",
+        "MyImage": "Ubuntu2204",
+        "MyIngressVisibility": "Private",
+        "MyMasterSubnet": "-master",
+        "MyName": "NetworkWatcherAgentLinux2ef723",
+        "MyName1": "ubuntu-jumpd95734",
+        "MyName2": "aro-udrd95734",
+        "MyName3": "-masterd95734",
+        "MyName4": "-workerd95734",
+        "MyNextHopType": "VirtualAppliance",
+        "MyPriority1": "100",
+        "MyPriority2": "200",
+        "MyProtocols": "http=80",
+        "MyPublicIpAddress1": "jumphost-ip",
+        "MyPublicIpAddress2": "fw-ip",
+        "MyPublisher": "Microsoft.Azure.NetworkWatcher",
+        "MyPullSecret": "@pull-secret.txt",
+        "MyQuery1": "ipAddress",
+        "MyQuery2": "ipConfigurations[0].privateIPAddress",
+        "MyRemove": "routeTable",
+        "MyResourceGroup": "d95734",
+        "MyRouteTable": "aro-udr",
+        "MyRouteTableName": "aro-udrd95734",
+        "MyServiceEndpoints": "Microsoft.ContainerRegistry",
+        "MySku": "Standard",
+        "MySourceAddresses": "*",
+        "MyTargetFqdns1": "cert-api.access.redhat.com",
+        "MyTargetFqdns2": "*cloudflare.docker.com",
+        "MyVersion": "1.4",
+        "MyVmName": "myVM12ef723",
+        "MyVnetName": "d95734",
+        "MyWorkerSubnet": "-worker",
+        "NC": "\u001b(B\u001b[m",
+        "OUTPUT": "\u001b[32m",
+        "PG_NAMESPACE": "cnpg-database",
+        "PG_PRIMARY_CLUSTER_NAME": "pg-primary-cnpg-l1tsugyd",
+        "PG_PRIMARY_STORAGE_ACCOUNT_NAME": "hacnpgpsal1tsugyd",
+        "PG_STORAGE_BACKUP_CONTAINER_NAME": "backups",
+        "PG_SYSTEM_NAMESPACE": "cnpg-system",
+        "PRIMARY_CLUSTER_REGION": "westus3",
+        "RANDOM_ID": "b60d78",
+        "REGION": "eastus",
+        "RESOURCE_GROUP_NAME": "rg-cnpg-l1tsugyd",
+        "RGTAGS": "owner=cnpg",
+        "RG_NAME": "rg-cnpg-3cee3l",
+        "STORAGE_ACCOUNT_NAME": "storcnpg3cee3l",
+        "SUFFIX": "3cee3l",
+        "TAGS": "owner=user"
+    },
+    "success": false,
+    "error": "failed to execute code block 0 on step 2.\nError: command exited with 'exit status 1' and the message 'WARNING: The behavior of this command has been altered by the following extension: aks-preview\nERROR: (SkuNotAvailable) Preflight validation check for resource(s) for container service myAKSClusterb60d78 in resource group MC_myResourceGroupb60d78_myAKSClusterb60d78_eastus failed. Message: The requested VM size for resource 'Following SKUs have failed for Capacity Restrictions: Standard_DS2_v2' is currently not available in location 'eastus'. Please try another size or deploy to a different location or different zone. See https://aka.ms/azureskunotavailable for details.. Details: \nCode: SkuNotAvailable\nMessage: Preflight validation check for resource(s) for container service myAKSClusterb60d78 in resource group MC_myResourceGroupb60d78_myAKSClusterb60d78_eastus failed. Message: The requested VM size for resource 'Following SKUs have failed for Capacity Restrictions: Standard_DS2_v2' is currently not available in location 'eastus'. Please try another size or deploy to a different location or different zone. See https://aka.ms/azureskunotavailable for details.. Details: \n'\nStdErr: WARNING: The behavior of this command has been altered by the following extension: aks-preview\nERROR: (SkuNotAvailable) Preflight validation check for resource(s) for container service myAKSClusterb60d78 in resource group MC_myResourceGroupb60d78_myAKSClusterb60d78_eastus failed. Message: The requested VM size for resource 'Following SKUs have failed for Capacity Restrictions: Standard_DS2_v2' is currently not available in location 'eastus'. Please try another size or deploy to a different location or different zone. See https://aka.ms/azureskunotavailable for details.. Details: \nCode: SkuNotAvailable\nMessage: Preflight validation check for resource(s) for container service myAKSClusterb60d78 in resource group MC_myResourceGroupb60d78_myAKSClusterb60d78_eastus failed. Message: The requested VM size for resource 'Following SKUs have failed for Capacity Restrictions: Standard_DS2_v2' is currently not available in location 'eastus'. Please try another size or deploy to a different location or different zone. See https://aka.ms/azureskunotavailable for details.. Details: \n",
+    "failedAtStep": -1,
+    "steps": [
+        {
+            "codeBlock": {
+                "language": "bash",
+                "content": "if ! [ -x \"$(command -v kubectl)\" ]; then az aks install-cli; fi\n",
+                "header": "Connect to the cluster",
+                "description": "Install az aks CLI locally using the az aks install-cli command",
+                "resultBlock": {
+                    "language": "",
+                    "content": "",
+                    "expectedSimilarityScore": 0,
+                    "expectedRegexPattern": null
+                }
+            },
+            "codeBlockNumber": 0,
+            "error": null,
+            "stdErr": "",
+            "stdOut": "",
+            "stepName": "Connect to the cluster",
+            "stepNumber": 3,
+            "success": false,
+            "similarityScore": 0
+        },
+        {
+            "codeBlock": {
+                "language": "bash",
+                "content": "IG_VERSION=$(curl -s https://api.github.com/repos/inspektor-gadget/inspektor-gadget/releases/latest | jq -r .tag_name)\nIG_ARCH=amd64\nmkdir -p $HOME/.local/bin\nexport PATH=$PATH:$HOME/.local/bin\ncurl -sL https://github.com/inspektor-gadget/inspektor-gadget/releases/download/${IG_VERSION}/kubectl-gadget-linux-${IG_ARCH}-${IG_VERSION}.tar.gz  | tar -C $HOME/.local/bin -xzf - kubectl-gadget\n",
+                "header": "Installing the kubectl plugin: `gadget`",
+                "description": "[!NOTE]\nIf you want to install it using [`krew`](https://sigs.k8s.io/krew) or compile it from the source, please follow the official documentation: [installing kubectl gadget](https://github.com/inspektor-gadget/inspektor-gadget/blob/main/docs/install.md#installing-kubectl-gadget).",
+                "resultBlock": {
+                    "language": "",
+                    "content": "",
+                    "expectedSimilarityScore": 0,
+                    "expectedRegexPattern": null
+                }
+            },
+            "codeBlockNumber": 0,
+            "error": null,
+            "stdErr": "",
+            "stdOut": "",
+            "stepName": "Installing the kubectl plugin: `gadget`",
+            "stepNumber": 4,
+            "success": false,
+            "similarityScore": 0
+        },
+        {
+            "codeBlock": {
+                "language": "bash",
+                "content": "kubectl gadget version\n",
+                "header": "Installing Inspektor Gadget in the cluster",
+                "description": "Now, let’s verify the installation by running the `version` command again:",
+                "resultBlock": {
+                    "language": "text",
+                    "content": "Client version: vX.Y.Z\nServer version: vX.Y.Z\n",
+                    "expectedSimilarityScore": 0,
+                    "expectedRegexPattern": "(?m)^Client version: v\\d+\\.\\d+\\.\\d+$\\n^Server version: v\\d+\\.\\d+\\.\\d+$"
+                }
+            },
+            "codeBlockNumber": 1,
+            "error": null,
+            "stdErr": "",
+            "stdOut": "",
+            "stepName": "Installing Inspektor Gadget in the cluster",
+            "stepNumber": 5,
+            "success": false,
+            "similarityScore": 0
+        },
+        {
+            "codeBlock": {
+                "language": "bash",
+                "content": "kubectl gadget help\n",
+                "header": "Installing Inspektor Gadget in the cluster",
+                "description": "You can now start running the gadgets:",
+                "resultBlock": {
+                    "language": "",
+                    "content": "",
+                    "expectedSimilarityScore": 0,
+                    "expectedRegexPattern": null
+                }
+            },
+            "codeBlockNumber": 2,
+            "error": null,
+            "stdErr": "",
+            "stdOut": "",
+            "stepName": "Installing Inspektor Gadget in the cluster",
+            "stepNumber": 5,
+            "success": false,
+            "similarityScore": 0
+        },
+        {
+            "codeBlock": {
+                "language": "bash",
+                "content": "az group create --name $MY_RESOURCE_GROUP_NAME --location $REGION\n",
+                "header": "Create a resource group",
+                "description": "A resource group is a container for related resources. All resources must be placed in a resource group. We will create one for this tutorial. The following command creates a resource group with the previously defined $MY_RESOURCE_GROUP_NAME and $REGION parameters.",
+                "resultBlock": {
+                    "language": "JSON",
+                    "content": "{\n  \"id\": \"/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/myResourceGroup210\",\n  \"location\": \"eastus\",\n  \"managedBy\": null,\n  \"name\": \"testResourceGroup\",\n  \"properties\": {\n    \"provisioningState\": \"Succeeded\"\n  },\n  \"tags\": null,\n  \"type\": \"Microsoft.Resources/resourceGroups\"\n}\n",
+                    "expectedSimilarityScore": 0.3,
+                    "expectedRegexPattern": null
+                }
+            },
+            "codeBlockNumber": 0,
+            "error": null,
+            "stdErr": "",
+            "stdOut": "{\n  \"id\": \"/subscriptions/325e7c34-99fb-4190-aa87-1df746c67705/resourceGroups/myResourceGroupb60d78\",\n  \"location\": \"eastus\",\n  \"managedBy\": null,\n  \"name\": \"myResourceGroupb60d78\",\n  \"properties\": {\n    \"provisioningState\": \"Succeeded\"\n  },\n  \"tags\": null,\n  \"type\": \"Microsoft.Resources/resourceGroups\"\n}\n",
+            "stepName": "Create a resource group",
+            "stepNumber": 1,
+            "success": true,
+            "similarityScore": 0.7850672214487863
+        },
+        {
+            "codeBlock": {
+                "language": "bash",
+                "content": "az aks create \\\n  --resource-group $MY_RESOURCE_GROUP_NAME \\\n  --name $MY_AKS_CLUSTER_NAME \\\n  --location $REGION \\\n  --no-ssh-key\n",
+                "header": "Create AKS Cluster",
+                "description": "This will take a few minutes.",
+                "resultBlock": {
+                    "language": "",
+                    "content": "",
+                    "expectedSimilarityScore": 0,
+                    "expectedRegexPattern": null
+                }
+            },
+            "codeBlockNumber": 0,
+            "error": {},
+            "stdErr": "WARNING: The behavior of this command has been altered by the following extension: aks-preview\nERROR: (SkuNotAvailable) Preflight validation check for resource(s) for container service myAKSClusterb60d78 in resource group MC_myResourceGroupb60d78_myAKSClusterb60d78_eastus failed. Message: The requested VM size for resource 'Following SKUs have failed for Capacity Restrictions: Standard_DS2_v2' is currently not available in location 'eastus'. Please try another size or deploy to a different location or different zone. See https://aka.ms/azureskunotavailable for details.. Details: \nCode: SkuNotAvailable\nMessage: Preflight validation check for resource(s) for container service myAKSClusterb60d78 in resource group MC_myResourceGroupb60d78_myAKSClusterb60d78_eastus failed. Message: The requested VM size for resource 'Following SKUs have failed for Capacity Restrictions: Standard_DS2_v2' is currently not available in location 'eastus'. Please try another size or deploy to a different location or different zone. See https://aka.ms/azureskunotavailable for details.. Details: \n",
+            "stdOut": "",
+            "stepName": "Create AKS Cluster",
+            "stepNumber": 2,
+            "success": false,
+            "similarityScore": 0
+        },
+        {
+            "codeBlock": {
+                "language": "bash",
+                "content": "az aks get-credentials --resource-group $MY_RESOURCE_GROUP_NAME --name $MY_AKS_CLUSTER_NAME --overwrite-existing\n",
+                "header": "Connect to the cluster",
+                "description": "[!WARNING]\nThis will overwrite any existing credentials with the same entry",
+                "resultBlock": {
+                    "language": "",
+                    "content": "",
+                    "expectedSimilarityScore": 0,
+                    "expectedRegexPattern": null
+                }
+            },
+            "codeBlockNumber": 1,
+            "error": null,
+            "stdErr": "",
+            "stdOut": "",
+            "stepName": "Connect to the cluster",
+            "stepNumber": 3,
+            "success": false,
+            "similarityScore": 0
+        },
+        {
+            "codeBlock": {
+                "language": "bash",
+                "content": "kubectl get nodes\n",
+                "header": "Connect to the cluster",
+                "description": "Verify the connection to your cluster using the kubectl get command. This command returns a list of the cluster nodes.",
+                "resultBlock": {
+                    "language": "",
+                    "content": "",
+                    "expectedSimilarityScore": 0,
+                    "expectedRegexPattern": null
+                }
+            },
+            "codeBlockNumber": 2,
+            "error": null,
+            "stdErr": "",
+            "stdOut": "",
+            "stepName": "Connect to the cluster",
+            "stepNumber": 3,
+            "success": false,
+            "similarityScore": 0
+        },
+        {
+            "codeBlock": {
+                "language": "bash",
+                "content": "kubectl gadget version\n",
+                "header": "Installing the kubectl plugin: `gadget`",
+                "description": "Now, let’s verify the installation by running the `version` command:",
+                "resultBlock": {
+                    "language": "text",
+                    "content": "Client version: vX.Y.Z\nServer version: not installed\n",
+                    "expectedSimilarityScore": 0,
+                    "expectedRegexPattern": "(?m)^Client version: v\\d+\\.\\d+\\.\\d+$\\n^Server version: not installed$"
+                }
+            },
+            "codeBlockNumber": 1,
+            "error": null,
+            "stdErr": "",
+            "stdOut": "",
+            "stepName": "Installing the kubectl plugin: `gadget`",
+            "stepNumber": 4,
+            "success": false,
+            "similarityScore": 0
+        },
+        {
+            "codeBlock": {
+                "language": "bash",
+                "content": "kubectl gadget deploy\n",
+                "header": "Installing Inspektor Gadget in the cluster",
+                "description": "[!NOTE]\nSeveral options are available to customize the deployment: use a specific container image, deploy to specific nodes, and many others. To know all of them, please check the official documentation: [installing in the cluster](https://github.com/inspektor-gadget/inspektor-gadget/blob/main/docs/install.md#installing-in-the-cluster).",
+                "resultBlock": {
+                    "language": "",
+                    "content": "",
+                    "expectedSimilarityScore": 0,
+                    "expectedRegexPattern": null
+                }
+            },
+            "codeBlockNumber": 0,
+            "error": null,
+            "stdErr": "",
+            "stdOut": "",
+            "stepName": "Installing Inspektor Gadget in the cluster",
+            "stepNumber": 5,
+            "success": false,
+            "similarityScore": 0
+        },
+        {
+            "codeBlock": {
+                "language": "bash",
+                "content": "export RANDOM_ID=\"$(openssl rand -hex 3)\"\nexport MY_RESOURCE_GROUP_NAME=\"myResourceGroup$RANDOM_ID\"\nexport REGION=\"eastus\"\nexport MY_AKS_CLUSTER_NAME=\"myAKSCluster$RANDOM_ID\"\n",
+                "header": "Define Environment Variables",
+                "description": "The First step in this tutorial is to define environment variables:",
+                "resultBlock": {
+                    "language": "",
+                    "content": "",
+                    "expectedSimilarityScore": 0,
+                    "expectedRegexPattern": null
+                }
+            },
+            "codeBlockNumber": 0,
+            "error": null,
+            "stdErr": "",
+            "stdOut": "",
+            "stepName": "Define Environment Variables",
+            "stepNumber": 0,
+            "success": true,
+            "similarityScore": 1
+        }
+    ]
+}

@@ -14,7 +14,7 @@ ms.custom: 'mvc, devx-track-azurecli, mode-api, innovation-engine, linux-related
 
 **適用対象:** :heavy_check_mark: Linux VM
 
-[![Azure に配置する](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2262692)
+[![Azure に配置する](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2286317)
 
 このクイックスタートでは、Azure CLI を使用して Red Hat Enterprise Linux 仮想マシン (VM) を Azure にデプロイする方法について説明します。 Azure CLI は、コマンド ラインまたはスクリプトで Azure リソースを作成および管理するために使用します。
 
