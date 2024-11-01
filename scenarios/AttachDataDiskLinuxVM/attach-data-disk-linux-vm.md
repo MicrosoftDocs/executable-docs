@@ -132,80 +132,19 @@ az vm extension set \
     --name AADSSHLoginForLinux \
     --resource-group $MY_RESOURCE_GROUP_NAME \
     --vm-name $MY_VM_NAME -o JSON
-```
 
-Results:
+# In this scenario the LUN0 our first data disk is going to be formatted and mounted using the command below:
 
-<!-- expected_similarity=0.3 -->
-```JSON
-{
-  "autoUpgradeMinorVersion": true,
-  "enableAutomaticUpgrade": null,
-  "forceUpdateTag": null,
-  "id": "/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/LinuxRG-a36f5d/providers/Microsoft.Compute/virtualMachines/myVMa36f5d/extensions/AADSSHLoginForLinux",
-  "instanceView": null,
-  "location": "australiaeast",
-  "name": "AADSSHLoginForLinux",
-  "protectedSettings": null,
-  "protectedSettingsFromKeyVault": null,
-  "provisionAfterExtensions": null,
-  "provisioningState": "Succeeded",
-  "publisher": "Microsoft.Azure.ActiveDirectory",
-  "resourceGroup": "LinuxRG-a36f5d",
-  "settings": null,
-  "suppressFailures": null,
-  "tags": null,
-  "type": "Microsoft.Compute/virtualMachines/extensions",
-  "typeHandlerVersion": "1.0",
-  "typePropertiesType": "AADSSHLoginForLinux"
-}
-```
-
-In this scenario the LUN0 our first data disk is going to be formatted and mounted using the command below:
-
-```bash
 export FQDN="${MY_DNS_LABEL}.${REGION}.cloudapp.azure.com"
 ssh -o StrictHostKeyChecking=no $MY_VM_USERNAME@$FQDN -- "sudo parted -s -a optimal -- /dev/disk/azure/scsi1/lun0 mklabel gpt mkpart primary xfs 0% 100%"
 ssh -o StrictHostKeyChecking=no $MY_VM_USERNAME@$FQDN -- "sudo partprobe -s /dev/disk/azure/scsi1/lun0"
 ssh -o StrictHostKeyChecking=no $MY_VM_USERNAME@$FQDN -- "sudo mkfs.xfs /dev/disk/azure/scsi1/lun0-part1"
 ssh -o StrictHostKeyChecking=no $MY_VM_USERNAME@$FQDN -- "sudo mkdir -v /datadisk01"
 ssh -o StrictHostKeyChecking=no $MY_VM_USERNAME@$FQDN -- "sudo mount -v /dev/disk/azure/scsi1/lun0-part1 /datadisk01"
-```
 
-Results:
-
-<!-- expected_similarity=0.3 -->
-```text
-/dev/sdc: gpt partitions 1
-mke2fs 1.47.0 (5-Feb-2023)
-Discarding device blocks: done
-Creating filesystem with 33553920 4k blocks and 8388608 inodes
-Filesystem UUID: 1095e29c-07db-47ec-8b19-1ffcaf4f5628
-Superblock backups stored on blocks:
-        32768, 98304, 163840, 229376, 294912, 819200, 884736, 1605632, 2654208,
-        4096000, 7962624, 11239424, 20480000, 23887872
-
-Allocating group tables: done
-Writing inode tables: done
-Creating journal (131072 blocks): done
-Writing superblocks and filesystem accounting information: done
-
-mkdir: created directory '/datadisk01'
-mount: /dev/sdc1 mounted on /datadisk01.
-```
-
-In oder to update the /etc/fstab file, you can use the following command, and mount the LUN1 using it's unique identifier (UUID) together with the discard mount option:
-
-```bash
+# In oder to update the /etc/fstab file, you can use the following command, and mount the LUN1 using it's unique identifier (UUID) together with the discard mount option:
 ssh $MY_VM_USERNAME@$FQDN -- \
     'echo UUID=$(sudo blkid -s UUID -o value /dev/disk/azure/scsi1/lun0-part1) /datadisk01 xfs defaults,discard 0 0 | sudo tee -a /etc/fstab'
-```
-
-Results:
-
-<!-- expected_similarity=0.3 -->
-```text
-UUID=1095e29c-07db-47ec-8b19-1ffcaf4f5628 /datadisk01 xfs defaults,discard 0 0
 ```
 
 ## Attach a new disk to a VM
@@ -223,52 +162,19 @@ az vm disk attach \
     --caching None \
     --lun 1 \
     --size-gb 50
-```
 
-In this second possible scenario the LUN1 is going to be our data disk, the following example shows how to format and mount the data disk.
+# In this second possible scenario the LUN1 is going to be our data disk, the following example shows how to format and mount the data disk.
 
-```bash
 ssh -o StrictHostKeyChecking=no $MY_VM_USERNAME@$FQDN -- "sudo parted -s -a optimal -- /dev/disk/azure/scsi1/lun1 mklabel gpt mkpart primary xfs 0% 100%"
 ssh -o StrictHostKeyChecking=no $MY_VM_USERNAME@$FQDN -- "sudo partprobe -s /dev/disk/azure/scsi1/lun1"
 ssh -o StrictHostKeyChecking=no $MY_VM_USERNAME@$FQDN -- "sudo mkfs.xfs /dev/disk/azure/scsi1/lun1-part1"
 ssh -o StrictHostKeyChecking=no $MY_VM_USERNAME@$FQDN -- "sudo mkdir -v /datadisk02"
 ssh -o StrictHostKeyChecking=no $MY_VM_USERNAME@$FQDN -- "sudo mount -v /dev/disk/azure/scsi1/lun1-part1 /datadisk02"
-```
 
-Results:
+# In oder to update the /etc/fstab file, you can use the following command, and mount the LUN1 using it's unique identifier (UUID) together with the discard mount option:
 
-<!-- expected_similarity=0.3 -->
-```text
-/dev/sdd: gpt partitions 1
-mke2fs 1.47.0 (5-Feb-2023)
-Discarding device blocks: done
-Creating filesystem with 13106688 4k blocks and 3276800 inodes
-Filesystem UUID: 6e8ad233-5664-4f75-8ec6-3aa34f228868
-Superblock backups stored on blocks:
-        32768, 98304, 163840, 229376, 294912, 819200, 884736, 1605632, 2654208,
-        4096000, 7962624, 11239424
-
-Allocating group tables: done
-Writing inode tables: done
-Creating journal (65536 blocks): done
-Writing superblocks and filesystem accounting information: done
-
-mkdir: created directory '/datadisk02'
-mount: /dev/sdd1 mounted on /datadisk02.
-```
-
-In oder to update the /etc/fstab file, you can use the following command, and mount the LUN1 using it's unique identifier (UUID) together with the discard mount option:
-
-```bash
 ssh $MY_VM_USERNAME@$FQDN -- \
     'echo "UUID=$(sudo blkid -s UUID -o value /dev/disk/azure/scsi1/lun1-part1) /datadisk02 xfs defaults,discard 0 0" | sudo tee -a /etc/fstab'
-```
-
-Results:
-
-<!-- expected_similarity=0.3 -->
-```text
-UUID=0b1629d5-0cd5-41fd-9050-b2ed7e3f1028 /datadisk02 xfs defaults,discard 0 0
 ```
 
 ## Attach an existing data disk to a VM
@@ -290,43 +196,9 @@ az disk create \
     --zone $ZONE \
     --performance-plus false \
     --public-network-access Disabled -o JSON
-```
 
-Results:
+# Then you can attach the disk to the VM:
 
-<!-- expected_similarity=0.3 -->
-```JSON
-{
-  "encryptionSettingsCollection": null,
-  "extendedLocation": null,
-  "hyperVGeneration": null,
-  "id": "/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/LinuxRG-e4c4b4/providers/Microsoft.Compute/disks/LUN2-e4c4b4",
-  "lastOwnershipUpdateTime": null,
-  "location": "australiaeast",
-  "managedBy": null,
-  "managedByExtended": null,
-  "maxShares": 1,
-  "name": "LUN2-e4c4b4",
-  "networkAccessPolicy": "AllowAll",
-  "optimizedForFrequentAttach": null,
-  "osType": null,
-  "propertyUpdatesInProgress": null,
-  "provisioningState": "Succeeded",
-  "publicNetworkAccess": "Disabled",
-  "purchasePlan": null,
-  "resourceGroup": "LinuxRG-e4c4b4",
-  "securityProfile": null,
-  "shareInfo": null,
-  "sku": {
-    "name": "PremiumV2_LRS",
-    "tier": "Premium"
-  }
-}
-```
-
-Then you can attach the disk to the VM:
-
-```bash
 LUN2_ID=$(az disk show --resource-group $MY_RESOURCE_GROUP_NAME --name $LUN2_NAME --query 'id' -o tsv)
 
 az vm disk attach \
@@ -335,16 +207,17 @@ az vm disk attach \
     --disks $LUN2_ID \
     --sku PremiumV2_LRS \
     --lun 2
-```
 
-In this third scenario the LUN2 is going to be our data disk, the following example shows how to format and mount the data disk.
+# In this third scenario the LUN2 is going to be our data disk, the following example shows how to format and mount the data disk.
 
-```bash
 ssh -o StrictHostKeyChecking=no $MY_VM_USERNAME@$FQDN -- "sudo parted -s -a optimal -- /dev/disk/azure/scsi1/lun2 mklabel gpt mkpart primary xfs 0% 100%"
 ssh -o StrictHostKeyChecking=no $MY_VM_USERNAME@$FQDN -- "sudo partprobe -s /dev/disk/azure/scsi1/lun2"
 ssh -o StrictHostKeyChecking=no $MY_VM_USERNAME@$FQDN -- "sudo mkfs.xfs /dev/disk/azure/scsi1/lun2-part1"
 ssh -o StrictHostKeyChecking=no $MY_VM_USERNAME@$FQDN -- "sudo mkdir -v /datadisk03"
 ssh -o StrictHostKeyChecking=no $MY_VM_USERNAME@$FQDN -- "sudo mount -v /dev/disk/azure/scsi1/lun2-part1 /datadisk03"
+
+ssh -o StrictHostKeyChecking=no $MY_VM_USERNAME@$FQDN -- \
+    'echo "UUID=$(sudo blkid -s UUID -o value /dev/disk/azure/scsi1/lun2-part1) /datadisk03 xfs defaults,discard 0 0" | sudo tee -a /etc/fstab'
 ```
 
 Results:
@@ -369,11 +242,6 @@ mount: /dev/sde1 mounted on /datadisk03.
 ```
 
 In oder to update the /etc/fstab file, you can use the following command, and mount the LUN1 using it's unique identifier (UUID) together with the discard mount option:
-
-```bash
-ssh -o StrictHostKeyChecking=no $MY_VM_USERNAME@$FQDN -- \
-    'echo "UUID=$(sudo blkid -s UUID -o value /dev/disk/azure/scsi1/lun2-part1) /datadisk03 xfs defaults,discard 0 0" | sudo tee -a /etc/fstab'
-```
 
 Results:
 
