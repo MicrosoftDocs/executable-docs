@@ -33,18 +33,6 @@ This quickstart assumes a basic understanding of Kubernetes concepts. For more i
 - Make sure that the identity you're using to create your cluster has the appropriate minimum permissions. For more details on access and identity for AKS, see [Access and identity options for Azure Kubernetes Service (AKS)](../concepts-identity.md).
 - If you have multiple Azure subscriptions, select the appropriate subscription ID in which the resources should be billed using the [az account set](/cli/azure/account#az-account-set) command. For more information, see [How to manage Azure subscriptions – Azure CLI](/cli/azure/manage-azure-subscriptions-azure-cli?tabs=bash#change-the-active-subscription).
 
-## Define environment variables
-
-Define the following environment variables for use throughout this quickstart:
-
-```azurecli-interactive
-export RANDOM_ID="$(openssl rand -hex 3)"
-export MY_RESOURCE_GROUP_NAME="myAKSResourceGroup$RANDOM_ID"
-export REGION="westeurope"
-export MY_AKS_CLUSTER_NAME="myAKSCluster$RANDOM_ID"
-export MY_DNS_LABEL="mydnslabel$RANDOM_ID"
-```
-
 ## Create a resource group
 
 An [Azure resource group][azure-resource-group] is a logical group in which Azure resources are deployed and managed. When you create a resource group, you're prompted to specify a location. This location is the storage location of your resource group metadata and where your resources run in Azure if you don't specify another region during resource creation.
@@ -52,6 +40,9 @@ An [Azure resource group][azure-resource-group] is a logical group in which Azur
 Create a resource group using the [`az group create`][az-group-create] command.
 
 ```azurecli-interactive
+export RANDOM_ID="$(openssl rand -hex 3)"
+export MY_RESOURCE_GROUP_NAME="myAKSResourceGroup$RANDOM_ID"
+export REGION="westeurope"
 az group create --name $MY_RESOURCE_GROUP_NAME --location $REGION
 ```
 
@@ -76,6 +67,7 @@ Results:
 Create an AKS cluster using the [`az aks create`][az-aks-create] command. The following example creates a cluster with one node and enables a system-assigned managed identity.
 
 ```azurecli-interactive
+export MY_AKS_CLUSTER_NAME="myAKSCluster$RANDOM_ID"
 az aks create \
     --resource-group $MY_RESOURCE_GROUP_NAME \
     --name $MY_AKS_CLUSTER_NAME \
@@ -122,10 +114,11 @@ To deploy the application, you use a manifest file to create all the objects req
 
     ```yaml
     apiVersion: apps/v1
-    kind: Deployment
+    kind: StatefulSet
     metadata:
       name: rabbitmq
     spec:
+      serviceName: rabbitmq
       replicas: 1
       selector:
         matchLabels:
@@ -175,7 +168,7 @@ To deploy the application, you use a manifest file to create all the objects req
         [rabbitmq_management,rabbitmq_prometheus,rabbitmq_amqp1_0].
     kind: ConfigMap
     metadata:
-      name: rabbitmq-enabled-plugins
+      name: rabbitmq-enabled-plugins            
     ---
     apiVersion: v1
     kind: Service
@@ -234,6 +227,27 @@ To deploy the application, you use a manifest file to create all the objects req
               limits:
                 cpu: 75m
                 memory: 128Mi
+            startupProbe:
+              httpGet:
+                path: /health
+                port: 3000
+              failureThreshold: 5
+              initialDelaySeconds: 20
+              periodSeconds: 10
+            readinessProbe:
+              httpGet:
+                path: /health
+                port: 3000
+              failureThreshold: 3
+              initialDelaySeconds: 3
+              periodSeconds: 5
+            livenessProbe:
+              httpGet:
+                path: /health
+                port: 3000
+              failureThreshold: 5
+              initialDelaySeconds: 3
+              periodSeconds: 3
           initContainers:
           - name: wait-for-rabbitmq
             image: busybox
@@ -244,7 +258,7 @@ To deploy the application, you use a manifest file to create all the objects req
                 memory: 50Mi
               limits:
                 cpu: 75m
-                memory: 128Mi
+                memory: 128Mi    
     ---
     apiVersion: v1
     kind: Service
@@ -280,13 +294,30 @@ To deploy the application, you use a manifest file to create all the objects req
             image: ghcr.io/azure-samples/aks-store-demo/product-service:latest
             ports:
             - containerPort: 3002
+            env: 
+            - name: AI_SERVICE_URL
+              value: "http://ai-service:5001/"
             resources:
               requests:
                 cpu: 1m
                 memory: 1Mi
               limits:
-                cpu: 1m
-                memory: 7Mi
+                cpu: 2m
+                memory: 20Mi
+            readinessProbe:
+              httpGet:
+                path: /health
+                port: 3002
+              failureThreshold: 3
+              initialDelaySeconds: 3
+              periodSeconds: 5
+            livenessProbe:
+              httpGet:
+                path: /health
+                port: 3002
+              failureThreshold: 5
+              initialDelaySeconds: 3
+              periodSeconds: 3
     ---
     apiVersion: v1
     kind: Service
@@ -323,7 +354,7 @@ To deploy the application, you use a manifest file to create all the objects req
             ports:
             - containerPort: 8080
               name: store-front
-            env:
+            env: 
             - name: VUE_APP_ORDER_SERVICE_URL
               value: "http://order-service:3000/"
             - name: VUE_APP_PRODUCT_SERVICE_URL
@@ -335,6 +366,27 @@ To deploy the application, you use a manifest file to create all the objects req
               limits:
                 cpu: 1000m
                 memory: 512Mi
+            startupProbe:
+              httpGet:
+                path: /health
+                port: 8080
+              failureThreshold: 3
+              initialDelaySeconds: 5
+              periodSeconds: 5
+            readinessProbe:
+              httpGet:
+                path: /health
+                port: 8080
+              failureThreshold: 3
+              initialDelaySeconds: 3
+              periodSeconds: 3
+            livenessProbe:
+              httpGet:
+                path: /health
+                port: 8080
+              failureThreshold: 5
+              initialDelaySeconds: 3
+              periodSeconds: 3
     ---
     apiVersion: v1
     kind: Service
@@ -370,14 +422,15 @@ runtime="5 minutes"
 endtime=$(date -ud "$runtime" +%s)
 while [[ $(date -u +%s) -le $endtime ]]
 do
-   STATUS=$(kubectl get pods -l app=store-front -o 'jsonpath={..status.conditions[?(@.type=="Ready")].status}')
-   echo $STATUS
-   if [ "$STATUS" == 'True' ]
+   POD_STATUS=$(kubectl get pods -l app=store-front -o 'jsonpath={..status.conditions[?(@.type=="Ready")].status}')
+   SERVICE_IP=$(kubectl get service store-front --output 'jsonpath={..status.loadBalancer.ingress[0].ip}')
+   
+   if [[ "$POD_STATUS" == 'True' && -n "$SERVICE_IP" ]]
    then
-      export IP_ADDRESS=$(kubectl get service store-front --output 'jsonpath={..status.loadBalancer.ingress[0].ip}')
-      echo "Service IP Address: $IP_ADDRESS"
+      echo "Service IP Address: $SERVICE_IP"
       break
    else
+      echo "Waiting for service IP..."
       sleep 10
    fi
 done
