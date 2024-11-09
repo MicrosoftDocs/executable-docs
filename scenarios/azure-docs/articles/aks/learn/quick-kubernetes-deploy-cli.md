@@ -68,11 +68,15 @@ Create an AKS cluster using the [`az aks create`][az-aks-create] command. The fo
 
 ```azurecli-interactive
 export MY_AKS_CLUSTER_NAME="myAKSCluster$RANDOM_ID"
-az aks create \
-    --resource-group $MY_RESOURCE_GROUP_NAME \
-    --name $MY_AKS_CLUSTER_NAME \
-    --node-count 1 \
-    --generate-ssh-keys
+if az aks show --resource-group $MY_RESOURCE_GROUP_NAME --name $MY_AKS_CLUSTER_NAME &>/dev/null; then
+    echo "AKS cluster $MY_AKS_CLUSTER_NAME already exists. Skipping creation."
+else
+    az aks create \
+        --resource-group $MY_RESOURCE_GROUP_NAME \
+        --name $MY_AKS_CLUSTER_NAME \
+        --node-count 1 \
+        --generate-ssh-keys
+fi
 ```
 
 > [!NOTE]
@@ -422,12 +426,12 @@ runtime="5 minutes"
 endtime=$(date -ud "$runtime" +%s)
 while [[ $(date -u +%s) -le $endtime ]]
 do
-   POD_STATUS=$(kubectl get pods -l app=store-front -o 'jsonpath={..status.conditions[?(@.type=="Ready")].status}')
-   SERVICE_IP=$(kubectl get service store-front --output 'jsonpath={..status.loadBalancer.ingress[0].ip}')
+   export POD_STATUS=$(kubectl get pods -l app=store-front -o 'jsonpath={..status.conditions[?(@.type=="Ready")].status}')
+   export IP_ADDRESS=$(kubectl get service store-front --output 'jsonpath={..status.loadBalancer.ingress[0].ip}')
    
-   if [[ "$POD_STATUS" == 'True' && -n "$SERVICE_IP" ]]
+   if [[ "$POD_STATUS" == 'True' && -n "$IP_ADDRESS" ]]
    then
-      echo "Service IP Address: $SERVICE_IP"
+      echo "Service IP Address: $IP_ADDRESS"
       break
    else
       echo "Waiting for service IP..."
