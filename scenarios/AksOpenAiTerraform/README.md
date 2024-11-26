@@ -16,4 +16,3 @@ Run commands below to set up AKS extensions for Azure.
 # ./terraform/register-preview-features.sh
 echo "HI"
 ```
-
