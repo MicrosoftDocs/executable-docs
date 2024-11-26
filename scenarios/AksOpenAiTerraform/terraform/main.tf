@@ -160,6 +160,7 @@ module "aks_cluster" {
   admin_group_object_ids                  = var.admin_group_object_ids
   azure_rbac_enabled                      = var.azure_rbac_enabled
   admin_username                          = var.admin_username
+  ssh_public_key                          = var.ssh_public_key
   keda_enabled                            = var.keda_enabled
   vertical_pod_autoscaler_enabled         = var.vertical_pod_autoscaler_enabled
   workload_identity_enabled               = var.workload_identity_enabled
@@ -288,6 +289,7 @@ module "virtual_machine" {
   location                            = var.location
   public_ip                           = var.vm_public_ip
   vm_user                             = var.admin_username
+  admin_ssh_public_key                = var.ssh_public_key
   os_disk_image                       = var.vm_os_disk_image
   resource_group_name                 = azurerm_resource_group.rg.name
   subnet_id                           = module.virtual_network.subnet_ids[var.vm_subnet_name]
