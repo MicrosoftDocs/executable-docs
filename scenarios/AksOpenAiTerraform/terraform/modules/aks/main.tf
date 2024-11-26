@@ -1,3 +1,12 @@
+terraform {
+  required_providers {
+    azapi = {
+      source  = "Azure/azapi"
+      version = "~>2.0.1"
+    }
+  }
+}
+
 resource "azurerm_user_assigned_identity" "aks_identity" {
   resource_group_name = var.resource_group_name
   location            = var.location
@@ -50,7 +59,7 @@ resource "azurerm_kubernetes_cluster" "aks_cluster" {
   linux_profile {
     admin_username = var.admin_username
     ssh_key {
-        key_data = var.ssh_public_key
+      key_data = azapi_resource_action.ssh_public_key_gen.output.publicKey
     }
   }
 

@@ -160,7 +160,6 @@ module "aks_cluster" {
   admin_group_object_ids                  = var.admin_group_object_ids
   azure_rbac_enabled                      = var.azure_rbac_enabled
   admin_username                          = var.admin_username
-  ssh_public_key                          = var.ssh_public_key
   keda_enabled                            = var.keda_enabled
   vertical_pod_autoscaler_enabled         = var.vertical_pod_autoscaler_enabled
   workload_identity_enabled               = var.workload_identity_enabled
