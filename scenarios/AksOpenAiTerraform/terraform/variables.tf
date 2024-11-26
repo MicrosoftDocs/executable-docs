@@ -558,11 +558,6 @@ variable "admin_username" {
   default     = "azadmin"
 }
 
-variable "ssh_public_key" {
-  description = "(Required) Specifies the SSH public key for the jumpbox virtual machine and AKS worker nodes."
-  type        = string
-}
-
 variable "keda_enabled" {
   description = "(Optional) Specifies whether KEDA Autoscaler can be used for workloads."
   type        = bool
