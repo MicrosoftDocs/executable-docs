@@ -4,19 +4,13 @@ terraform {
       source  = "hashicorp/azurerm"
       version = "3.58"
     }
-    azapi = {
-      source  = "Azure/azapi"
-      version = "~>2.0.1"
-    }
   }
 }
 
 provider "azurerm" {
   features {}
-}
 
-provider "azapi" {
-  features {}
+  skip_provider_registration  = true
 }
 
 locals {
