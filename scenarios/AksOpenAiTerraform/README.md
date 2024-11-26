@@ -13,6 +13,7 @@ ms.custom: innovation-engine, linux-related-content
 Run commands below to set up AKS extensions for Azure.
 
 ```bash
-./terraform/register-preview-features.sh
+# ./terraform/register-preview-features.sh
+echo "HI"
 ```
 
