@@ -142,7 +142,6 @@ module "aks_cluster" {
   pod_subnet_id                           = module.virtual_network.subnet_ids[var.pod_subnet_name]
   system_node_pool_availability_zones     = var.system_node_pool_availability_zones
   system_node_pool_node_labels            = var.system_node_pool_node_labels
-  system_node_pool_node_taints            = var.system_node_pool_node_taints
   system_node_pool_enable_auto_scaling    = var.system_node_pool_enable_auto_scaling
   system_node_pool_enable_host_encryption = var.system_node_pool_enable_host_encryption
   system_node_pool_enable_node_public_ip  = var.system_node_pool_enable_node_public_ip

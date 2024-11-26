@@ -164,12 +164,6 @@ variable "system_node_pool_node_labels" {
   default       = {}
 } 
 
-variable "system_node_pool_node_taints" {
-  description = "(Optional) A map of Kubernetes labels which should be applied to nodes in this Node Pool. Changing this forces a new resource to be created."
-  type          = list(string)
-  default       = []
-} 
-
 variable "system_node_pool_os_disk_type" {
   description = "(Optional) The type of disk which should be used for the Operating System. Possible values are Ephemeral and Managed. Defaults to Managed. Changing this forces a new resource to be created."
   type          = string
