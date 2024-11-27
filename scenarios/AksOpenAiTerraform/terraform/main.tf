@@ -139,7 +139,6 @@ module "aks_cluster" {
   kubernetes_version                      = var.kubernetes_version
   dns_prefix                              = lower(var.aks_cluster_name)
   private_cluster_enabled                 = var.private_cluster_enabled
-  automatic_channel_upgrade               = var.automatic_channel_upgrade
   sku_tier                                = var.sku_tier
   system_node_pool_name                   = var.system_node_pool_name
   system_node_pool_vm_size                = var.system_node_pool_vm_size
@@ -147,14 +146,7 @@ module "aks_cluster" {
   pod_subnet_id                           = module.virtual_network.subnet_ids[var.pod_subnet_name]
   system_node_pool_availability_zones     = var.system_node_pool_availability_zones
   system_node_pool_node_labels            = var.system_node_pool_node_labels
-  system_node_pool_node_taints            = var.system_node_pool_node_taints
-  system_node_pool_enable_auto_scaling    = var.system_node_pool_enable_auto_scaling
-  system_node_pool_enable_host_encryption = var.system_node_pool_enable_host_encryption
-  system_node_pool_enable_node_public_ip  = var.system_node_pool_enable_node_public_ip
   system_node_pool_max_pods               = var.system_node_pool_max_pods
-  system_node_pool_max_count              = var.system_node_pool_max_count
-  system_node_pool_min_count              = var.system_node_pool_min_count
-  system_node_pool_node_count             = var.system_node_pool_node_count
   system_node_pool_os_disk_type           = var.system_node_pool_os_disk_type
   tags                                    = var.tags
   network_dns_service_ip                  = var.network_dns_service_ip
@@ -194,14 +186,10 @@ module "node_pool" {
   availability_zones           = var.user_node_pool_availability_zones
   vnet_subnet_id               = module.virtual_network.subnet_ids[var.user_node_pool_subnet_name]
   pod_subnet_id                = module.virtual_network.subnet_ids[var.pod_subnet_name]
-  enable_auto_scaling          = var.user_node_pool_enable_auto_scaling
   enable_host_encryption       = var.user_node_pool_enable_host_encryption
   enable_node_public_ip        = var.user_node_pool_enable_node_public_ip
   orchestrator_version         = var.kubernetes_version
   max_pods                     = var.user_node_pool_max_pods
-  max_count                    = var.user_node_pool_max_count
-  min_count                    = var.user_node_pool_min_count
-  node_count                   = var.user_node_pool_node_count
   os_type                      = var.user_node_pool_os_type
   priority                     = var.user_node_pool_priority
   tags                         = var.tags

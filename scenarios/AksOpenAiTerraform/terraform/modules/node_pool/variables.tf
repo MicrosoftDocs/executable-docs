@@ -19,12 +19,6 @@ variable "availability_zones" {
   default = ["1", "2", "3"]
 }
 
-variable "enable_auto_scaling" {
-  description = "(Optional) Whether to enable auto-scaler. Defaults to false."
-  type          = bool
-  default       = false
-}
-
 variable "enable_host_encryption" {
   description = "(Optional) Should the nodes in this Node Pool have host encryption enabled? Defaults to false."
   type          = bool
@@ -67,9 +61,8 @@ variable "tags" {
 }
 
 variable "orchestrator_version" {
-  description = "(Optional) Version of Kubernetes used for the Agents. If not specified, the latest recommended version will be used at provisioning time (but won't auto-upgrade)"
+  description = "(Required) Version of Kubernetes used for the Agents. If not specified, the latest recommended version will be used at provisioning time (but won't auto-upgrade)"
   type          = string
-  default       = null
 } 
 
 variable "os_disk_size_gb" {
@@ -112,24 +105,6 @@ variable "pod_subnet_id" {
   description = "(Optional) The ID of the Subnet where the pods in the system node pool should exist. Changing this forces a new resource to be created."
   type          = string
   default       = null
-}
-
-variable "max_count" {
-  description = "(Required) The maximum number of nodes which should exist within this Node Pool. Valid values are between 0 and 1000 and must be greater than or equal to min_count."
-  type          = number
-  default       = 10
-}
-
-variable "min_count" {
-  description = "(Required) The minimum number of nodes which should exist within this Node Pool. Valid values are between 0 and 1000 and must be less than or equal to max_count."
-  type          = number
-  default       = 3
-}
-
-variable "node_count" {
-  description = "(Optional) The initial number of nodes which should exist within this Node Pool. Valid values are between 0 and 1000 and must be a value in the range min_count - max_count."
-  type          = number
-  default       = 3
 }
 
 variable resource_group_name {
