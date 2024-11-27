@@ -226,85 +226,45 @@ resource "azurerm_firewall_policy_rule_collection_group" "policy" {
 }
 
 resource "azurerm_monitor_diagnostic_setting" "settings" {
-  name                       = "DiagnosticsSettings"
+  name                       = "FirewallDiagnosticsSettings"
   target_resource_id         = azurerm_firewall.firewall.id
   log_analytics_workspace_id = var.log_analytics_workspace_id
 
   enabled_log {
     category = "AzureFirewallApplicationRule"
-
-    retention_policy {
-      enabled = true
-      days    = var.log_analytics_retention_days
-    }
   }
 
   enabled_log {
     category = "AzureFirewallNetworkRule"
-
-    retention_policy {
-      enabled = true
-      days    = var.log_analytics_retention_days
-    }
   }
 
   enabled_log {
     category = "AzureFirewallDnsProxy"
-
-    retention_policy {
-      enabled = true
-      days    = var.log_analytics_retention_days
-    }
   }
 
   metric {
     category = "AllMetrics"
-
-    retention_policy {
-      enabled = true
-      days    = var.log_analytics_retention_days
-    }
   }
 }
 
 resource "azurerm_monitor_diagnostic_setting" "pip_settings" {
-  name                       = "DiagnosticsSettings"
+  name                       = "FirewallDdosDiagnosticsSettings"
   target_resource_id         = azurerm_public_ip.pip.id
   log_analytics_workspace_id = var.log_analytics_workspace_id
 
   enabled_log {
     category = "DDoSProtectionNotifications"
-
-    retention_policy {
-      enabled = true
-      days    = var.log_analytics_retention_days
-    }
   }
 
   enabled_log {
     category = "DDoSMitigationFlowLogs"
-
-    retention_policy {
-      enabled = true
-      days    = var.log_analytics_retention_days
-    }
   }
 
   enabled_log {
     category = "DDoSMitigationReports"
-
-    retention_policy {
-      enabled = true
-      days    = var.log_analytics_retention_days
-    }
   }
 
   metric {
     category = "AllMetrics"
-
-    retention_policy {
-      enabled = true
-      days    = var.log_analytics_retention_days
-    }
   }
 }

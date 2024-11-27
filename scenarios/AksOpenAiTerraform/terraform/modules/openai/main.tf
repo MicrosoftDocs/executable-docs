@@ -37,43 +37,23 @@ resource "azurerm_cognitive_deployment" "deployment" {
 }
 
 resource "azurerm_monitor_diagnostic_setting" "settings" {
-  name                       = "DiagnosticsSettings"
+  name                       = "OpenAiDiagnosticsSettings"
   target_resource_id         = azurerm_cognitive_account.openai.id
   log_analytics_workspace_id = var.log_analytics_workspace_id
 
   enabled_log {
     category = "Audit"
-
-    retention_policy {
-      enabled = true
-      days    = var.log_analytics_retention_days
-    }
   }
 
   enabled_log {
     category = "RequestResponse"
-
-    retention_policy {
-      enabled = true
-      days    = var.log_analytics_retention_days
-    }
   }
 
   enabled_log {
     category = "Trace"
-
-    retention_policy {
-      enabled = true
-      days    = var.log_analytics_retention_days
-    }
   }
 
   metric {
     category = "AllMetrics"
-
-    retention_policy {
-      enabled = true
-      days    = var.log_analytics_retention_days
-    }
   }
 }
