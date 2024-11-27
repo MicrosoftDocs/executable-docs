@@ -25,9 +25,8 @@ variable "sku" {
 }
 
 variable "solution_plan_map" {
-  description = "(Optional) Specifies the map structure containing the list of solutions to be enabled."
+  description = "(Required) Specifies the map structure containing the list of solutions to be enabled."
   type        = map(any)
-  default     = {}
 }
 
 variable "tags" {
