@@ -1,7 +1,7 @@
 variable "name_prefix" {
   description = "(Optional) A prefix for the name of all the resource groups and resources."
   type        = string
-  default     = "BingoTest"
+  default     = "BingoTestName"
   nullable    = true
 }
 
