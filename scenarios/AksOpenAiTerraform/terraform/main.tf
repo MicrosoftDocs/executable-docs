@@ -57,7 +57,6 @@ module "virtual_network" {
   vnet_name                    = var.name_prefix == null ? "${random_string.prefix.result}${var.vnet_name}" : "${var.name_prefix}${var.vnet_name}"
   address_space                = var.vnet_address_space
   log_analytics_workspace_id   = module.log_analytics_workspace.id
-  log_analytics_retention_days = var.log_analytics_retention_days
   tags                         = var.tags
 
   subnets = [
