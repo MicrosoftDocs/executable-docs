@@ -254,12 +254,6 @@ variable "system_node_pool_min_count" {
   default       = 3
 }
 
-variable "system_node_pool_node_count" {
-  description = "(Optional) The initial number of nodes which should exist within this Node Pool. Valid values are between 0 and 1000 and must be a value in the range min_count - max_count."
-  type          = number
-  default       = 3
-}
-
 variable "user_node_pool_name" {
   description = "(Required) Specifies the name of the node pool."
   type        = string
@@ -346,12 +340,6 @@ variable "user_node_pool_max_count" {
 
 variable "user_node_pool_min_count" {
   description = "(Required) The minimum number of nodes which should exist within this Node Pool. Valid values are between 0 and 1000 and must be less than or equal to max_count."
-  type          = number
-  default       = 3
-}
-
-variable "user_node_pool_node_count" {
-  description = "(Optional) The initial number of nodes which should exist within this Node Pool. Valid values are between 0 and 1000 and must be a value in the range min_count - max_count."
   type          = number
   default       = 3
 }

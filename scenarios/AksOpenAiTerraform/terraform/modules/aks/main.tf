@@ -50,7 +50,6 @@ resource "azurerm_kubernetes_cluster" "aks_cluster" {
     max_pods                = var.system_node_pool_max_pods
     max_count               = var.system_node_pool_max_count
     min_count               = var.system_node_pool_min_count
-    node_count              = var.system_node_pool_node_count
     os_disk_type            = var.system_node_pool_os_disk_type
     tags                    = var.tags
   }
