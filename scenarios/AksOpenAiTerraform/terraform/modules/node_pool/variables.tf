@@ -61,9 +61,8 @@ variable "tags" {
 }
 
 variable "orchestrator_version" {
-  description = "(Optional) Version of Kubernetes used for the Agents. If not specified, the latest recommended version will be used at provisioning time (but won't auto-upgrade)"
+  description = "(Required) Version of Kubernetes used for the Agents. If not specified, the latest recommended version will be used at provisioning time (but won't auto-upgrade)"
   type          = string
-  default       = null
 } 
 
 variable "os_disk_size_gb" {
