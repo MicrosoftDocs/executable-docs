@@ -81,7 +81,6 @@ module "virtual_network" {
       private_link_service_network_policies_enabled : false
       delegation = {
         name = "delegation"
-        
         service_delegation = {
           name    = "Microsoft.ContainerService/managedClusters"
           actions = ["Microsoft.Network/virtualNetworks/subnets/join/action"]
