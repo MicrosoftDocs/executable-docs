@@ -124,17 +124,6 @@ variable "role_based_access_control_enabled" {
   type        = bool
 }
 
-variable "automatic_channel_upgrade" {
-  description = "(Optional) The upgrade channel for this Kubernetes Cluster. Possible values are patch, rapid, and stable."
-  default     = "stable"
-  type        = string
-
-  validation {
-    condition = contains( ["patch", "rapid", "stable"], var.automatic_channel_upgrade)
-    error_message = "The upgrade mode is invalid."
-  }
-}
-
 variable "admin_group_object_ids" {
   description = "(Optional) A list of Object IDs of Azure Active Directory Groups which should have Admin Role on the Cluster."
   default     = []
@@ -199,18 +188,6 @@ variable "system_node_pool_name" {
   default     =  "system"
   type        = string
 }
-
-variable "system_node_pool_enable_host_encryption" {
-  description = "(Optional) Should the nodes in this Node Pool have host encryption enabled? Defaults to false."
-  type          = bool
-  default       = false
-} 
-
-variable "system_node_pool_enable_node_public_ip" {
-  description = "(Optional) Should each node have a Public IP Address? Defaults to false. Changing this forces a new resource to be created."
-  type          = bool
-  default       = false
-} 
 
 variable "system_node_pool_max_pods" {
   description = "(Optional) The maximum number of pods that can run on each agent. Changing this forces a new resource to be created."

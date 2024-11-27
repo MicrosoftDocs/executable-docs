@@ -28,7 +28,7 @@ resource "azurerm_kubernetes_cluster" "aks_cluster" {
   kubernetes_version               = var.kubernetes_version
   dns_prefix                       = var.dns_prefix
   private_cluster_enabled          = var.private_cluster_enabled
-  automatic_channel_upgrade        = var.automatic_channel_upgrade
+  automatic_upgrade_channel        = "stable"
   sku_tier                         = var.sku_tier
   workload_identity_enabled        = var.workload_identity_enabled
   oidc_issuer_enabled              = var.oidc_issuer_enabled
@@ -44,8 +44,6 @@ resource "azurerm_kubernetes_cluster" "aks_cluster" {
     pod_subnet_id           = var.pod_subnet_id
     zones                   = var.system_node_pool_availability_zones
     node_labels             = var.system_node_pool_node_labels
-    enable_host_encryption  = var.system_node_pool_enable_host_encryption
-    enable_node_public_ip   = var.system_node_pool_enable_node_public_ip
     max_pods                = var.system_node_pool_max_pods
     os_disk_type            = var.system_node_pool_os_disk_type
     tags                    = var.tags
@@ -86,7 +84,6 @@ resource "azurerm_kubernetes_cluster" "aks_cluster" {
   }
 
   azure_active_directory_role_based_access_control {
-    managed                    = true
     tenant_id                  = var.tenant_id
     admin_group_object_ids     = var.admin_group_object_ids
     azure_rbac_enabled         = var.azure_rbac_enabled

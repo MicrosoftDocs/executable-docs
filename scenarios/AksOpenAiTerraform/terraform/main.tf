@@ -61,21 +61,21 @@ module "virtual_network" {
     {
       name : var.system_node_pool_subnet_name
       address_prefixes : var.system_node_pool_subnet_address_prefix
-      private_endpoint_network_policies_enabled : true
+      private_endpoint_network_policies : "Enabled"
       private_link_service_network_policies_enabled : false
       delegation: null
     },
     {
       name : var.user_node_pool_subnet_name
       address_prefixes : var.user_node_pool_subnet_address_prefix
-      private_endpoint_network_policies_enabled : true
+      private_endpoint_network_policies : "Enabled"
       private_link_service_network_policies_enabled : false
       delegation: null
     },
     {
       name : var.pod_subnet_name
       address_prefixes : var.pod_subnet_address_prefix
-      private_endpoint_network_policies_enabled : true
+      private_endpoint_network_policies : "Enabled"
       private_link_service_network_policies_enabled : false
       delegation = {
         name = "delegation"
@@ -88,14 +88,14 @@ module "virtual_network" {
     {
       name : var.vm_subnet_name
       address_prefixes : var.vm_subnet_address_prefix
-      private_endpoint_network_policies_enabled : true
+      private_endpoint_network_policies : "Enabled"
       private_link_service_network_policies_enabled : false
       delegation: null
     },
     {
       name : "AzureBastionSubnet"
       address_prefixes : var.bastion_subnet_address_prefix
-      private_endpoint_network_policies_enabled : true
+      private_endpoint_network_policies : "Enabled"
       private_link_service_network_policies_enabled : false
       delegation: null
     }
@@ -137,7 +137,6 @@ module "aks_cluster" {
   kubernetes_version                      = var.kubernetes_version
   dns_prefix                              = lower(var.aks_cluster_name)
   private_cluster_enabled                 = var.private_cluster_enabled
-  automatic_channel_upgrade               = var.automatic_channel_upgrade
   sku_tier                                = var.sku_tier
   system_node_pool_name                   = var.system_node_pool_name
   system_node_pool_vm_size                = var.system_node_pool_vm_size
@@ -145,8 +144,6 @@ module "aks_cluster" {
   pod_subnet_id                           = module.virtual_network.subnet_ids[var.pod_subnet_name]
   system_node_pool_availability_zones     = var.system_node_pool_availability_zones
   system_node_pool_node_labels            = var.system_node_pool_node_labels
-  system_node_pool_enable_host_encryption = var.system_node_pool_enable_host_encryption
-  system_node_pool_enable_node_public_ip  = var.system_node_pool_enable_node_public_ip
   system_node_pool_max_pods               = var.system_node_pool_max_pods
   system_node_pool_os_disk_type           = var.system_node_pool_os_disk_type
   tags                                    = var.tags

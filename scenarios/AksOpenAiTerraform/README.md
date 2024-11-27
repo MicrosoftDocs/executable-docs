@@ -21,8 +21,15 @@ Run commands below to set up AKS extensions for Azure.
 A Service Principal is an application within Azure Active Directory with the authentication tokens Terraform needs to perform actions on your behalf.
 
 ```bash
-export SUBSCRIPTION_ID="0c8875c7-e423-4caa-827a-1f0350bd8dd3"
-az ad sp create-for-rbac --role="Contributor" --scopes="/subscriptions/$SUBSCRIPTION_ID"
+# TODO: fix
+# az ad sp create-for-rbac --role="Contributor" --scopes="/subscriptions/$ARM_SUBSCRIPTION_ID"
+```
+
+## Setup Infra
+
+```bash
+export ARM_SUBSCRIPTION_ID="0c8875c7-e423-4caa-827a-1f0350bd8dd3"
+terraform apply
 ```
 
 ## Set up environment

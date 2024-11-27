@@ -47,17 +47,6 @@ variable "role_based_access_control_enabled" {
   type        = bool
 }
 
-variable "automatic_channel_upgrade" {
-  description = "(Optional) The upgrade channel for this Kubernetes Cluster. Possible values are patch, rapid, and stable."
-  default     = "stable"
-  type        = string
-
-  validation {
-    condition = contains( ["patch", "rapid", "stable"], var.automatic_channel_upgrade)
-    error_message = "The upgrade mode is invalid."
-  }
-}
-
 variable "sku_tier" {
   description = "(Optional) The SKU Tier that should be used for this Kubernetes Cluster. Possible values are Free and Paid (which includes the Uptime SLA). Defaults to Free."
   default     = "Free"
@@ -132,18 +121,6 @@ variable "system_node_pool_subnet_address_prefix" {
   default     =  ["10.0.0.0/20"]
   type        = list(string)
 }
-
-variable "system_node_pool_enable_host_encryption" {
-  description = "(Optional) Should the nodes in this Node Pool have host encryption enabled? Defaults to false."
-  type          = bool
-  default       = false
-} 
-
-variable "system_node_pool_enable_node_public_ip" {
-  description = "(Optional) Should each node have a Public IP Address? Defaults to false. Changing this forces a new resource to be created."
-  type          = bool
-  default       = false
-} 
 
 variable "system_node_pool_max_pods" {
   description = "(Optional) The maximum number of pods that can run on each agent. Changing this forces a new resource to be created."

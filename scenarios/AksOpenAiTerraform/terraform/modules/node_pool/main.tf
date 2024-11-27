@@ -8,8 +8,6 @@ resource "azurerm_kubernetes_cluster_node_pool" "node_pool" {
   zones                        = var.availability_zones
   vnet_subnet_id               = var.vnet_subnet_id
   pod_subnet_id                = var.pod_subnet_id
-  enable_host_encryption       = var.enable_host_encryption
-  enable_node_public_ip        = var.enable_node_public_ip
   proximity_placement_group_id = var.proximity_placement_group_id
   orchestrator_version         = var.orchestrator_version
   max_pods                     = var.max_pods
