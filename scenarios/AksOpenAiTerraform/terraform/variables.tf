@@ -30,7 +30,7 @@ variable "solution_plan_map" {
 
 variable "location" {
   description = "Specifies the location for the resource group and all the resources"
-  default     = "eastus"
+  default     = "westus2"
   type        = string
 }
 
@@ -149,13 +149,13 @@ variable "sku_tier" {
 
 variable "kubernetes_version" {
   description = "Specifies the AKS Kubernetes version"
-  default     = "1.31.1"
+  default     = "1.29.10"
   type        = string
 }
 
 variable "system_node_pool_vm_size" {
   description = "Specifies the vm size of the system node pool"
-  default     = "Standard_F8s_v2"
+  default     = "Standard_D8ds_v5"
   type        = string
 }
 
@@ -222,7 +222,7 @@ variable "user_node_pool_name" {
 variable "user_node_pool_vm_size" {
   description = "(Required) The SKU which should be used for the Virtual Machines used in this Node Pool. Changing this forces a new resource to be created."
   type        = string
-  default     = "Standard_F8s_v2"
+  default     = "Standard_D8ds_v5"
 }
 
 variable "user_node_pool_availability_zones" {
