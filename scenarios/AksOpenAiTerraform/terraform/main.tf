@@ -194,6 +194,7 @@ module "node_pool" {
   max_pods                     = var.user_node_pool_max_pods
   max_count                    = var.user_node_pool_max_count
   min_count                    = var.user_node_pool_min_count
+  node_count                   = var.user_node_pool_node_count
   os_type                      = var.user_node_pool_os_type
   priority                     = var.user_node_pool_priority
   tags                         = var.tags
