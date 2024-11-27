@@ -141,7 +141,6 @@ module "aks_cluster" {
   pod_subnet_id                           = module.virtual_network.subnet_ids[var.pod_subnet_name]
   system_node_pool_availability_zones     = var.system_node_pool_availability_zones
   system_node_pool_node_labels            = var.system_node_pool_node_labels
-  system_node_pool_enable_auto_scaling    = var.system_node_pool_enable_auto_scaling
   system_node_pool_enable_host_encryption = var.system_node_pool_enable_host_encryption
   system_node_pool_enable_node_public_ip  = var.system_node_pool_enable_node_public_ip
   system_node_pool_max_pods               = var.system_node_pool_max_pods
@@ -184,7 +183,6 @@ module "node_pool" {
   availability_zones           = var.user_node_pool_availability_zones
   vnet_subnet_id               = module.virtual_network.subnet_ids[var.user_node_pool_subnet_name]
   pod_subnet_id                = module.virtual_network.subnet_ids[var.pod_subnet_name]
-  enable_auto_scaling          = var.user_node_pool_enable_auto_scaling
   enable_host_encryption       = var.user_node_pool_enable_host_encryption
   enable_node_public_ip        = var.user_node_pool_enable_node_public_ip
   orchestrator_version         = var.kubernetes_version

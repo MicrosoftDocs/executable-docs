@@ -44,7 +44,6 @@ resource "azurerm_kubernetes_cluster" "aks_cluster" {
     pod_subnet_id           = var.pod_subnet_id
     zones                   = var.system_node_pool_availability_zones
     node_labels             = var.system_node_pool_node_labels
-    enable_auto_scaling     = var.system_node_pool_enable_auto_scaling
     enable_host_encryption  = var.system_node_pool_enable_host_encryption
     enable_node_public_ip   = var.system_node_pool_enable_node_public_ip
     max_pods                = var.system_node_pool_max_pods

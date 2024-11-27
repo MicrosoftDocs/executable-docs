@@ -200,12 +200,6 @@ variable "system_node_pool_name" {
   type        = string
 }
 
-variable "system_node_pool_enable_auto_scaling" {
-  description = "(Optional) Whether to enable auto-scaler. Defaults to false."
-  type          = bool
-  default       = true
-}
-
 variable "system_node_pool_enable_host_encryption" {
   description = "(Optional) Should the nodes in this Node Pool have host encryption enabled? Defaults to false."
   type          = bool
@@ -258,12 +252,6 @@ variable "user_node_pool_availability_zones" {
   description = "(Optional) A list of Availability Zones where the Nodes in this Node Pool should be created in. Changing this forces a new resource to be created."
   type        = list(string)
   default = ["1", "2", "3"]
-}
-
-variable "user_node_pool_enable_auto_scaling" {
-  description = "(Optional) Whether to enable auto-scaler. Defaults to false."
-  type          = bool
-  default       = true
 }
 
 variable "user_node_pool_enable_host_encryption" {

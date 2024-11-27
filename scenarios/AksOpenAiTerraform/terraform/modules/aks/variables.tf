@@ -134,12 +134,6 @@ variable "system_node_pool_subnet_address_prefix" {
   type        = list(string)
 }
 
-variable "system_node_pool_enable_auto_scaling" {
-  description = "(Optional) Whether to enable auto-scaler. Defaults to false."
-  type          = bool
-  default       = true
-}
-
 variable "system_node_pool_enable_host_encryption" {
   description = "(Optional) Should the nodes in this Node Pool have host encryption enabled? Defaults to false."
   type          = bool
