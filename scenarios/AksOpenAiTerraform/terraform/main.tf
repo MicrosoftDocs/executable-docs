@@ -79,7 +79,14 @@ module "virtual_network" {
       address_prefixes : var.pod_subnet_address_prefix
       private_endpoint_network_policies_enabled : true
       private_link_service_network_policies_enabled : false
-      delegation: "Microsoft.ContainerService/managedClusters"
+      delegation: {
+        name = "delegation"
+        
+        service_delegation: {
+          name    = "Microsoft.ContainerService/managedClusters"
+          actions = ["Microsoft.Network/virtualNetworks/subnets/join/action"]
+        }
+      }
     },
     {
       name : var.vm_subnet_name
