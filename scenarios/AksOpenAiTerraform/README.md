@@ -8,6 +8,8 @@ ms.author: ariaamini
 ms.custom: innovation-engine, linux-related-content 
 ---
 
+<!-- TODO: PARAMETERIZE REGION AND SUB IDS  -->
+
 ## Install AKS extension
 
 Run commands below to set up AKS extensions for Azure.
@@ -29,6 +31,9 @@ A Service Principal is an application within Azure Active Directory with the aut
 
 ```bash
 export ARM_SUBSCRIPTION_ID="0c8875c7-e423-4caa-827a-1f0350bd8dd3"
+# For debugging in powershell
+# $env:ARM_SUBSCRIPTION_ID = "0c8875c7-e423-4caa-827a-1f0350bd8dd3"
+
 terraform apply
 ```
 
