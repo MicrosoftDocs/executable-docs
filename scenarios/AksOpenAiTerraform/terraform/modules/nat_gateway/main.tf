@@ -39,7 +39,4 @@ resource "azurerm_subnet_nat_gateway_association" "nat-avd-sessionhosts" {
   for_each              = var.subnet_ids
   subnet_id             = each.value
   nat_gateway_id        = azurerm_nat_gateway.nat_gateway.id
-  depends_on = [
-    module.virtual_network
-  ]
 }
