@@ -145,9 +145,6 @@ module "aks_cluster" {
   system_node_pool_enable_host_encryption = var.system_node_pool_enable_host_encryption
   system_node_pool_enable_node_public_ip  = var.system_node_pool_enable_node_public_ip
   system_node_pool_max_pods               = var.system_node_pool_max_pods
-  system_node_pool_max_count              = var.system_node_pool_max_count
-  system_node_pool_min_count              = var.system_node_pool_min_count
-  system_node_pool_node_count             = var.system_node_pool_node_count
   system_node_pool_os_disk_type           = var.system_node_pool_os_disk_type
   tags                                    = var.tags
   network_dns_service_ip                  = var.network_dns_service_ip
@@ -192,9 +189,6 @@ module "node_pool" {
   enable_node_public_ip        = var.user_node_pool_enable_node_public_ip
   orchestrator_version         = var.kubernetes_version
   max_pods                     = var.user_node_pool_max_pods
-  max_count                    = var.user_node_pool_max_count
-  min_count                    = var.user_node_pool_min_count
-  node_count                   = var.user_node_pool_node_count
   os_type                      = var.user_node_pool_os_type
   priority                     = var.user_node_pool_priority
   tags                         = var.tags
