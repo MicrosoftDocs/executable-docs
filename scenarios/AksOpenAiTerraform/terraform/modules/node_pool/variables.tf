@@ -108,18 +108,6 @@ variable "pod_subnet_id" {
   default       = null
 }
 
-variable "max_count" {
-  description = "(Required) The maximum number of nodes which should exist within this Node Pool. Valid values are between 0 and 1000 and must be greater than or equal to min_count."
-  type          = number
-  default       = 10
-}
-
-variable "min_count" {
-  description = "(Required) The minimum number of nodes which should exist within this Node Pool. Valid values are between 0 and 1000 and must be less than or equal to max_count."
-  type          = number
-  default       = 3
-}
-
 variable resource_group_name {
   description = "Specifies the resource group name"
   type        = string

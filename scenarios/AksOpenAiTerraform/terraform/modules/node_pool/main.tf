@@ -13,8 +13,6 @@ resource "azurerm_kubernetes_cluster_node_pool" "node_pool" {
   proximity_placement_group_id = var.proximity_placement_group_id
   orchestrator_version         = var.orchestrator_version
   max_pods                     = var.max_pods
-  max_count                    = var.max_count
-  min_count                    = var.min_count
   os_disk_size_gb              = var.os_disk_size_gb
   os_disk_type                 = var.os_disk_type
   os_type                      = var.os_type
