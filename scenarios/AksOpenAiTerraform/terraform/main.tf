@@ -61,35 +61,41 @@ module "virtual_network" {
     {
       name : var.system_node_pool_subnet_name
       address_prefixes : var.system_node_pool_subnet_address_prefix
-      private_endpoint_network_policies_enabled : true
+      private_endpoint_network_policies : "Enabled"
       private_link_service_network_policies_enabled : false
       delegation: null
     },
     {
       name : var.user_node_pool_subnet_name
       address_prefixes : var.user_node_pool_subnet_address_prefix
-      private_endpoint_network_policies_enabled : true
+      private_endpoint_network_policies : "Enabled"
       private_link_service_network_policies_enabled : false
       delegation: null
     },
     {
       name : var.pod_subnet_name
       address_prefixes : var.pod_subnet_address_prefix
-      private_endpoint_network_policies_enabled : true
+      private_endpoint_network_policies : "Enabled"
       private_link_service_network_policies_enabled : false
-      delegation: "Microsoft.ContainerService/managedClusters"
+      delegation = {
+        name = "delegation"
+        service_delegation = {
+          name    = "Microsoft.ContainerService/managedClusters"
+          actions = ["Microsoft.Network/virtualNetworks/subnets/join/action"]
+        }
+      }
     },
     {
       name : var.vm_subnet_name
       address_prefixes : var.vm_subnet_address_prefix
-      private_endpoint_network_policies_enabled : true
+      private_endpoint_network_policies : "Enabled"
       private_link_service_network_policies_enabled : false
       delegation: null
     },
     {
       name : "AzureBastionSubnet"
       address_prefixes : var.bastion_subnet_address_prefix
-      private_endpoint_network_policies_enabled : true
+      private_endpoint_network_policies : "Enabled"
       private_link_service_network_policies_enabled : false
       delegation: null
     }
@@ -106,6 +112,9 @@ module "nat_gateway" {
   zones                        = var.nat_gateway_zones
   tags                         = var.tags
   subnet_ids                   = module.virtual_network.subnet_ids
+  depends_on = [
+    module.virtual_network
+  ]
 }
 
 module "container_registry" {
