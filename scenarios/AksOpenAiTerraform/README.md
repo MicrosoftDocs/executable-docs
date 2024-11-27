@@ -13,6 +13,23 @@ ms.custom: innovation-engine, linux-related-content
 Run commands below to set up AKS extensions for Azure.
 
 ```bash
-# ./terraform/register-preview-features.sh
-echo "HI"
+./terraform/register-preview-features.sh
+```
+
+## Set up service principal
+
+A Service Principal is an application within Azure Active Directory with the authentication tokens Terraform needs to perform actions on your behalf.
+
+```bash
+export SUBSCRIPTION_ID="0c8875c7-e423-4caa-827a-1f0350bd8dd3"
+az ad sp create-for-rbac --role="Contributor" --scopes="/subscriptions/$SUBSCRIPTION_ID"
+```
+
+## Set up environment
+
+```bash
+export ARM_CLIENT_ID=""
+export ARM_CLIENT_SECRET=""
+export ARM_SUBSCRIPTION_ID=""
+export ARM_TENANT_ID=""
 ```
