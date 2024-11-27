@@ -112,9 +112,6 @@ module "nat_gateway" {
   zones                        = var.nat_gateway_zones
   tags                         = var.tags
   subnet_ids                   = module.virtual_network.subnet_ids
-  depends_on = [
-    module.virtual_network
-  ]
 }
 
 module "container_registry" {
