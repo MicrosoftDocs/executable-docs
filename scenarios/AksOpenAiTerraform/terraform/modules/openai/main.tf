@@ -37,7 +37,7 @@ resource "azurerm_cognitive_deployment" "deployment" {
 }
 
 resource "azurerm_monitor_diagnostic_setting" "settings" {
-  name                       = "DiagnosticsSettings"
+  name                       = "OpenAiDiagnosticsSettings"
   target_resource_id         = azurerm_cognitive_account.openai.id
   log_analytics_workspace_id = var.log_analytics_workspace_id
 

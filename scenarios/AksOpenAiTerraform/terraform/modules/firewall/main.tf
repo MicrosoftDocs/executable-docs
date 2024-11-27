@@ -226,7 +226,7 @@ resource "azurerm_firewall_policy_rule_collection_group" "policy" {
 }
 
 resource "azurerm_monitor_diagnostic_setting" "settings" {
-  name                       = "DiagnosticsSettings"
+  name                       = "FirewallDiagnosticsSettings"
   target_resource_id         = azurerm_firewall.firewall.id
   log_analytics_workspace_id = var.log_analytics_workspace_id
 
@@ -248,7 +248,7 @@ resource "azurerm_monitor_diagnostic_setting" "settings" {
 }
 
 resource "azurerm_monitor_diagnostic_setting" "pip_settings" {
-  name                       = "DiagnosticsSettings"
+  name                       = "FirewallDdosDiagnosticsSettings"
   target_resource_id         = azurerm_public_ip.pip.id
   log_analytics_workspace_id = var.log_analytics_workspace_id
 

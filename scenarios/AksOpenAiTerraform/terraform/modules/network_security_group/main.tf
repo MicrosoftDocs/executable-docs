@@ -33,7 +33,7 @@ resource "azurerm_network_security_group" "nsg" {
 }
 
 resource "azurerm_monitor_diagnostic_setting" "settings" {
-  name                       = "DiagnosticsSettings"
+  name                       = "NetworkSecurityDiagnosticsSettings"
   target_resource_id         = azurerm_network_security_group.nsg.id
   log_analytics_workspace_id = var.log_analytics_workspace_id
 
@@ -43,6 +43,5 @@ resource "azurerm_monitor_diagnostic_setting" "settings" {
 
  enabled_log {
     category = "NetworkSecurityGroupRuleCounter"
-    enabled  = true
   }
 }
