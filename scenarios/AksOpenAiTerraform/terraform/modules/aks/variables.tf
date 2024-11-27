@@ -69,12 +69,6 @@ variable "sku_tier" {
   }
 }
 
-variable "kubernetes_version" {
-  description = "Specifies the AKS Kubernetes version"
-  default     = "1.30.5"
-  type        = string
-}
-
 variable "system_node_pool_vm_size" {
   description = "Specifies the vm size of the system node pool"
   default     = "Standard_F8s_v2"
