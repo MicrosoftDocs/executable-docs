@@ -35,6 +35,7 @@ resource "azurerm_kubernetes_cluster" "aks_cluster" {
   open_service_mesh_enabled        = var.open_service_mesh_enabled
   image_cleaner_enabled            = var.image_cleaner_enabled
   azure_policy_enabled             = var.azure_policy_enabled
+  image_cleaner_interval_hours     = 72
   http_application_routing_enabled = var.http_application_routing_enabled
 
   default_node_pool {
