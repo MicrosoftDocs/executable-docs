@@ -1,6 +1,6 @@
 ---
 title: Sample Document Title
-description: Sample Document Steps
+description: Sample Document Description
 author: pjsingh28
 ms.author: pjsingh28
 ms.topic: article
@@ -10,11 +10,11 @@ ms.custom: innovation-engine
 
 # Sample Document Title
 
-Sample Document Steps
+Sample Document Description
 
-## Define Environment Variables
+## Step One
 
-Step One
+Description for step one
 
 ```bash
 pwd
