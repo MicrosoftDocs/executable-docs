@@ -91,7 +91,7 @@ resource "azurerm_firewall_policy_rule_collection_group" "policy" {
         type = "Https"
       }
     }
-    
+
     rule {
       name             = "AllowImagesFqdns"
       source_addresses = ["*"]
@@ -174,15 +174,15 @@ resource "azurerm_firewall_policy_rule_collection_group" "policy" {
     }
 
     rule {
-      name                  = "ServiceTags"
-      source_addresses      = ["*"]
-      destination_ports     = ["*"]
+      name              = "ServiceTags"
+      source_addresses  = ["*"]
+      destination_ports = ["*"]
       destination_addresses = [
         "AzureContainerRegistry",
         "MicrosoftContainerRegistry",
         "AzureActiveDirectory"
       ]
-      protocols             = ["Any"]
+      protocols = ["Any"]
     }
 
     rule {

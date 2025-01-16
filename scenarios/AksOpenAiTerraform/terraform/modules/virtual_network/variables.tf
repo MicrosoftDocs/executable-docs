@@ -21,14 +21,14 @@ variable "address_space" {
 variable "subnets" {
   description = "Subnets configuration"
   type = list(object({
-    name                                           = string
-    address_prefixes                               = list(string)
-    private_endpoint_network_policies              = string
-    private_link_service_network_policies_enabled  = bool
-    delegation                                     = object({name = string, service_delegation = object({
-      name = string
-      actions = list(string) 
-    })})
+    name                                          = string
+    address_prefixes                              = list(string)
+    private_endpoint_network_policies             = string
+    private_link_service_network_policies_enabled = bool
+    delegation = object({ name = string, service_delegation = object({
+      name    = string
+      actions = list(string)
+    }) })
   }))
 }
 

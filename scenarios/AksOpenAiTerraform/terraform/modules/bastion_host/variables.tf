@@ -1,23 +1,23 @@
 variable "resource_group_name" {
-  type        = string
+  type = string
 }
 
 variable "name" {
-  type        = string
+  type = string
 }
 
 variable "location" {
-  type        = string
+  type = string
 }
 
 variable "subnet_id" {
-  type        = string
+  type = string
 }
 
 variable "log_analytics_workspace_id" {
-  type        = string
+  type = string
 }
 
 variable "log_analytics_retention_days" {
-  type        = number
+  type = number
 }

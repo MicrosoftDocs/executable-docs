@@ -35,7 +35,7 @@ resource "azurerm_monitor_diagnostic_setting" "settings" {
     category = "NetworkSecurityGroupEvent"
   }
 
- enabled_log {
+  enabled_log {
     category = "NetworkSecurityGroupRuleCounter"
   }
 }

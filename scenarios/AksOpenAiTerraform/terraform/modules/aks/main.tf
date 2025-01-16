@@ -1,5 +1,5 @@
 resource "azurerm_user_assigned_identity" "aks_identity" {
-  name = "${var.name}Identity"
+  name                = "${var.name}Identity"
   resource_group_name = var.resource_group_name
   location            = var.location
 }
@@ -22,26 +22,26 @@ resource "azurerm_kubernetes_cluster" "aks_cluster" {
   http_application_routing_enabled = false
 
   default_node_pool {
-    name                    = "system"
-    node_count              = 1
-    vm_size                 = var.system_node_pool_vm_size
-    vnet_subnet_id          = module.virtual_network.subnet_ids[var.system_node_pool_subnet_name]
-    pod_subnet_id           = module.virtual_network.subnet_ids[var.pod_subnet_name]
-    zones                   = ["1", "2", "3"]
-    max_pods                = 50
-    os_disk_type            = "Ephemeral"
+    name           = "system"
+    node_count     = 1
+    vm_size        = var.system_node_pool_vm_size
+    vnet_subnet_id = module.virtual_network.subnet_ids[var.system_node_pool_subnet_name]
+    pod_subnet_id  = module.virtual_network.subnet_ids[var.pod_subnet_name]
+    zones          = ["1", "2", "3"]
+    max_pods       = 50
+    os_disk_type   = "Ephemeral"
   }
 
   identity {
-    type = "UserAssigned"
+    type         = "UserAssigned"
     identity_ids = tolist([azurerm_user_assigned_identity.aks_identity.id])
   }
 
   network_profile {
-    dns_service_ip     = "10.2.0.10"
-    network_plugin     = "azure"
-    outbound_type      = "userAssignedNATGateway"
-    service_cidr       = "10.2.0.0/24"
+    dns_service_ip = "10.2.0.10"
+    network_plugin = "azure"
+    outbound_type  = "userAssignedNATGateway"
+    service_cidr   = "10.2.0.0/24"
   }
 
   oms_agent {
@@ -50,8 +50,8 @@ resource "azurerm_kubernetes_cluster" "aks_cluster" {
   }
 
   azure_active_directory_role_based_access_control {
-    tenant_id                  = data.azurerm_client_config.current.tenant_id
-    azure_rbac_enabled         = true
+    tenant_id          = data.azurerm_client_config.current.tenant_id
+    azure_rbac_enabled = true
   }
 
   workload_autoscaler_profile {
@@ -61,18 +61,18 @@ resource "azurerm_kubernetes_cluster" "aks_cluster" {
 }
 
 resource "azurerm_kubernetes_cluster_node_pool" "node_pool" {
-  kubernetes_cluster_id        = azurerm_kubernetes_cluster.aks_cluster.id
-  name                         = "user"
-  vm_size                      = var.user_node_pool_vm_size
-  mode                         = "User"
-  zones                        = ["1", "2", "3"]
-  vnet_subnet_id               = module.virtual_network.subnet_ids[var.user_node_pool_subnet_name]
-  pod_subnet_id                = module.virtual_network.subnet_ids[var.pod_subnet_name]
-  orchestrator_version         = var.kubernetes_version
-  max_pods                     = 50
-  os_disk_type                 = "Ephemeral"
-  os_type                      = "Linux"
-  priority                     = "Regular"
+  kubernetes_cluster_id = azurerm_kubernetes_cluster.aks_cluster.id
+  name                  = "user"
+  vm_size               = var.user_node_pool_vm_size
+  mode                  = "User"
+  zones                 = ["1", "2", "3"]
+  vnet_subnet_id        = module.virtual_network.subnet_ids[var.user_node_pool_subnet_name]
+  pod_subnet_id         = module.virtual_network.subnet_ids[var.pod_subnet_name]
+  orchestrator_version  = var.kubernetes_version
+  max_pods              = 50
+  os_disk_type          = "Ephemeral"
+  os_type               = "Linux"
+  priority              = "Regular"
 }
 
 resource "azurerm_monitor_diagnostic_setting" "settings" {

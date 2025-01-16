@@ -5,7 +5,7 @@ resource "azurerm_public_ip" "nat_gategay_public_ip" {
   allocation_method   = "Static"
   sku                 = "Standard"
   zones               = var.zones
-  tags                = var.tags 
+  tags                = var.tags
 
   lifecycle {
     ignore_changes = [
@@ -36,7 +36,7 @@ resource "azurerm_nat_gateway_public_ip_association" "nat_gategay_public_ip_asso
 }
 
 resource "azurerm_subnet_nat_gateway_association" "nat-avd-sessionhosts" {
-  for_each              = var.subnet_ids
-  subnet_id             = each.value
-  nat_gateway_id        = azurerm_nat_gateway.nat_gateway.id
+  for_each       = var.subnet_ids
+  subnet_id      = each.value
+  nat_gateway_id = azurerm_nat_gateway.nat_gateway.id
 }

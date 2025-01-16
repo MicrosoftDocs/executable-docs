@@ -6,13 +6,13 @@ resource "azurerm_user_assigned_identity" "script_identity" {
 
 data "azurerm_kubernetes_cluster" "aks_cluster" {
   name                = var.aks_cluster_name
-  resource_group_name = var.resource_group_name  
+  resource_group_name = var.resource_group_name
 }
 
 resource "azurerm_role_assignment" "network_contributor_assignment" {
-  scope                = data.azurerm_kubernetes_cluster.aks_cluster.id
-  role_definition_name = "Azure Kubernetes Service Cluster Admin Role"
-  principal_id         = azurerm_user_assigned_identity.script_identity.principal_id
+  scope                            = data.azurerm_kubernetes_cluster.aks_cluster.id
+  role_definition_name             = "Azure Kubernetes Service Cluster Admin Role"
+  principal_id                     = azurerm_user_assigned_identity.script_identity.principal_id
   skip_service_principal_aad_check = true
 }
 
@@ -31,58 +31,58 @@ resource "azurerm_resource_deployment_script_azure_cli" "script" {
 
   identity {
     type = "UserAssigned"
-    identity_ids      = [
+    identity_ids = [
       azurerm_user_assigned_identity.script_identity.id
     ]
   }
 
   environment_variable {
-    name              = "clusterName"
-    value             = var.aks_cluster_name
+    name  = "clusterName"
+    value = var.aks_cluster_name
   }
 
   environment_variable {
-    name              = "resourceGroupName"
-    value             = var.resource_group_name
+    name  = "resourceGroupName"
+    value = var.resource_group_name
   }
 
   environment_variable {
-    name              = "applicationGatewayEnabled"
-    value             = false
+    name  = "applicationGatewayEnabled"
+    value = false
   }
 
   environment_variable {
-    name              = "tenantId"
-    value             = var.tenant_id
+    name  = "tenantId"
+    value = var.tenant_id
   }
 
   environment_variable {
-    name              = "subscriptionId"
-    value             = var.subscription_id
+    name  = "subscriptionId"
+    value = var.subscription_id
   }
 
   environment_variable {
-    name              = "hostName"
-    value             = var.hostname
+    name  = "hostName"
+    value = var.hostname
   }
 
   environment_variable {
-    name              = "namespace"
-    value             = var.namespace
+    name  = "namespace"
+    value = var.namespace
   }
 
   environment_variable {
-    name              = "serviceAccountName"
-    value             = var.service_account_name
+    name  = "serviceAccountName"
+    value = var.service_account_name
   }
 
   environment_variable {
-    name              = "workloadManagedIdentityClientId"
-    value             = var.workload_managed_identity_client_id
+    name  = "workloadManagedIdentityClientId"
+    value = var.workload_managed_identity_client_id
   }
 
   environment_variable {
-    name              = "email"
-    value             = var.email
+    name  = "email"
+    value = var.email
   }
 }

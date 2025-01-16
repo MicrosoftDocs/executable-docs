@@ -20,7 +20,7 @@ resource "azurerm_cognitive_account" "openai" {
 }
 
 resource "azurerm_cognitive_deployment" "deployment" {
-  for_each             = {for deployment in var.deployments: deployment.name => deployment}
+  for_each = { for deployment in var.deployments : deployment.name => deployment }
 
   name                 = each.key
   cognitive_account_id = azurerm_cognitive_account.openai.id

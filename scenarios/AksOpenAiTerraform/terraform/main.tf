@@ -26,7 +26,7 @@ resource "random_string" "storage_account_suffix" {
   special = false
   lower   = true
   upper   = false
-  numeric  = false
+  numeric = false
 }
 
 resource "azurerm_resource_group" "rg" {
@@ -35,36 +35,36 @@ resource "azurerm_resource_group" "rg" {
 }
 
 module "openai" {
-  source                                   = "./modules/openai"
-  name                                     = "${var.name_prefix}OpenAi"
-  location                                 = var.location
-  resource_group_name                      = azurerm_resource_group.rg.name
-  sku_name                                 = "S0"
-  deployments                              = [
+  source              = "./modules/openai"
+  name                = "${var.name_prefix}OpenAi"
+  location            = var.location
+  resource_group_name = azurerm_resource_group.rg.name
+  sku_name            = "S0"
+  deployments = [
     {
       name = "gpt-35-turbo"
       model = {
-        name = "gpt-35-turbo"
+        name    = "gpt-35-turbo"
         version = "0301"
       }
       rai_policy_name = ""
     }
   ]
-  custom_subdomain_name                    = lower("${var.name_prefix}OpenAi")
-  public_network_access_enabled            = true
-  log_analytics_workspace_id               = module.log_analytics_workspace.id
-  log_analytics_retention_days             = var.log_analytics_retention_days
+  custom_subdomain_name         = lower("${var.name_prefix}OpenAi")
+  public_network_access_enabled = true
+  log_analytics_workspace_id    = module.log_analytics_workspace.id
+  log_analytics_retention_days  = var.log_analytics_retention_days
 }
 
 module "aks_cluster" {
-  source                                  = "./modules/aks"
-  name                                    = "${var.name_prefix}AksCluster"
-  location                                = var.location
-  resource_group_name                     = azurerm_resource_group.rg.name
-  resource_group_id                       = azurerm_resource_group.rg.id
-  kubernetes_version                      = "1.32"
-  sku_tier                                = "Free"
-  
+  source              = "./modules/aks"
+  name                = "${var.name_prefix}AksCluster"
+  location            = var.location
+  resource_group_name = azurerm_resource_group.rg.name
+  resource_group_id   = azurerm_resource_group.rg.id
+  kubernetes_version  = "1.32"
+  sku_tier            = "Free"
+
   depends_on = [
     module.nat_gateway,
     module.container_registry
@@ -72,40 +72,40 @@ module "aks_cluster" {
 }
 
 module "container_registry" {
-  source                       = "./modules/container_registry"
-  name                         = "${var.name_prefix}Acr"
-  location                     = var.location
-  resource_group_name          = azurerm_resource_group.rg.name
-  
-  log_analytics_workspace_id   = module.log_analytics_workspace.id
+  source              = "./modules/container_registry"
+  name                = "${var.name_prefix}Acr"
+  location            = var.location
+  resource_group_name = azurerm_resource_group.rg.name
 
-  sku                          = "Basic"
-  admin_enabled                = true
+  log_analytics_workspace_id = module.log_analytics_workspace.id
+
+  sku           = "Basic"
+  admin_enabled = true
 }
 
 module "virtual_network" {
-  source                       = "./modules/virtual_network"
-  vnet_name                    = "AksVNet"
-  location                     = var.location
-  resource_group_name          = azurerm_resource_group.rg.name
-  
-  log_analytics_workspace_id   = module.log_analytics_workspace.id
-  
-  address_space                = ["10.0.0.0/8"]
+  source              = "./modules/virtual_network"
+  vnet_name           = "AksVNet"
+  location            = var.location
+  resource_group_name = azurerm_resource_group.rg.name
+
+  log_analytics_workspace_id = module.log_analytics_workspace.id
+
+  address_space = ["10.0.0.0/8"]
   subnets = [
     {
       name : var.system_node_pool_subnet_name
       address_prefixes : ["10.240.0.0/16"]
       private_endpoint_network_policies : "Enabled"
       private_link_service_network_policies_enabled : false
-      delegation: null
+      delegation : null
     },
     {
       name : var.user_node_pool_subnet_name
       address_prefixes : ["10.241.0.0/16"]
       private_endpoint_network_policies : "Enabled"
       private_link_service_network_policies_enabled : false
-      delegation: null
+      delegation : null
     },
     {
       name : var.pod_subnet_name
@@ -122,31 +122,31 @@ module "virtual_network" {
     },
     {
       name : var.vm_subnet_name
-      address_prefixes :  ["10.243.1.0/24"]
+      address_prefixes : ["10.243.1.0/24"]
       private_endpoint_network_policies : "Enabled"
       private_link_service_network_policies_enabled : false
-      delegation: null
+      delegation : null
     },
     {
       name : "AzureBastionSubnet"
       address_prefixes : ["10.243.2.0/24"]
       private_endpoint_network_policies : "Enabled"
       private_link_service_network_policies_enabled : false
-      delegation: null
+      delegation : null
     }
   ]
 }
 
 module "nat_gateway" {
-  source                       = "./modules/nat_gateway"
-  name                         = "${var.name_prefix}NatGateway"
-  location                     = var.location
-  resource_group_name          = azurerm_resource_group.rg.name
-  
-  sku_name                     = "Standard"
-  idle_timeout_in_minutes      = 4
-  zones                        = ["1"]
-  subnet_ids                   = module.virtual_network.subnet_ids
+  source              = "./modules/nat_gateway"
+  name                = "${var.name_prefix}NatGateway"
+  location            = var.location
+  resource_group_name = azurerm_resource_group.rg.name
+
+  sku_name                = "Standard"
+  idle_timeout_in_minutes = 4
+  zones                   = ["1"]
+  subnet_ids              = module.virtual_network.subnet_ids
 }
 
 resource "azurerm_user_assigned_identity" "aks_workload_identity" {
@@ -156,9 +156,9 @@ resource "azurerm_user_assigned_identity" "aks_workload_identity" {
 }
 
 resource "azurerm_role_assignment" "cognitive_services_user_assignment" {
-  scope                = module.openai.id
-  role_definition_name = "Cognitive Services User"
-  principal_id         = azurerm_user_assigned_identity.aks_workload_identity.principal_id
+  scope                            = module.openai.id
+  role_definition_name             = "Cognitive Services User"
+  principal_id                     = azurerm_user_assigned_identity.aks_workload_identity.principal_id
   skip_service_principal_aad_check = true
 }
 
@@ -172,27 +172,27 @@ resource "azurerm_federated_identity_credential" "federated_identity_credential"
 }
 
 resource "azurerm_role_assignment" "network_contributor_assignment" {
-  scope                = azurerm_resource_group.rg.id
-  role_definition_name = "Network Contributor"
-  principal_id         = module.aks_cluster.aks_identity_principal_id
+  scope                            = azurerm_resource_group.rg.id
+  role_definition_name             = "Network Contributor"
+  principal_id                     = module.aks_cluster.aks_identity_principal_id
   skip_service_principal_aad_check = true
 }
 
 resource "azurerm_role_assignment" "acr_pull_assignment" {
-  role_definition_name = "AcrPull"
-  scope                = module.container_registry.id
-  principal_id         = module.aks_cluster.kubelet_identity_object_id
+  role_definition_name             = "AcrPull"
+  scope                            = module.container_registry.id
+  principal_id                     = module.aks_cluster.kubelet_identity_object_id
   skip_service_principal_aad_check = true
 }
 
 module "storage_account" {
-  source                      = "./modules/storage_account"
-  name                        = "boot${random_string.storage_account_suffix.result}"
-  location                    = var.location
-  resource_group_name         = azurerm_resource_group.rg.name
-  account_kind                = "StorageV2"
-  account_tier                = "Standard"
-  replication_type            = "LRS"
+  source              = "./modules/storage_account"
+  name                = "boot${random_string.storage_account_suffix.result}"
+  location            = var.location
+  resource_group_name = azurerm_resource_group.rg.name
+  account_kind        = "StorageV2"
+  account_tier        = "Standard"
+  replication_type    = "LRS"
 }
 
 module "bastion_host" {
@@ -225,48 +225,48 @@ module "key_vault" {
 }
 
 module "acr_private_dns_zone" {
-  source                       = "./modules/private_dns_zone"
-  name                         = "privatelink.azurecr.io"
-  resource_group_name          = azurerm_resource_group.rg.name
-  virtual_networks_to_link     = {
+  source              = "./modules/private_dns_zone"
+  name                = "privatelink.azurecr.io"
+  resource_group_name = azurerm_resource_group.rg.name
+  virtual_networks_to_link = {
     (module.virtual_network.name) = {
-      subscription_id = data.azurerm_client_config.current.subscription_id
+      subscription_id     = data.azurerm_client_config.current.subscription_id
       resource_group_name = azurerm_resource_group.rg.name
     }
   }
 }
 
 module "openai_private_dns_zone" {
-  source                       = "./modules/private_dns_zone"
-  name                         = "privatelink.openai.azure.com"
-  resource_group_name          = azurerm_resource_group.rg.name
-  virtual_networks_to_link     = {
+  source              = "./modules/private_dns_zone"
+  name                = "privatelink.openai.azure.com"
+  resource_group_name = azurerm_resource_group.rg.name
+  virtual_networks_to_link = {
     (module.virtual_network.name) = {
-      subscription_id = data.azurerm_client_config.current.subscription_id
+      subscription_id     = data.azurerm_client_config.current.subscription_id
       resource_group_name = azurerm_resource_group.rg.name
     }
   }
 }
 
 module "key_vault_private_dns_zone" {
-  source                       = "./modules/private_dns_zone"
-  name                         = "privatelink.vaultcore.azure.net"
-  resource_group_name          = azurerm_resource_group.rg.name
-  virtual_networks_to_link     = {
+  source              = "./modules/private_dns_zone"
+  name                = "privatelink.vaultcore.azure.net"
+  resource_group_name = azurerm_resource_group.rg.name
+  virtual_networks_to_link = {
     (module.virtual_network.name) = {
-      subscription_id = data.azurerm_client_config.current.subscription_id
+      subscription_id     = data.azurerm_client_config.current.subscription_id
       resource_group_name = azurerm_resource_group.rg.name
     }
   }
 }
 
 module "blob_private_dns_zone" {
-  source                       = "./modules/private_dns_zone"
-  name                         = "privatelink.blob.core.windows.net"
-  resource_group_name          = azurerm_resource_group.rg.name
-  virtual_networks_to_link     = {
+  source              = "./modules/private_dns_zone"
+  name                = "privatelink.blob.core.windows.net"
+  resource_group_name = azurerm_resource_group.rg.name
+  virtual_networks_to_link = {
     (module.virtual_network.name) = {
-      subscription_id = data.azurerm_client_config.current.subscription_id
+      subscription_id     = data.azurerm_client_config.current.subscription_id
       resource_group_name = azurerm_resource_group.rg.name
     }
   }
@@ -341,19 +341,19 @@ module "deployment_script" {
   subscription_id                     = data.azurerm_client_config.current.subscription_id
   workload_managed_identity_client_id = azurerm_user_assigned_identity.aks_workload_identity.client_id
 
-  depends_on = [ 
+  depends_on = [
     module.aks_cluster
-   ]
+  ]
 }
 
 module "log_analytics_workspace" {
-  source                           = "./modules/log_analytics"
-  name                             = "${var.name_prefix}${var.log_analytics_workspace_name}"
-  location                         = var.location
-  resource_group_name              = azurerm_resource_group.rg.name
-  
-  solution_plan_map                = {
-    ContainerInsights= {
+  source              = "./modules/log_analytics"
+  name                = "${var.name_prefix}${var.log_analytics_workspace_name}"
+  location            = var.location
+  resource_group_name = azurerm_resource_group.rg.name
+
+  solution_plan_map = {
+    ContainerInsights = {
       product   = "OMSGallery/ContainerInsights"
       publisher = "Microsoft"
     }
