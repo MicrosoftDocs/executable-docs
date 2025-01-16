@@ -5,13 +5,6 @@ resource "azurerm_public_ip" "nat_gategay_public_ip" {
   allocation_method   = "Static"
   sku                 = "Standard"
   zones               = var.zones
-  tags                = var.tags
-
-  lifecycle {
-    ignore_changes = [
-      tags
-    ]
-  }
 }
 
 resource "azurerm_nat_gateway" "nat_gateway" {
@@ -21,13 +14,6 @@ resource "azurerm_nat_gateway" "nat_gateway" {
   sku_name                = var.sku_name
   idle_timeout_in_minutes = var.idle_timeout_in_minutes
   zones                   = var.zones
-  tags                    = var.tags
-
-  lifecycle {
-    ignore_changes = [
-      tags
-    ]
-  }
 }
 
 resource "azurerm_nat_gateway_public_ip_association" "nat_gategay_public_ip_association" {
