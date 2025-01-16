@@ -29,68 +29,6 @@ resource "random_string" "storage_account_suffix" {
   numeric  = false
 }
 
-variable "name_prefix" {
-  type        = string
-}
-
-variable "log_analytics_workspace_name" {
-  default     = "Workspace"
-  type        = string
-}
-
-variable "log_analytics_retention_days" {
-  type        = number
-  default     = 30
-}
-
-variable "location" {
-  default     = "westus2"
-  type        = string
-}
-
-variable "resource_group_name" {
-  default     = "RG"
-  type        = string
-}
-
-variable "system_node_pool_subnet_name" {
-  default     =  "SystemSubnet"
-  type        = string
-}
-
-variable "user_node_pool_subnet_name" {
-  default     =  "UserSubnet"
-  type        = string
-}
-
-variable "pod_subnet_name" {
-  default     = "PodSubnet"
-  type        = string
-}
-
-variable "vm_subnet_name" {
-  default     = "VmSubnet"
-  type        = string
-}
-
-variable "namespace" {
-  description = "Specifies the namespace of the workload application that accesses the Azure OpenAI Service."
-  type = string
-  default = "magic8ball"
-}
-
-variable "service_account_name" {
-  description = "Specifies the name of the service account of the workload application that accesses the Azure OpenAI Service."
-  type = string
-  default = "magic8ball-sa"
-}
-
-variable "email" {
-  description = "Specifies the email address for the cert-manager cluster issuer."
-  type = string
-  default = "paolos@microsoft.com"
-}
-
 resource "azurerm_resource_group" "rg" {
   name     = "${var.name_prefix}${var.resource_group_name}"
   location = var.location
@@ -190,11 +128,11 @@ module "container_registry" {
 
 module "aks_cluster" {
   source                                  = "./modules/aks"
-  name                                    = "${var.name_prefix}${var.aks_cluster_name}"
+  name                                    = "${var.name_prefix}AksCluster"
   location                                = var.location
   resource_group_name                     = azurerm_resource_group.rg.name
   resource_group_id                       = azurerm_resource_group.rg.id
-  kubernetes_version                      = var.kubernetes_version
+  kubernetes_version                      = "1.32"
   sku_tier                                = "Free"
   
   depends_on = [
