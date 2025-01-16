@@ -34,6 +34,9 @@ resource "azurerm_resource_group" "rg" {
   location = var.location
 }
 
+###############################################################################
+# Application
+###############################################################################
 module "openai" {
   source              = "./modules/openai"
   name                = "${var.name_prefix}OpenAi"
@@ -89,6 +92,74 @@ module "container_registry" {
   admin_enabled = true
 }
 
+module "storage_account" {
+  source              = "./modules/storage_account"
+  name                = "boot${random_string.storage_account_suffix.result}"
+  location            = var.location
+  resource_group_name = azurerm_resource_group.rg.name
+  account_kind        = "StorageV2"
+  account_tier        = "Standard"
+  replication_type    = "LRS"
+}
+
+module "key_vault" {
+  source                          = "./modules/key_vault"
+  name                            = "${var.name_prefix}KeyVault"
+  location                        = var.location
+  resource_group_name             = azurerm_resource_group.rg.name
+  tenant_id                       = data.azurerm_client_config.current.tenant_id
+  sku_name                        = "standard"
+  enabled_for_deployment          = true
+  enabled_for_disk_encryption     = true
+  enabled_for_template_deployment = true
+  enable_rbac_authorization       = true
+  purge_protection_enabled        = false
+  soft_delete_retention_days      = 30
+  bypass                          = "AzureServices"
+  default_action                  = "Allow"
+  log_analytics_workspace_id      = module.log_analytics_workspace.id
+  log_analytics_retention_days    = var.log_analytics_retention_days
+}
+
+module "deployment_script" {
+  source                              = "./modules/deployment_script"
+  name                                = "${var.name_prefix}BashScript"
+  location                            = var.location
+  resource_group_name                 = azurerm_resource_group.rg.name
+  azure_cli_version                   = "2.9.1"
+  managed_identity_name               = "${var.name_prefix}ScriptManagedIdentity"
+  aks_cluster_name                    = module.aks_cluster.name
+  hostname                            = "magic8ball.contoso.com"
+  namespace                           = var.namespace
+  service_account_name                = var.service_account_name
+  email                               = var.email
+  primary_script_uri                  = "https://paolosalvatori.blob.core.windows.net/scripts/install-nginx-via-helm-and-create-sa.sh"
+  tenant_id                           = data.azurerm_client_config.current.tenant_id
+  subscription_id                     = data.azurerm_client_config.current.subscription_id
+  workload_managed_identity_client_id = azurerm_user_assigned_identity.aks_workload_identity.client_id
+
+  depends_on = [
+    module.aks_cluster
+  ]
+}
+
+module "log_analytics_workspace" {
+  source              = "./modules/log_analytics"
+  name                = "${var.name_prefix}${var.log_analytics_workspace_name}"
+  location            = var.location
+  resource_group_name = azurerm_resource_group.rg.name
+
+  solution_plan_map = {
+    ContainerInsights = {
+      product   = "OMSGallery/ContainerInsights"
+      publisher = "Microsoft"
+    }
+  }
+}
+
+###############################################################################
+# Networking
+###############################################################################
 module "virtual_network" {
   source              = "./modules/virtual_network"
   vnet_name           = "AksVNet"
@@ -155,52 +226,6 @@ module "nat_gateway" {
   subnet_ids              = module.virtual_network.subnet_ids
 }
 
-resource "azurerm_user_assigned_identity" "aks_workload_identity" {
-  name                = "${var.name_prefix}WorkloadManagedIdentity"
-  resource_group_name = azurerm_resource_group.rg.name
-  location            = var.location
-}
-
-resource "azurerm_role_assignment" "cognitive_services_user_assignment" {
-  scope                            = module.openai.id
-  role_definition_name             = "Cognitive Services User"
-  principal_id                     = azurerm_user_assigned_identity.aks_workload_identity.principal_id
-  skip_service_principal_aad_check = true
-}
-
-resource "azurerm_federated_identity_credential" "federated_identity_credential" {
-  name                = "${title(var.namespace)}FederatedIdentity"
-  resource_group_name = azurerm_resource_group.rg.name
-  audience            = ["api://AzureADTokenExchange"]
-  issuer              = module.aks_cluster.oidc_issuer_url
-  parent_id           = azurerm_user_assigned_identity.aks_workload_identity.id
-  subject             = "system:serviceaccount:${var.namespace}:${var.service_account_name}"
-}
-
-resource "azurerm_role_assignment" "network_contributor_assignment" {
-  scope                            = azurerm_resource_group.rg.id
-  role_definition_name             = "Network Contributor"
-  principal_id                     = module.aks_cluster.aks_identity_principal_id
-  skip_service_principal_aad_check = true
-}
-
-resource "azurerm_role_assignment" "acr_pull_assignment" {
-  role_definition_name             = "AcrPull"
-  scope                            = module.container_registry.id
-  principal_id                     = module.aks_cluster.kubelet_identity_object_id
-  skip_service_principal_aad_check = true
-}
-
-module "storage_account" {
-  source              = "./modules/storage_account"
-  name                = "boot${random_string.storage_account_suffix.result}"
-  location            = var.location
-  resource_group_name = azurerm_resource_group.rg.name
-  account_kind        = "StorageV2"
-  account_tier        = "Standard"
-  replication_type    = "LRS"
-}
-
 module "bastion_host" {
   source                       = "./modules/bastion_host"
   name                         = "${var.name_prefix}BastionHost"
@@ -211,25 +236,9 @@ module "bastion_host" {
   log_analytics_retention_days = var.log_analytics_retention_days
 }
 
-module "key_vault" {
-  source                          = "./modules/key_vault"
-  name                            = "${var.name_prefix}KeyVault"
-  location                        = var.location
-  resource_group_name             = azurerm_resource_group.rg.name
-  tenant_id                       = data.azurerm_client_config.current.tenant_id
-  sku_name                        = "standard"
-  enabled_for_deployment          = true
-  enabled_for_disk_encryption     = true
-  enabled_for_template_deployment = true
-  enable_rbac_authorization       = true
-  purge_protection_enabled        = false
-  soft_delete_retention_days      = 30
-  bypass                          = "AzureServices"
-  default_action                  = "Allow"
-  log_analytics_workspace_id      = module.log_analytics_workspace.id
-  log_analytics_retention_days    = var.log_analytics_retention_days
-}
-
+###############################################################################
+# Private DNS Zones
+###############################################################################
 module "acr_private_dns_zone" {
   source              = "./modules/private_dns_zone"
   name                = "privatelink.azurecr.io"
@@ -278,6 +287,9 @@ module "blob_private_dns_zone" {
   }
 }
 
+###############################################################################
+# Private Endpoints
+###############################################################################
 module "openai_private_endpoint" {
   source                         = "./modules/private_endpoint"
   name                           = "${module.openai.name}PrivateEndpoint"
@@ -319,7 +331,7 @@ module "key_vault_private_endpoint" {
 
 module "blob_private_endpoint" {
   source                         = "./modules/private_endpoint"
-  name                           = var.name_prefix == null ? "${random_string.prefix.result}BlocStoragePrivateEndpoint" : "${var.name_prefix}BlobStoragePrivateEndpoint"
+  name                           = "${var.name_prefix}BlobStoragePrivateEndpoint"
   location                       = var.location
   resource_group_name            = azurerm_resource_group.rg.name
   subnet_id                      = module.virtual_network.subnet_ids[var.vm_subnet_name]
@@ -330,38 +342,41 @@ module "blob_private_endpoint" {
   private_dns_zone_group_ids     = [module.blob_private_dns_zone.id]
 }
 
-module "deployment_script" {
-  source                              = "./modules/deployment_script"
-  name                                = "${var.name_prefix}BashScript"
-  location                            = var.location
-  resource_group_name                 = azurerm_resource_group.rg.name
-  azure_cli_version                   = "2.9.1"
-  managed_identity_name               = "${var.name_prefix}ScriptManagedIdentity"
-  aks_cluster_name                    = module.aks_cluster.name
-  hostname                            = "magic8ball.contoso.com"
-  namespace                           = var.namespace
-  service_account_name                = var.service_account_name
-  email                               = var.email
-  primary_script_uri                  = "https://paolosalvatori.blob.core.windows.net/scripts/install-nginx-via-helm-and-create-sa.sh"
-  tenant_id                           = data.azurerm_client_config.current.tenant_id
-  subscription_id                     = data.azurerm_client_config.current.subscription_id
-  workload_managed_identity_client_id = azurerm_user_assigned_identity.aks_workload_identity.client_id
-
-  depends_on = [
-    module.aks_cluster
-  ]
+###############################################################################
+# Identities
+###############################################################################
+resource "azurerm_user_assigned_identity" "aks_workload_identity" {
+  name                = "${var.name_prefix}WorkloadManagedIdentity"
+  resource_group_name = azurerm_resource_group.rg.name
+  location            = var.location
 }
 
-module "log_analytics_workspace" {
-  source              = "./modules/log_analytics"
-  name                = "${var.name_prefix}${var.log_analytics_workspace_name}"
-  location            = var.location
-  resource_group_name = azurerm_resource_group.rg.name
+resource "azurerm_role_assignment" "cognitive_services_user_assignment" {
+  scope                            = module.openai.id
+  role_definition_name             = "Cognitive Services User"
+  principal_id                     = azurerm_user_assigned_identity.aks_workload_identity.principal_id
+  skip_service_principal_aad_check = true
+}
 
-  solution_plan_map = {
-    ContainerInsights = {
-      product   = "OMSGallery/ContainerInsights"
-      publisher = "Microsoft"
-    }
-  }
+resource "azurerm_federated_identity_credential" "federated_identity_credential" {
+  name                = "${title(var.namespace)}FederatedIdentity"
+  resource_group_name = azurerm_resource_group.rg.name
+  audience            = ["api://AzureADTokenExchange"]
+  issuer              = module.aks_cluster.oidc_issuer_url
+  parent_id           = azurerm_user_assigned_identity.aks_workload_identity.id
+  subject             = "system:serviceaccount:${var.namespace}:${var.service_account_name}"
+}
+
+resource "azurerm_role_assignment" "network_contributor_assignment" {
+  scope                            = azurerm_resource_group.rg.id
+  role_definition_name             = "Network Contributor"
+  principal_id                     = module.aks_cluster.aks_identity_principal_id
+  skip_service_principal_aad_check = true
+}
+
+resource "azurerm_role_assignment" "acr_pull_assignment" {
+  role_definition_name             = "AcrPull"
+  scope                            = module.container_registry.id
+  principal_id                     = module.aks_cluster.kubelet_identity_object_id
+  skip_service_principal_aad_check = true
 }
