@@ -4,22 +4,12 @@ resource "azurerm_container_registry" "acr" {
   location                 = var.location
   sku                      = var.sku  
   admin_enabled            = var.admin_enabled
-  tags                     = var.tags
 
   identity {
     type = "UserAssigned"
     identity_ids = [
       azurerm_user_assigned_identity.acr_identity.id
     ]
-  }
-
-  dynamic "georeplications" {
-    for_each = var.georeplication_locations
-
-    content {
-      location = georeplications.value
-      tags     = var.tags
-    }
   }
 }
 

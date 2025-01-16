@@ -2,13 +2,6 @@ resource "azurerm_user_assigned_identity" "script_identity" {
   name                = var.managed_identity_name
   location            = var.location
   resource_group_name = var.resource_group_name
-  tags                = var.tags
-
-  lifecycle {
-    ignore_changes = [
-      tags
-    ]
-  }
 }
 
 data "azurerm_kubernetes_cluster" "aks_cluster" {

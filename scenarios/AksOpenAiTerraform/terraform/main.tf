@@ -34,6 +34,28 @@ resource "azurerm_resource_group" "rg" {
   location = var.location
 }
 
+module "openai" {
+  source                                   = "./modules/openai"
+  name                                     = "${var.name_prefix}OpenAi"
+  location                                 = var.location
+  resource_group_name                      = azurerm_resource_group.rg.name
+  sku_name                                 = "S0"
+  deployments                              = [
+    {
+      name = "gpt-35-turbo"
+      model = {
+        name = "gpt-35-turbo"
+        version = "0301"
+      }
+      rai_policy_name = ""
+    }
+  ]
+  custom_subdomain_name                    = lower("${var.name_prefix}OpenAi")
+  public_network_access_enabled            = true
+  log_analytics_workspace_id               = module.log_analytics_workspace.id
+  log_analytics_retention_days             = var.log_analytics_retention_days
+}
+
 module "aks_cluster" {
   source                                  = "./modules/aks"
   name                                    = "${var.name_prefix}AksCluster"
@@ -49,18 +71,16 @@ module "aks_cluster" {
   ]
 }
 
-module "log_analytics_workspace" {
-  source                           = "./modules/log_analytics"
-  name                             = "${var.name_prefix}${var.log_analytics_workspace_name}"
-  location                         = var.location
-  resource_group_name              = azurerm_resource_group.rg.name
+module "container_registry" {
+  source                       = "./modules/container_registry"
+  name                         = "${var.name_prefix}Acr"
+  location                     = var.location
+  resource_group_name          = azurerm_resource_group.rg.name
   
-  solution_plan_map                = {
-    ContainerInsights= {
-      product   = "OMSGallery/ContainerInsights"
-      publisher = "Microsoft"
-    }
-  }
+  log_analytics_workspace_id   = module.log_analytics_workspace.id
+
+  sku                          = "Basic"
+  admin_enabled                = true
 }
 
 module "virtual_network" {
@@ -127,40 +147,6 @@ module "nat_gateway" {
   idle_timeout_in_minutes      = 4
   zones                        = ["1"]
   subnet_ids                   = module.virtual_network.subnet_ids
-}
-
-module "container_registry" {
-  source                       = "./modules/container_registry"
-  name                         = "${var.name_prefix}Acr"
-  location                     = var.location
-  resource_group_name          = azurerm_resource_group.rg.name
-  
-  log_analytics_workspace_id   = module.log_analytics_workspace.id
-
-  sku                          = "Basic"
-  admin_enabled                = true
-}
-
-module "openai" {
-  source                                   = "./modules/openai"
-  name                                     = "${var.name_prefix}OpenAi"
-  location                                 = var.location
-  resource_group_name                      = azurerm_resource_group.rg.name
-  sku_name                                 = "S0"
-  deployments                              = [
-    {
-      name = "gpt-35-turbo"
-      model = {
-        name = "gpt-35-turbo"
-        version = "0301"
-      }
-      rai_policy_name = ""
-    }
-  ]
-  custom_subdomain_name                    = lower("${var.name_prefix}OpenAi")
-  public_network_access_enabled            = true
-  log_analytics_workspace_id               = module.log_analytics_workspace.id
-  log_analytics_retention_days             = var.log_analytics_retention_days
 }
 
 resource "azurerm_user_assigned_identity" "aks_workload_identity" {
@@ -358,4 +344,18 @@ module "deployment_script" {
   depends_on = [ 
     module.aks_cluster
    ]
+}
+
+module "log_analytics_workspace" {
+  source                           = "./modules/log_analytics"
+  name                             = "${var.name_prefix}${var.log_analytics_workspace_name}"
+  location                         = var.location
+  resource_group_name              = azurerm_resource_group.rg.name
+  
+  solution_plan_map                = {
+    ContainerInsights= {
+      product   = "OMSGallery/ContainerInsights"
+      publisher = "Microsoft"
+    }
+  }
 }
