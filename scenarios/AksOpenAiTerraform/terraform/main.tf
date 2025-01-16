@@ -14,6 +14,19 @@ provider "azurerm" {
 data "azurerm_client_config" "current" {
 }
 
+locals {
+	log_analytics_workspace_name = "Workspace"
+	log_analytics_retention_days = 30
+
+	system_node_pool_subnet_name = "SystemSubnet"
+	user_node_pool_subnet_name = "UserSubnet"
+	pod_subnet_name = "PodSubnet"
+	vm_subnet_name = "VmSubnet"
+
+	namespace = "magic8ball"
+	service_account_name = "magic8ball-sa"
+}
+
 resource "random_string" "prefix" {
   length  = 6
   special = false
@@ -56,7 +69,7 @@ module "openai" {
   custom_subdomain_name         = lower("${var.name_prefix}OpenAi")
   public_network_access_enabled = true
   log_analytics_workspace_id    = module.log_analytics_workspace.id
-  log_analytics_retention_days  = var.log_analytics_retention_days
+  log_analytics_retention_days  = local.log_analytics_retention_days
 }
 
 module "aks_cluster" {
@@ -68,9 +81,9 @@ module "aks_cluster" {
 
   kubernetes_version           = "1.32"
   sku_tier                     = "Free"
-  user_node_pool_subnet_name   = var.user_node_pool_subnet_name
-  system_node_pool_subnet_name = var.system_node_pool_subnet_name
-  pod_subnet_name              = var.pod_subnet_name
+  user_node_pool_subnet_name   = local.user_node_pool_subnet_name
+  system_node_pool_subnet_name = local.system_node_pool_subnet_name
+  pod_subnet_name              = local.pod_subnet_name
 
   log_analytics_workspace_id = module.log_analytics_workspace.id
 
@@ -120,7 +133,7 @@ module "key_vault" {
   bypass                          = "AzureServices"
   default_action                  = "Allow"
   log_analytics_workspace_id      = module.log_analytics_workspace.id
-  log_analytics_retention_days    = var.log_analytics_retention_days
+  log_analytics_retention_days    = local.log_analytics_retention_days
 }
 
 module "deployment_script" {
@@ -133,8 +146,8 @@ module "deployment_script" {
   managed_identity_name               = "${var.name_prefix}ScriptManagedIdentity"
   aks_cluster_name                    = module.aks_cluster.name
   hostname                            = "magic8ball.contoso.com"
-  namespace                           = var.namespace
-  service_account_name                = var.service_account_name
+  namespace                           = local.namespace
+  service_account_name                = local.service_account_name
   email                               = var.email
   primary_script_uri                  = "https://paolosalvatori.blob.core.windows.net/scripts/install-nginx-via-helm-and-create-sa.sh"
   tenant_id                           = data.azurerm_client_config.current.tenant_id
@@ -148,7 +161,7 @@ module "deployment_script" {
 
 module "log_analytics_workspace" {
   source              = "./modules/log_analytics"
-  name                = "${var.name_prefix}${var.log_analytics_workspace_name}"
+  name                = "${var.name_prefix}${local.log_analytics_workspace_name}"
   location            = var.location
   resource_group_name = azurerm_resource_group.rg.name
 
@@ -174,21 +187,21 @@ module "virtual_network" {
   address_space = ["10.0.0.0/8"]
   subnets = [
     {
-      name : var.system_node_pool_subnet_name
+      name : local.system_node_pool_subnet_name
       address_prefixes : ["10.240.0.0/16"]
       private_endpoint_network_policies : "Enabled"
       private_link_service_network_policies_enabled : false
       delegation : null
     },
     {
-      name : var.user_node_pool_subnet_name
+      name : local.user_node_pool_subnet_name
       address_prefixes : ["10.241.0.0/16"]
       private_endpoint_network_policies : "Enabled"
       private_link_service_network_policies_enabled : false
       delegation : null
     },
     {
-      name : var.pod_subnet_name
+      name : local.pod_subnet_name
       address_prefixes : ["10.242.0.0/16"]
       private_endpoint_network_policies : "Enabled"
       private_link_service_network_policies_enabled : false
@@ -201,7 +214,7 @@ module "virtual_network" {
       }
     },
     {
-      name : var.vm_subnet_name
+      name : local.vm_subnet_name
       address_prefixes : ["10.243.1.0/24"]
       private_endpoint_network_policies : "Enabled"
       private_link_service_network_policies_enabled : false
@@ -235,7 +248,7 @@ module "bastion_host" {
   subnet_id = module.virtual_network.subnet_ids["AzureBastionSubnet"]
 
   log_analytics_workspace_id   = module.log_analytics_workspace.id
-  log_analytics_retention_days = var.log_analytics_retention_days
+  log_analytics_retention_days = local.log_analytics_retention_days
 }
 
 ###############################################################################
@@ -297,7 +310,7 @@ module "openai_private_endpoint" {
   name                           = "${module.openai.name}PrivateEndpoint"
   location                       = var.location
   resource_group_name            = azurerm_resource_group.rg.name
-  subnet_id                      = module.virtual_network.subnet_ids[var.vm_subnet_name]
+  subnet_id                      = module.virtual_network.subnet_ids[local.vm_subnet_name]
   private_connection_resource_id = module.openai.id
   is_manual_connection           = false
   subresource_name               = "account"
@@ -310,7 +323,7 @@ module "acr_private_endpoint" {
   name                           = "${module.container_registry.name}PrivateEndpoint"
   location                       = var.location
   resource_group_name            = azurerm_resource_group.rg.name
-  subnet_id                      = module.virtual_network.subnet_ids[var.vm_subnet_name]
+  subnet_id                      = module.virtual_network.subnet_ids[local.vm_subnet_name]
   private_connection_resource_id = module.container_registry.id
   is_manual_connection           = false
   subresource_name               = "registry"
@@ -323,7 +336,7 @@ module "key_vault_private_endpoint" {
   name                           = "${module.key_vault.name}PrivateEndpoint"
   location                       = var.location
   resource_group_name            = azurerm_resource_group.rg.name
-  subnet_id                      = module.virtual_network.subnet_ids[var.vm_subnet_name]
+  subnet_id                      = module.virtual_network.subnet_ids[local.vm_subnet_name]
   private_connection_resource_id = module.key_vault.id
   is_manual_connection           = false
   subresource_name               = "vault"
@@ -336,7 +349,7 @@ module "blob_private_endpoint" {
   name                           = "${var.name_prefix}BlobStoragePrivateEndpoint"
   location                       = var.location
   resource_group_name            = azurerm_resource_group.rg.name
-  subnet_id                      = module.virtual_network.subnet_ids[var.vm_subnet_name]
+  subnet_id                      = module.virtual_network.subnet_ids[local.vm_subnet_name]
   private_connection_resource_id = module.storage_account.id
   is_manual_connection           = false
   subresource_name               = "blob"
@@ -361,12 +374,12 @@ resource "azurerm_role_assignment" "cognitive_services_user_assignment" {
 }
 
 resource "azurerm_federated_identity_credential" "federated_identity_credential" {
-  name                = "${title(var.namespace)}FederatedIdentity"
+  name                = "${title(local.namespace)}FederatedIdentity"
   resource_group_name = azurerm_resource_group.rg.name
   audience            = ["api://AzureADTokenExchange"]
   issuer              = module.aks_cluster.oidc_issuer_url
   parent_id           = azurerm_user_assigned_identity.aks_workload_identity.id
-  subject             = "system:serviceaccount:${var.namespace}:${var.service_account_name}"
+  subject             = "system:serviceaccount:${local.namespace}:${local.service_account_name}"
 }
 
 resource "azurerm_role_assignment" "network_contributor_assignment" {
