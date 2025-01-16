@@ -1,24 +1,7 @@
-terraform {
-  required_providers {
-    azapi = {
-      source  = "Azure/azapi"
-      version = "~>2.0.1"
-    }
-  }
-}
-
 resource "azurerm_user_assigned_identity" "aks_identity" {
+  name = "${var.name}Identity"
   resource_group_name = var.resource_group_name
   location            = var.location
-  tags                = var.tags
-
-  name = "${var.name}Identity"
-
-  lifecycle {
-    ignore_changes = [
-      tags
-    ]
-  }
 }
 
 resource "azurerm_kubernetes_cluster" "aks_cluster" {
@@ -26,36 +9,27 @@ resource "azurerm_kubernetes_cluster" "aks_cluster" {
   location                         = var.location
   resource_group_name              = var.resource_group_name
   kubernetes_version               = var.kubernetes_version
-  dns_prefix                       = var.dns_prefix
-  private_cluster_enabled          = var.private_cluster_enabled
+  dns_prefix                       = lower(var.name)
+  private_cluster_enabled          = false
   automatic_upgrade_channel        = "stable"
   sku_tier                         = var.sku_tier
-  workload_identity_enabled        = var.workload_identity_enabled
-  oidc_issuer_enabled              = var.oidc_issuer_enabled
-  open_service_mesh_enabled        = var.open_service_mesh_enabled
-  image_cleaner_enabled            = var.image_cleaner_enabled
-  azure_policy_enabled             = var.azure_policy_enabled
+  workload_identity_enabled        = true
+  oidc_issuer_enabled              = true
+  open_service_mesh_enabled        = true
+  image_cleaner_enabled            = true
   image_cleaner_interval_hours     = 72
-  http_application_routing_enabled = var.http_application_routing_enabled
+  azure_policy_enabled             = true
+  http_application_routing_enabled = false
 
   default_node_pool {
-    name                    = var.system_node_pool_name
+    name                    = "system"
     node_count              = 1
     vm_size                 = var.system_node_pool_vm_size
-    vnet_subnet_id          = var.vnet_subnet_id
-    pod_subnet_id           = var.pod_subnet_id
-    zones                   = var.system_node_pool_availability_zones
-    node_labels             = var.system_node_pool_node_labels
-    max_pods                = var.system_node_pool_max_pods
-    os_disk_type            = var.system_node_pool_os_disk_type
-    tags                    = var.tags
-  }
-
-  linux_profile {
-    admin_username = var.admin_username
-    ssh_key {
-      key_data = azapi_resource_action.ssh_public_key_gen.output.publicKey
-    }
+    vnet_subnet_id          = module.virtual_network.subnet_ids[var.system_node_pool_subnet_name]
+    pod_subnet_id           = module.virtual_network.subnet_ids[var.pod_subnet_name]
+    zones                   = ["1", "2", "3"]
+    max_pods                = 50
+    os_disk_type            = "Ephemeral"
   }
 
   identity {
@@ -64,44 +38,41 @@ resource "azurerm_kubernetes_cluster" "aks_cluster" {
   }
 
   network_profile {
-    dns_service_ip     = var.network_dns_service_ip
-    network_plugin     = var.network_plugin
-    outbound_type      = var.outbound_type
-    service_cidr       = var.network_service_cidr
+    dns_service_ip     = "10.2.0.10"
+    network_plugin     = "azure"
+    outbound_type      = "userAssignedNATGateway"
+    service_cidr       = "10.2.0.0/24"
   }
 
   oms_agent {
     msi_auth_for_monitoring_enabled = true
-    log_analytics_workspace_id      = coalesce(var.oms_agent.log_analytics_workspace_id, var.log_analytics_workspace_id)
-  }
-
-  dynamic "ingress_application_gateway" {
-    for_each = try(var.ingress_application_gateway.gateway_id, null) == null ? [] : [1]
-
-    content {
-      gateway_id                 = var.ingress_application_gateway.gateway_id
-      subnet_cidr                = var.ingress_application_gateway.subnet_cidr
-      subnet_id                  = var.ingress_application_gateway.subnet_id
-    }
+    log_analytics_workspace_id      = var.log_analytics_workspace_id
   }
 
   azure_active_directory_role_based_access_control {
-    tenant_id                  = var.tenant_id
-    admin_group_object_ids     = var.admin_group_object_ids
-    azure_rbac_enabled         = var.azure_rbac_enabled
+    tenant_id                  = data.azurerm_client_config.current.tenant_id
+    azure_rbac_enabled         = true
   }
 
   workload_autoscaler_profile {
-    keda_enabled                    = var.keda_enabled
-    vertical_pod_autoscaler_enabled = var.vertical_pod_autoscaler_enabled
+    keda_enabled                    = true
+    vertical_pod_autoscaler_enabled = true
   }
+}
 
-  lifecycle {
-    ignore_changes = [
-      kubernetes_version,
-      tags
-    ]
-  }
+resource "azurerm_kubernetes_cluster_node_pool" "node_pool" {
+  kubernetes_cluster_id        = azurerm_kubernetes_cluster.aks_cluster.id
+  name                         = "user"
+  vm_size                      = var.user_node_pool_vm_size
+  mode                         = "User"
+  zones                        = ["1", "2", "3"]
+  vnet_subnet_id               = module.virtual_network.subnet_ids[var.user_node_pool_subnet_name]
+  pod_subnet_id                = module.virtual_network.subnet_ids[var.pod_subnet_name]
+  orchestrator_version         = var.kubernetes_version
+  max_pods                     = 50
+  os_disk_type                 = "Ephemeral"
+  os_type                      = "Linux"
+  priority                     = "Regular"
 }
 
 resource "azurerm_monitor_diagnostic_setting" "settings" {

@@ -24,12 +24,6 @@ resource "azurerm_network_security_group" "nsg" {
       destination_application_security_group_ids = try(security_rule.value.destination_application_security_group_ids, null)
     }
   }
-
-  lifecycle {
-    ignore_changes = [
-        tags
-    ]
-  }
 }
 
 resource "azurerm_monitor_diagnostic_setting" "settings" {

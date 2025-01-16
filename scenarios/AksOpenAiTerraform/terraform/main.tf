@@ -30,98 +30,47 @@ resource "random_string" "storage_account_suffix" {
 }
 
 variable "name_prefix" {
-  description = "A prefix for the name of all the resource groups and resources."
   type        = string
 }
 
 variable "log_analytics_workspace_name" {
-  description = "Specifies the name of the log analytics workspace"
   default     = "Workspace"
   type        = string
 }
 
 variable "log_analytics_retention_days" {
-  description = "Specifies the number of days of the retention policy"
   type        = number
   default     = 30
 }
 
 variable "location" {
-  description = "Specifies the location for the resource group and all the resources"
   default     = "westus2"
   type        = string
 }
 
 variable "resource_group_name" {
-  description = "Specifies the resource group name"
   default     = "RG"
   type        = string
 }
 
 variable "system_node_pool_subnet_name" {
-  description = "Specifies the name of the subnet that hosts the system node pool"
   default     =  "SystemSubnet"
   type        = string
 }
 
 variable "user_node_pool_subnet_name" {
-  description = "Specifies the name of the subnet that hosts the user node pool"
   default     =  "UserSubnet"
   type        = string
 }
 
 variable "pod_subnet_name" {
-  description = "Specifies the name of the jumpbox subnet"
   default     = "PodSubnet"
   type        = string
 }
 
 variable "vm_subnet_name" {
-  description = "Specifies the name of the jumpbox subnet"
   default     = "VmSubnet"
   type        = string
-}
-
-variable "aks_cluster_name" {
-  description = "(Required) Specifies the name of the AKS cluster."
-  default     = "Aks"
-  type        = string
-}
-
-variable "kubernetes_version" {
-  description = "Specifies the AKS Kubernetes version"
-  default     = "1.29.10"
-  type        = string
-}
-
-variable "system_node_pool_vm_size" {
-  description = "Specifies the vm size of the system node pool"
-  default     = "Standard_D8ds_v5"
-  type        = string
-}
-
-variable "system_node_pool_name" {
-  description = "Specifies the name of the system node pool"
-  default     =  "system"
-  type        = string
-}
-
-variable "system_node_pool_max_pods" {
-  description = "(Optional) The maximum number of pods that can run on each agent. Changing this forces a new resource to be created."
-  type          = number
-  default       = 50
-}
-
-variable "user_node_pool_name" {
-  description = "(Required) Specifies the name of the node pool."
-  type        = string
-  default     = "user"
-}
-
-variable "user_node_pool_vm_size" {
-  description = "(Required) The SKU which should be used for the Virtual Machines used in this Node Pool. Changing this forces a new resource to be created."
-  type        = string
-  default     = "Standard_D8ds_v5"
 }
 
 variable "namespace" {
@@ -245,58 +194,13 @@ module "aks_cluster" {
   location                                = var.location
   resource_group_name                     = azurerm_resource_group.rg.name
   resource_group_id                       = azurerm_resource_group.rg.id
-  
   kubernetes_version                      = var.kubernetes_version
-  dns_prefix                              = lower(var.aks_cluster_name)
-  private_cluster_enabled                 = false
   sku_tier                                = "Free"
-  system_node_pool_name                   = var.system_node_pool_name
-  system_node_pool_vm_size                = var.system_node_pool_vm_size
-  vnet_subnet_id                          = module.virtual_network.subnet_ids[var.system_node_pool_subnet_name]
-  pod_subnet_id                           = module.virtual_network.subnet_ids[var.pod_subnet_name]
-  system_node_pool_availability_zones     = ["1", "2", "3"]
-  system_node_pool_max_pods               = var.system_node_pool_max_pods
-  system_node_pool_os_disk_type           = "Ephemeral"
-  network_dns_service_ip                  = "10.2.0.10"
-  network_plugin                          = "azure"
-  outbound_type                           = "userAssignedNATGateway"
-  network_service_cidr                    = "10.2.0.0/24"
-  log_analytics_workspace_id              = module.log_analytics_workspace.id
-  role_based_access_control_enabled       = true
-  tenant_id                               = data.azurerm_client_config.current.tenant_id
-  azure_rbac_enabled                      = true
-  admin_username                          = "${var.name_prefix}-azadmin"
-  keda_enabled                            = true
-  vertical_pod_autoscaler_enabled         = true
-  workload_identity_enabled               = true
-  oidc_issuer_enabled                     = true
-  open_service_mesh_enabled               = true
-  image_cleaner_enabled                   = true
-  azure_policy_enabled                    = true
-  http_application_routing_enabled        = false
-
+  
   depends_on = [
     module.nat_gateway,
     module.container_registry
   ]
-}
-
-module "node_pool" {
-  source = "./modules/node_pool"
-  name                         = var.user_node_pool_name
-  resource_group_name = azurerm_resource_group.rg.name
-  kubernetes_cluster_id = module.aks_cluster.id
-  vm_size                      = var.user_node_pool_vm_size
-  mode                         = "User"
-  availability_zones           = ["1", "2", "3"]
-  vnet_subnet_id               = module.virtual_network.subnet_ids[var.user_node_pool_subnet_name]
-  pod_subnet_id                = module.virtual_network.subnet_ids[var.pod_subnet_name]
-  enable_host_encryption       = false
-  enable_node_public_ip        = false
-  orchestrator_version         = var.kubernetes_version
-  max_pods                     = 50
-  os_type                      = "Linux"
-  priority                     = "Regular"
 }
 
 module "openai" {
