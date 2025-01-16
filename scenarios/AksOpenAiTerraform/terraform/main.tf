@@ -30,7 +30,7 @@ resource "random_string" "storage_account_suffix" {
 }
 
 resource "azurerm_resource_group" "rg" {
-  name     = "${var.name_prefix}${var.resource_group_name}"
+  name     = "${var.name_prefix}-rg"
   location = var.location
 }
 
@@ -97,16 +97,18 @@ module "storage_account" {
   name                = "boot${random_string.storage_account_suffix.result}"
   location            = var.location
   resource_group_name = azurerm_resource_group.rg.name
-  account_kind        = "StorageV2"
-  account_tier        = "Standard"
-  replication_type    = "LRS"
+
+  account_kind     = "StorageV2"
+  account_tier     = "Standard"
+  replication_type = "LRS"
 }
 
 module "key_vault" {
-  source                          = "./modules/key_vault"
-  name                            = "${var.name_prefix}KeyVault"
-  location                        = var.location
-  resource_group_name             = azurerm_resource_group.rg.name
+  source              = "./modules/key_vault"
+  name                = "${var.name_prefix}KeyVault"
+  location            = var.location
+  resource_group_name = azurerm_resource_group.rg.name
+
   tenant_id                       = data.azurerm_client_config.current.tenant_id
   sku_name                        = "standard"
   enabled_for_deployment          = true
@@ -122,10 +124,11 @@ module "key_vault" {
 }
 
 module "deployment_script" {
-  source                              = "./modules/deployment_script"
-  name                                = "${var.name_prefix}BashScript"
-  location                            = var.location
-  resource_group_name                 = azurerm_resource_group.rg.name
+  source              = "./modules/deployment_script"
+  name                = "${var.name_prefix}BashScript"
+  location            = var.location
+  resource_group_name = azurerm_resource_group.rg.name
+
   azure_cli_version                   = "2.9.1"
   managed_identity_name               = "${var.name_prefix}ScriptManagedIdentity"
   aks_cluster_name                    = module.aks_cluster.name
@@ -220,18 +223,17 @@ module "nat_gateway" {
   location            = var.location
   resource_group_name = azurerm_resource_group.rg.name
 
-  sku_name                = "Standard"
-  idle_timeout_in_minutes = 4
-  zones                   = ["1"]
-  subnet_ids              = module.virtual_network.subnet_ids
+  subnet_ids = module.virtual_network.subnet_ids
 }
 
 module "bastion_host" {
-  source                       = "./modules/bastion_host"
-  name                         = "${var.name_prefix}BastionHost"
-  location                     = var.location
-  resource_group_name          = azurerm_resource_group.rg.name
-  subnet_id                    = module.virtual_network.subnet_ids["AzureBastionSubnet"]
+  source              = "./modules/bastion_host"
+  name                = "${var.name_prefix}BastionHost"
+  location            = var.location
+  resource_group_name = azurerm_resource_group.rg.name
+
+  subnet_id = module.virtual_network.subnet_ids["AzureBastionSubnet"]
+
   log_analytics_workspace_id   = module.log_analytics_workspace.id
   log_analytics_retention_days = var.log_analytics_retention_days
 }

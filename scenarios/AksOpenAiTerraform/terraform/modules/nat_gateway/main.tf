@@ -1,19 +1,21 @@
+locals {
+  zones = ["1"]
+}
+
 resource "azurerm_public_ip" "nat_gategay_public_ip" {
   name                = "${var.name}PublicIp"
   location            = var.location
   resource_group_name = var.resource_group_name
   allocation_method   = "Static"
-  sku                 = "Standard"
-  zones               = var.zones
+  zones               = local.zones
 }
 
 resource "azurerm_nat_gateway" "nat_gateway" {
   name                    = var.name
   location                = var.location
   resource_group_name     = var.resource_group_name
-  sku_name                = var.sku_name
-  idle_timeout_in_minutes = var.idle_timeout_in_minutes
-  zones                   = var.zones
+  idle_timeout_in_minutes = 4
+  zones                   = local.zones
 }
 
 resource "azurerm_nat_gateway_public_ip_association" "nat_gategay_public_ip_association" {
