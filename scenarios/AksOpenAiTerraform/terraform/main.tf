@@ -62,8 +62,14 @@ module "aks_cluster" {
   location            = var.location
   resource_group_name = azurerm_resource_group.rg.name
   resource_group_id   = azurerm_resource_group.rg.id
-  kubernetes_version  = "1.32"
-  sku_tier            = "Free"
+
+  kubernetes_version           = "1.32"
+  sku_tier                     = "Free"
+  user_node_pool_subnet_name   = var.user_node_pool_subnet_name
+  system_node_pool_subnet_name = var.system_node_pool_subnet_name
+  pod_subnet_name              = var.pod_subnet_name
+
+  log_analytics_workspace_id = module.log_analytics_workspace.id
 
   depends_on = [
     module.nat_gateway,
