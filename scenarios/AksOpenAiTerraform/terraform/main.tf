@@ -34,6 +34,21 @@ resource "azurerm_resource_group" "rg" {
   location = var.location
 }
 
+module "aks_cluster" {
+  source                                  = "./modules/aks"
+  name                                    = "${var.name_prefix}AksCluster"
+  location                                = var.location
+  resource_group_name                     = azurerm_resource_group.rg.name
+  resource_group_id                       = azurerm_resource_group.rg.id
+  kubernetes_version                      = "1.32"
+  sku_tier                                = "Free"
+  
+  depends_on = [
+    module.nat_gateway,
+    module.container_registry
+  ]
+}
+
 module "log_analytics_workspace" {
   source                           = "./modules/log_analytics"
   name                             = "${var.name_prefix}${var.log_analytics_workspace_name}"
@@ -124,21 +139,6 @@ module "container_registry" {
 
   sku                          = "Basic"
   admin_enabled                = true
-}
-
-module "aks_cluster" {
-  source                                  = "./modules/aks"
-  name                                    = "${var.name_prefix}AksCluster"
-  location                                = var.location
-  resource_group_name                     = azurerm_resource_group.rg.name
-  resource_group_id                       = azurerm_resource_group.rg.id
-  kubernetes_version                      = "1.32"
-  sku_tier                                = "Free"
-  
-  depends_on = [
-    module.nat_gateway,
-    module.container_registry
-  ]
 }
 
 module "openai" {

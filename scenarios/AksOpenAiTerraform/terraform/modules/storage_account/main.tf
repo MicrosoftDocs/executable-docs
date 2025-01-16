@@ -20,10 +20,4 @@ resource "azurerm_storage_account" "storage_account" {
   identity {
     type = "SystemAssigned"
   }
-
-  lifecycle {
-    ignore_changes = [
-        tags
-    ]
-  }
 }

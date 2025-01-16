@@ -32,11 +32,6 @@ variable "subnets" {
   }))
 }
 
-variable "tags" {
-  description = "(Optional) Specifies the tags of the storage account"
-  default     = {}
-}
-
 variable "log_analytics_workspace_id" {
   description = "Specifies the log analytics workspace id"
   type        = string
