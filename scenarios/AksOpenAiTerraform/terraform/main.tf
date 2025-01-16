@@ -34,10 +34,8 @@ resource "random_string" "storage_account_suffix" {
 }
 
 variable "name_prefix" {
-  description = "(Optional) A prefix for the name of all the resource groups and resources."
+  description = "A prefix for the name of all the resource groups and resources."
   type        = string
-  default     = "BingoTestName"
-  nullable    = true
 }
 
 variable "log_analytics_workspace_name" {
@@ -52,17 +50,6 @@ variable "log_analytics_retention_days" {
   default     = 30
 }
 
-variable "solution_plan_map" {
-  description = "Specifies solutions to deploy to log analytics workspace"
-  default     = {
-    ContainerInsights= {
-      product   = "OMSGallery/ContainerInsights"
-      publisher = "Microsoft"
-    }
-  }
-  type = map(any)
-}
-
 variable "location" {
   description = "Specifies the location for the resource group and all the resources"
   default     = "westus2"
@@ -75,28 +62,10 @@ variable "resource_group_name" {
   type        = string
 }
 
-variable "vnet_name" {
-  description = "Specifies the name of the AKS subnet"
-  default     = "AksVNet"
-  type        = string
-}
-
-variable "vnet_address_space" {
-  description = "Specifies the address prefix of the AKS subnet"
-  default     =  ["10.0.0.0/8"]
-  type        = list(string)
-}
-
 variable "system_node_pool_subnet_name" {
   description = "Specifies the name of the subnet that hosts the system node pool"
   default     =  "SystemSubnet"
   type        = string
-}
-
-variable "system_node_pool_subnet_address_prefix" {
-  description = "Specifies the address prefix of the subnet that hosts the system node pool"
-  default     =  ["10.240.0.0/16"]
-  type        = list(string)
 }
 
 variable "user_node_pool_subnet_name" {
@@ -105,22 +74,10 @@ variable "user_node_pool_subnet_name" {
   type        = string
 }
 
-variable "user_node_pool_subnet_address_prefix" {
-  description = "Specifies the address prefix of the subnet that hosts the user node pool"
-  type        = list(string)
-  default     = ["10.241.0.0/16"]
-}
-
 variable "pod_subnet_name" {
   description = "Specifies the name of the jumpbox subnet"
   default     = "PodSubnet"
   type        = string
-}
-
-variable "pod_subnet_address_prefix" {
-  description = "Specifies the address prefix of the jumbox subnet"
-  default     = ["10.242.0.0/16"]
-  type        = list(string)
 }
 
 variable "vm_subnet_name" {
@@ -129,57 +86,10 @@ variable "vm_subnet_name" {
   type        = string
 }
 
-variable "vm_subnet_address_prefix" {
-  description = "Specifies the address prefix of the jumbox subnet"
-  default     = ["10.243.1.0/24"]
-  type        = list(string)
-}
-
-variable "bastion_subnet_address_prefix" {
-  description = "Specifies the address prefix of the firewall subnet"
-  default     = ["10.243.2.0/24"]
-  type        = list(string)
-}
-
 variable "aks_cluster_name" {
   description = "(Required) Specifies the name of the AKS cluster."
   default     = "Aks"
   type        = string
-}
-
-variable "private_cluster_enabled" {
-  description = "(Optional) Specifies wether the AKS cluster be private or not."
-  default     = false
-  type        = bool
-}
-  
-variable "role_based_access_control_enabled" {
-  description = "(Required) Is Role Based Access Control Enabled? Changing this forces a new resource to be created."
-  default     = true
-  type        = bool
-}
-
-variable "admin_group_object_ids" {
-  description = "(Optional) A list of Object IDs of Azure Active Directory Groups which should have Admin Role on the Cluster."
-  default     = []
-  type        = list(string)
-}
-
-variable "azure_rbac_enabled" {
-  description = "(Optional) Is Role Based Access Control based on Azure AD enabled?"
-  default     = true
-  type        = bool
-}
-
-variable "sku_tier" {
-  description = "(Optional) The SKU Tier that should be used for this Kubernetes Cluster. Possible values are Free and Paid (which includes the Uptime SLA). Defaults to Free."
-  default     = "Free"
-  type        = string
-
-  validation {
-    condition = contains( ["Free", "Paid"], var.sku_tier)
-    error_message = "The sku tier is invalid."
-  }
 }
 
 variable "kubernetes_version" {
@@ -191,24 +101,6 @@ variable "kubernetes_version" {
 variable "system_node_pool_vm_size" {
   description = "Specifies the vm size of the system node pool"
   default     = "Standard_D8ds_v5"
-  type        = string
-}
-
-variable "system_node_pool_availability_zones" {
-  description = "Specifies the availability zones of the system node pool"
-  default     = ["1", "2", "3"]
-  type        = list(string)
-}
-
-variable "network_dns_service_ip" {
-  description = "Specifies the DNS service IP"
-  default     = "10.2.0.10"
-  type        = string
-}
-
-variable "network_service_cidr" {
-  description = "Specifies the service CIDR"
-  default     = "10.2.0.0/24"
   type        = string
 }
 
@@ -266,42 +158,6 @@ variable "user_node_pool_availability_zones" {
   default = ["1", "2", "3"]
 }
 
-variable "user_node_pool_enable_host_encryption" {
-  description = "(Optional) Should the nodes in this Node Pool have host encryption enabled? Defaults to false."
-  type          = bool
-  default       = false
-} 
-
-variable "user_node_pool_enable_node_public_ip" {
-  description = "(Optional) Should each node have a Public IP Address? Defaults to false. Changing this forces a new resource to be created."
-  type          = bool
-  default       = false
-} 
-
-variable "user_node_pool_max_pods" {
-  description = "(Optional) The maximum number of pods that can run on each agent. Changing this forces a new resource to be created."
-  type          = number
-  default       = 50
-}
-
-variable "user_node_pool_mode" {
-  description = "(Optional) Should this Node Pool be used for System or User resources? Possible values are System and User. Defaults to User."
-  type          = string
-  default       = "User"
-} 
-
-variable "user_node_pool_node_labels" {
-  description = "(Optional) A map of Kubernetes labels which should be applied to nodes in this Node Pool. Changing this forces a new resource to be created."
-  type          = map(any)
-  default       = {}
-} 
-
-variable "user_node_pool_node_taints" {
-  description = "(Optional) A list of Kubernetes taints which should be applied to nodes in the agent pool (e.g key=value:NoSchedule). Changing this forces a new resource to be created."
-  type          = list(string)
-  default       = []
-} 
-
 variable "user_node_pool_os_disk_type" {
   description = "(Optional) The type of disk which should be used for the Operating System. Possible values are Ephemeral and Managed. Defaults to Managed. Changing this forces a new resource to be created."
   type          = string
@@ -329,93 +185,6 @@ variable "storage_account_kind" {
     condition = contains(["Storage", "StorageV2"], var.storage_account_kind)
     error_message = "The account kind of the storage account is invalid."
   }
-}
-
-variable "storage_account_tier" {
-  description = "(Optional) Specifies the account tier of the storage account"
-  default     = "Standard"
-  type        = string
-
-   validation {
-    condition = contains(["Standard", "Premium"], var.storage_account_tier)
-    error_message = "The account tier of the storage account is invalid."
-  }
-}
-
-variable "acr_name" {
-  description = "Specifies the name of the container registry"
-  type        = string
-  default     = "Acr"
-}
-
-variable "acr_sku" {
-  description = "Specifies the name of the container registry"
-  type        = string
-  default     = "Premium"
-
-  validation {
-    condition = contains(["Basic", "Standard", "Premium"], var.acr_sku)
-    error_message = "The container registry sku is invalid."
-  }
-}
-
-variable "acr_admin_enabled" {
-  description = "Specifies whether admin is enabled for the container registry"
-  type        = bool
-  default     = true
-}
-
-variable "acr_georeplication_locations" {
-  description = "(Optional) A list of Azure locations where the container registry should be geo-replicated."
-  type        = list(string)
-  default     = []
-}
-
-variable "tags" {
-  description = "(Optional) Specifies tags for all the resources"
-  default     = {
-    createdWith = "Terraform"
-  }
-}
-
-variable "bastion_host_name" {
-  description = "(Optional) Specifies the name of the bastion host"
-  default     = "BastionHost"
-  type        = string
-}
-
-variable "storage_account_replication_type" {
-  description = "(Optional) Specifies the replication type of the storage account"
-  default     = "LRS"
-  type        = string
-
-  validation {
-    condition = contains(["LRS", "ZRS", "GRS", "GZRS", "RA-GRS", "RA-GZRS"], var.storage_account_replication_type)
-    error_message = "The replication type of the storage account is invalid."
-  }
-}
-
-variable "key_vault_name" {
-  description = "Specifies the name of the key vault."
-  type        = string
-  default     = "KeyVault"
-}
-
-variable "key_vault_sku_name" {
-  description = "(Required) The Name of the SKU used for this Key Vault. Possible values are standard and premium."
-  type        = string
-  default     = "standard"
-
-  validation {
-    condition = contains(["standard", "premium" ], var.key_vault_sku_name)
-    error_message = "The sku name of the key vault is invalid."
-  }
-}
-
-variable"key_vault_enabled_for_deployment" {
-  description = "(Optional) Boolean flag to specify whether Azure Virtual Machines are permitted to retrieve certificates stored as secrets from the key vault. Defaults to false."
-  type        = bool
-  default     = true
 }
 
 variable"key_vault_enabled_for_disk_encryption" {
@@ -637,24 +406,6 @@ variable "deployment_script_name" {
   default = "BashScript"
 }
 
-variable "deployment_script_azure_cli_version" {
-  description = "(Required) Azure CLI module version to be used."
-  type = string
-  default = "2.9.1"
-}
-
-variable "deployment_script_managed_identity_name" {
-  description = "Specifies the name of the user-defined managed identity used by the deployment script."
-  type = string
-  default = "ScriptManagedIdentity"
-}
-
-variable "deployment_script_primary_script_uri" {
-  description = "(Optional) Uri for the script. This is the entry point for the external script. Changing this forces a new Resource Deployment Script to be created."
-  type = string
-  default = "https://paolosalvatori.blob.core.windows.net/scripts/install-nginx-via-helm-and-create-sa.sh"
-}
-
 resource "azurerm_resource_group" "rg" {
   name     = var.name_prefix == null ? "${random_string.prefix.result}${var.resource_group_name}" : "${var.name_prefix}${var.resource_group_name}"
   location = var.location
@@ -665,35 +416,40 @@ module "log_analytics_workspace" {
   name                             = var.name_prefix == null ? "${random_string.prefix.result}${var.log_analytics_workspace_name}" : "${var.name_prefix}${var.log_analytics_workspace_name}"
   location                         = var.location
   resource_group_name              = azurerm_resource_group.rg.name
-  solution_plan_map                = var.solution_plan_map
+  solution_plan_map                = {
+    ContainerInsights= {
+      product   = "OMSGallery/ContainerInsights"
+      publisher = "Microsoft"
+    }
+  }
 }
 
 module "virtual_network" {
   source                       = "./modules/virtual_network"
   resource_group_name          = azurerm_resource_group.rg.name
   location                     = var.location
-  vnet_name                    = var.name_prefix == null ? "${random_string.prefix.result}${var.vnet_name}" : "${var.name_prefix}${var.vnet_name}"
-  address_space                = var.vnet_address_space
+  vnet_name                    = "AksVNet"
+  address_space                = ["10.0.0.0/8"]
   log_analytics_workspace_id   = module.log_analytics_workspace.id
 
   subnets = [
     {
       name : var.system_node_pool_subnet_name
-      address_prefixes : var.system_node_pool_subnet_address_prefix
+      address_prefixes : ["10.240.0.0/16"]
       private_endpoint_network_policies : "Enabled"
       private_link_service_network_policies_enabled : false
       delegation: null
     },
     {
       name : var.user_node_pool_subnet_name
-      address_prefixes : var.user_node_pool_subnet_address_prefix
+      address_prefixes : ["10.241.0.0/16"]
       private_endpoint_network_policies : "Enabled"
       private_link_service_network_policies_enabled : false
       delegation: null
     },
     {
       name : var.pod_subnet_name
-      address_prefixes : var.pod_subnet_address_prefix
+      address_prefixes : ["10.242.0.0/16"]
       private_endpoint_network_policies : "Enabled"
       private_link_service_network_policies_enabled : false
       delegation = {
@@ -706,14 +462,14 @@ module "virtual_network" {
     },
     {
       name : var.vm_subnet_name
-      address_prefixes : var.vm_subnet_address_prefix
+      address_prefixes :  ["10.243.1.0/24"]
       private_endpoint_network_policies : "Enabled"
       private_link_service_network_policies_enabled : false
       delegation: null
     },
     {
       name : "AzureBastionSubnet"
-      address_prefixes : var.bastion_subnet_address_prefix
+      address_prefixes : ["10.243.2.0/24"]
       private_endpoint_network_policies : "Enabled"
       private_link_service_network_policies_enabled : false
       delegation: null
@@ -734,12 +490,11 @@ module "nat_gateway" {
 
 module "container_registry" {
   source                       = "./modules/container_registry"
-  name                         = var.name_prefix == null ? "${random_string.prefix.result}${var.acr_name}" : "${var.name_prefix}${var.acr_name}"
+  name                         = "${var.name_prefix}Acr"
   resource_group_name          = azurerm_resource_group.rg.name
   location                     = var.location
-  sku                          = var.acr_sku
-  admin_enabled                = var.acr_admin_enabled
-  georeplication_locations     = var.acr_georeplication_locations
+  sku                          = "Basic"
+  admin_enabled                = true
   log_analytics_workspace_id   = module.log_analytics_workspace.id
 }
 
@@ -751,25 +506,24 @@ module "aks_cluster" {
   resource_group_id                       = azurerm_resource_group.rg.id
   kubernetes_version                      = var.kubernetes_version
   dns_prefix                              = lower(var.aks_cluster_name)
-  private_cluster_enabled                 = var.private_cluster_enabled
-  sku_tier                                = var.sku_tier
+  private_cluster_enabled                 = false
+  sku_tier                                = "Free"
   system_node_pool_name                   = var.system_node_pool_name
   system_node_pool_vm_size                = var.system_node_pool_vm_size
   vnet_subnet_id                          = module.virtual_network.subnet_ids[var.system_node_pool_subnet_name]
   pod_subnet_id                           = module.virtual_network.subnet_ids[var.pod_subnet_name]
-  system_node_pool_availability_zones     = var.system_node_pool_availability_zones
+  system_node_pool_availability_zones     = ["1", "2", "3"]
   system_node_pool_node_labels            = var.system_node_pool_node_labels
   system_node_pool_max_pods               = var.system_node_pool_max_pods
   system_node_pool_os_disk_type           = var.system_node_pool_os_disk_type
-  network_dns_service_ip                  = var.network_dns_service_ip
+  network_dns_service_ip                  = "10.2.0.10"
   network_plugin                          = var.network_plugin
   outbound_type                           = "userAssignedNATGateway"
-  network_service_cidr                    = var.network_service_cidr
+  network_service_cidr                    = "10.2.0.0/24"
   log_analytics_workspace_id              = module.log_analytics_workspace.id
-  role_based_access_control_enabled       = var.role_based_access_control_enabled
+  role_based_access_control_enabled       = true
   tenant_id                               = data.azurerm_client_config.current.tenant_id
-  admin_group_object_ids                  = var.admin_group_object_ids
-  azure_rbac_enabled                      = var.azure_rbac_enabled
+  azure_rbac_enabled                      = true
   admin_username                          = var.admin_username
   keda_enabled                            = var.keda_enabled
   vertical_pod_autoscaler_enabled         = var.vertical_pod_autoscaler_enabled
@@ -792,16 +546,14 @@ module "node_pool" {
   kubernetes_cluster_id = module.aks_cluster.id
   name                         = var.user_node_pool_name
   vm_size                      = var.user_node_pool_vm_size
-  mode                         = var.user_node_pool_mode
-  node_labels                  = var.user_node_pool_node_labels
-  node_taints                  = var.user_node_pool_node_taints
+  mode                         = "User"
   availability_zones           = var.user_node_pool_availability_zones
   vnet_subnet_id               = module.virtual_network.subnet_ids[var.user_node_pool_subnet_name]
   pod_subnet_id                = module.virtual_network.subnet_ids[var.pod_subnet_name]
-  enable_host_encryption       = var.user_node_pool_enable_host_encryption
-  enable_node_public_ip        = var.user_node_pool_enable_node_public_ip
+  enable_host_encryption       = false
+  enable_node_public_ip        = false
   orchestrator_version         = var.kubernetes_version
-  max_pods                     = var.user_node_pool_max_pods
+  max_pods                     = 50
   os_type                      = var.user_node_pool_os_type
   priority                     = var.user_node_pool_priority
 }
@@ -823,12 +575,6 @@ resource "azurerm_user_assigned_identity" "aks_workload_identity" {
   name                = var.name_prefix == null ? "${random_string.prefix.result}${var.workload_managed_identity_name}" : "${var.name_prefix}${var.workload_managed_identity_name}"
   resource_group_name = azurerm_resource_group.rg.name
   location            = var.location
-
-  lifecycle {
-    ignore_changes = [
-      tags
-    ]
-  }
 }
 
 resource "azurerm_role_assignment" "cognitive_services_user_assignment" {
@@ -867,30 +613,29 @@ module "storage_account" {
   location                    = var.location
   resource_group_name         = azurerm_resource_group.rg.name
   account_kind                = var.storage_account_kind
-  account_tier                = var.storage_account_tier
-  replication_type            = var.storage_account_replication_type
+  account_tier                = "Standard"
+  replication_type            = "LRS"
 }
 
 module "bastion_host" {
   source                       = "./modules/bastion_host"
-  name                         = var.name_prefix == null ? "${random_string.prefix.result}${var.bastion_host_name}" : "${var.name_prefix}${var.bastion_host_name}"
+  name                         = "${var.name_prefix}BastionHost"
   location                     = var.location
   resource_group_name          = azurerm_resource_group.rg.name
   subnet_id                    = module.virtual_network.subnet_ids["AzureBastionSubnet"]
   log_analytics_workspace_id   = module.log_analytics_workspace.id
   log_analytics_retention_days = var.log_analytics_retention_days
-  tags                         = var.tags
 }
 
 module "key_vault" {
   source                          = "./modules/key_vault"
-  name                            = var.name_prefix == null ? "${random_string.prefix.result}${var.key_vault_name}" : "${var.name_prefix}${var.key_vault_name}"
+  name                            = "${var.name_prefix}KeyVault"
   location                        = var.location
   resource_group_name             = azurerm_resource_group.rg.name
   tenant_id                       = data.azurerm_client_config.current.tenant_id
-  sku_name                        = var.key_vault_sku_name
-  enabled_for_deployment          = var.key_vault_enabled_for_deployment
-  enabled_for_disk_encryption     = var.key_vault_enabled_for_disk_encryption
+  sku_name                        = "standard"
+  enabled_for_deployment          = true
+  enabled_for_disk_encryption     = true
   enabled_for_template_deployment = var.key_vault_enabled_for_template_deployment
   enable_rbac_authorization       = var.key_vault_enable_rbac_authorization
   purge_protection_enabled        = var.key_vault_purge_protection_enabled
@@ -1006,14 +751,14 @@ module "deployment_script" {
   name                                = var.name_prefix == null ? "${random_string.prefix.result}${var.deployment_script_name}" : "${var.name_prefix}${var.deployment_script_name}"
   location                            = var.location
   resource_group_name                 = azurerm_resource_group.rg.name
-  azure_cli_version                   = var.deployment_script_azure_cli_version
-  managed_identity_name               = var.name_prefix == null ? "${random_string.prefix.result}${var.deployment_script_managed_identity_name}" : "${var.name_prefix}${var.deployment_script_managed_identity_name}"
+  azure_cli_version                   = "2.9.1"
+  managed_identity_name               = "${var.name_prefix}ScriptManagedIdentity"
   aks_cluster_name                    = module.aks_cluster.name
   hostname                            = "${var.subdomain}.${var.domain}"
   namespace                           = var.namespace
   service_account_name                = var.service_account_name
   email                               = var.email
-  primary_script_uri                  = var.deployment_script_primary_script_uri
+  primary_script_uri                  = "https://paolosalvatori.blob.core.windows.net/scripts/install-nginx-via-helm-and-create-sa.sh"
   tenant_id                           = data.azurerm_client_config.current.tenant_id
   subscription_id                     = data.azurerm_client_config.current.subscription_id
   workload_managed_identity_client_id = azurerm_user_assigned_identity.aks_workload_identity.client_id
