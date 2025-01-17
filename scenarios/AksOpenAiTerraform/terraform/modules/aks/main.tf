@@ -25,8 +25,8 @@ resource "azurerm_kubernetes_cluster" "aks_cluster" {
     name           = "system"
     node_count     = 1
     vm_size        = var.system_node_pool_vm_size
-    vnet_subnet_id = var.system_node_pool_subnet_name
-    pod_subnet_id  = var.pod_subnet_name
+    vnet_subnet_id = var.system_node_pool_subnet_id
+    pod_subnet_id  = var.pod_subnet_id
     zones          = ["1", "2", "3"]
     max_pods       = 50
     os_disk_type   = "Ephemeral"
@@ -50,7 +50,7 @@ resource "azurerm_kubernetes_cluster" "aks_cluster" {
   }
 
   azure_active_directory_role_based_access_control {
-    tenant_id          = data.azurerm_client_config.current.tenant_id
+    tenant_id          = var.tenant_id
     azure_rbac_enabled = true
   }
 
@@ -66,8 +66,8 @@ resource "azurerm_kubernetes_cluster_node_pool" "node_pool" {
   vm_size               = var.user_node_pool_vm_size
   mode                  = "User"
   zones                 = ["1", "2", "3"]
-  vnet_subnet_id        = var.user_node_pool_subnet_name
-  pod_subnet_id         = var.pod_subnet_name
+  vnet_subnet_id        = var.user_node_pool_subnet_id
+  pod_subnet_id         = var.pod_subnet_id
   orchestrator_version  = var.kubernetes_version
   max_pods              = 50
   os_disk_type          = "Ephemeral"

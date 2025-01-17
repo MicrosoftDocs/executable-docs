@@ -15,57 +15,24 @@ data "azurerm_client_config" "current" {
 }
 
 locals {
-  log_analytics_workspace_name = "Workspace"
-  log_analytics_retention_days = 30
-
+  vm_subnet_name               = "VmSubnet"
   system_node_pool_subnet_name = "SystemSubnet"
   user_node_pool_subnet_name   = "UserSubnet"
   pod_subnet_name              = "PodSubnet"
-  vm_subnet_name               = "VmSubnet"
 
   namespace            = "magic8ball"
   service_account_name = "magic8ball-sa"
 
-  subnets = [
-    {
-      name : local.system_node_pool_subnet_name
-      address_prefixes : ["10.240.0.0/16"]
-      delegation = null
-    },
-    {
-      name : local.user_node_pool_subnet_name
-      address_prefixes : ["10.241.0.0/16"]
-      delegation = null
-    },
-    {
-      name : local.vm_subnet_name
-      address_prefixes : ["10.243.1.0/24"]
-      delegation = null
-    },
-    {
-      name : "AzureBastionSubnet"
-      address_prefixes : ["10.243.2.0/24"]
-      delegation = null
-    },
-    {
-      name : local.pod_subnet_name
-      address_prefixes : ["10.242.0.0/16"]
-      delegation = {
-        name = "delegation"
-        service_delegation = {
-          name    = "Microsoft.ContainerService/managedClusters"
-          actions = ["Microsoft.Network/virtualNetworks/subnets/join/action"]
-        }
-      }
-    },
-  ]
+  log_analytics_workspace_name = "Workspace"
+  log_analytics_retention_days = 30
 }
 
 resource "random_string" "rg_suffix" {
   length  = 6
   special = false
+  lower   = false
   upper   = false
-  numeric = false
+  numeric = true
 }
 
 resource "random_string" "storage_account_suffix" {
@@ -77,7 +44,7 @@ resource "random_string" "storage_account_suffix" {
 }
 
 resource "azurerm_resource_group" "rg" {
-  name     = "${var.name_prefix}-${random_string.rg_suffix}-rg"
+  name     = "${var.name_prefix}-${random_string.rg_suffix.result}-rg"
   location = var.location
 }
 
@@ -115,11 +82,12 @@ module "aks_cluster" {
   resource_group_id   = azurerm_resource_group.rg.id
   tenant_id           = data.azurerm_client_config.current.tenant_id
 
-  kubernetes_version           = "1.32"
-  sku_tier                     = "Free"
-  user_node_pool_subnet_name   = local.user_node_pool_subnet_name
-  system_node_pool_subnet_name = local.system_node_pool_subnet_name
-  pod_subnet_name              = local.pod_subnet_name
+  kubernetes_version = "1.30.7"
+  sku_tier           = "Free"
+
+  system_node_pool_subnet_id = module.virtual_network.subnet_ids[local.system_node_pool_subnet_name]
+  user_node_pool_subnet_id   = module.virtual_network.subnet_ids[local.user_node_pool_subnet_name]
+  pod_subnet_id              = module.virtual_network.subnet_ids[local.pod_subnet_name]
 
   log_analytics_workspace_id = module.log_analytics_workspace.id
 
@@ -154,7 +122,7 @@ module "storage_account" {
 
 module "key_vault" {
   source              = "./modules/key_vault"
-  name                = "${var.name_prefix}KeyVault"
+  name                = "${var.name_prefix}Vault"
   location            = var.location
   resource_group_name = azurerm_resource_group.rg.name
 
@@ -221,7 +189,39 @@ module "virtual_network" {
   log_analytics_workspace_id = module.log_analytics_workspace.id
 
   address_space = ["10.0.0.0/8"]
-  subnets       = local.subnets
+  subnets = [
+    {
+      name : local.system_node_pool_subnet_name
+      address_prefixes : ["10.240.0.0/16"]
+      delegation = null
+    },
+    {
+      name : local.user_node_pool_subnet_name
+      address_prefixes : ["10.241.0.0/16"]
+      delegation = null
+    },
+    {
+      name : local.vm_subnet_name
+      address_prefixes : ["10.243.1.0/24"]
+      delegation = null
+    },
+    {
+      name : "AzureBastionSubnet"
+      address_prefixes : ["10.243.2.0/24"]
+      delegation = null
+    },
+    {
+      name : local.pod_subnet_name
+      address_prefixes : ["10.242.0.0/16"]
+      delegation = {
+        name = "delegation"
+        service_delegation = {
+          name    = "Microsoft.ContainerService/managedClusters"
+          actions = ["Microsoft.Network/virtualNetworks/subnets/join/action"]
+        }
+      }
+    },
+  ]
 }
 
 module "nat_gateway" {
@@ -230,7 +230,7 @@ module "nat_gateway" {
   location            = var.location
   resource_group_name = azurerm_resource_group.rg.name
 
-  subnet_ids = module.virtual_network.subnet_ids[local.system_node_pool_subnet_name]
+  subnet_ids = module.virtual_network.subnet_ids
 }
 
 module "bastion_host" {
@@ -344,7 +344,7 @@ module "blob_private_endpoint" {
   location                       = var.location
   resource_group_name            = azurerm_resource_group.rg.name
   subnet_id                      = module.virtual_network.subnet_ids[local.vm_subnet_name]
-  private_connection_resource_id = module.storage_account.name
+  private_connection_resource_id = module.storage_account.id
   is_manual_connection           = false
   subresource_name               = "blob"
   private_dns_zone_group_name    = "BlobPrivateDnsZoneGroup"

@@ -40,14 +40,14 @@ variable "log_analytics_workspace_id" {
   type = string
 }
 
-variable "user_node_pool_subnet_name" {
+variable "user_node_pool_subnet_id" {
   type = string
 }
 
-variable "system_node_pool_subnet_name" {
+variable "system_node_pool_subnet_id" {
   type = string
 }
 
-variable "pod_subnet_name" {
+variable "pod_subnet_id" {
   type = string
 }
