@@ -15,19 +15,53 @@ data "azurerm_client_config" "current" {
 }
 
 locals {
-	log_analytics_workspace_name = "Workspace"
-	log_analytics_retention_days = 30
+  log_analytics_workspace_name = "Workspace"
+  log_analytics_retention_days = 30
 
-	system_node_pool_subnet_name = "SystemSubnet"
-	user_node_pool_subnet_name = "UserSubnet"
-	pod_subnet_name = "PodSubnet"
-	vm_subnet_name = "VmSubnet"
+  system_node_pool_subnet_name = "SystemSubnet"
+  user_node_pool_subnet_name   = "UserSubnet"
+  pod_subnet_name              = "PodSubnet"
+  vm_subnet_name               = "VmSubnet"
 
-	namespace = "magic8ball"
-	service_account_name = "magic8ball-sa"
+  namespace            = "magic8ball"
+  service_account_name = "magic8ball-sa"
+
+  subnets = [
+    {
+      name : local.system_node_pool_subnet_name
+      address_prefixes : ["10.240.0.0/16"]
+	  delegation = null
+    },
+    {
+      name : local.user_node_pool_subnet_name
+      address_prefixes : ["10.241.0.0/16"]
+	  delegation = null
+    },
+    {
+      name : local.vm_subnet_name
+      address_prefixes : ["10.243.1.0/24"]
+	  delegation = null
+    },
+    {
+      name : "AzureBastionSubnet"
+      address_prefixes : ["10.243.2.0/24"]
+	  delegation = null
+    },
+    {
+      name : local.pod_subnet_name
+      address_prefixes : ["10.242.0.0/16"]
+      delegation = {
+        name = "delegation"
+        service_delegation = {
+          name    = "Microsoft.ContainerService/managedClusters"
+          actions = ["Microsoft.Network/virtualNetworks/subnets/join/action"]
+        }
+      }
+    },
+  ]
 }
 
-resource "random_string" "prefix" {
+resource "random_string" "rg_suffix" {
   length  = 6
   special = false
   upper   = false
@@ -43,7 +77,7 @@ resource "random_string" "storage_account_suffix" {
 }
 
 resource "azurerm_resource_group" "rg" {
-  name     = "${var.name_prefix}-rg"
+  name     = "${var.name_prefix}-${random_string.rg_suffix}-rg"
   location = var.location
 }
 
@@ -55,6 +89,7 @@ module "openai" {
   name                = "${var.name_prefix}OpenAi"
   location            = var.location
   resource_group_name = azurerm_resource_group.rg.name
+
   sku_name            = "S0"
   deployments = [
     {
@@ -78,6 +113,7 @@ module "aks_cluster" {
   location            = var.location
   resource_group_name = azurerm_resource_group.rg.name
   resource_group_id   = azurerm_resource_group.rg.id
+  tenant_id = data.azurerm_client_config.current.tenant_id
 
   kubernetes_version           = "1.32"
   sku_tier                     = "Free"
@@ -178,56 +214,14 @@ module "log_analytics_workspace" {
 ###############################################################################
 module "virtual_network" {
   source              = "./modules/virtual_network"
-  vnet_name           = "AksVNet"
+  name                = "AksVNet"
   location            = var.location
   resource_group_name = azurerm_resource_group.rg.name
 
   log_analytics_workspace_id = module.log_analytics_workspace.id
 
   address_space = ["10.0.0.0/8"]
-  subnets = [
-    {
-      name : local.system_node_pool_subnet_name
-      address_prefixes : ["10.240.0.0/16"]
-      private_endpoint_network_policies : "Enabled"
-      private_link_service_network_policies_enabled : false
-      delegation : null
-    },
-    {
-      name : local.user_node_pool_subnet_name
-      address_prefixes : ["10.241.0.0/16"]
-      private_endpoint_network_policies : "Enabled"
-      private_link_service_network_policies_enabled : false
-      delegation : null
-    },
-    {
-      name : local.pod_subnet_name
-      address_prefixes : ["10.242.0.0/16"]
-      private_endpoint_network_policies : "Enabled"
-      private_link_service_network_policies_enabled : false
-      delegation = {
-        name = "delegation"
-        service_delegation = {
-          name    = "Microsoft.ContainerService/managedClusters"
-          actions = ["Microsoft.Network/virtualNetworks/subnets/join/action"]
-        }
-      }
-    },
-    {
-      name : local.vm_subnet_name
-      address_prefixes : ["10.243.1.0/24"]
-      private_endpoint_network_policies : "Enabled"
-      private_link_service_network_policies_enabled : false
-      delegation : null
-    },
-    {
-      name : "AzureBastionSubnet"
-      address_prefixes : ["10.243.2.0/24"]
-      private_endpoint_network_policies : "Enabled"
-      private_link_service_network_policies_enabled : false
-      delegation : null
-    }
-  ]
+  subnets       = local.subnets
 }
 
 module "nat_gateway" {
@@ -236,7 +230,7 @@ module "nat_gateway" {
   location            = var.location
   resource_group_name = azurerm_resource_group.rg.name
 
-  subnet_ids = module.virtual_network.subnet_ids
+  subnet_ids = module.virtual_network.subnet_ids[local.system_node_pool_subnet_name]
 }
 
 module "bastion_host" {
@@ -350,7 +344,7 @@ module "blob_private_endpoint" {
   location                       = var.location
   resource_group_name            = azurerm_resource_group.rg.name
   subnet_id                      = module.virtual_network.subnet_ids[local.vm_subnet_name]
-  private_connection_resource_id = module.storage_account.id
+  private_connection_resource_id = module.storage_account.name
   is_manual_connection           = false
   subresource_name               = "blob"
   private_dns_zone_group_name    = "BlobPrivateDnsZoneGroup"
@@ -358,19 +352,12 @@ module "blob_private_endpoint" {
 }
 
 ###############################################################################
-# Identities
+# Identities/Roles
 ###############################################################################
 resource "azurerm_user_assigned_identity" "aks_workload_identity" {
   name                = "${var.name_prefix}WorkloadManagedIdentity"
   resource_group_name = azurerm_resource_group.rg.name
   location            = var.location
-}
-
-resource "azurerm_role_assignment" "cognitive_services_user_assignment" {
-  scope                            = module.openai.id
-  role_definition_name             = "Cognitive Services User"
-  principal_id                     = azurerm_user_assigned_identity.aks_workload_identity.principal_id
-  skip_service_principal_aad_check = true
 }
 
 resource "azurerm_federated_identity_credential" "federated_identity_credential" {
@@ -382,16 +369,20 @@ resource "azurerm_federated_identity_credential" "federated_identity_credential"
   subject             = "system:serviceaccount:${local.namespace}:${local.service_account_name}"
 }
 
+resource "azurerm_role_assignment" "cognitive_services_user_assignment" {
+  scope                = module.openai.id
+  role_definition_name = "Cognitive Services User"
+  principal_id         = azurerm_user_assigned_identity.aks_workload_identity.principal_id
+}
+
 resource "azurerm_role_assignment" "network_contributor_assignment" {
-  scope                            = azurerm_resource_group.rg.id
-  role_definition_name             = "Network Contributor"
-  principal_id                     = module.aks_cluster.aks_identity_principal_id
-  skip_service_principal_aad_check = true
+  scope                = azurerm_resource_group.rg.id
+  role_definition_name = "Network Contributor"
+  principal_id         = module.aks_cluster.aks_identity_principal_id
 }
 
 resource "azurerm_role_assignment" "acr_pull_assignment" {
-  role_definition_name             = "AcrPull"
-  scope                            = module.container_registry.id
-  principal_id                     = module.aks_cluster.kubelet_identity_object_id
-  skip_service_principal_aad_check = true
+  role_definition_name = "AcrPull"
+  scope                = module.container_registry.id
+  principal_id         = module.aks_cluster.kubelet_identity_object_id
 }

@@ -25,8 +25,8 @@ resource "azurerm_kubernetes_cluster" "aks_cluster" {
     name           = "system"
     node_count     = 1
     vm_size        = var.system_node_pool_vm_size
-    vnet_subnet_id = module.virtual_network.subnet_ids[var.system_node_pool_subnet_name]
-    pod_subnet_id  = module.virtual_network.subnet_ids[var.pod_subnet_name]
+    vnet_subnet_id = var.system_node_pool_subnet_name
+    pod_subnet_id  = var.pod_subnet_name
     zones          = ["1", "2", "3"]
     max_pods       = 50
     os_disk_type   = "Ephemeral"
@@ -66,8 +66,8 @@ resource "azurerm_kubernetes_cluster_node_pool" "node_pool" {
   vm_size               = var.user_node_pool_vm_size
   mode                  = "User"
   zones                 = ["1", "2", "3"]
-  vnet_subnet_id        = module.virtual_network.subnet_ids[var.user_node_pool_subnet_name]
-  pod_subnet_id         = module.virtual_network.subnet_ids[var.pod_subnet_name]
+  vnet_subnet_id        = var.user_node_pool_subnet_name
+  pod_subnet_id         = var.pod_subnet_name
   orchestrator_version  = var.kubernetes_version
   max_pods              = 50
   os_disk_type          = "Ephemeral"

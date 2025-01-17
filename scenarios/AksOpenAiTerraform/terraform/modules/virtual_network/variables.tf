@@ -1,30 +1,24 @@
-variable "resource_group_name" {
-  description = "Resource Group name"
+variable "name" {
   type        = string
 }
 
 variable "location" {
-  description = "Location in which to deploy the network"
   type        = string
 }
 
-variable "vnet_name" {
-  description = "VNET name"
+variable "resource_group_name" {
   type        = string
 }
 
 variable "address_space" {
-  description = "VNET address space"
   type        = list(string)
 }
 
 variable "subnets" {
   description = "Subnets configuration"
   type = list(object({
-    name                                          = string
-    address_prefixes                              = list(string)
-    private_endpoint_network_policies             = string
-    private_link_service_network_policies_enabled = bool
+    name             = string
+    address_prefixes = list(string)
     delegation = object({ name = string, service_delegation = object({
       name    = string
       actions = list(string)
@@ -33,6 +27,5 @@ variable "subnets" {
 }
 
 variable "log_analytics_workspace_id" {
-  description = "Specifies the log analytics workspace id"
   type        = string
 }

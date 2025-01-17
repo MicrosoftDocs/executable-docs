@@ -14,6 +14,10 @@ variable "location" {
   type = string
 }
 
+variable "tenant_id" {
+  type = string
+}
+
 variable "kubernetes_version" {
   type = string
 }
