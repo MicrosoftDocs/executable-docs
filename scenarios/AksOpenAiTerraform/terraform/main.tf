@@ -109,7 +109,7 @@ module "aks_cluster" {
 
 module "container_registry" {
   source              = "./modules/container_registry"
-  name                = "azure-container-registry"
+  name                = "acr${local.random_id}"
   location            = var.location
   resource_group_name = azurerm_resource_group.rg.name
 

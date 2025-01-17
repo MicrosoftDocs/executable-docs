@@ -5,7 +5,7 @@ variable "resource_group_name_prefix" {
 
 variable "location" {
   type    = string
-  default = "westus2"
+  default = "westus"
 }
 
 variable "kubernetes_version" {
