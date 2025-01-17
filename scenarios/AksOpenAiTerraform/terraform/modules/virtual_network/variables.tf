@@ -1,17 +1,17 @@
 variable "name" {
-  type        = string
+  type = string
 }
 
 variable "location" {
-  type        = string
+  type = string
 }
 
 variable "resource_group_name" {
-  type        = string
+  type = string
 }
 
 variable "address_space" {
-  type        = list(string)
+  type = list(string)
 }
 
 variable "subnets" {
@@ -27,5 +27,5 @@ variable "subnets" {
 }
 
 variable "log_analytics_workspace_id" {
-  type        = string
+  type = string
 }

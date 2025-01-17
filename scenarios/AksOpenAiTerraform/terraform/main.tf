@@ -30,22 +30,22 @@ locals {
     {
       name : local.system_node_pool_subnet_name
       address_prefixes : ["10.240.0.0/16"]
-	  delegation = null
+      delegation = null
     },
     {
       name : local.user_node_pool_subnet_name
       address_prefixes : ["10.241.0.0/16"]
-	  delegation = null
+      delegation = null
     },
     {
       name : local.vm_subnet_name
       address_prefixes : ["10.243.1.0/24"]
-	  delegation = null
+      delegation = null
     },
     {
       name : "AzureBastionSubnet"
       address_prefixes : ["10.243.2.0/24"]
-	  delegation = null
+      delegation = null
     },
     {
       name : local.pod_subnet_name
@@ -90,7 +90,7 @@ module "openai" {
   location            = var.location
   resource_group_name = azurerm_resource_group.rg.name
 
-  sku_name            = "S0"
+  sku_name = "S0"
   deployments = [
     {
       name = "gpt-35-turbo"
@@ -113,7 +113,7 @@ module "aks_cluster" {
   location            = var.location
   resource_group_name = azurerm_resource_group.rg.name
   resource_group_id   = azurerm_resource_group.rg.id
-  tenant_id = data.azurerm_client_config.current.tenant_id
+  tenant_id           = data.azurerm_client_config.current.tenant_id
 
   kubernetes_version           = "1.32"
   sku_tier                     = "Free"
