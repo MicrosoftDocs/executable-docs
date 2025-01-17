@@ -3,7 +3,7 @@ resource "azurerm_log_analytics_workspace" "log_analytics_workspace" {
   location            = var.location
   resource_group_name = var.resource_group_name
   sku                 = var.sku
-  retention_in_days   = var.retention_in_days != "" ? var.retention_in_days : null
+  retention_in_days   = var.retention_in_days
 }
 
 resource "azurerm_log_analytics_solution" "la_solution" {
@@ -18,11 +18,5 @@ resource "azurerm_log_analytics_solution" "la_solution" {
   plan {
     product   = each.value.product
     publisher = each.value.publisher
-  }
-
-  lifecycle {
-    ignore_changes = [
-      tags
-    ]
   }
 }

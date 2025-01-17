@@ -1,57 +1,57 @@
 variable "resource_group_name" {
-  type        = string
+  type = string
 }
 
 variable "location" {
-  type        = string
+  type = string
 }
 
 variable "name" {
-  type        = string
+  type = string
 }
 
 variable "aks_cluster_id" {
-  type        = string
+  type = string
 }
 
 variable "azure_cli_version" {
-  type        = string
+  type = string
 }
 
 variable "managed_identity_name" {
-  type        = string
+  type = string
 }
 
 variable "primary_script_uri" {
-  type        = string
+  type = string
 }
 
 variable "aks_cluster_name" {
-  type        = string
+  type = string
 }
 
 variable "tenant_id" {
-  type        = string
+  type = string
 }
 
 variable "subscription_id" {
-  type        = string
+  type = string
 }
 
 variable "hostname" {
-  type        = string
+  type = string
 }
 
 variable "namespace" {
-  type        = string
+  type = string
 }
 
 variable "service_account_name" {
-  type        = string
+  type = string
 }
 
 variable "workload_managed_identity_client_id" {
-  type        = string
+  type = string
 }
 
 variable "email" {

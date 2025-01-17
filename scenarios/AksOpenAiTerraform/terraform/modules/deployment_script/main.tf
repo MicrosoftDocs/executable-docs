@@ -5,9 +5,9 @@ resource "azurerm_user_assigned_identity" "script_identity" {
 }
 
 resource "azurerm_role_assignment" "network_contributor_assignment" {
-  scope                            = var.aks_cluster_id
-  role_definition_name             = "Azure Kubernetes Service Cluster Admin Role"
-  principal_id                     = azurerm_user_assigned_identity.script_identity.principal_id
+  scope                = var.aks_cluster_id
+  role_definition_name = "Azure Kubernetes Service Cluster Admin Role"
+  principal_id         = azurerm_user_assigned_identity.script_identity.principal_id
 }
 
 resource "azurerm_resource_deployment_script_azure_cli" "script" {
@@ -15,13 +15,13 @@ resource "azurerm_resource_deployment_script_azure_cli" "script" {
   resource_group_name = var.resource_group_name
   location            = var.location
 
-  version             = var.azure_cli_version
-  retention_interval  = "P1D"
-  command_line        = "'foo' 'bar'"
-  cleanup_preference  = "OnSuccess"
-  force_update_tag    = "1"
-  timeout             = "PT30M"
-  primary_script_uri  = var.primary_script_uri
+  version            = var.azure_cli_version
+  retention_interval = "P1D"
+  command_line       = "'foo' 'bar'"
+  cleanup_preference = "OnSuccess"
+  force_update_tag   = "1"
+  timeout            = "PT30M"
+  primary_script_uri = var.primary_script_uri
 
   identity {
     type = "UserAssigned"

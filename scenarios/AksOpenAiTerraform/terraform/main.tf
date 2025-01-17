@@ -23,9 +23,9 @@ resource "random_string" "rg_suffix" {
 }
 
 locals {
-  tenant_id = data.azurerm_client_config.current.tenant_id
+  tenant_id       = data.azurerm_client_config.current.tenant_id
   subscription_id = data.azurerm_client_config.current.subscription_id
-  random_id = random_string.rg_suffix.result
+  random_id       = random_string.rg_suffix.result
 
   vm_subnet_name               = "VmSubnet"
   system_node_pool_subnet_name = "SystemSubnet"
@@ -158,7 +158,7 @@ module "deployment_script" {
   resource_group_name = azurerm_resource_group.rg.name
 
   azure_cli_version                   = "2.64.0"
-  aks_cluster_id = module.aks_cluster.id
+  aks_cluster_id                      = module.aks_cluster.id
   managed_identity_name               = "ScriptManagedIdentity"
   aks_cluster_name                    = module.aks_cluster.name
   hostname                            = "magic8ball.contoso.com"
@@ -177,10 +177,12 @@ module "deployment_script" {
 
 module "log_analytics_workspace" {
   source              = "./modules/log_analytics"
-  name                = "${local.log_analytics_workspace_name}"
+  name                = local.log_analytics_workspace_name
   location            = var.location
   resource_group_name = azurerm_resource_group.rg.name
 
+  sku               = "PerGB2018"
+  retention_in_days = local.log_analytics_retention_days
   solution_plan_map = {
     ContainerInsights = {
       product   = "OMSGallery/ContainerInsights"
