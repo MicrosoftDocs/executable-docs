@@ -15,13 +15,13 @@ resource "azurerm_resource_deployment_script_azure_cli" "script" {
   resource_group_name = var.resource_group_name
   location            = var.location
 
-  version            = var.azure_cli_version
+  version        = var.azure_cli_version
+  script_content = file(var.script_path)
+
   retention_interval = "P1D"
-  command_line       = "'foo' 'bar'"
   cleanup_preference = "OnSuccess"
-  force_update_tag   = "1"
   timeout            = "PT30M"
-  primary_script_uri = var.primary_script_uri
+  force_update_tag   = "1"
 
   identity {
     type = "UserAssigned"

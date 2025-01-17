@@ -10,6 +10,10 @@ variable "name" {
   type = string
 }
 
+variable "script_path" {
+  type = string
+}
+
 variable "aks_cluster_id" {
   type = string
 }
@@ -19,10 +23,6 @@ variable "azure_cli_version" {
 }
 
 variable "managed_identity_name" {
-  type = string
-}
-
-variable "primary_script_uri" {
   type = string
 }
 

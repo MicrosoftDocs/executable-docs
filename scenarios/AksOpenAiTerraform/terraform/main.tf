@@ -157,17 +157,19 @@ module "deployment_script" {
   location            = var.location
   resource_group_name = azurerm_resource_group.rg.name
 
-  azure_cli_version                   = "2.64.0"
-  aks_cluster_id                      = module.aks_cluster.id
+  tenant_id       = local.tenant_id
+  subscription_id = local.subscription_id
+  script_path     = "./install-nginx-via-helm-and-create-sa.sh"
+
+  azure_cli_version    = "2.64.0"
+  aks_cluster_id       = module.aks_cluster.id
+  aks_cluster_name     = module.aks_cluster.name
+  hostname             = "magic8ball.contoso.com"
+  namespace            = local.namespace
+  service_account_name = local.service_account_name
+  email                = var.email
+
   managed_identity_name               = "ScriptManagedIdentity"
-  aks_cluster_name                    = module.aks_cluster.name
-  hostname                            = "magic8ball.contoso.com"
-  namespace                           = local.namespace
-  service_account_name                = local.service_account_name
-  email                               = var.email
-  primary_script_uri                  = "https://paolosalvatori.blob.core.windows.net/scripts/install-nginx-via-helm-and-create-sa.sh"
-  tenant_id                           = local.tenant_id
-  subscription_id                     = local.subscription_id
   workload_managed_identity_client_id = azurerm_user_assigned_identity.aks_workload_identity.client_id
 
   depends_on = [

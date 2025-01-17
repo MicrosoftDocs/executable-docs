@@ -7,7 +7,7 @@ variable "resource_group_name" {
 }
 
 variable "virtual_networks_to_link" {
-  type = map(string, object({
+  type = map(object({
     subscription_id     = string
     resource_group_name = string
   }))
