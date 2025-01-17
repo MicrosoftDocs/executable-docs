@@ -62,16 +62,16 @@ module "openai" {
   sku_name = "S0"
   deployments = [
     {
-      name = "gpt-35-turbo"
+      name = "gpt-4"
       model = {
-        name    = "gpt-35-turbo"
-        version = "0301"
+        name    = "gpt-4"
+        version = "turbo-2024-04-09"
       }
-      rai_policy_name = ""
     }
   ]
   custom_subdomain_name         = lower("${var.name_prefix}OpenAi")
   public_network_access_enabled = true
+  
   log_analytics_workspace_id    = module.log_analytics_workspace.id
   log_analytics_retention_days  = local.log_analytics_retention_days
 }
@@ -122,6 +122,7 @@ module "storage_account" {
   account_kind     = "StorageV2"
   account_tier     = "Standard"
   replication_type = "LRS"
+  is_hns_enabled   = false
 }
 
 module "key_vault" {

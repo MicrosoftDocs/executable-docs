@@ -30,7 +30,6 @@ variable "deployments" {
       name    = string
       version = string
     })
-    rai_policy_name = string
   }))
 }
 
