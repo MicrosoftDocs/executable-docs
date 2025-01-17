@@ -22,6 +22,14 @@ resource "random_string" "rg_suffix" {
   numeric = true
 }
 
+resource "random_string" "storage_account_suffix" {
+  length  = 8
+  special = false
+  lower   = true
+  upper   = false
+  numeric = false
+}
+
 locals {
   tenant_id       = data.azurerm_client_config.current.tenant_id
   subscription_id = data.azurerm_client_config.current.subscription_id
@@ -37,14 +45,6 @@ locals {
 
   log_analytics_workspace_name = "Workspace"
   log_analytics_retention_days = 30
-}
-
-resource "random_string" "storage_account_suffix" {
-  length  = 8
-  special = false
-  lower   = true
-  upper   = false
-  numeric = false
 }
 
 resource "azurerm_resource_group" "rg" {
@@ -149,32 +149,6 @@ module "key_vault" {
   default_action                  = "Allow"
   log_analytics_workspace_id      = module.log_analytics_workspace.id
   log_analytics_retention_days    = local.log_analytics_retention_days
-}
-
-module "deployment_script" {
-  source              = "./modules/deployment_script"
-  name                = "DeployBashScript"
-  location            = var.location
-  resource_group_name = azurerm_resource_group.rg.name
-
-  tenant_id       = local.tenant_id
-  subscription_id = local.subscription_id
-  script_path     = "./install-nginx-via-helm-and-create-sa.sh"
-
-  azure_cli_version    = "2.64.0"
-  aks_cluster_id       = module.aks_cluster.id
-  aks_cluster_name     = module.aks_cluster.name
-  hostname             = "magic8ball.contoso.com"
-  namespace            = local.namespace
-  service_account_name = local.service_account_name
-  email                = var.email
-
-  managed_identity_name               = "ScriptManagedIdentity"
-  workload_managed_identity_client_id = azurerm_user_assigned_identity.aks_workload_identity.client_id
-
-  depends_on = [
-    module.aks_cluster
-  ]
 }
 
 module "log_analytics_workspace" {
