@@ -15,6 +15,8 @@ data "azurerm_client_config" "current" {
 }
 
 locals {
+  tenant_id = data.azurerm_client_config.current.tenant_id
+
   vm_subnet_name               = "VmSubnet"
   system_node_pool_subnet_name = "SystemSubnet"
   user_node_pool_subnet_name   = "UserSubnet"
@@ -80,7 +82,7 @@ module "aks_cluster" {
   location            = var.location
   resource_group_name = azurerm_resource_group.rg.name
   resource_group_id   = azurerm_resource_group.rg.id
-  tenant_id           = data.azurerm_client_config.current.tenant_id
+  tenant_id           = local.tenant_id
 
   kubernetes_version       = var.kubernetes_version
   sku_tier                 = "Free"
@@ -128,7 +130,7 @@ module "key_vault" {
   location            = var.location
   resource_group_name = azurerm_resource_group.rg.name
 
-  tenant_id                       = data.azurerm_client_config.current.tenant_id
+  tenant_id                       = local.tenant_id
   sku_name                        = "standard"
   enabled_for_deployment          = true
   enabled_for_disk_encryption     = true
@@ -148,7 +150,7 @@ module "deployment_script" {
   location            = var.location
   resource_group_name = azurerm_resource_group.rg.name
 
-  azure_cli_version                   = "2.9.1"
+  azure_cli_version                   = "2.68.0"
   managed_identity_name               = "${var.name_prefix}ScriptManagedIdentity"
   aks_cluster_name                    = module.aks_cluster.name
   hostname                            = "magic8ball.contoso.com"
@@ -156,7 +158,7 @@ module "deployment_script" {
   service_account_name                = local.service_account_name
   email                               = var.email
   primary_script_uri                  = "https://paolosalvatori.blob.core.windows.net/scripts/install-nginx-via-helm-and-create-sa.sh"
-  tenant_id                           = data.azurerm_client_config.current.tenant_id
+  tenant_id                           = local.tenant_id
   subscription_id                     = data.azurerm_client_config.current.subscription_id
   workload_managed_identity_client_id = azurerm_user_assigned_identity.aks_workload_identity.client_id
 
