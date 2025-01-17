@@ -2,6 +2,7 @@ resource "azurerm_cognitive_account" "openai" {
   name                          = var.name
   location                      = var.location
   resource_group_name           = var.resource_group_name
+  
   kind                          = "OpenAI"
   custom_subdomain_name         = var.custom_subdomain_name
   sku_name                      = var.sku_name

@@ -24,6 +24,12 @@ Terraform uses the ARM_SUBSCRIPTION_ID environment variable to authenticate whil
 export ARM_SUBSCRIPTION_ID="0c8875c7-e423-4caa-827a-1f0350bd8dd3"
 ```
 
+## Init Terraform
+
+```bash
+terraform init
+```
+
 ## Run Terraform
 
 ```bash

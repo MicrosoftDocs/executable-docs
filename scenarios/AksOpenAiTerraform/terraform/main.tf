@@ -14,8 +14,18 @@ provider "azurerm" {
 data "azurerm_client_config" "current" {
 }
 
+resource "random_string" "rg_suffix" {
+  length  = 6
+  special = false
+  lower   = false
+  upper   = false
+  numeric = true
+}
+
 locals {
   tenant_id = data.azurerm_client_config.current.tenant_id
+  subscription_id = data.azurerm_client_config.current.subscription_id
+  random_id = random_string.rg_suffix.result
 
   vm_subnet_name               = "VmSubnet"
   system_node_pool_subnet_name = "SystemSubnet"
@@ -29,14 +39,6 @@ locals {
   log_analytics_retention_days = 30
 }
 
-resource "random_string" "rg_suffix" {
-  length  = 6
-  special = false
-  lower   = false
-  upper   = false
-  numeric = true
-}
-
 resource "random_string" "storage_account_suffix" {
   length  = 8
   special = false
@@ -46,8 +48,12 @@ resource "random_string" "storage_account_suffix" {
 }
 
 resource "azurerm_resource_group" "rg" {
-  name     = "${var.name_prefix}-${random_string.rg_suffix.result}-rg"
+  name     = "${var.resource_group_name_prefix}-${local.random_id}-rg"
   location = var.location
+
+  lifecycle {
+    ignore_changes = [tags]
+  }
 }
 
 ###############################################################################
@@ -55,7 +61,7 @@ resource "azurerm_resource_group" "rg" {
 ###############################################################################
 module "openai" {
   source              = "./modules/openai"
-  name                = "${var.name_prefix}OpenAi"
+  name                = "OpenAi-${local.random_id}"
   location            = var.location
   resource_group_name = azurerm_resource_group.rg.name
 
@@ -69,16 +75,16 @@ module "openai" {
       }
     }
   ]
-  custom_subdomain_name         = lower("${var.name_prefix}OpenAi")
+  custom_subdomain_name         = "magic8ball"
   public_network_access_enabled = true
-  
-  log_analytics_workspace_id    = module.log_analytics_workspace.id
-  log_analytics_retention_days  = local.log_analytics_retention_days
+
+  log_analytics_workspace_id   = module.log_analytics_workspace.id
+  log_analytics_retention_days = local.log_analytics_retention_days
 }
 
 module "aks_cluster" {
   source              = "./modules/aks"
-  name                = "${var.name_prefix}AksCluster"
+  name                = "AksCluster"
   location            = var.location
   resource_group_name = azurerm_resource_group.rg.name
   resource_group_id   = azurerm_resource_group.rg.id
@@ -103,7 +109,7 @@ module "aks_cluster" {
 
 module "container_registry" {
   source              = "./modules/container_registry"
-  name                = "${var.name_prefix}Acr"
+  name                = "azure-container-registry"
   location            = var.location
   resource_group_name = azurerm_resource_group.rg.name
 
@@ -127,7 +133,7 @@ module "storage_account" {
 
 module "key_vault" {
   source              = "./modules/key_vault"
-  name                = "${var.name_prefix}Vault"
+  name                = "KeyVault-${local.random_id}"
   location            = var.location
   resource_group_name = azurerm_resource_group.rg.name
 
@@ -147,12 +153,13 @@ module "key_vault" {
 
 module "deployment_script" {
   source              = "./modules/deployment_script"
-  name                = "${var.name_prefix}BashScript"
+  name                = "DeployBashScript"
   location            = var.location
   resource_group_name = azurerm_resource_group.rg.name
 
-  azure_cli_version                   = "2.68.0"
-  managed_identity_name               = "${var.name_prefix}ScriptManagedIdentity"
+  azure_cli_version                   = "2.64.0"
+  aks_cluster_id = module.aks_cluster.id
+  managed_identity_name               = "ScriptManagedIdentity"
   aks_cluster_name                    = module.aks_cluster.name
   hostname                            = "magic8ball.contoso.com"
   namespace                           = local.namespace
@@ -160,7 +167,7 @@ module "deployment_script" {
   email                               = var.email
   primary_script_uri                  = "https://paolosalvatori.blob.core.windows.net/scripts/install-nginx-via-helm-and-create-sa.sh"
   tenant_id                           = local.tenant_id
-  subscription_id                     = data.azurerm_client_config.current.subscription_id
+  subscription_id                     = local.subscription_id
   workload_managed_identity_client_id = azurerm_user_assigned_identity.aks_workload_identity.client_id
 
   depends_on = [
@@ -170,7 +177,7 @@ module "deployment_script" {
 
 module "log_analytics_workspace" {
   source              = "./modules/log_analytics"
-  name                = "${var.name_prefix}${local.log_analytics_workspace_name}"
+  name                = "${local.log_analytics_workspace_name}"
   location            = var.location
   resource_group_name = azurerm_resource_group.rg.name
 
@@ -231,7 +238,7 @@ module "virtual_network" {
 
 module "nat_gateway" {
   source              = "./modules/nat_gateway"
-  name                = "${var.name_prefix}NatGateway"
+  name                = "NatGateway"
   location            = var.location
   resource_group_name = azurerm_resource_group.rg.name
 
@@ -240,7 +247,7 @@ module "nat_gateway" {
 
 module "bastion_host" {
   source              = "./modules/bastion_host"
-  name                = "${var.name_prefix}BastionHost"
+  name                = "BastionHost"
   location            = var.location
   resource_group_name = azurerm_resource_group.rg.name
 
@@ -259,7 +266,7 @@ module "acr_private_dns_zone" {
   resource_group_name = azurerm_resource_group.rg.name
   virtual_networks_to_link = {
     (module.virtual_network.name) = {
-      subscription_id     = data.azurerm_client_config.current.subscription_id
+      subscription_id     = local.subscription_id
       resource_group_name = azurerm_resource_group.rg.name
     }
   }
@@ -271,7 +278,7 @@ module "openai_private_dns_zone" {
   resource_group_name = azurerm_resource_group.rg.name
   virtual_networks_to_link = {
     (module.virtual_network.name) = {
-      subscription_id     = data.azurerm_client_config.current.subscription_id
+      subscription_id     = local.subscription_id
       resource_group_name = azurerm_resource_group.rg.name
     }
   }
@@ -283,7 +290,7 @@ module "key_vault_private_dns_zone" {
   resource_group_name = azurerm_resource_group.rg.name
   virtual_networks_to_link = {
     (module.virtual_network.name) = {
-      subscription_id     = data.azurerm_client_config.current.subscription_id
+      subscription_id     = local.subscription_id
       resource_group_name = azurerm_resource_group.rg.name
     }
   }
@@ -295,7 +302,7 @@ module "blob_private_dns_zone" {
   resource_group_name = azurerm_resource_group.rg.name
   virtual_networks_to_link = {
     (module.virtual_network.name) = {
-      subscription_id     = data.azurerm_client_config.current.subscription_id
+      subscription_id     = local.subscription_id
       resource_group_name = azurerm_resource_group.rg.name
     }
   }
@@ -306,7 +313,7 @@ module "blob_private_dns_zone" {
 ###############################################################################
 module "openai_private_endpoint" {
   source                         = "./modules/private_endpoint"
-  name                           = "${module.openai.name}PrivateEndpoint"
+  name                           = "OpenAiPrivateEndpoint"
   location                       = var.location
   resource_group_name            = azurerm_resource_group.rg.name
   subnet_id                      = module.virtual_network.subnet_ids[local.vm_subnet_name]
@@ -318,7 +325,7 @@ module "openai_private_endpoint" {
 
 module "acr_private_endpoint" {
   source                         = "./modules/private_endpoint"
-  name                           = "${module.container_registry.name}PrivateEndpoint"
+  name                           = "AcrPrivateEndpoint"
   location                       = var.location
   resource_group_name            = azurerm_resource_group.rg.name
   subnet_id                      = module.virtual_network.subnet_ids[local.vm_subnet_name]
@@ -330,7 +337,7 @@ module "acr_private_endpoint" {
 
 module "key_vault_private_endpoint" {
   source                         = "./modules/private_endpoint"
-  name                           = "${module.key_vault.name}PrivateEndpoint"
+  name                           = "VaultPrivateEndpoint"
   location                       = var.location
   resource_group_name            = azurerm_resource_group.rg.name
   subnet_id                      = module.virtual_network.subnet_ids[local.vm_subnet_name]
@@ -342,7 +349,7 @@ module "key_vault_private_endpoint" {
 
 module "blob_private_endpoint" {
   source                         = "./modules/private_endpoint"
-  name                           = "${var.name_prefix}BlobStoragePrivateEndpoint"
+  name                           = "BlobStoragePrivateEndpoint"
   location                       = var.location
   resource_group_name            = azurerm_resource_group.rg.name
   subnet_id                      = module.virtual_network.subnet_ids[local.vm_subnet_name]
@@ -356,7 +363,7 @@ module "blob_private_endpoint" {
 # Identities/Roles
 ###############################################################################
 resource "azurerm_user_assigned_identity" "aks_workload_identity" {
-  name                = "${var.name_prefix}WorkloadManagedIdentity"
+  name                = "WorkloadManagedIdentity"
   resource_group_name = azurerm_resource_group.rg.name
   location            = var.location
 }

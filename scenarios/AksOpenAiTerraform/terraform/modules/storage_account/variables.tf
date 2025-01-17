@@ -1,27 +1,27 @@
 variable "resource_group_name" {
-  type        = string
+  type = string
 }
 
 variable "name" {
-  type        = string
+  type = string
 }
 
 variable "location" {
-  type        = string
+  type = string
 }
 
 variable "account_kind" {
-  type        = string
+  type = string
 }
 
 variable "account_tier" {
-  type        = string
+  type = string
 }
 
 variable "replication_type" {
-  type        = string
+  type = string
 }
 
 variable "is_hns_enabled" {
-  type        = bool
+  type = bool
 }
