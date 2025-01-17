@@ -8,8 +8,6 @@ ms.author: ariaamini
 ms.custom: innovation-engine, linux-related-content 
 ---
 
-<!-- TODO: PARAMETERIZE REGION AND SUB IDS  -->
-
 ## Install AKS extension
 
 Run commands below to set up AKS extensions for Azure.
@@ -18,30 +16,16 @@ Run commands below to set up AKS extensions for Azure.
 ./terraform/register-preview-features.sh
 ```
 
-## Set up service principal
+## Set up Subscription ID to authenticate for Terraform
 
-A Service Principal is an application within Azure Active Directory with the authentication tokens Terraform needs to perform actions on your behalf.
-
-```bash
-# TODO: fix
-# az ad sp create-for-rbac --role="Contributor" --scopes="/subscriptions/$ARM_SUBSCRIPTION_ID"
-```
-
-## Setup Infra
+Terraform uses the ARM_SUBSCRIPTION_ID environment variable to authenticate while using CLI.
 
 ```bash
 export ARM_SUBSCRIPTION_ID="0c8875c7-e423-4caa-827a-1f0350bd8dd3"
-# For debugging in powershell
-# $env:ARM_SUBSCRIPTION_ID = "0c8875c7-e423-4caa-827a-1f0350bd8dd3"
-
-terraform apply
 ```
 
-## Set up environment
+## Run Terraform
 
 ```bash
-export ARM_CLIENT_ID=""
-export ARM_CLIENT_SECRET=""
-export ARM_SUBSCRIPTION_ID=""
-export ARM_TENANT_ID=""
+terraform apply
 ```

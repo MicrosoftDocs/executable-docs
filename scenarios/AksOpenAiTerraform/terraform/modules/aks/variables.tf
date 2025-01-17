@@ -27,13 +27,11 @@ variable "sku_tier" {
 }
 
 variable "system_node_pool_vm_size" {
-  default = "Standard_D8ds_v5"
-  type    = string
+  type = string
 }
 
 variable "user_node_pool_vm_size" {
-  default = "Standard_D8ds_v5"
-  type    = string
+  type = string
 }
 
 variable "log_analytics_workspace_id" {

@@ -82,8 +82,10 @@ module "aks_cluster" {
   resource_group_id   = azurerm_resource_group.rg.id
   tenant_id           = data.azurerm_client_config.current.tenant_id
 
-  kubernetes_version = "1.30.7"
-  sku_tier           = "Free"
+  kubernetes_version       = var.kubernetes_version
+  sku_tier                 = "Free"
+  system_node_pool_vm_size = var.system_node_pool_vm_size
+  user_node_pool_vm_size   = var.user_node_pool_vm_size
 
   system_node_pool_subnet_id = module.virtual_network.subnet_ids[local.system_node_pool_subnet_name]
   user_node_pool_subnet_id   = module.virtual_network.subnet_ids[local.user_node_pool_subnet_name]
@@ -103,10 +105,10 @@ module "container_registry" {
   location            = var.location
   resource_group_name = azurerm_resource_group.rg.name
 
-  log_analytics_workspace_id = module.log_analytics_workspace.id
-
-  sku           = "Basic"
+  sku           = "Premium"
   admin_enabled = true
+
+  log_analytics_workspace_id = module.log_analytics_workspace.id
 }
 
 module "storage_account" {
@@ -306,7 +308,6 @@ module "openai_private_endpoint" {
   resource_group_name            = azurerm_resource_group.rg.name
   subnet_id                      = module.virtual_network.subnet_ids[local.vm_subnet_name]
   private_connection_resource_id = module.openai.id
-  is_manual_connection           = false
   subresource_name               = "account"
   private_dns_zone_group_name    = "AcrPrivateDnsZoneGroup"
   private_dns_zone_group_ids     = [module.openai_private_dns_zone.id]
@@ -319,7 +320,6 @@ module "acr_private_endpoint" {
   resource_group_name            = azurerm_resource_group.rg.name
   subnet_id                      = module.virtual_network.subnet_ids[local.vm_subnet_name]
   private_connection_resource_id = module.container_registry.id
-  is_manual_connection           = false
   subresource_name               = "registry"
   private_dns_zone_group_name    = "AcrPrivateDnsZoneGroup"
   private_dns_zone_group_ids     = [module.acr_private_dns_zone.id]
@@ -332,7 +332,6 @@ module "key_vault_private_endpoint" {
   resource_group_name            = azurerm_resource_group.rg.name
   subnet_id                      = module.virtual_network.subnet_ids[local.vm_subnet_name]
   private_connection_resource_id = module.key_vault.id
-  is_manual_connection           = false
   subresource_name               = "vault"
   private_dns_zone_group_name    = "KeyVaultPrivateDnsZoneGroup"
   private_dns_zone_group_ids     = [module.key_vault_private_dns_zone.id]
@@ -345,7 +344,6 @@ module "blob_private_endpoint" {
   resource_group_name            = azurerm_resource_group.rg.name
   subnet_id                      = module.virtual_network.subnet_ids[local.vm_subnet_name]
   private_connection_resource_id = module.storage_account.id
-  is_manual_connection           = false
   subresource_name               = "blob"
   private_dns_zone_group_name    = "BlobPrivateDnsZoneGroup"
   private_dns_zone_group_ids     = [module.blob_private_dns_zone.id]
