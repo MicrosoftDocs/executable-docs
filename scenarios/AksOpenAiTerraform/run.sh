@@ -1,4 +1,30 @@
+export RG_NAME=""
+
 export OPEN_AI_SUBDOMAIN="magic8ball"
+
+# Publish Image
+export ACR_NAME=(terraform output -raw acr_name)
+export IMAGE="azurecr.io/magic8ball:latest"
+
+# Nginx Ingress Controller
+export nginxNamespace="ingress-basic"
+export nginxRepoName="ingress-nginx"
+export nginxRepoUrl="https://kubernetes.github.io/ingress-nginx"
+export nginxChartName="ingress-nginx"
+export nginxReleaseName="nginx-ingress"
+export nginxReplicaCount=3
+
+# Certificate Manager
+export cmNamespace="cert-manager"
+export cmRepoName="jetstack"
+export cmRepoUrl="https://charts.jetstack.io"
+export cmChartName="cert-manager"
+export cmReleaseName="cert-manager"
+
+# Cluster Issuer
+email="paolos@microsoft.com"
+clusterIssuerName="letsencrypt-nginx"
+clusterIssuerTemplate="cluster-issuer.yml"
 
 # Variables
 acrName="CyanAcr"
