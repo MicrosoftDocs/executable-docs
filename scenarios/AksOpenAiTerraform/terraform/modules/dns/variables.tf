@@ -10,7 +10,7 @@ variable "resource_group_name" {
   type = string
 }
 
-variable "private_dns_zone_group_name" {
+variable "endpoint" {
   type = string
 }
 

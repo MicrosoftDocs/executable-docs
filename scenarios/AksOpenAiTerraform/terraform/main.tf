@@ -237,58 +237,58 @@ module "bastion_host" {
 ###############################################################################
 module "acr_private_dns_zone" {
   source              = "./modules/dns"
+  name                = "OpenAiPrivateDnsZone"
   location            = var.location
   resource_group_name = azurerm_resource_group.rg.name
 
-  name                           = "privatelink.azurecr.io"
-  private_dns_zone_group_name    = "OpenAiPrivateDnsZoneGroup"
+  endpoint                       = "privatelink.azurecr.io"
   subresource_name               = "account"
   private_connection_resource_id = module.openai.id
 
-  virtual_network_id             = module.virtual_network.id
-  subnet_id                      = module.virtual_network.subnet_ids[local.vm_subnet_name]
+  virtual_network_id = module.virtual_network.id
+  subnet_id          = module.virtual_network.subnet_ids[local.vm_subnet_name]
 }
 
 module "openai_private_dns_zone" {
   source              = "./modules/dns"
+  name                = "AcrPrivateDnsZone"
   location            = var.location
   resource_group_name = azurerm_resource_group.rg.name
 
-  name                           = "privatelink.openai.azure.com"
-  private_dns_zone_group_name    = "AcrPrivateDnsZoneGroup"
+  endpoint                       = "privatelink.openai.azure.com"
   subresource_name               = "registry"
   private_connection_resource_id = module.container_registry.id
-  
-  virtual_network_id             = module.virtual_network.id
-  subnet_id                      = module.virtual_network.subnet_ids[local.vm_subnet_name]
+
+  virtual_network_id = module.virtual_network.id
+  subnet_id          = module.virtual_network.subnet_ids[local.vm_subnet_name]
 }
 
 module "key_vault_private_dns_zone" {
   source              = "./modules/dns"
+  name                = "KeyVaultPrivateDnsZone"
   location            = var.location
   resource_group_name = azurerm_resource_group.rg.name
 
-  name                           = "privatelink.vaultcore.azure.net"
-  private_dns_zone_group_name    = "KeyVaultPrivateDnsZoneGroup"
+  endpoint                       = "privatelink.vaultcore.azure.net"
   subresource_name               = "vault"
   private_connection_resource_id = module.key_vault.id
 
-  virtual_network_id             = module.virtual_network.id
-  subnet_id                      = module.virtual_network.subnet_ids[local.vm_subnet_name]
+  virtual_network_id = module.virtual_network.id
+  subnet_id          = module.virtual_network.subnet_ids[local.vm_subnet_name]
 }
 
 module "blob_private_dns_zone" {
   source              = "./modules/dns"
+  name                = "BlobPrivateDnsZone"
   location            = var.location
   resource_group_name = azurerm_resource_group.rg.name
 
-  name                           = "privatelink.blob.core.windows.net"
-  private_dns_zone_group_name    = "BlobPrivateDnsZoneGroup"
+  endpoint                       = "privatelink.blob.core.windows.net"
   subresource_name               = "blob"
   private_connection_resource_id = module.storage_account.id
 
-  virtual_network_id             = module.virtual_network.id
-  subnet_id                      = module.virtual_network.subnet_ids[local.vm_subnet_name]
+  virtual_network_id = module.virtual_network.id
+  subnet_id          = module.virtual_network.subnet_ids[local.vm_subnet_name]
 }
 
 ###############################################################################

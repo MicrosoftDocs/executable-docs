@@ -8,11 +8,11 @@ resource "azurerm_virtual_network" "vnet" {
 resource "azurerm_subnet" "subnet" {
   for_each = { for subnet in var.subnets : subnet.name => subnet }
 
-  name                                          = each.key
-  resource_group_name                           = var.resource_group_name
-  virtual_network_name                          = azurerm_virtual_network.vnet.name
-  address_prefixes                              = each.value.address_prefixes
-  private_endpoint_network_policies             = "Enabled"
+  name                              = each.key
+  resource_group_name               = var.resource_group_name
+  virtual_network_name              = azurerm_virtual_network.vnet.name
+  address_prefixes                  = each.value.address_prefixes
+  private_endpoint_network_policies = "Enabled"
 
   dynamic "delegation" {
     for_each = each.value.delegation != null ? [each.value.delegation] : []

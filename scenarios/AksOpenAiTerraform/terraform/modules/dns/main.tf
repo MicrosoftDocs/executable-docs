@@ -11,7 +11,7 @@ resource "azurerm_private_dns_zone_virtual_network_link" "this" {
 }
 
 resource "azurerm_private_endpoint" "this" {
-  name                = var.name
+  name                = var.endpoint
   location            = var.location
   resource_group_name = var.resource_group_name
   subnet_id           = var.subnet_id
@@ -24,7 +24,7 @@ resource "azurerm_private_endpoint" "this" {
   }
 
   private_dns_zone_group {
-    name                 = azurerm_private_dns_zone.this.name
+    name                 = "${var.name}Group"
     private_dns_zone_ids = [azurerm_private_dns_zone.this.id]
   }
 }
