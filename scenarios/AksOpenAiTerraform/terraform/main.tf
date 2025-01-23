@@ -35,11 +35,6 @@ locals {
   subscription_id = data.azurerm_client_config.current.subscription_id
   random_id       = random_string.rg_suffix.result
 
-  vm_subnet_name               = "VmSubnet"
-  system_node_pool_subnet_name = "SystemSubnet"
-  user_node_pool_subnet_name   = "UserSubnet"
-  pod_subnet_name              = "PodSubnet"
-
   namespace            = "magic8ball"
   service_account_name = "magic8ball-sa"
 
@@ -95,9 +90,9 @@ module "aks_cluster" {
   system_node_pool_vm_size = var.system_node_pool_vm_size
   user_node_pool_vm_size   = var.user_node_pool_vm_size
 
-  system_node_pool_subnet_id = module.virtual_network.subnet_ids[local.system_node_pool_subnet_name]
-  user_node_pool_subnet_id   = module.virtual_network.subnet_ids[local.user_node_pool_subnet_name]
-  pod_subnet_id              = module.virtual_network.subnet_ids[local.pod_subnet_name]
+  system_node_pool_subnet_id = module.virtual_network.subnet_ids["SystemSubnet"]
+  user_node_pool_subnet_id   = module.virtual_network.subnet_ids["UserSubnet"]
+  pod_subnet_id              = module.virtual_network.subnet_ids["PodSubnet"]
 
   log_analytics_workspace_id = module.log_analytics_workspace.id
 
@@ -173,32 +168,26 @@ module "virtual_network" {
   location            = var.location
   resource_group_name = azurerm_resource_group.rg.name
 
-  log_analytics_workspace_id = module.log_analytics_workspace.id
-
   address_space = ["10.0.0.0/8"]
   subnets = [
     {
-      name : local.system_node_pool_subnet_name
-      address_prefixes : ["10.240.0.0/16"]
-      delegation = null
-    },
-    {
-      name : local.user_node_pool_subnet_name
-      address_prefixes : ["10.241.0.0/16"]
-      delegation = null
-    },
-    {
-      name : local.vm_subnet_name
+      name : "VmSubnet"
       address_prefixes : ["10.243.1.0/24"]
-      delegation = null
     },
     {
       name : "AzureBastionSubnet"
       address_prefixes : ["10.243.2.0/24"]
-      delegation = null
     },
     {
-      name : local.pod_subnet_name
+      name : "SystemSubnet"
+      address_prefixes : ["10.240.0.0/16"]
+    },
+    {
+      name : "UserSubnet"
+      address_prefixes : ["10.241.0.0/16"]
+    },
+    {
+      name : "PodSubnet"
       address_prefixes : ["10.242.0.0/16"]
       delegation = {
         name = "delegation"
@@ -209,6 +198,8 @@ module "virtual_network" {
       }
     },
   ]
+
+  log_analytics_workspace_id = module.log_analytics_workspace.id
 }
 
 module "nat_gateway" {
@@ -237,58 +228,54 @@ module "bastion_host" {
 ###############################################################################
 module "acr_private_dns_zone" {
   source              = "./modules/dns"
-  name                = "OpenAiPrivateDnsZone"
   location            = var.location
   resource_group_name = azurerm_resource_group.rg.name
 
-  endpoint                       = "privatelink.azurecr.io"
+  name                           = "privatelink.azurecr.io"
   subresource_name               = "account"
   private_connection_resource_id = module.openai.id
 
   virtual_network_id = module.virtual_network.id
-  subnet_id          = module.virtual_network.subnet_ids[local.vm_subnet_name]
+  subnet_id          = module.virtual_network.subnet_ids["VmSubnet"]
 }
 
 module "openai_private_dns_zone" {
   source              = "./modules/dns"
-  name                = "AcrPrivateDnsZone"
   location            = var.location
   resource_group_name = azurerm_resource_group.rg.name
 
-  endpoint                       = "privatelink.openai.azure.com"
+  name                           = "privatelink.openai.azure.com"
   subresource_name               = "registry"
   private_connection_resource_id = module.container_registry.id
 
   virtual_network_id = module.virtual_network.id
-  subnet_id          = module.virtual_network.subnet_ids[local.vm_subnet_name]
+  subnet_id          = module.virtual_network.subnet_ids["VmSubnet"]
 }
 
 module "key_vault_private_dns_zone" {
   source              = "./modules/dns"
-  name                = "KeyVaultPrivateDnsZone"
   location            = var.location
   resource_group_name = azurerm_resource_group.rg.name
 
-  endpoint                       = "privatelink.vaultcore.azure.net"
+  name                           = "privatelink.vaultcore.azure.net"
   subresource_name               = "vault"
   private_connection_resource_id = module.key_vault.id
 
   virtual_network_id = module.virtual_network.id
-  subnet_id          = module.virtual_network.subnet_ids[local.vm_subnet_name]
+  subnet_id          = module.virtual_network.subnet_ids["VmSubnet"]
 }
 
 module "blob_private_dns_zone" {
   source              = "./modules/dns"
-  name                = "BlobPrivateDnsZone"
   location            = var.location
   resource_group_name = azurerm_resource_group.rg.name
 
-  endpoint                       = "privatelink.blob.core.windows.net"
+  name                           = "privatelink.blob.core.windows.net"
   subresource_name               = "blob"
   private_connection_resource_id = module.storage_account.id
 
   virtual_network_id = module.virtual_network.id
-  subnet_id          = module.virtual_network.subnet_ids[local.vm_subnet_name]
+  subnet_id          = module.virtual_network.subnet_ids["VmSubnet"]
 }
 
 ###############################################################################
@@ -303,6 +290,7 @@ resource "azurerm_user_assigned_identity" "aks_workload_identity" {
 resource "azurerm_federated_identity_credential" "federated_identity_credential" {
   name                = "${title(local.namespace)}FederatedIdentity"
   resource_group_name = azurerm_resource_group.rg.name
+  
   audience            = ["api://AzureADTokenExchange"]
   issuer              = module.aks_cluster.oidc_issuer_url
   parent_id           = azurerm_user_assigned_identity.aks_workload_identity.id
@@ -310,14 +298,14 @@ resource "azurerm_federated_identity_credential" "federated_identity_credential"
 }
 
 resource "azurerm_role_assignment" "cognitive_services_user_assignment" {
-  scope                = module.openai.id
   role_definition_name = "Cognitive Services User"
+  scope                = module.openai.id
   principal_id         = azurerm_user_assigned_identity.aks_workload_identity.principal_id
 }
 
 resource "azurerm_role_assignment" "network_contributor_assignment" {
-  scope                = azurerm_resource_group.rg.id
   role_definition_name = "Network Contributor"
+  scope                = azurerm_resource_group.rg.id
   principal_id         = module.aks_cluster.aks_identity_principal_id
 }
 

@@ -10,10 +10,6 @@ variable "resource_group_name" {
   type = string
 }
 
-variable "endpoint" {
-  type = string
-}
-
 variable "subresource_name" {
   type = string
 }

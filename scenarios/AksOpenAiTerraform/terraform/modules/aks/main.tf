@@ -64,6 +64,10 @@ resource "azurerm_kubernetes_cluster" "aks_cluster" {
     keda_enabled                    = true
     vertical_pod_autoscaler_enabled = true
   }
+
+  lifecycle {
+    ignore_changes = [ microsoft_defender ]
+  }
 }
 
 resource "azurerm_kubernetes_cluster_node_pool" "node_pool" {
