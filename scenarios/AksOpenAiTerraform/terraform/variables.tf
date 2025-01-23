@@ -8,6 +8,11 @@ variable "location" {
   default = "westus3"
 }
 
+variable "openai_subdomain" {
+  type = string
+  default = ""
+}
+
 variable "kubernetes_version" {
   type    = string
   default = "1.30.7"

@@ -75,7 +75,7 @@ module "openai" {
       }
     }
   ]
-  custom_subdomain_name         = "magic8ball"
+  custom_subdomain_name         = var.openai_subdomain
   public_network_access_enabled = true
 
   log_analytics_workspace_id   = module.log_analytics_workspace.id
