@@ -236,7 +236,7 @@ module "bastion_host" {
 # Private DNS Zones
 ###############################################################################
 module "acr_private_dns_zone" {
-  source              = "./modules/dns_zone"
+  source              = "./modules/dns"
   location            = var.location
   resource_group_name = azurerm_resource_group.rg.name
 
@@ -250,7 +250,7 @@ module "acr_private_dns_zone" {
 }
 
 module "openai_private_dns_zone" {
-  source              = "./modules/dns_zone"
+  source              = "./modules/dns"
   location            = var.location
   resource_group_name = azurerm_resource_group.rg.name
 
@@ -264,7 +264,7 @@ module "openai_private_dns_zone" {
 }
 
 module "key_vault_private_dns_zone" {
-  source              = "./modules/dns_zone"
+  source              = "./modules/dns"
   location            = var.location
   resource_group_name = azurerm_resource_group.rg.name
 
@@ -278,7 +278,7 @@ module "key_vault_private_dns_zone" {
 }
 
 module "blob_private_dns_zone" {
-  source              = "./modules/dns_zone"
+  source              = "./modules/dns"
   location            = var.location
   resource_group_name = azurerm_resource_group.rg.name
 
