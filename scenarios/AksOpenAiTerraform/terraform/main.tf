@@ -198,8 +198,8 @@ module "acr_private_dns_zone" {
   name                           = "privatelink.azurecr.io"
   subresource_name               = "account"
   private_connection_resource_id = module.openai.id
-  virtual_network_id = module.virtual_network.id
-  subnet_id          = module.virtual_network.subnet_ids["VmSubnet"]
+  virtual_network_id             = module.virtual_network.id
+  subnet_id                      = module.virtual_network.subnet_ids["VmSubnet"]
 }
 
 module "openai_private_dns_zone" {
@@ -210,8 +210,8 @@ module "openai_private_dns_zone" {
   name                           = "privatelink.openai.azure.com"
   subresource_name               = "registry"
   private_connection_resource_id = module.container_registry.id
-  virtual_network_id = module.virtual_network.id
-  subnet_id          = module.virtual_network.subnet_ids["VmSubnet"]
+  virtual_network_id             = module.virtual_network.id
+  subnet_id                      = module.virtual_network.subnet_ids["VmSubnet"]
 }
 
 module "key_vault_private_dns_zone" {
@@ -222,8 +222,8 @@ module "key_vault_private_dns_zone" {
   name                           = "privatelink.vaultcore.azure.net"
   subresource_name               = "vault"
   private_connection_resource_id = module.key_vault.id
-  virtual_network_id = module.virtual_network.id
-  subnet_id          = module.virtual_network.subnet_ids["VmSubnet"]
+  virtual_network_id             = module.virtual_network.id
+  subnet_id                      = module.virtual_network.subnet_ids["VmSubnet"]
 }
 
 module "blob_private_dns_zone" {
@@ -234,8 +234,8 @@ module "blob_private_dns_zone" {
   name                           = "privatelink.blob.core.windows.net"
   subresource_name               = "blob"
   private_connection_resource_id = module.storage_account.id
-  virtual_network_id = module.virtual_network.id
-  subnet_id          = module.virtual_network.subnet_ids["VmSubnet"]
+  virtual_network_id             = module.virtual_network.id
+  subnet_id                      = module.virtual_network.subnet_ids["VmSubnet"]
 }
 
 ###############################################################################
