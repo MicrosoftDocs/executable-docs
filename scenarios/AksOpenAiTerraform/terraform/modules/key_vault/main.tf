@@ -5,20 +5,20 @@ resource "azurerm_key_vault" "key_vault" {
   tenant_id           = var.tenant_id
 
   sku_name                        = var.sku_name
-  enabled_for_deployment          = var.enabled_for_deployment
-  enabled_for_disk_encryption     = var.enabled_for_disk_encryption
-  enabled_for_template_deployment = var.enabled_for_template_deployment
-  enable_rbac_authorization       = var.enable_rbac_authorization
-  purge_protection_enabled        = var.purge_protection_enabled
-  soft_delete_retention_days      = var.soft_delete_retention_days
+  enabled_for_deployment          = true
+  enabled_for_disk_encryption     = true
+  enabled_for_template_deployment = true
+  enable_rbac_authorization       = true
+  purge_protection_enabled        = false
+  soft_delete_retention_days      = 30
 
   timeouts {
     delete = "60m"
   }
 
   network_acls {
-    bypass         = var.bypass
-    default_action = var.default_action
+    bypass         = "AzureServices"
+    default_action = "Allow"
   }
 }
 

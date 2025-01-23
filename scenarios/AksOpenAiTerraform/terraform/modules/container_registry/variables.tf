@@ -10,10 +10,6 @@ variable "location" {
   type = string
 }
 
-variable "admin_enabled" {
-  type = string
-}
-
 variable "sku" {
   type = string
 }

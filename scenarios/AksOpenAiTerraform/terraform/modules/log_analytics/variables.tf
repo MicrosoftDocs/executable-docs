@@ -14,10 +14,6 @@ variable "sku" {
   type = string
 }
 
-variable "solution_plan_map" {
-  type = map(any)
-}
-
 variable "retention_in_days" {
   type = number
 }

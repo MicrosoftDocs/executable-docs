@@ -6,7 +6,7 @@ resource "azurerm_cognitive_account" "openai" {
   kind                          = "OpenAI"
   custom_subdomain_name         = var.custom_subdomain_name
   sku_name                      = var.sku_name
-  public_network_access_enabled = var.public_network_access_enabled
+  public_network_access_enabled = true
 
   identity {
     type = "SystemAssigned"

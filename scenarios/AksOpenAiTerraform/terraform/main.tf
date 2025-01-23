@@ -37,9 +37,6 @@ locals {
 
   namespace            = "magic8ball"
   service_account_name = "magic8ball-sa"
-
-  log_analytics_workspace_name = "Workspace"
-  log_analytics_retention_days = 30
 }
 
 resource "azurerm_resource_group" "rg" {
@@ -70,11 +67,9 @@ module "openai" {
       }
     }
   ]
-  custom_subdomain_name         = var.openai_subdomain
-  public_network_access_enabled = true
+  custom_subdomain_name = var.openai_subdomain
 
-  log_analytics_workspace_id   = module.log_analytics_workspace.id
-  log_analytics_retention_days = local.log_analytics_retention_days
+  log_analytics_workspace_id = module.log_analytics_workspace.id
 }
 
 module "aks_cluster" {
@@ -87,8 +82,8 @@ module "aks_cluster" {
 
   kubernetes_version       = var.kubernetes_version
   sku_tier                 = "Free"
-  system_node_pool_vm_size = var.system_node_pool_vm_size
-  user_node_pool_vm_size   = var.user_node_pool_vm_size
+  system_node_pool_vm_size = "Standard_D8ds_v5"
+  user_node_pool_vm_size   = "Standard_D8ds_v5"
 
   system_node_pool_subnet_id = module.virtual_network.subnet_ids["SystemSubnet"]
   user_node_pool_subnet_id   = module.virtual_network.subnet_ids["UserSubnet"]
@@ -105,8 +100,7 @@ module "container_registry" {
   location            = var.location
   resource_group_name = azurerm_resource_group.rg.name
 
-  sku           = "Premium"
-  admin_enabled = true
+  sku = "Premium"
 
   log_analytics_workspace_id = module.log_analytics_workspace.id
 }
@@ -116,11 +110,6 @@ module "storage_account" {
   name                = "boot${random_string.storage_account_suffix.result}"
   location            = var.location
   resource_group_name = azurerm_resource_group.rg.name
-
-  account_kind     = "StorageV2"
-  account_tier     = "Standard"
-  replication_type = "LRS"
-  is_hns_enabled   = false
 }
 
 module "key_vault" {
@@ -129,34 +118,20 @@ module "key_vault" {
   location            = var.location
   resource_group_name = azurerm_resource_group.rg.name
 
-  tenant_id                       = local.tenant_id
-  sku_name                        = "standard"
-  enabled_for_deployment          = true
-  enabled_for_disk_encryption     = true
-  enabled_for_template_deployment = true
-  enable_rbac_authorization       = true
-  purge_protection_enabled        = false
-  soft_delete_retention_days      = 30
-  bypass                          = "AzureServices"
-  default_action                  = "Allow"
-  log_analytics_workspace_id      = module.log_analytics_workspace.id
-  log_analytics_retention_days    = local.log_analytics_retention_days
+  tenant_id = local.tenant_id
+  sku_name  = "standard"
+
+  log_analytics_workspace_id = module.log_analytics_workspace.id
 }
 
 module "log_analytics_workspace" {
   source              = "./modules/log_analytics"
-  name                = local.log_analytics_workspace_name
+  name                = "Workspace"
   location            = var.location
   resource_group_name = azurerm_resource_group.rg.name
 
   sku               = "PerGB2018"
-  retention_in_days = local.log_analytics_retention_days
-  solution_plan_map = {
-    ContainerInsights = {
-      product   = "OMSGallery/ContainerInsights"
-      publisher = "Microsoft"
-    }
-  }
+  retention_in_days = 30
 }
 
 ###############################################################################
@@ -219,8 +194,7 @@ module "bastion_host" {
 
   subnet_id = module.virtual_network.subnet_ids["AzureBastionSubnet"]
 
-  log_analytics_workspace_id   = module.log_analytics_workspace.id
-  log_analytics_retention_days = local.log_analytics_retention_days
+  log_analytics_workspace_id = module.log_analytics_workspace.id
 }
 
 ###############################################################################
@@ -234,7 +208,6 @@ module "acr_private_dns_zone" {
   name                           = "privatelink.azurecr.io"
   subresource_name               = "account"
   private_connection_resource_id = module.openai.id
-
   virtual_network_id = module.virtual_network.id
   subnet_id          = module.virtual_network.subnet_ids["VmSubnet"]
 }
@@ -247,7 +220,6 @@ module "openai_private_dns_zone" {
   name                           = "privatelink.openai.azure.com"
   subresource_name               = "registry"
   private_connection_resource_id = module.container_registry.id
-
   virtual_network_id = module.virtual_network.id
   subnet_id          = module.virtual_network.subnet_ids["VmSubnet"]
 }
@@ -260,7 +232,6 @@ module "key_vault_private_dns_zone" {
   name                           = "privatelink.vaultcore.azure.net"
   subresource_name               = "vault"
   private_connection_resource_id = module.key_vault.id
-
   virtual_network_id = module.virtual_network.id
   subnet_id          = module.virtual_network.subnet_ids["VmSubnet"]
 }
@@ -273,7 +244,6 @@ module "blob_private_dns_zone" {
   name                           = "privatelink.blob.core.windows.net"
   subresource_name               = "blob"
   private_connection_resource_id = module.storage_account.id
-
   virtual_network_id = module.virtual_network.id
   subnet_id          = module.virtual_network.subnet_ids["VmSubnet"]
 }

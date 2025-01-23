@@ -1,4 +1,4 @@
-variable "resource_group_name" {
+variable "name" {
   type = string
 }
 
@@ -6,7 +6,7 @@ variable "location" {
   type = string
 }
 
-variable "name" {
+variable "resource_group_name" {
   type = string
 }
 
@@ -16,11 +16,6 @@ variable "sku_name" {
 
 variable "custom_subdomain_name" {
   type = string
-}
-
-variable "public_network_access_enabled" {
-  type    = bool
-  default = true
 }
 
 variable "deployments" {
@@ -35,8 +30,4 @@ variable "deployments" {
 
 variable "log_analytics_workspace_id" {
   type = string
-}
-
-variable "log_analytics_retention_days" {
-  type = number
 }
