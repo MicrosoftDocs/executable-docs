@@ -1,16 +1,3 @@
-terraform {
-  required_providers {
-    azurerm = {
-      source  = "hashicorp/azurerm"
-      version = "~> 4.16.0"
-    }
-  }
-}
-
-provider "azurerm" {
-  features {}
-}
-
 data "azurerm_client_config" "current" {
 }
 
@@ -39,6 +26,9 @@ locals {
   service_account_name = "magic8ball-sa"
 }
 
+###############################################################################
+# Resource Group
+###############################################################################
 resource "azurerm_resource_group" "rg" {
   name     = "${var.resource_group_name_prefix}-${local.random_id}-rg"
   location = var.location
