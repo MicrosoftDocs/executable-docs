@@ -25,6 +25,6 @@ resource "azurerm_private_endpoint" "this" {
 
   private_dns_zone_group {
     name                 = azurerm_private_dns_zone.this.name
-    private_dns_zone_ids = [var.private_connection_resource_id]
+    private_dns_zone_ids = [azurerm_private_dns_zone.this.id]
   }
 }
