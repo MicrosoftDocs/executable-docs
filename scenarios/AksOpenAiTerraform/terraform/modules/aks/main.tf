@@ -66,7 +66,7 @@ resource "azurerm_kubernetes_cluster" "aks_cluster" {
   }
 
   lifecycle {
-    ignore_changes = [ microsoft_defender ]
+    ignore_changes = [microsoft_defender]
   }
 }
 

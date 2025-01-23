@@ -19,10 +19,13 @@ variable "subnets" {
   type = list(object({
     name             = string
     address_prefixes = list(string)
-    delegation = object({ name = string, service_delegation = object({
-      name    = string
-      actions = list(string)
-    }) })
+    delegation = optional(object({
+      name = string,
+      service_delegation = object({
+        name    = string
+        actions = list(string)
+      })
+    }))
   }))
 }
 

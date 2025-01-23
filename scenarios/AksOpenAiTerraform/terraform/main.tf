@@ -290,11 +290,11 @@ resource "azurerm_user_assigned_identity" "aks_workload_identity" {
 resource "azurerm_federated_identity_credential" "federated_identity_credential" {
   name                = "${title(local.namespace)}FederatedIdentity"
   resource_group_name = azurerm_resource_group.rg.name
-  
-  audience            = ["api://AzureADTokenExchange"]
-  issuer              = module.aks_cluster.oidc_issuer_url
-  parent_id           = azurerm_user_assigned_identity.aks_workload_identity.id
-  subject             = "system:serviceaccount:${local.namespace}:${local.service_account_name}"
+
+  audience  = ["api://AzureADTokenExchange"]
+  issuer    = module.aks_cluster.oidc_issuer_url
+  parent_id = azurerm_user_assigned_identity.aks_workload_identity.id
+  subject   = "system:serviceaccount:${local.namespace}:${local.service_account_name}"
 }
 
 resource "azurerm_role_assignment" "cognitive_services_user_assignment" {
