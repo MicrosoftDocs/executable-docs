@@ -100,6 +100,8 @@ module "aks_cluster" {
   pod_subnet_id              = module.virtual_network.subnet_ids[local.pod_subnet_name]
 
   log_analytics_workspace_id = module.log_analytics_workspace.id
+
+  depends_on = [module.nat_gateway]
 }
 
 module "container_registry" {
@@ -234,106 +236,59 @@ module "bastion_host" {
 # Private DNS Zones
 ###############################################################################
 module "acr_private_dns_zone" {
-  source              = "./modules/private_dns_zone"
-  name                = "privatelink.azurecr.io"
+  source              = "./modules/dns_zone"
+  location            = var.location
   resource_group_name = azurerm_resource_group.rg.name
-  virtual_networks_to_link = {
-    (module.virtual_network.name) = {
-      subscription_id     = local.subscription_id
-      resource_group_name = azurerm_resource_group.rg.name
-    }
-  }
+
+  name                           = "privatelink.azurecr.io"
+  private_dns_zone_group_name    = "OpenAiPrivateDnsZoneGroup"
+  subresource_name               = "account"
+  private_connection_resource_id = module.openai.id
+
+  virtual_network_id             = module.virtual_network.id
+  subnet_id                      = module.virtual_network.subnet_ids[local.vm_subnet_name]
 }
 
 module "openai_private_dns_zone" {
-  source              = "./modules/private_dns_zone"
-  name                = "privatelink.openai.azure.com"
+  source              = "./modules/dns_zone"
+  location            = var.location
   resource_group_name = azurerm_resource_group.rg.name
-  virtual_networks_to_link = {
-    (module.virtual_network.name) = {
-      subscription_id     = local.subscription_id
-      resource_group_name = azurerm_resource_group.rg.name
-    }
-  }
+
+  name                           = "privatelink.openai.azure.com"
+  private_dns_zone_group_name    = "AcrPrivateDnsZoneGroup"
+  subresource_name               = "registry"
+  private_connection_resource_id = module.container_registry.id
+  
+  virtual_network_id             = module.virtual_network.id
+  subnet_id                      = module.virtual_network.subnet_ids[local.vm_subnet_name]
 }
 
 module "key_vault_private_dns_zone" {
-  source              = "./modules/private_dns_zone"
-  name                = "privatelink.vaultcore.azure.net"
+  source              = "./modules/dns_zone"
+  location            = var.location
   resource_group_name = azurerm_resource_group.rg.name
-  virtual_networks_to_link = {
-    (module.virtual_network.name) = {
-      subscription_id     = local.subscription_id
-      resource_group_name = azurerm_resource_group.rg.name
-    }
-  }
+
+  name                           = "privatelink.vaultcore.azure.net"
+  private_dns_zone_group_name    = "KeyVaultPrivateDnsZoneGroup"
+  subresource_name               = "vault"
+  private_connection_resource_id = module.key_vault.id
+
+  virtual_network_id             = module.virtual_network.id
+  subnet_id                      = module.virtual_network.subnet_ids[local.vm_subnet_name]
 }
 
 module "blob_private_dns_zone" {
-  source              = "./modules/private_dns_zone"
-  name                = "privatelink.blob.core.windows.net"
+  source              = "./modules/dns_zone"
+  location            = var.location
   resource_group_name = azurerm_resource_group.rg.name
-  virtual_networks_to_link = {
-    (module.virtual_network.name) = {
-      subscription_id     = local.subscription_id
-      resource_group_name = azurerm_resource_group.rg.name
-    }
-  }
-}
 
-###############################################################################
-# Private Endpoints
-###############################################################################
-module "openai_private_endpoint" {
-  source                         = "./modules/private_endpoint"
-  name                           = "OpenAiPrivateEndpoint"
-  location                       = var.location
-  resource_group_name            = azurerm_resource_group.rg.name
-
-  subnet_id                      = module.virtual_network.subnet_ids[local.vm_subnet_name]
-  private_connection_resource_id = module.openai.id
-  subresource_name               = "account"
-  private_dns_zone_group_name    = "OpenAiPrivateDnsZoneGroup"
-  private_dns_zone_group_ids     = [module.openai_private_dns_zone.id]
-}
-
-module "acr_private_endpoint" {
-  source                         = "./modules/private_endpoint"
-  name                           = "AcrPrivateEndpoint"
-  location                       = var.location
-  resource_group_name            = azurerm_resource_group.rg.name
-
-  subnet_id                      = module.virtual_network.subnet_ids[local.vm_subnet_name]
-  private_connection_resource_id = module.container_registry.id
-  subresource_name               = "registry"
-  private_dns_zone_group_name    = "AcrPrivateDnsZoneGroup"
-  private_dns_zone_group_ids     = [module.acr_private_dns_zone.id]
-}
-
-module "key_vault_private_endpoint" {
-  source                         = "./modules/private_endpoint"
-  name                           = "VaultPrivateEndpoint"
-  location                       = var.location
-  resource_group_name            = azurerm_resource_group.rg.name
-
-  subnet_id                      = module.virtual_network.subnet_ids[local.vm_subnet_name]
-  private_connection_resource_id = module.key_vault.id
-  subresource_name               = "vault"
-  private_dns_zone_group_name    = "KeyVaultPrivateDnsZoneGroup"
-  private_dns_zone_group_ids     = [module.key_vault_private_dns_zone.id]
-}
-
-module "blob_private_endpoint" {
-  source                         = "./modules/private_endpoint"
-  name                           = "BlobStoragePrivateEndpoint"
-  location                       = var.location
-  resource_group_name            = azurerm_resource_group.rg.name
-
-  subnet_id                      = module.virtual_network.subnet_ids[local.vm_subnet_name]
-  private_connection_resource_id = module.storage_account.id
-  subresource_name               = "blob"
+  name                           = "privatelink.blob.core.windows.net"
   private_dns_zone_group_name    = "BlobPrivateDnsZoneGroup"
-  private_dns_zone_group_ids     = [module.blob_private_dns_zone.id]
+  subresource_name               = "blob"
+  private_connection_resource_id = module.storage_account.id
+
+  virtual_network_id             = module.virtual_network.id
+  subnet_id                      = module.virtual_network.subnet_ids[local.vm_subnet_name]
 }
 
 ###############################################################################
