@@ -10,10 +10,8 @@ variable "location" {
 
 variable "openai_subdomain" {
   type    = string
-  default = "magic8ball-test465544"
+  default = "magic8ball"
 }
-
-# -test465544
 
 variable "kubernetes_version" {
   type    = string
