@@ -9,20 +9,4 @@ resource "azurerm_monitor_diagnostic_setting" "settings" {
   eventhub_authorization_rule_id = var.eventhub_authorization_rule_id
 
   storage_account_id = var.storage_account_id
-
-  dynamic "log" {
-    for_each = toset(logs)
-    content {
-      category = each.key
-      enabled  = true
-    }
-  }
-
-  dynamic "metric" {
-    for_each = toset(metrics)
-    content {
-      category = each.key
-      enabled  = true
-    }
-  }
 }

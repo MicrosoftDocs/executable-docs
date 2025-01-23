@@ -100,11 +100,6 @@ module "aks_cluster" {
   pod_subnet_id              = module.virtual_network.subnet_ids[local.pod_subnet_name]
 
   log_analytics_workspace_id = module.log_analytics_workspace.id
-
-  depends_on = [
-    module.nat_gateway,
-    module.container_registry
-  ]
 }
 
 module "container_registry" {
@@ -294,10 +289,11 @@ module "openai_private_endpoint" {
   name                           = "OpenAiPrivateEndpoint"
   location                       = var.location
   resource_group_name            = azurerm_resource_group.rg.name
+
   subnet_id                      = module.virtual_network.subnet_ids[local.vm_subnet_name]
   private_connection_resource_id = module.openai.id
   subresource_name               = "account"
-  private_dns_zone_group_name    = "AcrPrivateDnsZoneGroup"
+  private_dns_zone_group_name    = "OpenAiPrivateDnsZoneGroup"
   private_dns_zone_group_ids     = [module.openai_private_dns_zone.id]
 }
 
@@ -306,6 +302,7 @@ module "acr_private_endpoint" {
   name                           = "AcrPrivateEndpoint"
   location                       = var.location
   resource_group_name            = azurerm_resource_group.rg.name
+
   subnet_id                      = module.virtual_network.subnet_ids[local.vm_subnet_name]
   private_connection_resource_id = module.container_registry.id
   subresource_name               = "registry"
@@ -318,6 +315,7 @@ module "key_vault_private_endpoint" {
   name                           = "VaultPrivateEndpoint"
   location                       = var.location
   resource_group_name            = azurerm_resource_group.rg.name
+
   subnet_id                      = module.virtual_network.subnet_ids[local.vm_subnet_name]
   private_connection_resource_id = module.key_vault.id
   subresource_name               = "vault"
@@ -330,6 +328,7 @@ module "blob_private_endpoint" {
   name                           = "BlobStoragePrivateEndpoint"
   location                       = var.location
   resource_group_name            = azurerm_resource_group.rg.name
+
   subnet_id                      = module.virtual_network.subnet_ids[local.vm_subnet_name]
   private_connection_resource_id = module.storage_account.id
   subresource_name               = "blob"
