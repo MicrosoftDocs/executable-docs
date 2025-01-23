@@ -1,8 +1,5 @@
 #/bin/bash
 
-# Variables
-source ./00-variables.sh
-
 # Create the ingress
 echo "[$ingressName] ingress does not exist"
 echo "Creating [$ingressName] ingress..."

@@ -1,8 +1,5 @@
 #/bin/bash
 
-# Variables
-source ./00-variables.sh
-
 # Check if the ingress-nginx repository is not already added
 result=$(helm repo list | grep $cmRepoName | awk '{print $1}')
 

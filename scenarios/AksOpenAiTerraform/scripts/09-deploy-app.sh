@@ -3,15 +3,6 @@
 # Variables
 source ./00-variables.sh
 
-# Attach ACR to AKS cluster
-if [[ $attachAcr == true ]]; then
-  echo "Attaching ACR $acrName to AKS cluster $aksClusterName..."
-  az aks update \
-    --name $aksClusterName \
-    --resource-group $aksResourceGroupName \
-    --attach-acr $acrName
-fi
-
 # Check if namespace exists in the cluster
 result=$(kubectl get namespace -o jsonpath="{.items[?(@.metadata.name=='$namespace')].metadata.name}")
 

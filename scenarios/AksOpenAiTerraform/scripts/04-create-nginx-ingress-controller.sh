@@ -1,8 +1,5 @@
 #!/bin/bash
 
-# Variables
-source ./00-variables.sh
-
 # Use Helm to deploy an NGINX ingress controller
 result=$(helm list -n $nginxNamespace | grep $nginxReleaseName | awk '{print $1}')
 

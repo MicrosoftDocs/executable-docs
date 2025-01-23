@@ -1,8 +1,5 @@
 #/bin/bash
 
-# Variables
-source ./00-variables.sh
-
 # Check if the cluster issuer already exists
 result=$(kubectl get ClusterIssuer -o json | jq -r '.items[].metadata.name | select(. == "'$clusterIssuerName'")')
 
