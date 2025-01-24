@@ -1,0 +1,116 @@
+Timestamp,Type,Input,Output,Number of Attempts,Errors Encountered,Execution Time (in seconds),Success/Failure
+2024-12-18 16:38:44,file,test.md,converted_test.md,5,"time=2024-12-18T16:23:54-08:00 level=error msg=Error testing scenario: failed to execute code block 0 on step 1.
+Error: command exited with 'exit status 1' and the message 'ERROR: Invalid image ""UbuntuLTS"". Use a valid image URN, custom image name, custom image id, VHD blob URI, or pick an image from ['CentOS85Gen2', 'Debian11', 'OpenSuseLeap154Gen2', 'RHELRaw8LVMGen2', 'SuseSles15SP5', 'Ubuntu2204', 'Ubuntu2404', 'Ubuntu2404Pro', 'FlatcarLinuxFreeGen2', 'Win2022Datacenter', 'Win2022AzureEditionCore', 'Win2019Datacenter', 'Win2016Datacenter', 'Win2012R2Datacenter', 'Win2012Datacenter'].
+See vm create -h for more information on specifying an image.
+'
+StdErr: ERROR: Invalid image ""UbuntuLTS"". Use a valid image URN, custom image name, custom image id, VHD blob URI, or pick an image from ['CentOS85Gen2', 'Debian11', 'OpenSuseLeap154Gen2', 'RHELRaw8LVMGen2', 'SuseSles15SP5', 'Ubuntu2204', 'Ubuntu2404', 'Ubuntu2404Pro', 'FlatcarLinuxFreeGen2', 'Win2022Datacenter', 'Win2022AzureEditionCore', 'Win2019Datacenter', 'Win2016Datacenter', 'Win2012R2Datacenter', 'Win2012Datacenter'].
+See vm create -h for more information on specifying an image.
+
+ time=2024-12-18T16:24:16-08:00 level=error msg=Error testing scenario: failed to execute code block 0 on step 1.
+Error: command exited with 'exit status 1' and the message 'ERROR: {""error"":{""code"":""InvalidTemplateDeployment"",""message"":""The template deployment 'vmss_deploy_lLnmw6ctN6MOCXrDgQzZnHguu6N4pbkU' is not valid according to the validation procedure. The tracking id is '7a48dd61-2d63-4c23-af7e-da420cc89516'. See inner errors for details."",""details"":[{""code"":""SkuNotAvailable"",""message"":""The requested VM size for resource 'Following SKUs have failed for Capacity Restrictions: Standard_DS1_v2' is currently not available in location 'eastus'. Please try another size or deploy to a different location or different zone. See https://aka.ms/azureskunotavailable for details.""}]}}
+'
+StdErr: ERROR: {""error"":{""code"":""InvalidTemplateDeployment"",""message"":""The template deployment 'vmss_deploy_lLnmw6ctN6MOCXrDgQzZnHguu6N4pbkU' is not valid according to the validation procedure. The tracking id is '7a48dd61-2d63-4c23-af7e-da420cc89516'. See inner errors for details."",""details"":[{""code"":""SkuNotAvailable"",""message"":""The requested VM size for resource 'Following SKUs have failed for Capacity Restrictions: Standard_DS1_v2' is currently not available in location 'eastus'. Please try another size or deploy to a different location or different zone. See https://aka.ms/azureskunotavailable for details.""}]}}
+
+ time=2024-12-18T16:27:21-08:00 level=error msg=Error testing scenario: failed to execute code block 0 on step 5.
+Error: command exited with 'exit status 3' and the message 'ERROR: (ResourceNotFound) The Resource 'Microsoft.Compute/virtualMachines/myScaleSet_instance1' under resource group 'myResourceGroup05635e' was not found. For more details please go to https://aka.ms/ARMResourceNotFoundFix
+Code: ResourceNotFound
+Message: The Resource 'Microsoft.Compute/virtualMachines/myScaleSet_instance1' under resource group 'myResourceGroup05635e' was not found. For more details please go to https://aka.ms/ARMResourceNotFoundFix
+'
+StdErr: ERROR: (ResourceNotFound) The Resource 'Microsoft.Compute/virtualMachines/myScaleSet_instance1' under resource group 'myResourceGroup05635e' was not found. For more details please go to https://aka.ms/ARMResourceNotFoundFix
+Code: ResourceNotFound
+Message: The Resource 'Microsoft.Compute/virtualMachines/myScaleSet_instance1' under resource group 'myResourceGroup05635e' was not found. For more details please go to https://aka.ms/ARMResourceNotFoundFix
+
+ time=2024-12-18T16:31:03-08:00 level=error msg=Error testing scenario: failed to execute code block 0 on step 5.
+Error: command exited with 'exit status 1' and the message 'ERROR: (OperationNotAllowed) Operation 'VMScaleSetVMs.Deallocate.POST' is not allowed on Virtual Machine Scale Set 'myScaleSete2e071'.
+Code: OperationNotAllowed
+Message: Operation 'VMScaleSetVMs.Deallocate.POST' is not allowed on Virtual Machine Scale Set 'myScaleSete2e071'.
+'
+StdErr: ERROR: (OperationNotAllowed) Operation 'VMScaleSetVMs.Deallocate.POST' is not allowed on Virtual Machine Scale Set 'myScaleSete2e071'.
+Code: OperationNotAllowed
+Message: Operation 'VMScaleSetVMs.Deallocate.POST' is not allowed on Virtual Machine Scale Set 'myScaleSete2e071'.
+
+ time=2024-12-18T16:34:17-08:00 level=error msg=Error testing scenario: failed to execute code block 0 on step 4.
+Error: command exited with 'exit status 2' and the message 'ERROR: unrecognized arguments: --instance-id 0
+
+Examples from AI knowledge base:
+az vm stop --resource-group MyResourceGroup --name MyVm
+Power off (stop) a running VM.
+
+az vm stop --resource-group MyResourceGroup --name MyVm --skip-shutdown
+Power off a running VM without shutting down.
+
+https://docs.microsoft.com/en-US/cli/azure/vm#az_vm_stop
+Read more about the command in reference docs
+'
+StdErr: ERROR: unrecognized arguments: --instance-id 0
+
+Examples from AI knowledge base:
+az vm stop --resource-group MyResourceGroup --name MyVm
+Power off (stop) a running VM.
+
+az vm stop --resource-group MyResourceGroup --name MyVm --skip-shutdown
+Power off a running VM without shutting down.
+
+https://docs.microsoft.com/en-US/cli/azure/vm#az_vm_stop
+Read more about the command in reference docs",909.2479140758514,Success
+2024-12-19 13:09:10,workload_description,i want to create a linux vm and ssh into it,generated_exec_doc.md,3,"time=2024-12-19T13:07:08-08:00 level=error msg=Error testing scenario: failed to execute code block 0 on step 2.
+Error: command exited with 'exit status 1' and the message 'ERROR: Invalid image ""UbuntuLTS"". Use a valid image URN, custom image name, custom image id, VHD blob URI, or pick an image from ['CentOS85Gen2', 'Debian11', 'OpenSuseLeap154Gen2', 'RHELRaw8LVMGen2', 'SuseSles15SP5', 'Ubuntu2204', 'Ubuntu2404', 'Ubuntu2404Pro', 'FlatcarLinuxFreeGen2', 'Win2022Datacenter', 'Win2022AzureEditionCore', 'Win2019Datacenter', 'Win2016Datacenter', 'Win2012R2Datacenter', 'Win2012Datacenter'].
+See vm create -h for more information on specifying an image.
+'
+StdErr: ERROR: Invalid image ""UbuntuLTS"". Use a valid image URN, custom image name, custom image id, VHD blob URI, or pick an image from ['CentOS85Gen2', 'Debian11', 'OpenSuseLeap154Gen2', 'RHELRaw8LVMGen2', 'SuseSles15SP5', 'Ubuntu2204', 'Ubuntu2404', 'Ubuntu2404Pro', 'FlatcarLinuxFreeGen2', 'Win2022Datacenter', 'Win2022AzureEditionCore', 'Win2019Datacenter', 'Win2016Datacenter', 'Win2012R2Datacenter', 'Win2012Datacenter'].
+See vm create -h for more information on specifying an image.
+
+ time=2024-12-19T13:07:20-08:00 level=error msg=Error testing scenario: failed to execute code block 0 on step 2.
+Error: command exited with 'exit status 1' and the message 'ERROR: An RSA key file or key value must be supplied to SSH Key Value. You can use --generate-ssh-keys to let CLI generate one for you
+'
+StdErr: ERROR: An RSA key file or key value must be supplied to SSH Key Value. You can use --generate-ssh-keys to let CLI generate one for you
+
+ time=2024-12-19T13:08:19-08:00 level=error msg=Error testing scenario: failed to execute code block 0 on step 3.
+Error: command exited with 'exit status 255' and the message 'Pseudo-terminal will not be allocated because stdin is not a terminal.
+Host key verification failed.
+'
+StdErr: Pseudo-terminal will not be allocated because stdin is not a terminal.
+Host key verification failed.",135.19094800949097,Success
+2024-12-20 21:08:11,workload_description,Creation of Speech Services application on Azure,generated_exec_doc.md,11,"time=2024-12-20T21:04:49-08:00 level=error msg=Error testing scenario: failed to execute code block 0 on step 3.
+Error: unexpected end of JSON input
+StdErr:
+
+ time=2024-12-20T21:05:06-08:00 level=error msg=Error testing scenario: failed to execute code block 0 on step 3.
+Error: unexpected end of JSON input
+StdErr:
+
+ time=2024-12-20T21:05:23-08:00 level=error msg=Error testing scenario: failed to execute code block 0 on step 2.
+Error: invalid character 'K' looking for beginning of value
+StdErr:
+
+ time=2024-12-20T21:05:40-08:00 level=error msg=Error testing scenario: failed to execute code block 0 on step 2.
+Error: invalid character 'K' after top-level value
+StdErr:
+
+ time=2024-12-20T21:05:59-08:00 level=error msg=Error testing scenario: failed to execute code block 0 on step 2.
+Error: invalid character 'K' looking for beginning of value
+StdErr:
+
+ time=2024-12-20T21:06:19-08:00 level=error msg=Error testing scenario: failed to execute code block 0 on step 3.
+Error: invalid character 'K' looking for beginning of value
+StdErr:
+
+ time=2024-12-20T21:06:41-08:00 level=error msg=Error testing scenario: failed to execute code block 0 on step 3.
+Error: invalid character 'K' looking for beginning of value
+StdErr:
+
+ time=2024-12-20T21:07:05-08:00 level=error msg=Error testing scenario: failed to execute code block 0 on step 3.
+Error: invalid character 'K' looking for beginning of value
+StdErr:
+
+ time=2024-12-20T21:07:29-08:00 level=error msg=Error testing scenario: failed to execute code block 0 on step 3.
+Error: invalid character 'K' looking for beginning of value
+StdErr:
+
+ time=2024-12-20T21:07:49-08:00 level=error msg=Error testing scenario: failed to execute code block 0 on step 3.
+Error: invalid character 'K' looking for beginning of value
+StdErr:
+
+ time=2024-12-20T21:08:11-08:00 level=error msg=Error testing scenario: failed to execute code block 0 on step 3.
+Error: invalid character 'K' looking for beginning of value
+StdErr:",216.4925456047058,Failure

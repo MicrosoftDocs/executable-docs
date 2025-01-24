@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: torchserve-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: torchserve
+  template:
+    metadata:
+      labels:
+        app: torchserve
+    spec:
+      containers:
+      - name: torchserve-container
+        image: $IMAGE_TAG
+        ports:
+        - containerPort: 8080

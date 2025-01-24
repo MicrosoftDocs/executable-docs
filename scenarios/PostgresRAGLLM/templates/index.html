@@ -1,0 +1,13 @@
+<html lang="en">
+  <head>
+    <title>Chatbot Interface</title>
+  </head>
+  <body>
+    <h1>Ask about Zytonium</h1>
+    <form action="/ask" method="post">
+      <input type="text" name="question" required>
+      <button type="submit">Ask</button>
+    </form>
+    <pre>{{ response }}</pre>
+  </body>
+</html>
