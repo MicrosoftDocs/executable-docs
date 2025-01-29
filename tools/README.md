@@ -15,8 +15,7 @@ Welcome to ADA! This tool helps you convert documents and troubleshoot errors ef
 
 - Python 3.6 or higher
 - An Azure OpenAI API key
-- A GitHub access token
-- Required Python packages: `openai`, `azure-identity`, `requests`, `pygithub`
+- Required Python packages: `openai`, `azure-identity`, `requests`
 
 ## Installation
 
@@ -28,65 +27,10 @@ Welcome to ADA! This tool helps you convert documents and troubleshoot errors ef
 
 2. Install the required Python packages:
     ```bash
-    pip install openai azure-identity requests pygithub
+    pip install openai azure-identity requests 
     ```
 
-3. Ensure you have the GitHub access token set as an environment variable:
-    ```bash
-    export GitHub_Token=<your-github-access-token>
-    ```
-
-    Here is a simple and detailed guide on obtaining a GitHub Personal Access Token (PAT):
-
-    1. **Log In to GitHub**:
-    - Go to [https://github.com](https://github.com) and log in to your GitHub account.
-
-    2. **Access Developer Settings**:
-    - In the upper-right corner of GitHub, click on your profile picture and select "Settings".
-    - In the left-hand menu, scroll down and click on "Developer settings".
-
-    3. **Navigate to Personal Access Tokens**:
-    - Under "Developer settings", select "Personal access tokens".
-    - Choose "Tokens (classic)" for a straightforward token generation process.
-
-    4. **Generate a New Token**:
-    - Click on "Generate new token".
-    - Select "Generate new token (classic)".
-    - Provide a name for your token (e.g., "ADA Tool Token").
-    - Set an expiration date based on how long you need the token (e.g., 30 days, 90 days, or "No expiration" for permanent usage).
-
-    5. **Assign Scopes and Permissions**:
-    - Check the boxes for the permissions your token will require:
-        - For repository access, select "repo".
-        - For workflow management, select "workflow".
-        - Add additional scopes as needed for your use case.
-
-    6. **Generate and Save Your Token**:
-    - Click the "Generate token" button.
-    - Copy the generated token and save it in a secure location. **You won’t be able to see the token again after this step**.
-
-    7. **Set the Token as an Environment Variable (Optional)**:
-    - For ease of use and security, store the token as an environment variable.
-    - Open your terminal and edit the `.bashrc` or `.zshrc` file:
-        ```bash
-        nano ~/.bashrc
-        ```
-    - Add the following line:
-        ```bash
-        export GITHUB_TOKEN="<your_personal_access_token>"
-        ```
-    - Replace `<your_personal_access_token>` with the token you just generated.
-    - Save the file and reload your shell configuration:
-        ```bash
-        source ~/.bashrc
-        ```
-    - Verify the variable is set by running:
-        ```bash
-        echo $GITHUB_TOKEN
-        ```
-        This should display your token.
-
-4. Ensure you have the Azure OpenAI API key and endpoint set as environment variables:
+3. Ensure you have the Azure OpenAI API key and endpoint set as environment variables:
     ```bash
     export AZURE_OPENAI_API_KEY=<your-azure-openai-api-key>
     export AZURE_OPENAI_ENDPOINT=<your-azure-openai-endpoint>
@@ -113,7 +57,7 @@ Welcome to ADA! This tool helps you convert documents and troubleshoot errors ef
     - After creating your Azure OpenAI resource, navigate to the **Overview** page of your resource.
     - Click on "Go to Azure AI Studio" to open the Azure AI Studio interface.
     - In Azure AI Studio, select "Deployments" from the left-hand menu.
-    - Click "Deploy model" and choose the desired model (e.g., `gpt-4o-mini`) from the Azure OpenAI collection.
+    - Click "Deploy model" and choose `gpt-4o` from the Azure OpenAI collection.
     - Provide a deployment name and configure any additional settings as needed.
     - Click "Deploy" to deploy the model.
 
@@ -218,4 +162,3 @@ Please read CONTRIBUTING.md for details on our code of conduct and the process f
 
 - [OpenAI](https://openai.com/)
 - [Azure](https://azure.microsoft.com/)
-- [GitHub](https://github.com/)

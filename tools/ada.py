@@ -9,7 +9,6 @@ import csv
 import time
 from datetime import datetime
 from openai import AzureOpenAI
-from github import Github
 from collections import defaultdict
 
 client = AzureOpenAI(
@@ -25,9 +24,6 @@ REQUIRED_PACKAGES = [
     'azure-identity',
     'requests',
 ]
-
-github_access_token = os.getenv("GitHub_Token")
-g = Github(login_or_token=github_access_token)
 
 for package in REQUIRED_PACKAGES:
     try:

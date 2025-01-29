@@ -133,7 +133,6 @@ az sig image-version create \
    --gallery-name $MY_GALLERY_NAME \
    --gallery-image-definition $MY_IMAGE_DEF_NAME \
    --gallery-image-version 1.0.0 \
-   --target-regions "southcentralus=1" "eastus=1" \
    --virtual-machine $MY_VM_ID
 ```
 
@@ -163,7 +162,7 @@ export MY_IMAGE_DEF_ID=$(az sig image-definition show --resource-group $MY_GALLE
 export MY_SCALE_SET_RG_NAME="myResourceGroup$RANDOM_ID"
 export MY_SCALE_SET_NAME="myScaleSet$RANDOM_ID"
 
-az group create --name $MY_SCALE_SET_RG_NAME --location eastus
+az group create --name $MY_SCALE_SET_RG_NAME --location $REGION
 
 az vmss create \
    --resource-group $MY_SCALE_SET_RG_NAME \

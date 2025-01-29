@@ -81,7 +81,7 @@ az aks create -g $RESOURCE_GROUP --name $AKS_CLUSTER --generate-ssh-keys --enabl
 
 This command deploys a new AKS cluster with a system node pool of non-confidential computing nodes. Confidential computing Intel SGX nodes are not recommended for system node pools.
 
-### Add a user node pool with confidential computing capabilities to the AKS cluster<a id="add-a-user-node-pool-with-confidential-computing-capabilities-to-the-aks-cluster"></a>
+### Add a user node pool with confidential computing capabilities to the AKS cluster
 
 Run the following command to add a user node pool of `Standard_DC4s_v3` size with two nodes to the AKS cluster.
 
@@ -118,7 +118,7 @@ If the output matches the preceding code, your AKS cluster is now ready to run c
 
 You can go to the Deploy Hello World from an isolated enclave application section in this quickstart to test an app in an enclave.
 
-## Add a confidential computing node pool to an existing AKS cluster<a id="existing-cluster"></a>
+## Add a confidential computing node pool to an existing AKS cluster
 
 This section assumes you're already running an AKS cluster that meets the prerequisite criteria listed earlier in this quickstart.
 
@@ -168,7 +168,7 @@ kube-system   sgx-device-plugin-xxxxx              1/1     Running   0          
 
 If the output matches the preceding code, your AKS cluster is now ready to run confidential applications.
 
-## Deploy Hello World from an isolated enclave application <a id="deploy-hello-world-from-an-isolated-enclave-application"></a>
+## Deploy Hello World from an isolated enclave application
 
 You're now ready to deploy a test application.
 

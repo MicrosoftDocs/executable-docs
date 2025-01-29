@@ -702,11 +702,11 @@
     },
     {
         "status": "active",
-        "key": "azure-docs/articles/azure-linux/quickstart-azure-cli.md",
+        "key": "azure-management-docs/articles/azure-linux/quickstart-azure-cli.md",
         "title": "Quickstart: Deploy an Azure Linux Container Host for AKS cluster by using the Azure CLI",
         "description": "Learn how to quickly create an Azure Linux Container Host for AKS cluster using the Azure CLI.",
         "stackDetails": [],
-        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-docs/articles/azure-linux/quickstart-azure-cli.md",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-management-docs/articles/azure-linux/quickstart-azure-cli.md",
         "documentationUrl": "",
         "nextSteps": [
             {
@@ -731,6 +731,25 @@
             {
                 "title": "Deploy applications to your scale sets",
                 "url": "https://learn.microsoft.com/en-us/azure/virtual-machine-scale-sets/tutorial-install-apps-cli"
+            }
+            
+        ],
+        "configurations": {
+            "permissions": []
+        }
+    },
+    {
+        "status": "active",
+        "key": "azure-docs/articles/virtual-network/create-virtual-machine-accelerated-networking.md",
+        "title": "Create an Azure Virtual Machine with Accelerated Networking",
+        "description": "Use Azure portal, Azure CLI, or PowerShell to create Linux or Windows virtual machines with Accelerated Networking enabled for improved network performance.",
+        "stackDetails": [],
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-docs/articles/virtual-network/create-virtual-machine-accelerated-networking.md",
+        "documentationUrl": "https://learn.microsoft.com/en-us/azure/virtual-network/create-virtual-machine-accelerated-networking?tabs=cli",
+        "nextSteps": [
+            {
+                "title": "How Accelerated Networking works in Linux and FreeBSD VMs",
+                "url": "https://learn.microsoft.com/en-us/azure/virtual-network/accelerated-networking-how-it-works"
             }
             
         ],
