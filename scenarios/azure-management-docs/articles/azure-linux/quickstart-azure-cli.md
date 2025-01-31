@@ -417,7 +417,11 @@ do
    then
       export IP_ADDRESS=$(kubectl get service store-front --output 'jsonpath={..status.loadBalancer.ingress[0].ip}')
       echo "Service IP Address: $IP_ADDRESS"
-      break
+      if [ -n "$IP_ADDRESS" ]; then
+         break
+      else
+         echo "Waiting for IP address..."
+      fi
    else
       sleep 10
    fi

@@ -14,34 +14,24 @@ In this guide, you will deploy a highly-available PostgreSQL cluster that spans 
 
 ## Installing Terraform
 
-1. Update Package Index
-Before installing any software, it’s a good practice to update your package index. This ensures that you have the latest information about available packages
-
-```bash
-sudo apt-get update
-```
-
-
-2. Install Required Packages
-You need wget to download files from the internet and unzip to extract the downloaded files. Install them using the following command:
-
-```bash
-sudo apt-get install -y wget unzip
-```
-
-
 3. Download Terraform
 Use wget to download the latest version of Terraform. You can find the latest version on the Terraform releases page. For example, to download version 1.5.0:
 
 ```bash
-wget https://releases.hashicorp.com/terraform/1.5.0/terraform_1.5.0_linux_amd64.zip
+if ! command -v terraform &> /dev/null
+then
+    wget https://releases.hashicorp.com/terraform/1.5.0/terraform_1.5.0_linux_amd64.zip
+fi
 ```
 
 4. Unzip the Downloaded File
 After downloading, you need to extract the Terraform binary from the zip file:
 
 ```bash
-unzip terraform_1.5.0_linux_amd64.zip
+if ! command -v terraform &> /dev/null
+then
+  unzip terraform_1.5.0_linux_amd64.zip
+fi
 ```
 
 
@@ -49,7 +39,19 @@ unzip terraform_1.5.0_linux_amd64.zip
 To make Terraform accessible from anywhere in your terminal, move it to /usr/local/bin:
 
 ```bash
-sudo mv terraform /usr/local/bin/
+if ! command -v terraform &> /dev/null
+then
+  # Create a bin directory in your home directory if it doesn't exist
+  mkdir -p $HOME/bin
+
+  # Move Terraform to the bin directory in your home directory
+  mv terraform $HOME/bin/
+
+  # Add the bin directory to your PATH if it's not already included
+  if [[ ":$PATH:" != *":$HOME/bin:"* ]]; then
+      export PATH="$HOME/bin:$PATH"
+  fi
+fi
 ```
 
 
@@ -71,18 +73,41 @@ Terraform v1.5.0
 
 1. Create a Terraform Configuration File Create a file named main.tf with the following content:
 
+```bash
+# Generate a random suffix
+export RANDOM_SUFFIX=$(openssl rand -hex 4)
+export RESOURCE_GROUP_NAME="pg-ha-rg$RANDOM_SUFFIX"
+export AKS_CLUSTER_NAME="pg-ha-aks$RANDOM_SUFFIX"
+export POSTGRES_SERVER_NAME="pg-ha-server$RANDOM_SUFFIX"
+export POSTGRES_DATABASE_NAME=$POSTGRES_DATABASE_NAME
+export POSTGRES_DATABASE_PASSWORD=$(openssl rand -base64 32)
+export POSTGRES_DATABASE_USER="pgadmin$RANDOM_SUFFIX"
+
+# Get the subscription ID programmatically
+export TF_VAR_subscription_id=$(az account show --query id --output tsv)
+
+# Set additional environment variables for Terraform
+export TF_VAR_resource_group_name=$RESOURCE_GROUP_NAME
+export TF_VAR_location="East US"
+export TF_VAR_aks_cluster_name=$AKS_CLUSTER_NAME
+export TF_VAR_postgres_server_name=$POSTGRES_SERVER_NAME
+export TF_VAR_postgres_database_name=$POSTGRES_DATABASE_NAME
+export TF_VAR_postgres_database_user=$POSTGRES_DATABASE_USER
+export TF_VAR_postgres_database_password=$POSTGRES_DATABASE_PASSWORD
+```
+
 ```text
 provider "azurerm" {
   features {}
 }
 
 resource "azurerm_resource_group" "rg" {
-  name     = "pg-ha-rg"
+  name     = $RESOURCE_GROUP_NAME
   location = "West Europe"
 }
 
 resource "azurerm_kubernetes_cluster" "aks" {
-  name                = "pg-ha-aks"
+  name                = $AKS_CLUSTER_NAME
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
   dns_prefix          = "pgha"
@@ -105,7 +130,7 @@ resource "azurerm_kubernetes_cluster" "aks" {
 }
 
 resource "azurerm_postgresql_server" "pg_server" {
-  name                = "pg-ha-server"
+  name                = $POSTGRES_SERVER_NAME
   resource_group_name = azurerm_resource_group.rg.name
   location            = azurerm_resource_group.rg.location
   version             = "11"
@@ -117,13 +142,13 @@ resource "azurerm_postgresql_server" "pg_server" {
   storage_profile {
     storage_mb = 5120
   }
-  administrator_login          = "pgadmin"
-  administrator_login_password = "YourPassword123!"
+  administrator_login          = $POSTGRES_DATABASE_USER
+  administrator_login_password = $POSTGRES_DATABASE_PASSWORD
   ssl_enforcement_enabled      = true
 }
 
 resource "azurerm_postgresql_database" "pg_database" {
-  name                = "mydatabase"
+  name                = $POSTGRES_DATABASE_NAME
   resource_group_name = azurerm_resource_group.rg.name
   server_name         = azurerm_postgresql_server.pg_server.name
   charset             = "UTF8"
@@ -211,7 +236,7 @@ Apply complete! Resources: 3 added, 0 changed, 0 destroyed.
 6. Verify the Deployment Check the status of the AKS cluster:
 
 ```bash
-az aks show --resource-group pg-ha-rg --name pg-ha-aks --output table
+az aks show --resource-group $RESOURCE_GROUP_NAME --name $AKS_CLUSTER_NAME --output table
 ```
 
 Results:
@@ -226,7 +251,7 @@ pg-ha-aks   pg-ha-rg       West Europe     1.20.7               Succeeded
 7. Connect to PostgreSQL To connect to your PostgreSQL server, you can use the following command:
 
 ```bash
-psql "host=pg-ha-server.postgres.database.azure.com dbname=mydatabase user=pgadmin@pg-ha-server password=YourPassword123! sslmode=require"
+psql "host=$POSTGRES_SERVER_NAME.postgres.database.azure.com dbname=$POSTGRES_DATABASE_NAME user=$POSTGRES_DATABASE_USER@$POSTGRES_SERVER_NAME password=$POSTGRES_DATABASE_PASSWORD sslmode=require"
 ```
 
 Results:
@@ -311,7 +336,17 @@ Wait a few moments until the EXTERNAL-IP is assigned. It may take a couple of mi
 3. Connect to the Application Once the external IP is assigned, you can connect to the PostgreSQL database using the following command. Replace <EXTERNAL-IP> with the actual external IP address you obtained from the previous step:
 
 ```bash
-psql "host=<EXTERNAL-IP> dbname=mydatabase user=pgadmin@pg-ha-server password=YourPassword123! sslmode=require"
+# Fetch the external IP address
+export EXTERNAL_IP=$(kubectl get services pg-app-service -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+
+# Check if the EXTERNAL_IP is not empty
+if [ -z "$EXTERNAL_IP" ]; then
+  echo "Error: External IP address not found. Please wait a few moments and try again."
+  exit 1
+fi
+
+# Connect to the PostgreSQL database
+psql "host=$EXTERNAL_IP dbname=mydatabase user=pgadmin@pg-ha-server password=YourPassword123! sslmode=require"
 ```
 
 Results:

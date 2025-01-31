@@ -42,8 +42,8 @@ You can use Trusted Access to give explicit consent to your system-assigned mana
 Configure `kubectl` to connect to your cluster using the [`az aks get-credentials`][az-aks-get-credentials] command.
 
 ```azurecli-interactive
-export RESOURCE_GROUP_NAME="myResourceGroup"
-export CLUSTER_NAME="myClusterName"
+export RESOURCE_GROUP_NAME="myAKSResourceGroup0b090b"
+export CLUSTER_NAME="myAKSCluster0b090b"
 
 az aks get-credentials --resource-group ${RESOURCE_GROUP_NAME} --name ${CLUSTER_NAME} --overwrite-existing
 ```
@@ -62,13 +62,16 @@ To find the roles that you need, see the documentation for the Azure service tha
 
 ## Create a Trusted Access role binding
 
-After you confirm which role to use, use the Azure CLI to create a Trusted Access role binding in the AKS cluster. The role binding associates your selected role with the Azure service.
+After you confirm which role to use, use the Azure CLI to create a Trusted Access role binding in the AKS cluster. The role binding associates your selected role with the Azure service
 
 ```azurecli-interactive
-export ROLE_BINDING_NAME="myRoleBindingName"
-export SOURCE_RESOURCE_ID="mySourceResourceID"
-export ROLE_NAME_1="myRoleName1"
-export ROLE_NAME_2="myRoleName2"
+export RESOURCE_GROUP_NAME="myAKSResourceGroup0b090b"
+export CLUSTER_NAME="myAKSCluster0b090b"
+export RANDOM_SUFFIX=$(openssl rand -hex 3)
+export ROLE_BINDING_NAME="myRoleBindingName${RANDOM_SUFFIX}"
+export SOURCE_RESOURCE_ID=$(az aks show --resource-group $RESOURCE_GROUP_NAME --name $CLUSTER_NAME --query id --output tsv)
+export ROLE_NAME_1="Microsoft.ContainerService/managedClusters/roleName1"
+export ROLE_NAME_2="Microsoft.ContainerService/managedClusters/roleName2"
 
 az aks trustedaccess rolebinding create --resource-group ${RESOURCE_GROUP_NAME} --cluster-name ${CLUSTER_NAME} --name ${ROLE_BINDING_NAME} --source-resource-id ${SOURCE_RESOURCE_ID} --roles ${ROLE_NAME_1},${ROLE_NAME_2}
 ```

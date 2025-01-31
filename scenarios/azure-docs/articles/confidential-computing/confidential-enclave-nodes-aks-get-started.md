@@ -250,6 +250,10 @@ oe-helloworld-xxxxx  0/1     Completed   0          25s
 ```
 
 ```bash
+while [[ $(kubectl get pods -l app=oe-helloworld -o 'jsonpath={..status.phase}') != "Succeeded" ]]; do
+  sleep 2
+done
+
 kubectl logs -l app=oe-helloworld
 ```
 

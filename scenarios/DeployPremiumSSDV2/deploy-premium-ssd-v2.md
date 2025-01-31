@@ -236,7 +236,8 @@ Use the [az disk update](/cli/azure/disk#az-disk-update) command to change the p
 The following command adjusts the performance of your disk. Update the values in the command, and then run it:
 
 ```azurecli
-az disk update --subscription $subscription --resource-group $rgname --name $MY_DISK_NAME --disk-iops-read-write=5000 --disk-mbps-read-write=200
+export SUBSCRIPTION_ID=$(az account show --query id --output tsv)
+az disk update --subscription $SUBSCRIPTION_ID --resource-group $MY_RESOURCE_GROUP_NAME --name $MY_DISK_NAME --disk-iops-read-write=5000 --disk-mbps-read-write=200
 ```
 
 # [PowerShell](#tab/azure-powershell)

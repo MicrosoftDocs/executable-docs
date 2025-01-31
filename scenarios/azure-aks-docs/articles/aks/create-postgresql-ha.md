@@ -151,10 +151,11 @@ The CNPG operator automatically generates a service account called *postgres* th
     az role assignment list --scope $STORAGE_ACCOUNT_PRIMARY_RESOURCE_ID --output table
 
     az role assignment create \
-        --assignee-object-id $USER_ID \
-        --assignee-principal-type User \
+        --role "Storage Blob Data Contributor" \
+        --assignee-object-id $AKS_UAMI_WORKLOAD_OBJECTID \
+        --assignee-principal-type ServicePrincipal \
         --scope $STORAGE_ACCOUNT_PRIMARY_RESOURCE_ID \
-        --role "Storage Blob Data Owner" \
+        --query "id" \
         --output tsv
     ```
 

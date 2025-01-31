@@ -55,7 +55,7 @@ az vm run-command invoke --resource-group $MY_RESOURCE_GROUP_NAME --name $MY_VM_
 
 ## CPU
 
-### <a id="mpstat"></a>mpstat
+### mpstat
 
 The `mpstat` utility is part of the `sysstat` package. It displays per CPU utilization and averages, which is helpful to quickly identify CPU usage. `mpstat` provides an overview of CPU utilization across the available CPUs, helping identify usage balance and if a single CPU is heavily loaded.
 
