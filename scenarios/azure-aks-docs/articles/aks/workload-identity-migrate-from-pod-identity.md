@@ -129,8 +129,8 @@ If you don't have a managed identity created and assigned to your pod, perform t
 7. Get the OIDC Issuer URL and save it to an environment variable. Replace the default values for the cluster name and the resource group name.
 
    ```bash
-   export AKS_CLUSTER_NAME="myAKSCluster23b5c0"
-   export AKS_RESOURCE_GROUP="myResourceGroup23b5c0"
+   export AKS_CLUSTER_NAME=$MY_AKS_CLUSTER_NAME
+   export AKS_RESOURCE_GROUP=$MY_AKS_RESOURCE_GROUP
    export AKS_OIDC_ISSUER="$(az aks show --name "$AKS_CLUSTER_NAME" --resource-group "$AKS_RESOURCE_GROUP" --query "oidcIssuerProfile.issuerUrl" -o tsv)"
    ```
 

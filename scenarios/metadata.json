@@ -412,7 +412,7 @@
         }
     },
     {
-        "status": "active",
+        "status": "inactive",
         "key": "azure-aks-docs/articles/aks/create-postgresql-ha.md",
         "title": "Create infrastructure for deploying a highly available PostgreSQL database on AKS",
         "description": "Create the infrastructure needed to deploy a highly available PostgreSQL database on AKS using the CloudNativePG operator.",
@@ -430,7 +430,7 @@
         }
     },
     {
-        "status": "active",
+        "status": "inactive",
         "key": "azure-aks-docs/articles/aks/deploy-postgresql-ha.md",
         "title": "Deploy a highly available PostgreSQL database on AKS with Azure CLI",
         "description": "In this article, you deploy a highly available PostgreSQL database on AKS using the CloudNativePG operator.",
@@ -481,11 +481,11 @@
         }
     },
     {
-        "status": "active",
+        "status": "inactive",
         "key": "BlobVisionOnAKS/blob-vision-aks.md"
     },
     {
-        "status": "active",
+        "status": "inactive",
         "key": "DeployHAPGonARO/deploy-ha-pg-on-aro.md",
         "title": "Create a Highly Available PostgreSQL Cluster on Azure Red Hat OpenShift",
         "description": "This tutorial shows how to create a Highly Available PostgreSQL cluster on Azure Red Hat OpenShift (ARO) using the CloudNativePG operator",
@@ -607,7 +607,7 @@
         }
     },
     {
-        "status": "active",
+        "status": "inactive",
         "key": "GPUNodePoolAKS/gpu-node-pool-aks.md",
         "title": "Create a multi-instance GPU node pool in Azure Kubernetes Service (AKS)",
         "description": "Learn how to create a multi-instance GPU node pool in Azure Kubernetes Service (AKS).",
@@ -661,7 +661,7 @@
         ]
     },
     {
-        "status": "active",
+        "status": "inactive",
         "key": "azure-aks-docs/articles/aks/trusted-access-feature.md",
         "title": "Get secure resource access to Azure Kubernetes Service (AKS) using Trusted Access",
         "description": "Learn how to use the Trusted Access feature to give Azure resources access to Azure Kubernetes Service (AKS) clusters.",
@@ -706,7 +706,7 @@
         }
     },
     {
-        "status": "active",
+        "status": "inactive",
         "key": "CreateLinuxVMSecureWebServer/create-linux-vm-secure-web-server.md",
         "title": "Create a NGINX Webserver Secured via HTTPS",
         "description": "This tutorial shows how to create a NGINX Webserver Secured via HTTPS.",
@@ -811,7 +811,7 @@
         }
     },
     {
-        "status": "active",
+        "status": "inactive",
         "key": "DeployHAPGOnAKSTerraform/deploy-ha-pg-on-aks-terraform.md",
         "title": "Create a Highly Available PostgreSQL Cluster on Azure Kubernetes Service (AKS) using Terraform",
         "description": "This tutorial shows how to create a Highly Available PostgreSQL cluster on AKS using the CloudNativePG operator",
@@ -835,25 +835,35 @@
     },
     {
         "status": "active",
-        "key": "DeployHAPGOnAKSTerraform/deploy-ha-pg-on-aks-terraform.md",
-        "title": "Create a Highly Available PostgreSQL Cluster on Azure Kubernetes Service (AKS) using Terraform",
-        "description": "This tutorial shows how to create a Highly Available PostgreSQL cluster on AKS using the CloudNativePG operator",
+        "key": "azure-aks-docs/articles/aks/workload-identity-migrate-from-pod-identity.md",
+        "title": "Migrate your Azure Kubernetes Service (AKS) pod to use workload identity",
+        "description": "In this Azure Kubernetes Service (AKS) article, you learn how to configure your Azure Kubernetes Service pod to authenticate with workload identity.",
         "stackDetails": [],
-        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/DeployHAPGOnAKSTerraform/deploy-ha-pg-on-aks-terraform.md",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-aks-docs/articles/aks/workload-identity-migrate-from-pod-identity.md",
         "documentationUrl": "",
         "nextSteps": [
             {
-                "title": "Create infrastructure for deploying a highly available PostgreSQL database on AKS",
-                "url": "https://learn.microsoft.com/en-us/azure/aks/create-postgresql-ha?tabs=helm"
-            },
-            {
-                "title": "Deploy a highly available PostgreSQL database on AKS with Azure CLI",
-                "url": "https://learn.microsoft.com/en-us/azure/aks/deploy-postgresql-ha?tabs=helm"
+                "title": "Use Microsoft Entra Workload ID with Azure Kubernetes Service (AKS)",
+                "url": "https://learn.microsoft.com/en-us/azure/aks/workload-identity-overview"
             }
             
         ],
         "configurations": {
-            "permissions": []
+            "permissions": [],
+            "configurableParams": [
+                {
+                    "inputType": "textInput",
+                    "commandKey": "MY_AKS_RESOURCE_GROUP",
+                    "title": "Resource Group Name",
+                    "defaultValue": ""
+                },
+                {
+                    "inputType": "textInput",
+                    "commandKey": "MY_AKS_CLUSTER_NAME",
+                    "title": "AKS Cluster Name",
+                    "defaultValue": ""
+                }
+            ]
         }
     }
 ]
