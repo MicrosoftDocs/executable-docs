@@ -103,7 +103,8 @@ To deploy the application, you use a manifest file to create all the objects req
 
 1. Create a file named `aks-store-quickstart.yaml` and copy in the following manifest:
 
-    ```yaml
+    ```bash
+    cat <<EOF > aks-store-quickstart.yaml
     apiVersion: apps/v1
     kind: StatefulSet
     metadata:
@@ -390,6 +391,7 @@ To deploy the application, you use a manifest file to create all the objects req
       selector:
         app: store-front
       type: LoadBalancer
+    EOF
     ```
 
     If you create and save the YAML file locally, then you can upload the manifest file to your default directory in CloudShell by selecting the **Upload/Download files** button and selecting the file from your local file system.

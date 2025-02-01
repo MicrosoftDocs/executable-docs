@@ -50,8 +50,8 @@ First, create a resource group for the cluster by using the `az group create` co
 ```bash
 export RANDOM_SUFFIX="$(openssl rand -hex 3)"
 export RESOURCE_GROUP="myResourceGroup$RANDOM_SUFFIX"
-export LOCATION="eastus2"
-az group create --name $RESOURCE_GROUP --location $LOCATION
+export REGION="eastus2"
+az group create --name $RESOURCE_GROUP --location $REGION
 ```
 
 Results:
