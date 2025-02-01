@@ -260,14 +260,14 @@ az config set extension.dynamic_install_allow_preview=true
     ```bash
     export RESOURCE_GROUP_NAME="test-rg$RANDOM_SUFFIX"
     export PUBLIC_IP_NAME="public-ip-bastion$RANDOM_SUFFIX"
-    export LOCATION="eastus2"
+    export REGION="eastus2"
     export ALLOCATION_METHOD="Static"
     export SKU="Standard"
 
    az network public-ip create \
       --resource-group $RESOURCE_GROUP_NAME \
       --name $PUBLIC_IP_NAME \
-      --location $LOCATION \
+      --location $REGION \
       --allocation-method $ALLOCATION_METHOD \
       --sku $SKU
    ```
@@ -310,14 +310,14 @@ az config set extension.dynamic_install_allow_preview=true
     export BASTION_NAME="bastion$RANDOM_SUFFIX"
     export VNET_NAME="vnet-1$RANDOM_SUFFIX"
     export PUBLIC_IP_NAME="public-ip-bastion$RANDOM_SUFFIX"
-    export LOCATION="eastus2"
+    export REGION="eastus2"
    
    az network bastion create \
       --resource-group $RESOURCE_GROUP_NAME \
       --name $BASTION_NAME \
       --vnet-name $VNET_NAME \
       --public-ip-address $PUBLIC_IP_NAME \
-      --location $LOCATION
+      --location $REGION
     ```
 
     Results:
