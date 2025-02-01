@@ -126,6 +126,12 @@ New-AzBastion @bastionParams -AsJob
 
 ### [CLI](#tab/cli)
 
+First, configure your Azure CLI settings to allow preview extensions:
+
+```bash
+az config set extension.dynamic_install_allow_preview=true
+```
+
 1. Use [az group create](/cli/azure/group#az-group-create) to create a resource group that contains the resources. Be sure to select a supported Windows or Linux region as listed in [Windows and Linux Accelerated Networking](https://azure.microsoft.com/updates/accelerated-networking-in-expanded-preview).
 
     ```bash
