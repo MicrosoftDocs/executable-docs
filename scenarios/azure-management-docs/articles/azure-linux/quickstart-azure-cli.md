@@ -65,13 +65,7 @@ Create an AKS cluster using the `az aks create` command with the `--os-sku` para
 
 ```azurecli-interactive
 export MY_AZ_CLUSTER_NAME="myAzureLinuxCluster$RANDOM_ID"
-clusterExists=$(az aks show --name $MY_AZ_CLUSTER_NAME --resource-group $MY_RESOURCE_GROUP_NAME --query name --output tsv 2>/dev/null)
-
-if [ -z "$clusterExists" ]; then
-  az aks create --name $MY_AZ_CLUSTER_NAME --resource-group $MY_RESOURCE_GROUP_NAME --os-sku AzureLinux
-else
-  echo "AKS cluster '$MY_AZ_CLUSTER_NAME' already exists. Skipping creation."
-fi
+az aks create --name $MY_AZ_CLUSTER_NAME --resource-group $MY_RESOURCE_GROUP_NAME --os-sku AzureLinux
 ```
 
 After a few minutes, the command completes and returns JSON-formatted information about the cluster.
