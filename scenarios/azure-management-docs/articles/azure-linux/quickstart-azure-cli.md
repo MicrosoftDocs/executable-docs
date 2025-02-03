@@ -436,7 +436,7 @@ done
 ```
 
 ```azurecli-interactive
-curl $IP_ADDRESS
+curl "http://$IP_ADDRESS"
 ```
 
 Results:
