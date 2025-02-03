@@ -40,8 +40,8 @@ Create a resource group by calling the [az group create][az-group-create] comman
 ```azurecli-interactive
 export RANDOM_ID="$(openssl rand -hex 3)"
 export RESOURCE_GROUP="myResourceGroup$RANDOM_ID"
-export LOCATION="centralindia"
-az group create --name "${RESOURCE_GROUP}" --location "${LOCATION}"
+export REGION="centralindia"
+az group create --name "${RESOURCE_GROUP}" --location "${REGION}"
 ```
 
 The following output example shows successful creation of a resource group:
@@ -114,7 +114,7 @@ export USER_ASSIGNED_IDENTITY_NAME="myIdentity$RANDOM_ID"
 az identity create \
     --name "${USER_ASSIGNED_IDENTITY_NAME}" \
     --resource-group "${RESOURCE_GROUP}" \
-    --location "${LOCATION}" \
+    --location "${REGION}" \
     --subscription "${SUBSCRIPTION}"
 ```
 
@@ -253,7 +253,7 @@ The following example shows how to use the Azure role-based access control (Azur
     az keyvault create \
         --name "${KEYVAULT_NAME}" \
         --resource-group "${RESOURCE_GROUP}" \
-        --location "${LOCATION}" \
+        --location "${REGION}" \
         --enable-purge-protection \
         --enable-rbac-authorization 
     ```
