@@ -58,13 +58,11 @@ We will deploy an AKS cluster to host the Trino cluster.
 ```bash
 export AKS_CLUSTER_NAME="TrinoAKSCluster$RANDOM_SUFFIX"
 export CLUSTER_NODES=3
-export KUBERNETES_VERSION="1.25.4"
 
 az aks create \
     --resource-group $RESOURCE_GROUP_NAME \
     --name $AKS_CLUSTER_NAME \
     --node-count $CLUSTER_NODES \
-    --kubernetes-version $KUBERNETES_VERSION \
     --generate-ssh-keys
 ```
 
