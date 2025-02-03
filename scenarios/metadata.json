@@ -382,21 +382,7 @@
             }
         ],
         "configurations": {
-            "permissions": [],
-            "configurableParams": [
-                {
-                    "inputType": "textInput",
-                    "commandKey": "RESOURCE_GROUP",
-                    "title": "Resource Group Name",
-                    "defaultValue": ""
-                },
-                {
-                    "inputType": "textInput",
-                    "commandKey": "CLUSTER_NAME",
-                    "title": "AKS Cluster Name",
-                    "defaultValue": ""
-                }
-            ]
+            "permissions": []
         }
     },
     {
