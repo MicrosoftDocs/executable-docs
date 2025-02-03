@@ -85,6 +85,12 @@ Create an AKS cluster and attach the ACR.
 
 ```bash
 export AKS_CLUSTER="LLMAKSCluster$RANDOM_ID"
+
+az aks create \
+    --resource-group $RESOURCE_GROUP \
+    --name $AKS_CLUSTER \
+    --node-count 3 \
+    --attach-acr $ACR_NAME
 ```
 
 This command may take several minutes to complete.

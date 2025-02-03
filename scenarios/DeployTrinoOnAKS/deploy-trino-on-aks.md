@@ -26,6 +26,7 @@ A resource group is a container that holds related resources for the Trino deplo
 ```bash
 export RANDOM_SUFFIX=$(openssl rand -hex 3)
 export RESOURCE_GROUP_NAME="TrinoResourceGroup$RANDOM_SUFFIX"
+export REGION="westus2"
 
 az group create --name $RESOURCE_GROUP_NAME --location $REGION
 ```
