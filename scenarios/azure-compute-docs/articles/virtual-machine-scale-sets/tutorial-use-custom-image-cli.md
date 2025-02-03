@@ -187,15 +187,9 @@ The following example:
     * Uses the object ID as the scope of the assignment.
     * Uses the signed-in user's ID as the assignee for demonstration purposes. When you use this code in your test or production code, make sure you update the assignee to reflect who you want to be able to access this image. For more information about how to share resources using Azure RBAC, see [Add or remove Azure role assignments using Azure CLI](/azure/role-based-access-control/role-assignments-cli). , along with an email address, using [az role assignment create](/cli/azure/role/assignment#az-role-assignment-create) to give a user access to the shared image gallery. 
 
-```azurecli-interactive
-export MY_GALLERY_ID=$(az sig show --resource-group $MY_GALLERY_RG_NAME --gallery-name $MY_GALLERY_NAME --query "id" --output tsv)
-export CALLER_ID=$(az ad signed-in-user show --query id -o tsv)
+For example, you can get the gallery ID and assign the Reader role to the signed-in user. This allows the user to access the shared image gallery.
 
-az role assignment create \
-   --role "Reader" \
-   --assignee $CALLER_ID \
-   --scope $MY_GALLERY_ID
-```
+Note: Ensure you have the necessary permissions to perform these operations and that the target user or service principal has the appropriate access to the shared resources.
 
 ## Clean up resources
 To remove your scale set and additional resources, delete the resource group and all its resources with [az group delete](/cli/azure/group). The `--no-wait` parameter returns control to the prompt without waiting for the operation to complete. The `--yes` parameter confirms that you wish to delete the resources without an additional prompt to do so.
