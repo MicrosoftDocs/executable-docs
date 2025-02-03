@@ -18,9 +18,9 @@ In this tutorial, you'll deploy an open-source Apache Cassandra cluster on Azure
 2. Install `kubectl`. You can use the `az aks install-cli` command to install it if you are using Azure Cloud Shell.
 
 
-## Step 1: Create an AKS Cluster
+## Step 1: Create a Resource Group
 
-Create an AKS cluster with a specified resource group.
+Create an Azure resource group to contain the AKS cluster and other resources.
 
 ```bash
 export RANDOM_SUFFIX="$(openssl rand -hex 3)"
@@ -51,6 +51,8 @@ Results:
 }
 ```
 
+## Step 2: Create an AKS Cluster
+
 Now, create an AKS cluster in the resource group.
 
 ```bash
@@ -65,7 +67,7 @@ az aks create \
   --generate-ssh-keys
 ```
 
-## Step 2: Connect to the AKS Cluster
+## Step 3: Connect to the AKS Cluster
 
 Retrieve the AKS cluster credentials and configure `kubectl`.
 
@@ -92,7 +94,7 @@ aks-nodepool1-xxxxx-vmss000001      Ready    agent   3m52s   v1.26.0
 aks-nodepool1-xxxxx-vmss000002      Ready    agent   3m48s   v1.26.0
 ```
 
-## Step 3: Deploy the Cassandra Cluster
+## Step 4: Deploy the Cassandra Cluster
 
 Create a Kubernetes manifest file in Cloud Shell to define the Cassandra deployment. Use a name like `cassandra-deployment.yaml`.
 
@@ -138,7 +140,7 @@ Results:
 statefulset.apps/cassandra created
 ```
 
-## Step 4: Create a Headless Service for Cassandra
+## Step 5: Create a Headless Service for Cassandra
 
 Create a Kubernetes manifest file in Cloud Shell to define the Cassandra headless service. Use a name like `cassandra-service.yaml`.
 
@@ -163,7 +165,7 @@ EOF
 kubectl apply -f cassandra-service.yaml
 ```
 
-## Step 4: Verify Cassandra Deployment
+## Step 6: Verify Cassandra Deployment
 
 Check the status of the Cassandra pods to ensure deployment is successful.
 
@@ -213,7 +215,7 @@ NAME         READY   AGE
 cassandra    3/3     3m
 ```
 
-## Step 5: Access Cassandra Cluster
+## Step 7: Access Cassandra Cluster
 
 Create a temporary Pod to access the Cassandra cluster using `cqlsh`, the Cassandra query tool.
 
