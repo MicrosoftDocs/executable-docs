@@ -416,12 +416,7 @@ export COMPUTER_VISION_KEY=$(az cognitiveservices account keys list --name $MY_C
 
 ## Deploy the code into a Container App
 
-Now that we've got our storage, database, and Computer Vision resources all set up, we are ready to deploy the application code. To do this, we're going to use Azure Container Apps to host a containerized build of our Next.js app. The `Dockerfile` is already created at the root of the repository, so all we need to do is run a single command to deploy the code. Before running this command, we first need to install the containerapp extension for the Azure CLI.
-
-```bash
-az config set extension.dynamic_install_allow_preview=true
-az extension add --upgrade -n containerapp --debug
-```
+Now that we've got our storage, database, and Computer Vision resources all set up, we are ready to deploy the application code. To do this, we're going to use Azure Container Apps to host a containerized build of our Next.js app. The `Dockerfile` is already created at the root of the repository, so all we need to do is run a single command to deploy the code. 
 
 This command will create an Azure Container Registry resource to host our Docker image, an Azure Container App resource which runs the image, and an Azure Container App Environment resource for our image. Let's break down what we're passing into the command.
 
