@@ -28,7 +28,7 @@ Ensure that you have the following:
 Create a new Azure resource group to contain all resources related to the deployment.
 
 ```bash
-export RANDOM_SUFFIX=$(openssl rand -hex 3)
+export RANDOM_SUFFIX="$(openssl rand -hex 3)"
 export REGION="westus2"
 export MY_RESOURCE_GROUP="MyAKSResourceGroup$RANDOM_SUFFIX"
 az group create --name $MY_RESOURCE_GROUP --location $REGION

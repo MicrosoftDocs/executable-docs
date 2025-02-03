@@ -25,7 +25,7 @@ In this quickstart, you will learn how to deploy a large language model (LLM) us
 Create a resource group with the `az group create` command.
 
 ```bash
-export RANDOM_ID=1f659d
+export RANDOM_ID="$(openssl rand -hex 3)"
 export RESOURCE_GROUP="LLMResourceGroup$RANDOM_ID"
 export LOCATION="westus2"
 az group create --name $RESOURCE_GROUP --location $LOCATION

@@ -24,7 +24,7 @@ In this tutorial, you'll deploy an open-source Apache Cassandra cluster on Azure
 Create an AKS cluster with a specified resource group.
 
 ```bash
-export RANDOM_SUFFIX="openssl rand -hex 3"
+export RANDOM_SUFFIX="$(openssl rand -hex 3)"
 export REGION="westus2"
 export MY_RESOURCE_GROUP_NAME="MyAKSResourceGroup$RANDOM_SUFFIX"
 
