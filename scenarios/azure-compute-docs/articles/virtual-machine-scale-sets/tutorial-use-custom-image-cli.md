@@ -41,7 +41,7 @@ The following example creates a Linux-based VM named *myVM* in the resource grou
 export RANDOM_ID=$(openssl rand -hex 3)
 export MY_RESOURCE_GROUP_NAME="myResourceGroup$RANDOM_ID"
 export REGION="eastus"
-export MY_VM_NAME="myVM"
+export MY_VM_NAME="myVM$RANDOM_ID"
 
 az group create --name $MY_RESOURCE_GROUP_NAME --location $REGION
 

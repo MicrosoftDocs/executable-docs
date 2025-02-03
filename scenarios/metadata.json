@@ -816,7 +816,15 @@
             
         ],
         "configurations": {
-            "permissions": []
+            "permissions": [],
+            "configurableParams": [
+                {
+                    "inputType": "textInput",
+                    "commandKey": "MY_VM_NAME",
+                    "title": "VM Name",
+                    "defaultValue": ""
+                }
+            ]
         }
     },
     {
