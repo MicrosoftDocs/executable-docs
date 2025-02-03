@@ -368,7 +368,7 @@
         }
     },
     {
-        "status": "active",
+        "status": "inactive",
         "key": "azure-aks-docs/articles/aks/workload-identity-deploy-cluster.md",
         "title": "Deploy and configure an AKS cluster with workload identity",
         "description": "In this Azure Kubernetes Service (AKS) article, you deploy an Azure Kubernetes Service cluster and configure it with a Microsoft Entra Workload ID.",
@@ -452,7 +452,7 @@
         }
     },
     {
-        "status": "active",
+        "status": "inactive",
         "key": "CreateContainerAppDeploymentFromSource/create-container-app-deployment-from-source.md",
         "title": "Create a Container App leveraging Blob Store, SQL, and Computer Vision",
         "description": "This tutorial shows how to create a Container App leveraging Blob Store, SQL, and Computer Vision",
@@ -535,7 +535,7 @@
         }
     },
     {
-        "status": "active",
+        "status": "inactive",
         "key": "azure-aks-docs/articles/aks/airflow-create-infrastructure.md",
         "title": "Create the infrastructure for deploying Apache Airflow on Azure Kubernetes Service (AKS)",
         "description": "In this article, you create the infrastructure needed to deploy Apache Airflow on Azure Kubernetes Service (AKS) using Helm.",
@@ -553,7 +553,7 @@
         }
     },
     {
-        "status": "active",
+        "status": "inactive",
         "key": "azure-aks-docs/articles/aks/airflow-deploy.md",
         "title": "Configure and deploy Apache Airflow on Azure Kubernetes Service (AKS)",
         "description": "In this article, you create the infrastructure needed to deploy Apache Airflow on Azure Kubernetes Service (AKS) using Helm.",
@@ -607,7 +607,7 @@
         }
     },
     {
-        "status": "active",
+        "status": "inactive",
         "key": "GPUNodePoolAKS/gpu-node-pool-aks.md",
         "title": "Create a multi-instance GPU node pool in Azure Kubernetes Service (AKS)",
         "description": "Learn how to create a multi-instance GPU node pool in Azure Kubernetes Service (AKS).",
@@ -661,7 +661,7 @@
         ]
     },
     {
-        "status": "active",
+        "status": "inactive",
         "key": "azure-aks-docs/articles/aks/trusted-access-feature.md",
         "title": "Get secure resource access to Azure Kubernetes Service (AKS) using Trusted Access",
         "description": "Learn how to use the Trusted Access feature to give Azure resources access to Azure Kubernetes Service (AKS) clusters.",
@@ -706,7 +706,7 @@
         }
     },
     {
-        "status": "active",
+        "status": "inactive",
         "key": "CreateLinuxVMSecureWebServer/create-linux-vm-secure-web-server.md",
         "title": "Create a NGINX Webserver Secured via HTTPS",
         "description": "This tutorial shows how to create a NGINX Webserver Secured via HTTPS.",
@@ -867,7 +867,7 @@
         }
     },
     {
-        "status": "active",
+        "status": "inactive",
         "key": "DeployCassandraOnAKS/deploy-cassandra-on-aks.md",
         "title": "Deploy a Cassandra Cluster on AKS",
         "description": "Learn how to deploy a Cassandra cluster on an Azure Kubernetes Service (AKS) cluster using Azure CLI and Kubernetes manifests.",
@@ -880,7 +880,7 @@
         }
     },
     {
-        "status": "active",
+        "status": "inactive",
         "key": "DeployClickhouseOnAKS/deploy-clickhouse-on-aks.md",
         "title": "Deploy ClickHouse Cluster on AKS",
         "description": "Learn how to deploy a ClickHouse Cluster on Azure Kubernetes Service (AKS) using Azure CLI and Kubernetes manifests.",
@@ -893,7 +893,7 @@
         }
     },
     {
-        "status": "active",
+        "status": "inactive",
         "key": "DeployLLMWithTorchserveOnAKS/deploy-llm-with-torchserve-on-aks.md",
         "title": "Quickstart: Deploy a Large Language Model with TorchServe on Azure Kubernetes Service (AKS)",
         "description": "Learn how to deploy a large language model using TorchServe on AKS.",
@@ -919,7 +919,7 @@
         }
     },
     {
-        "status": "active",
+        "status": "inactive",
         "key": "DeployTrinoOnAKS/deploy-trino-on-aks.md",
         "title": "Deploy a Trino Cluster on Azure Kubernetes Service (AKS)",
         "description": "Learn how to deploy a Trino Cluster on AKS using Azure CLI for scalable and distributed SQL query processing.",
