@@ -621,7 +621,7 @@
         }
     },
     {
-        "status": "inactive",
+        "status": "active",
         "key": "GPUNodePoolAKS/gpu-node-pool-aks.md",
         "title": "Create a multi-instance GPU node pool in Azure Kubernetes Service (AKS)",
         "description": "Learn how to create a multi-instance GPU node pool in Azure Kubernetes Service (AKS).",
@@ -675,7 +675,7 @@
         ]
     },
     {
-        "status": "inactive",
+        "status": "active",
         "key": "azure-aks-docs/articles/aks/trusted-access-feature.md",
         "title": "Get secure resource access to Azure Kubernetes Service (AKS) using Trusted Access",
         "description": "Learn how to use the Trusted Access feature to give Azure resources access to Azure Kubernetes Service (AKS) clusters.",
@@ -720,7 +720,7 @@
         }
     },
     {
-        "status": "inactive",
+        "status": "active",
         "key": "CreateLinuxVMSecureWebServer/create-linux-vm-secure-web-server.md",
         "title": "Create a NGINX Webserver Secured via HTTPS",
         "description": "This tutorial shows how to create a NGINX Webserver Secured via HTTPS.",
