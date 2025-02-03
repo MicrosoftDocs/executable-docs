@@ -51,6 +51,8 @@ Results:
 }
 ```
 
+Now, create an AKS cluster in the resource group.
+
 ```bash
 export MY_AKS_CLUSTER_NAME="MyAKSCluster$RANDOM_SUFFIX"
 
