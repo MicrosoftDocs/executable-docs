@@ -76,7 +76,7 @@ az aks get-credentials --resource-group $RESOURCE_GROUP_NAME --name $AKS_CLUSTER
 Namespaces help organize your Kubernetes resources.
 
 ```bash
-export NAMESPACE="trino"
+export NAMESPACE="trino$RANDOM_SUFFIX"
 kubectl create namespace $NAMESPACE
 ```
 
