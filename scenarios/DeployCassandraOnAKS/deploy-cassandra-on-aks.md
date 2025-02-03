@@ -222,8 +222,18 @@ kubectl run cassandra-client --rm -it --image=cassandra:latest -- /bin/bash
 Once you are inside the Pod, connect to the Cassandra cluster using `cqlsh`.
 
 ```bash
-# Within the Pod, run:
-cqlsh cassandra-0.cassandra
+for i in {1..10}; do
+  echo "Attempt $i: Trying to connect to Cassandra cluster..."
+  # Try to run a simple cqlsh command (e.g. list keyspaces)
+  cql_output=$(cqlsh cassandra-0.cassandra -e "DESC KEYSPACES;" 2>&1)
+  if echo "$cql_output" | grep -q "system"; then
+    echo "Connected to Cassandra."
+    break
+  else
+    echo "cqlsh not ready yet. Retrying in 10 seconds..."
+    sleep 10
+  fi
+done
 ```
 
 You should now be connected to the Cassandra database.
