@@ -17,7 +17,6 @@ In this tutorial, you'll deploy an open-source Apache Cassandra cluster on Azure
 1. Install Azure CLI. You can follow [Install the Azure CLI](https://docs.microsoft.com/cli/azure/install-azure-cli) for instructions.
 2. Install `kubectl`. You can use the `az aks install-cli` command to install it if you are using Azure Cloud Shell.
 
----
 
 ## Step 1: Create an AKS Cluster
 
@@ -64,8 +63,6 @@ az aks create \
   --generate-ssh-keys
 ```
 
----
-
 ## Step 2: Connect to the AKS Cluster
 
 Retrieve the AKS cluster credentials and configure `kubectl`.
@@ -92,8 +89,6 @@ aks-nodepool1-xxxxx-vmss000000      Ready    agent   3m56s   v1.26.0
 aks-nodepool1-xxxxx-vmss000001      Ready    agent   3m52s   v1.26.0
 aks-nodepool1-xxxxx-vmss000002      Ready    agent   3m48s   v1.26.0
 ```
-
----
 
 ## Step 3: Deploy the Cassandra Cluster
 
@@ -141,8 +136,6 @@ Results:
 statefulset.apps/cassandra created
 ```
 
----
-
 ## Step 4: Create a Headless Service for Cassandra
 
 Create a Kubernetes manifest file in Cloud Shell to define the Cassandra headless service. Use a name like `cassandra-service.yaml`.
@@ -167,7 +160,6 @@ EOF
 # Apply the service manifest to the cluster
 kubectl apply -f cassandra-service.yaml
 ```
-
 
 ## Step 4: Verify Cassandra Deployment
 
@@ -219,8 +211,6 @@ NAME         READY   AGE
 cassandra    3/3     3m
 ```
 
----
-
 ## Step 5: Access Cassandra Cluster
 
 Create a temporary Pod to access the Cassandra cluster using `cqlsh`, the Cassandra query tool.
@@ -249,8 +239,6 @@ Connected to Test Cluster at cassandra-0.cassandra:9042.
 [cqlsh 5.0.1 | Cassandra 4.0.0 | CQL spec 3.4.0 | Native protocol v4]
 Use HELP for help.
 ```
-
----
 
 This tutorial deployed an Apache Cassandra cluster on AKS. You managed the cluster using Kubernetes manifests and verified its deployment.
 

@@ -21,8 +21,6 @@ Ensure that you have the following:
 3. Access to `kubectl` CLI to manage your Kubernetes cluster.
 4. Azure CLI extensions enabled for AKS (`az extension add --name aks`).
 
----
-
 ## Step 1: Create a Resource Group
 
 Create a new Azure resource group to contain all resources related to the deployment.
@@ -52,8 +50,6 @@ Results:
 }
 ```
 
----
-
 ## Step 2: Create an AKS Cluster
 
 Create an Azure Kubernetes Service (AKS) cluster in the resource group.
@@ -62,8 +58,6 @@ Create an Azure Kubernetes Service (AKS) cluster in the resource group.
 export MY_AKS_CLUSTER="MyAKSCluster$RANDOM_SUFFIX"
 az aks create --resource-group $MY_RESOURCE_GROUP --name $MY_AKS_CLUSTER --node-count 3 --generate-ssh-keys
 ```
-
----
 
 ## Step 3: Connect to the AKS Cluster
 
@@ -81,8 +75,6 @@ Results:
 Merged "MyAKSClusterxxx" as current context in /home/user/.kube/config
 ```
 
----
-
 ## Step 4: Create a Namespace for ClickHouse
 
 Create a Kubernetes namespace to host the ClickHouse deployment.
@@ -98,8 +90,6 @@ Results:
 ```text
 namespace/clickhouse created
 ```
-
----
 
 ## Step 5: Deploy ClickHouse on AKS
 
@@ -167,8 +157,6 @@ statefulset.apps/clickhouse created
 persistentvolumeclaim/clickhouse-pvc created
 ```
 
----
-
 ## Step 6: Verify the Deployment
 
 Check if the ClickHouse pods are running correctly:
@@ -203,8 +191,6 @@ clickhouse-0        1/1     Running   0          2m
 clickhouse-1        1/1     Running   0          2m
 clickhouse-2        1/1     Running   0          2m
 ```
-
----
 
 ## Summary
 

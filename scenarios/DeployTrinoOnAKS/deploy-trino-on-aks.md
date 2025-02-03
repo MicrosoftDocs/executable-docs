@@ -17,7 +17,6 @@ In this Exec Doc, you will learn how to deploy a Trino (formerly PrestoSQL) clus
 1. Ensure you have Azure CLI installed in your environment or use [Azure Cloud Shell](https://shell.azure.com/).  
 2. Ensure a Kubernetes cluster is already deployed on AKS. You can create one using [this guide](https://learn.microsoft.com/azure/aks/).
 
----
 
 ## Step 2: Create Azure Resource Group
 
@@ -49,8 +48,6 @@ Results:
 }
 ```
 
----
-
 ## Step 3: Create AKS Cluster
 
 We will deploy an AKS cluster to host the Trino cluster.
@@ -66,8 +63,6 @@ az aks create \
     --generate-ssh-keys
 ```
 
----
-
 ## Step 4: Configure `kubectl` Access
 
 We will configure `kubectl` to connect to the newly created AKS cluster.
@@ -75,16 +70,6 @@ We will configure `kubectl` to connect to the newly created AKS cluster.
 ```bash
 az aks get-credentials --resource-group $RESOURCE_GROUP_NAME --name $AKS_CLUSTER_NAME
 ```
-
-Results:
-
-<!-- expected_similarity=0.3 -->
-
-```text
-Merged "TrinoAKSClusterxxx" as the current context in /home/.kube/config
-```
-
----
 
 ## Step 5: Create Namespace for Trino
 
@@ -111,8 +96,6 @@ Results:
     }
 }
 ```
-
----
 
 ## Step 6: Deploy Trino on AKS
 
@@ -159,8 +142,6 @@ Results:
 deployment.apps/trino created
 ```
 
----
-
 ## Step 7: Expose Trino Service
 
 Expose the Trino deployment via a Kubernetes service for external access.
@@ -182,7 +163,6 @@ Results:
 service/trino-service exposed
 ```
 
----
 
 ## Step 8: Verify Deployment
 
@@ -218,8 +198,6 @@ trino-xxxxx-xxxxx        1/1     Running   0          5m
 trino-xxxxx-xxxxx        1/1     Running   0          5m
 ```
 
----
-
 ## Step 9: Fetch Service Public IP
 
 Retrieve the external IP address of the Trino service.
@@ -239,6 +217,5 @@ External IP: xx.xx.xx.xx
 
 The `EXTERNAL-IP` field contains the Trino service's public IP. Visit `http://<EXTERNAL-IP>:8080` to access the Trino cluster.
 
----
 
 You have successfully deployed a Trino cluster on Azure Kubernetes Service! 🎉

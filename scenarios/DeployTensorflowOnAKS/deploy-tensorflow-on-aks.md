@@ -12,7 +12,6 @@ ms.custom: devx-track-azurecli, mode-api, innovation-engine, machine-learning, k
 
 This guide demonstrates how to deploy a Tensorflow cluster on AKS using the Azure CLI. The setup includes provisioning an AKS cluster, configuring a Kubernetes namespace, and deploying a TensorFlow cluster.
 
----
 
 ## Prerequisites
 
@@ -22,7 +21,6 @@ This guide demonstrates how to deploy a Tensorflow cluster on AKS using the Azur
 
 > **Note:** Please make sure you are logged into Azure and have set your subscription in advance.
 
----
 
 ## Step 1: Create a Resource Group
 
@@ -53,8 +51,6 @@ Results:
 }
 ```
 
----
-
 ## Step 2: Create an AKS Cluster
 
 Provision an AKS cluster in the resource group.
@@ -64,7 +60,6 @@ export AKS_CLUSTER_NAME="AKS-TF-Cluster-$RANDOM_SUFFIX"
 az aks create --name $AKS_CLUSTER_NAME --resource-group $RESOURCE_GROUP_NAME --node-count 3 --enable-addons monitoring --generate-ssh-keys
 ```
 
----
 
 ## Step 3: Connect to the AKS Cluster
 
@@ -73,16 +68,6 @@ Obtain the cluster credentials and configure `kubectl` to use the newly created 
 ```bash
 az aks get-credentials --name $AKS_CLUSTER_NAME --resource-group $RESOURCE_GROUP_NAME
 ```
-
-Results:
-
-<!-- expected_similarity=0.3 -->
-
-```text
-Merged "AKS-TF-Cluster-xxx" as current context in /home/username/.kube/config
-```
-
----
 
 ## Step 4: Create a Kubernetes Namespace for TensorFlow
 
@@ -100,8 +85,6 @@ Results:
 ```text
 namespace/tensorflow-cluster created
 ```
-
----
 
 ## Step 5: Prepare TensorFlow Deployment Configuration
 
@@ -132,8 +115,6 @@ spec:
 EOF
 ```
 
----
-
 ## Step 6: Deploy the TensorFlow Cluster
 
 Deploy the TensorFlow cluster by applying the configuration file.
@@ -149,8 +130,6 @@ Results:
 ```text
 deployment.apps/tensorflow-deployment created
 ```
-
----
 
 ## Step 7: Create a LoadBalancer Service for TensorFlow
 
@@ -183,8 +162,6 @@ Results:
 ```text
 service/tensorflow-service created
 ```
-
----
 
 ## Step 8: Check Service External IP
 
