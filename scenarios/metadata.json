@@ -876,7 +876,21 @@
         "documentationUrl": "",
         "nextSteps": [],
         "configurations": {
-            "permissions": []
+            "permissions": [],
+            "configurableParams": [
+                {
+                    "inputType": "textInput",
+                    "commandKey": "MY_AKS_RESOURCE_GROUP",
+                    "title": "Resource Group Name",
+                    "defaultValue": ""
+                },
+                {
+                    "inputType": "textInput",
+                    "commandKey": "MY_AKS_CLUSTER_NAME",
+                    "title": "AKS Cluster Name",
+                    "defaultValue": ""
+                }
+            ]
         }
     },
     {
@@ -889,7 +903,21 @@
         "documentationUrl": "",
         "nextSteps": [],
         "configurations": {
-            "permissions": []
+            "permissions": [],
+            "configurableParams": [
+                {
+                    "inputType": "textInput",
+                    "commandKey": "MY_AKS_RESOURCE_GROUP",
+                    "title": "Resource Group Name",
+                    "defaultValue": ""
+                },
+                {
+                    "inputType": "textInput",
+                    "commandKey": "MY_AKS_CLUSTER_NAME",
+                    "title": "AKS Cluster Name",
+                    "defaultValue": ""
+                }
+            ]
         }
     },
     {
@@ -902,7 +930,21 @@
         "documentationUrl": "",
         "nextSteps": [],
         "configurations": {
-            "permissions": []
+            "permissions": [],
+            "configurableParams": [
+                {
+                    "inputType": "textInput",
+                    "commandKey": "MY_AKS_RESOURCE_GROUP",
+                    "title": "Resource Group Name",
+                    "defaultValue": ""
+                },
+                {
+                    "inputType": "textInput",
+                    "commandKey": "MY_AKS_CLUSTER_NAME",
+                    "title": "AKS Cluster Name",
+                    "defaultValue": ""
+                }
+            ]
         }
     },
     {
@@ -915,7 +957,21 @@
         "documentationUrl": "",
         "nextSteps": [],
         "configurations": {
-            "permissions": []
+            "permissions": [],
+            "configurableParams": [
+                {
+                    "inputType": "textInput",
+                    "commandKey": "MY_AKS_RESOURCE_GROUP",
+                    "title": "Resource Group Name",
+                    "defaultValue": ""
+                },
+                {
+                    "inputType": "textInput",
+                    "commandKey": "MY_AKS_CLUSTER_NAME",
+                    "title": "AKS Cluster Name",
+                    "defaultValue": ""
+                }
+            ]
         }
     },
     {
@@ -928,8 +984,21 @@
         "documentationUrl": "",
         "nextSteps": [],
         "configurations": {
-            "permissions": []
+            "permissions": [],
+            "configurableParams": [
+                {
+                    "inputType": "textInput",
+                    "commandKey": "MY_AKS_RESOURCE_GROUP",
+                    "title": "Resource Group Name",
+                    "defaultValue": ""
+                },
+                {
+                    "inputType": "textInput",
+                    "commandKey": "MY_AKS_CLUSTER_NAME",
+                    "title": "AKS Cluster Name",
+                    "defaultValue": ""
+                }
+            ]
         }
     }
-
 ]
