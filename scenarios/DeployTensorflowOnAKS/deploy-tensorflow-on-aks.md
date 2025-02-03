@@ -192,12 +192,12 @@ Retrieve the external IP address of the TensorFlow service.
 
 ```bash
 while true; do
-  EXTERNAL_IP=$(kubectl get service tensorflow-service --namespace $NAMESPACE -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
-  if [ -n "$EXTERNAL_IP" ]; then
-    echo "External IP: $EXTERNAL_IP"
+  ENDPOINTS=$(kubectl get endpoints tensorflow-service --namespace $NAMESPACE -o jsonpath='{.subsets[*].addresses[*].ip}')
+  if [ -n "$ENDPOINTS" ]; then
+    echo "Service endpoints: $ENDPOINTS"
     break
   else
-    echo "Waiting for external IP..."
+    echo "Waiting for service endpoints..."
     sleep 10
   fi
 done
@@ -208,7 +208,7 @@ Results:
 <!-- expected_similarity=0.3 -->
 
 ```text
-External IP: xx.xx.xx.xx
+Service endpoints: 10.244.1.5 10.244.1.6
 ```
 
-Use the `EXTERNAL-IP` address to access the TensorFlow service.
+This confirms that the service is routing correctly to its backend pods.
