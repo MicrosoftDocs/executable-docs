@@ -27,8 +27,8 @@ Create a resource group with the `az group create` command.
 ```bash
 export RANDOM_ID="$(openssl rand -hex 3)"
 export RESOURCE_GROUP="LLMResourceGroup$RANDOM_ID"
-export LOCATION="westus2"
-az group create --name $RESOURCE_GROUP --location $LOCATION
+export REGION="westus2"
+az group create --name $RESOURCE_GROUP --location $REGION
 ```
 
 Results:
