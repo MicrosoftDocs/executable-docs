@@ -865,5 +865,71 @@
                 }
             ]
         }
+    },
+    {
+        "status": "active",
+        "key": "DeployCassandraOnAKS/deploy-cassandra-on-aks.md",
+        "title": "Deploy a Cassandra Cluster on AKS",
+        "description": "Learn how to deploy a Cassandra cluster on an Azure Kubernetes Service (AKS) cluster using Azure CLI and Kubernetes manifests.",
+        "stackDetails": [],
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/DeployCassandraOnAKS/deploy-cassandra-on-aks.md",
+        "documentationUrl": "",
+        "nextSteps": [],
+        "configurations": {
+            "permissions": []
+        }
+    },
+    {
+        "status": "active",
+        "key": "DeployClickhouseOnAKS/deploy-clickhouse-on-aks.md",
+        "title": "Deploy ClickHouse Cluster on AKS",
+        "description": "Learn how to deploy a ClickHouse Cluster on Azure Kubernetes Service (AKS) using Azure CLI and Kubernetes manifests.",
+        "stackDetails": [],
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/DeployClickhouseOnAKS/deploy-clickhouse-on-aks.md",
+        "documentationUrl": "",
+        "nextSteps": [],
+        "configurations": {
+            "permissions": []
+        }
+    },
+    {
+        "status": "active",
+        "key": "DeployLLMWithTorchserveOnAKS/deploy-llm-with-torchserve-on-aks.md",
+        "title": "Quickstart: Deploy a Large Language Model with TorchServe on Azure Kubernetes Service (AKS)",
+        "description": "Learn how to deploy a large language model using TorchServe on AKS.",
+        "stackDetails": [],
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/DeployLLMWithTorchserveOnAKS/deploy-llm-with-torchserve-on-aks.md",
+        "documentationUrl": "",
+        "nextSteps": [],
+        "configurations": {
+            "permissions": []
+        }
+    },
+    {
+        "status": "active",
+        "key": "DeployTensorflowOnAKS/deploy-tensorflow-on-aks.md",
+        "title": "Setup: Deploy a Tensorflow Cluster on Azure Kubernetes Service (AKS)",
+        "description": "Learn how to deploy a Tensorflow cluster on Azure Kubernetes Service (AKS) using Azure CLI.",
+        "stackDetails": [],
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/DeployTensorflowOnAKS/deploy-tensorflow-on-aks.md",
+        "documentationUrl": "",
+        "nextSteps": [],
+        "configurations": {
+            "permissions": []
+        }
+    },
+    {
+        "status": "active",
+        "key": "DeployTrinoOnAKS/deploy-trino-on-aks.md",
+        "title": "Deploy a Trino Cluster on Azure Kubernetes Service (AKS)",
+        "description": "Learn how to deploy a Trino Cluster on AKS using Azure CLI for scalable and distributed SQL query processing.",
+        "stackDetails": [],
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/DeployTrinoOnAKS/deploy-trino-on-aks.md",
+        "documentationUrl": "",
+        "nextSteps": [],
+        "configurations": {
+            "permissions": []
+        }
     }
+
 ]
