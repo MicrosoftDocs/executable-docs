@@ -198,71 +198,71 @@ Results:
 }
 ```
 
-1. Create an Azure Bastion host with [az network bastion create](/cli/azure/network/bastion). Azure Bastion is used to securely connect Azure virtual machines without exposing them to the public internet.
+## Create Azure Bastion Host
 
-    ```bash
-    export RESOURCE_GROUP_NAME="test-rg$RANDOM_SUFFIX"
-    export BASTION_NAME="bastion$RANDOM_SUFFIX"
-    export VNET_NAME="vnet-1$RANDOM_SUFFIX"
-    export PUBLIC_IP_NAME="public-ip-bastion$RANDOM_SUFFIX"
-    export REGION="eastus2"
-   
-   az network bastion create \
-      --resource-group $RESOURCE_GROUP_NAME \
-      --name $BASTION_NAME \
-      --vnet-name $VNET_NAME \
-      --public-ip-address $PUBLIC_IP_NAME \
-      --location $REGION
-    ```
+Create an Azure Bastion host with [az network bastion create](/cli/azure/network/bastion). Azure Bastion is used to securely connect Azure virtual machines without exposing them to the public internet.
 
-    Results:
-    
-    <!-- expected_similarity=0.3 --> 
+```bash
+export RESOURCE_GROUP_NAME="test-rg$RANDOM_SUFFIX"
+export BASTION_NAME="bastion$RANDOM_SUFFIX"
+export VNET_NAME="vnet-1$RANDOM_SUFFIX"
+export PUBLIC_IP_NAME="public-ip-bastion$RANDOM_SUFFIX"
+export REGION="eastus2"
 
-    ```json
+az network bastion create \
+  --resource-group $RESOURCE_GROUP_NAME \
+  --name $BASTION_NAME \
+  --vnet-name $VNET_NAME \
+  --public-ip-address $PUBLIC_IP_NAME \
+  --location $REGION
+```
+
+Results:
+
+<!-- expected_similarity=0.3 --> 
+
+```json
+{
+  "disableCopyPaste": false,
+  "dnsName": "bst-cc1d5c1d-9496-44fa-a8b3-3b2130efa306.bastion.azure.com",
+  "enableFileCopy": false,
+  "enableIpConnect": false,
+  "enableKerberos": false,
+  "enableSessionRecording": false,
+  "enableShareableLink": false,
+  "enableTunneling": false,
+  "etag": "W/\"229bd068-160b-4935-b23d-eddce4bb31ed\"",
+  "id": "/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/test-rg69e367/providers/Microsoft.Network/bastionHosts/bastion69e367",
+  "ipConfigurations": [
     {
-      "disableCopyPaste": false,
-      "dnsName": "bst-cc1d5c1d-9496-44fa-a8b3-3b2130efa306.bastion.azure.com",
-      "enableFileCopy": false,
-      "enableIpConnect": false,
-      "enableKerberos": false,
-      "enableSessionRecording": false,
-      "enableShareableLink": false,
-      "enableTunneling": false,
       "etag": "W/\"229bd068-160b-4935-b23d-eddce4bb31ed\"",
-      "id": "/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/test-rg69e367/providers/Microsoft.Network/bastionHosts/bastion69e367",
-      "ipConfigurations": [
-        {
-          "etag": "W/\"229bd068-160b-4935-b23d-eddce4bb31ed\"",
-          "id": "/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/test-rg69e367/providers/Microsoft.Network/bastionHosts/bastion69e367/bastionHostIpConfigurations/bastion_ip_config",
-          "name": "bastion_ip_config",
-          "privateIPAllocationMethod": "Dynamic",
-          "provisioningState": "Succeeded",
-          "publicIPAddress": {
-            "id": "/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/test-rg69e367/providers/Microsoft.Network/publicIPAddresses/public-ip-bastion69e367",
-            "resourceGroup": "test-rg69e367"
-          },
-          "resourceGroup": "test-rg69e367",
-          "subnet": {
-            "id": "/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/test-rg69e367/providers/Microsoft.Network/virtualNetworks/vnet-169e367/subnets/AzureBastionSubnet",
-            "resourceGroup": "test-rg69e367"
-          },
-          "type": "Microsoft.Network/bastionHosts/bastionHostIpConfigurations"
-        }
-      ],
-      "location": "eastus2",
-      "name": "bastion69e367",
+      "id": "/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/test-rg69e367/providers/Microsoft.Network/bastionHosts/bastion69e367/bastionHostIpConfigurations/bastion_ip_config",
+      "name": "bastion_ip_config",
+      "privateIPAllocationMethod": "Dynamic",
       "provisioningState": "Succeeded",
-      "resourceGroup": "test-rg69e367",
-      "scaleUnits": 2,
-      "sku": {
-        "name": "Standard"
+      "publicIPAddress": {
+        "id": "/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/test-rg69e367/providers/Microsoft.Network/publicIPAddresses/public-ip-bastion69e367",
+        "resourceGroup": "test-rg69e367"
       },
-      "type": "Microsoft.Network/bastionHosts"
+      "resourceGroup": "test-rg69e367",
+      "subnet": {
+        "id": "/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/test-rg69e367/providers/Microsoft.Network/virtualNetworks/vnet-169e367/subnets/AzureBastionSubnet",
+        "resourceGroup": "test-rg69e367"
+      },
+      "type": "Microsoft.Network/bastionHosts/bastionHostIpConfigurations"
     }
-    ```
-
----
+  ],
+  "location": "eastus2",
+  "name": "bastion69e367",
+  "provisioningState": "Succeeded",
+  "resourceGroup": "test-rg69e367",
+  "scaleUnits": 2,
+  "sku": {
+    "name": "Standard"
+  },
+  "type": "Microsoft.Network/bastionHosts"
+}
+```
 
 ## Create a network interface with Accelerated Networking
 
