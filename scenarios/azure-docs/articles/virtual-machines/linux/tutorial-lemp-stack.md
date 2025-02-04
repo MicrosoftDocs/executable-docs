@@ -814,10 +814,3 @@ Results:
 <link rel="alternate" type="application/rss+xml" title="Azure hosted blog &raquo; Feed" href="https://mydnslabelxxxxxx.eastus.cloudapp.azure.com/?feed=rss2" />
 <link rel="alternate" type="application/rss+xml" title="Azure hosted blog &raquo; Comments Feed" href="https://mydnslabelxxxxxx.eastus.cloudapp.azure.com/?feed=comments-rss2" />
 ```
-<<<<<<< HEAD:scenarios/azure-compute-docs/articles/virtual-machines/linux/tutorial-lemp-stack.md
-
-```bash
-echo "You can now visit your web server at https://$FQDN"
-```
-=======
->>>>>>> 28682995688e6031a0b0ef49f4418bd0aaa12bc0:scenarios/azure-docs/articles/virtual-machines/linux/tutorial-lemp-stack.md

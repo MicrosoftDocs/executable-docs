@@ -99,7 +99,7 @@ Results:
 }
 ```
 
-## Step 2: Show the current Python version
+## Show the current Python version
 
 The following command retrieves the Python runtime version currently used by your Azure App Service.
 
@@ -115,7 +115,7 @@ Results:
 "PYTHON|3.10"
 ```
 
-## Step 3: Set the desired Python version
+## Set the desired Python version
 
 Update your Azure App Service instance to use a specific Python version. Replace the desired Python version (e.g., "PYTHON|3.11") as needed.
 
@@ -124,6 +124,7 @@ export DESIRED_PYTHON_VERSION="PYTHON|3.11"
 az webapp config set --resource-group $RESOURCE_GROUP --name $APP_NAME --linux-fx-version $DESIRED_PYTHON_VERSION
 ```
 
+## Verify Version
 Verify the updated Python version:
 
 ```bash
@@ -138,7 +139,7 @@ Results:
 "PYTHON|3.11"
 ```
 
-## Step 4: List all supported Python runtime versions
+## List all supported Python runtime versions
 
 Use the following command to view all Python versions supported by Azure App Service on Linux.
 
