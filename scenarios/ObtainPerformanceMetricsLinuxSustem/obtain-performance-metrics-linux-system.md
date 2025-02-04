@@ -573,7 +573,7 @@ The metrics collected are:
 * Look for single processes with high read/write rates per second. This information is a guidance for processes with I/O more than identifying issues.
 Note: the `--human` option can be used to display numbers in human readable format (that is, `Kb`, `Mb`, `GB`).
 
-### `ps`
+### Top CPU processes
 
 Lastly `ps` command displays system processes, and can be either sorted by CPU or Memory.
 
@@ -599,6 +599,7 @@ root        2186 42.0  0.0  73524  5836 pts/1    R+   16:55   0:06 stress-ng --c
 root        2191 41.2  0.0  73524  5592 pts/1    R+   16:55   0:06 stress-ng --cpu 12 --vm 2 --vm-bytes 120% --iomix 4 --timeout 240
 ```
 
+## Top memory processes
 To sort by `MEM%` and obtain the top 10 processes:
 
 ```azurecli-interactive
@@ -635,12 +636,3 @@ echo "$extracted"
 To run, you can create a file with the above contents, add execute permissions by running `chmod +x gather.sh`, and run with `sudo ./gather.sh`.
 
 This script saves the output of the commands in a file located in the same directory where the script was invoked.
-
-Additionally, all the commands in the bash block codes covered in this document, can be run through `az-cli` using the run-command extension, and parsing the output through `jq` to obtain a similar output to running the commands locally: `
-
-```azurecli-interactive
-output=$(az vm run-command invoke -g $MY_RESOURCE_GROUP_NAME --name $MY_VM_NAME --command-id RunShellScript --scripts "ls -l /dev/disk/azure")
-value=$(echo "$output" | jq -r '.value[0].message')
-extracted=$(echo "$value" | awk '/\[stdout\]/,/\[stderr\]/' | sed '/\[stdout\]/d' | sed '/\[stderr\]/d')
-echo "$extracted" 
-```
