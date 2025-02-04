@@ -45,6 +45,8 @@ Use the following instructions to create an AKS cluster with the Intel SGX add-o
 
 Intel SGX AKS Addon "confcom" exposes the Intel SGX device drivers to your containers to avoid added changes to your pod YAML.
 
+## Create Resource Group
+
 First, create a resource group for the cluster by using the `az group create` command.
 
 ```bash
@@ -72,32 +74,31 @@ Results:
 }
 ```
 
-Now create an AKS cluster with the confidential computing add-on enabled.
+## Create Cluster with Confidential Computing Add-on
+Now create an AKS cluster with the confidential computing add-on enabled. This command deploys a new AKS cluster with a system node pool of non-confidential computing nodes. Confidential computing Intel SGX nodes are not recommended for system node pools.
 
 ```bash
 export AKS_CLUSTER="myAKSCluster$RANDOM_SUFFIX"
 az aks create -g $RESOURCE_GROUP --name $AKS_CLUSTER --generate-ssh-keys --enable-addons confcom
 ```
 
-This command deploys a new AKS cluster with a system node pool of non-confidential computing nodes. Confidential computing Intel SGX nodes are not recommended for system node pools.
+## Add a user node pool with confidential computing capabilities to the AKS cluster
 
-### Add a user node pool with confidential computing capabilities to the AKS cluster
-
-Run the following command to add a user node pool of `Standard_DC4s_v3` size with two nodes to the AKS cluster.
+Run the following command to add a user node pool of `Standard_DC4s_v3` size with two nodes to the AKS cluster. After you run the command, a new node pool with DCsv3 should be visible with confidential computing add-on DaemonSets.
 
 ```bash
 az aks nodepool add --cluster-name $AKS_CLUSTER --name confcompool1 --resource-group $RESOURCE_GROUP --node-vm-size Standard_DC4s_v3 --node-count 2
 ```
 
-After you run the command, a new node pool with DCsv3 should be visible with confidential computing add-on DaemonSets.
-
-### Verify the node pool and add-on
+## Get Credentials
 
 Get the credentials for your AKS cluster.
 
 ```bash
 az aks get-credentials --resource-group $RESOURCE_GROUP --name $AKS_CLUSTER
 ```
+
+## Verify the node pool and add-on
 
 Use the `kubectl get pods` command to verify that the nodes are created properly and the SGX-related DaemonSets are running on DCsv3 node pools:
 
@@ -114,29 +115,15 @@ NAMESPACE     NAME                                 READY   STATUS    RESTARTS   
 kube-system   sgx-device-plugin-xxxxx              1/1     Running   0          5m
 ```
 
-If the output matches the preceding code, your AKS cluster is now ready to run confidential applications.
-
-You can go to the Deploy Hello World from an isolated enclave application section in this quickstart to test an app in an enclave.
-
-## Add a confidential computing node pool to an existing AKS cluster
-
-This section assumes you're already running an AKS cluster that meets the prerequisite criteria listed earlier in this quickstart.
-
-### Enable the confidential computing AKS add-on on the existing cluster
+## Enable the confidential computing AKS add-on on the existing cluster
 
 To enable the confidential computing add-on, use the `az aks enable-addons` command with the `confcom` add-on, specifying your existing AKS cluster name and resource group.
 
-### Add a DCsv3 user node pool to the cluster
-> [!NOTE]
-> To use the confidential computing capability, your existing AKS cluster needs to have a minimum of one node pool that's based on a DCsv2/DCsv3 VM SKU. To learn more about DCsv2/DCsv3 VM SKUs for confidential computing, see the available SKUs and supported regions.
-
-To create a node pool, add a new node pool to your existing AKS cluster with the name *confcompool1*. Ensure that this node pool has two nodes and uses the `Standard_DC4s_v3` VM size.
-
-Verify that the new node pool with the name *confcompool1* has been created by listing the node pools in your AKS cluster.
+```bash
+az aks enable-addons --addons confcom --name $AKS_CLUSTER --resource-group $RESOURCE_GROUP
+```
 
 ### Verify that DaemonSets are running on confidential node pools
-
-Sign in to your existing AKS cluster to perform the following verification:
 
 ```bash
 kubectl get nodes
@@ -151,28 +138,9 @@ NAME                                STATUS   ROLES   AGE     VERSION
 aks-confcompool1-xxxxx-vmss000000   Ready    agent   5m      v1.xx.x
 ```
 
-You might also see other DaemonSets.
-
-```bash
-kubectl get pods --all-namespaces
-```
-
-Results:
-
-<!-- expected_similarity=0.3 -->
-
-```text
-NAMESPACE     NAME                                 READY   STATUS    RESTARTS   AGE
-kube-system   sgx-device-plugin-xxxxx              1/1     Running   0          5m
-```
-
-If the output matches the preceding code, your AKS cluster is now ready to run confidential applications.
-
 ## Deploy Hello World from an isolated enclave application
 
-You're now ready to deploy a test application.
-
-Create a file named `hello-world-enclave.yaml` and paste in the following YAML manifest. This deployment assumes that you've deployed the *confcom* add-on.
+Deploy a file named `hello-world-enclave.yaml`. This deployment assumes that you've deployed the *confcom* add-on.
 
 ```bash
 cat <<EOF > hello-world-enclave.yaml
@@ -205,11 +173,6 @@ spec:
           path: /var/run/aesmd
   backoffLimit: 0
 EOF
-```
-
-Now use the `kubectl apply` command to create a sample job that will run in a secure enclave.
-
-```bash
 kubectl apply -f hello-world-enclave.yaml
 ```
 
@@ -220,6 +183,8 @@ Results:
 ```text
 job.batch/oe-helloworld created
 ```
+
+## Check Jobs
 
 You can confirm that the workload successfully created a Trusted Execution Environment (enclave) by running the following commands:
 
@@ -236,6 +201,8 @@ NAME            COMPLETIONS   DURATION   AGE
 oe-helloworld   1/1           1s         23s
 ```
 
+## Check Pods
+
 ```bash
 kubectl get pods -l app=oe-helloworld
 ```
@@ -248,6 +215,8 @@ Results:
 NAME                 READY   STATUS      RESTARTS   AGE
 oe-helloworld-xxxxx  0/1     Completed   0          25s
 ```
+
+## Wait for Pod to finish deploying.
 
 ```bash
 while [[ $(kubectl get pods -l app=oe-helloworld -o 'jsonpath={..status.phase}') != "Succeeded" ]]; do
@@ -265,8 +234,6 @@ Results:
 Hello world from the enclave
 Enclave called into host to print: Hello World!
 ```
-
-If the output matches the preceding code, your application is running successfully in a confidential computing environment.
 
 ## Next steps
 
