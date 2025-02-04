@@ -1,0 +1,5 @@
+import torch
+from model import SimpleModel
+
+model = SimpleModel()
+torch.save(model, 'model.pt')
