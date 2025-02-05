@@ -261,7 +261,7 @@
         "description": "This tutorial shows how to deploy Inspektor Gadget in an AKS cluster",
         "stackDetails": "",
         "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/DeployIGonAKS/deploy-ig-on-aks.md",
-        "documentationUrl": "",
+        "documentationUrl": "https://learn.microsoft.com/en-us/troubleshoot/azure/azure-kubernetes/logs/capture-system-insights-from-aks",
         "nextSteps": [
             {
                 "title": "Real-world scenarios where Inspektor Gadget can help you",
@@ -392,7 +392,7 @@
         "description": "Learn how to obtainer Performance metrics from a Linux system.",
         "stackDetails": "",
         "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/ObtainPerformanceMetricsLinuxSustem/obtain-performance-metrics-linux-system.md",
-        "documentationUrl": "",
+        "documentationUrl": "https://learn.microsoft.com/en-us/troubleshoot/azure/virtual-machines/linux/collect-performance-metrics-from-a-linux-system",
         "configurations": {
             "permissions": [],
             "configurableParams": [
@@ -418,7 +418,7 @@
         "description": "Create the infrastructure needed to deploy a highly available PostgreSQL database on AKS using the CloudNativePG operator.",
         "stackDetails": "",
         "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-aks-docs/articles/aks/create-postgresql-ha.md",
-        "documentationUrl": "",
+        "documentationUrl": "https://learn.microsoft.com/en-us/azure/aks/create-postgresql-ha?tabs=helm",
         "nextSteps": [
             {
                 "title": "Deploy a highly available PostgreSQL database on AKS with Azure CLI",
@@ -436,18 +436,7 @@
         "description": "In this article, you deploy a highly available PostgreSQL database on AKS using the CloudNativePG operator.",
         "stackDetails": "",
         "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-aks-docs/articles/aks/deploy-postgresql-ha.md",
-        "documentationUrl": "",
-        "configurations": {
-        }
-    },
-    {
-        "status": "inactive",
-        "key": "azure-aks-docs/articles/aks/postgresql-ha-overview.md",
-        "title": "Overview of deploying a highly available PostgreSQL database on AKS with Azure CLI",
-        "description": "Learn how to deploy a highly available PostgreSQL database on AKS using the CloudNativePG operator.",
-        "stackDetails": "",
-        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-aks-docs/articles/aks/postgresql-ha-overview.md",
-        "documentationUrl": "",
+        "documentationUrl": "https://learn.microsoft.com/en-us/azure/aks/deploy-postgresql-ha",
         "configurations": {
         }
     },
@@ -458,7 +447,7 @@
         "description": "This tutorial shows how to create a Container App leveraging Blob Store, SQL, and Computer Vision",
         "stackDetails": "",
         "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/CreateContainerAppDeploymentFromSource/create-container-app-deployment-from-source.md",
-        "documentationUrl": "",
+        "documentationUrl": "https://github.com/Azure/computer-vision-nextjs-webapp",
         "nextSteps": [
             {
                 "title": "Azure Container Apps documentation",
@@ -496,7 +485,7 @@
         }
     },
     {
-        "status": "active",
+        "status": "inactive",
         "key": "AIChatApp/ai-chat-app.md",
         "title": "Create an Azure OpenAI, LangChain, ChromaDB, and Chainlit Chat App in Container Apps",
         "description": "",
@@ -541,7 +530,7 @@
         "description": "In this article, you create the infrastructure needed to deploy Apache Airflow on Azure Kubernetes Service (AKS) using Helm.",
         "stackDetails": "",
         "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-aks-docs/articles/aks/airflow-create-infrastructure.md",
-        "documentationUrl": "",
+        "documentationUrl": "https://learn.microsoft.com/en-us/azure/aks/airflow-create-infrastructure",
         "nextSteps": [
             {
                 "title": "Deploy Apache Airflow on AKS",
@@ -559,7 +548,7 @@
         "description": "In this article, you create the infrastructure needed to deploy Apache Airflow on Azure Kubernetes Service (AKS) using Helm.",
         "stackDetails": "",
         "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-aks-docs/articles/aks/airflow-deploy.md",
-        "documentationUrl": "",
+        "documentationUrl": "https://learn.microsoft.com/en-us/azure/aks/airflow-deploy",
         "nextSteps": [
             {
                 "title": "Deploy a MongoDB cluster on Azure Kubernetes Service (AKS)",
@@ -639,7 +628,7 @@
         "description": "Learn how to use the Azure CLI to create an Azure OpenAI resource and manage deployments with the Azure OpenAI Service.",
         "stackDetails": "",
         "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/CreateAOAIDeployment/create-aoai-deployment.md",
-        "documentationUrl": "",
+        "documentationUrl": "https://learn.microsoft.com/en-us/azure/ai-services/openai/how-to/create-resource?pivots=cli",
         "nextSteps": [],
         "configurations": {
             "permissions": []
@@ -652,7 +641,7 @@
         "description": "Learn how to enable the AI toolchain operator add-on on Azure Kubernetes Service (AKS) to simplify OSS AI model management and deployment",
         "stackDetails": "",
         "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/AKSKaito/aks-kaito.md",
-        "documentationUrl": "",
+        "documentationUrl": "https://learn.microsoft.com/en-us/azure/aks/ai-toolchain-operator",
         "nextSteps": [
             {
                 "title": "Check out the KAITO GitHub repository",
@@ -738,7 +727,7 @@
         "description": "Learn how to create an Azure Kubernetes Service (AKS) cluster with enclave confidential containers a Hello World app by using the Azure CLI.",
         "stackDetails": [],
         "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-docs/articles/confidential-computing/confidential-enclave-nodes-aks-get-started.md",
-        "documentationUrl": "",
+        "documentationUrl": "https://learn.microsoft.com/en-us/azure/confidential-computing/confidential-enclave-nodes-aks-get-started",
         "nextSteps": [
             {
                 "title": "Samples to run Python, Node, and other applications through confidential containers",
@@ -760,7 +749,7 @@
         "description": "Learn how to quickly create an Azure Linux Container Host for AKS cluster using the Azure CLI.",
         "stackDetails": [],
         "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-management-docs/articles/azure-linux/quickstart-azure-cli.md",
-        "documentationUrl": "",
+        "documentationUrl": "https://learn.microsoft.com/en-us/azure/azure-linux/quickstart-azure-cli",
         "nextSteps": [
             {
                 "title": "Azure Linux Container Host tutorial",
@@ -779,7 +768,7 @@
         "description": "Learn how to use the Azure CLI to create a custom VM image that you can use to deploy a Virtual Machine Scale Set",
         "stackDetails": [],
         "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-compute-docs/articles/virtual-machine-scale-sets/tutorial-use-custom-image-cli.md",
-        "documentationUrl": "",
+        "documentationUrl": "https://learn.microsoft.com/en-us/azure/virtual-machine-scale-sets/tutorial-use-custom-image-cli",
         "nextSteps": [
             {
                 "title": "Deploy applications to your scale sets",
@@ -840,7 +829,7 @@
         "description": "In this Azure Kubernetes Service (AKS) article, you learn how to configure your Azure Kubernetes Service pod to authenticate with workload identity.",
         "stackDetails": [],
         "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-aks-docs/articles/aks/workload-identity-migrate-from-pod-identity.md",
-        "documentationUrl": "",
+        "documentationUrl": "https://learn.microsoft.com/en-us/azure/aks/workload-identity-migrate-from-pod-identity",
         "nextSteps": [
             {
                 "title": "Use Microsoft Entra Workload ID with Azure Kubernetes Service (AKS)",
