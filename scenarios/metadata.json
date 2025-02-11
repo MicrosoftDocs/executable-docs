@@ -621,7 +621,7 @@
     },
     {
         "status": "active",
-        "key": "PostgresRAGLLM/postgres-rag-llm.md",
+        "key": "PostgresRagLlmDemo/README.md",
         "title": "Quickstart: Deploy a Postgres vector database",
         "description": "Set up a Postgres vector database and openai resources to run a RAG-LLM model.",
         "stackDetails": "",
