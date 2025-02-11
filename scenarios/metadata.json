@@ -256,7 +256,7 @@
     },
     {
         "status": "active",
-        "key": "DeployIGonAKS/deploy-ig-on-aks.md",
+        "key": "DeployIGonAKS/README.md",
         "title": "Deploy Inspektor Gadget in an Azure Kubernetes Service cluster",
         "description": "This tutorial shows how to deploy Inspektor Gadget in an AKS cluster",
         "stackDetails": "",
