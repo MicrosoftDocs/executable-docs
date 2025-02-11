@@ -647,7 +647,7 @@
     },
     {
         "status": "active",
-        "key": "AKSKaito/aks-kaito.md",
+        "key": "AksKaito/README.md",
         "title": "Deploy an AI model on Azure Kubernetes Service (AKS) with the AI toolchain operator (preview)",
         "description": "Learn how to enable the AI toolchain operator add-on on Azure Kubernetes Service (AKS) to simplify OSS AI model management and deployment",
         "stackDetails": "",
