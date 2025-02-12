@@ -23,7 +23,7 @@ The script will search the database for relevant information for our query using
 Set up a resource group with a random ID.
 
 ```bash
-export RANDOM_ID="b795cc"
+export RANDOM_ID="$(openssl rand -hex 3)"
 export RG_NAME="myPostgresResourceGroup$RANDOM_ID"
 export REGION="centralus"
 
