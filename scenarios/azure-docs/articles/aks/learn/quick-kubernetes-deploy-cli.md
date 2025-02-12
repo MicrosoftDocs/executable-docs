@@ -344,38 +344,6 @@ To deploy the application, you use a manifest file to create all the objects req
     kubectl apply -f aks-store-quickstart.yaml
     ```
 
-## Wait for cluster to startup
-
-Wait until the cluster is ready
-
-```azurecli-interactive
-runtime="5 minutes"
-endtime=$(date -ud "$runtime" +%s)
-while [[ $(date -u +%s) -le $endtime ]]
-do
-   STATUS=$(kubectl get pods -l app=store-front -o 'jsonpath={..status.conditions[?(@.type=="Ready")].status}')
-   echo $STATUS
-   if [ "$STATUS" == 'True' ]
-   then
-      export IP_ADDRESS=$(kubectl get service store-front --output 'jsonpath={..status.loadBalancer.ingress[0].ip}')
-      echo "Service IP Address: $IP_ADDRESS"
-      break
-   else
-      sleep 10
-   fi
-done
-```
-
-## Test the application
-
-You can validate that the application is running by visiting the public IP address or the application URL.
-
-Get the application URL using the following commands:
-
-```azurecli-interactive
-curl $IP_ADDRESS
-```
-
 Results:
 <!-- expected_similarity=0.3 -->
 ```HTML
