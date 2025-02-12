@@ -2,7 +2,7 @@
     {
         "status": "active",
         "key": "azure-docs/articles/aks/learn/quick-kubernetes-deploy-cli.md",
-        "title": "Quickstart: Deploy an Azure Kubernetes Service (AKS) cluster using Azure CLI",
+        "title": "Deploy an Azure Kubernetes Service (AKS) cluster",
         "description": "Learn how to quickly deploy a Kubernetes cluster and deploy an application in Azure Kubernetes Service (AKS) using Azure CLI",
         "stackDetails": "",
         "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-aks-docs/articles/aks/learn/quick-kubernetes-deploy-cli.md",
@@ -143,7 +143,7 @@
     {
         "status": "active",
         "key": "azure-docs/articles/static-web-apps/get-started-cli.md",
-        "title": "Quickstart: Building your first static site with the Azure Static Web Apps using the CLI",
+        "title": "Deploy a Static site with the Azure Static Web Apps",
         "description": "Learn to deploy a static site to Azure Static Web Apps with the Azure CLI.",
         "stackDetails": "",
         "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-docs/articles/static-web-apps/get-started-cli.md",
@@ -185,7 +185,7 @@
     {
         "status": "active",
         "key": "azure-docs/articles/virtual-machines/linux/quick-create-cli.md",
-        "title": "Quickstart: Use the Azure CLI to create a Linux Virtual Machine",
+        "title": "Deploy a Linux virtual machine",
         "description": "In this quickstart, you learn how to use the Azure CLI to create a Linux virtual machine",
         "stackDetails": [
             "An Ubuntu 22.04 Linux VM (Standard DS1_v2)",
@@ -622,7 +622,7 @@
     {
         "status": "active",
         "key": "PostgresRagLlmDemo/README.md",
-        "title": "Quickstart: Deploy a Postgres vector database",
+        "title": "Deploy a Postgres vector database",
         "description": "Set up a Postgres vector database and openai resources to run a RAG-LLM model.",
         "stackDetails": "",
         "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/PostgresRAGLLM/postgres-rag-llm.md",
@@ -648,7 +648,7 @@
     {
         "status": "active",
         "key": "AksKaito/README.md",
-        "title": "Deploy an AI model on Azure Kubernetes Service (AKS) with the AI toolchain operator (preview)",
+        "title": "Deploy an AI model on AKS with the AI toolchain operator",
         "description": "Learn how to enable the AI toolchain operator add-on on Azure Kubernetes Service (AKS) to simplify OSS AI model management and deployment",
         "stackDetails": "",
         "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/AKSKaito/aks-kaito.md",
