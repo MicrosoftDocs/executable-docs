@@ -260,7 +260,7 @@
         "title": "Deploy Inspektor Gadget in an Azure Kubernetes Service cluster",
         "description": "This tutorial shows how to deploy Inspektor Gadget in an AKS cluster",
         "stackDetails": "",
-        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/DeployIGonAKS/deploy-ig-on-aks.md",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/DeployIGonAKS/README.md",
         "documentationUrl": "",
         "nextSteps": [
             {
@@ -285,7 +285,7 @@
         "title": "Deploy a Scalable & Secure Azure Kubernetes Service cluster using the Azure CLI",
         "description": "This tutorial where we will take you step by step in creating an Azure Kubernetes Web Application that is secured via https.",
         "stackDetails": "",
-        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/CreateAKSWebApp/create-aks-webapp.md",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/CreateAKSWebApp/README.md",
         "documentationUrl": "",
         "nextSteps": [
             {
@@ -625,7 +625,7 @@
         "title": "Deploy a Postgres vector database",
         "description": "Set up a Postgres vector database and openai resources to run a RAG-LLM model.",
         "stackDetails": "",
-        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/PostgresRAGLLM/postgres-rag-llm.md",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/PostgresRagLlmDemo/README.md",
         "documentationUrl": "",
         "nextSteps": [],
         "configurations": {
@@ -651,7 +651,7 @@
         "title": "Deploy an AI model on AKS with the AI toolchain operator",
         "description": "Learn how to enable the AI toolchain operator add-on on Azure Kubernetes Service (AKS) to simplify OSS AI model management and deployment",
         "stackDetails": "",
-        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/AKSKaito/aks-kaito.md",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/AksKaito/README.md",
         "documentationUrl": "",
         "nextSteps": [
             {
