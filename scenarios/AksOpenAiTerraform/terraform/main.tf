@@ -57,7 +57,7 @@ module "openai" {
       }
     }
   ]
-  custom_subdomain_name = var.openai_subdomain
+  custom_subdomain_name = "magic8ball-${local.random_id}"
 
   log_analytics_workspace_id = module.log_analytics_workspace.id
 }

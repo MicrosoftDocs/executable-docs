@@ -5,12 +5,7 @@ variable "resource_group_name_prefix" {
 
 variable "location" {
   type    = string
-  default = "westus3"
-}
-
-variable "openai_subdomain" {
-  type    = string
-  default = "magic8ball-test465544"
+  default = "westus"
 }
 
 variable "kubernetes_version" {
