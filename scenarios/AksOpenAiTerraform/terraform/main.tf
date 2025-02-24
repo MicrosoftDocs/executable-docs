@@ -72,8 +72,8 @@ module "aks_cluster" {
 
   kubernetes_version       = var.kubernetes_version
   sku_tier                 = "Free"
-  system_node_pool_vm_size = "Standard_D8ds_v5"
-  user_node_pool_vm_size   = "Standard_D8ds_v5"
+  system_node_pool_vm_size = "Standard_DS2_v2"
+  user_node_pool_vm_size   = "Standard_DS2_v2"
 
   system_node_pool_subnet_id = module.virtual_network.subnet_ids["SystemSubnet"]
   user_node_pool_subnet_id   = module.virtual_network.subnet_ids["UserSubnet"]

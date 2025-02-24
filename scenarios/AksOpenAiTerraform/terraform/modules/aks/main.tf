@@ -1,3 +1,7 @@
+locals {
+    zones = ["2", "3"]
+}
+
 resource "azurerm_user_assigned_identity" "aks_identity" {
   name                = "${var.name}Identity"
   resource_group_name = var.resource_group_name
@@ -27,9 +31,8 @@ resource "azurerm_kubernetes_cluster" "aks_cluster" {
     vm_size        = var.system_node_pool_vm_size
     vnet_subnet_id = var.system_node_pool_subnet_id
     pod_subnet_id  = var.pod_subnet_id
-    zones          = ["1", "2", "3"]
+    zones          = local.zones
     max_pods       = 50
-    os_disk_type   = "Ephemeral"
 
     upgrade_settings {
       drain_timeout_in_minutes      = 0
@@ -75,12 +78,11 @@ resource "azurerm_kubernetes_cluster_node_pool" "node_pool" {
   name                  = "user"
   vm_size               = var.user_node_pool_vm_size
   mode                  = "User"
-  zones                 = ["1", "2", "3"]
+  zones                 = local.zones
   vnet_subnet_id        = var.user_node_pool_subnet_id
   pod_subnet_id         = var.pod_subnet_id
   orchestrator_version  = var.kubernetes_version
   max_pods              = 50
-  os_disk_type          = "Ephemeral"
   os_type               = "Linux"
   priority              = "Regular"
 }
