@@ -12,10 +12,6 @@ resource "azurerm_key_vault" "key_vault" {
   purge_protection_enabled        = false
   soft_delete_retention_days      = 30
 
-  timeouts {
-    delete = "60m"
-  }
-
   network_acls {
     bypass         = "AzureServices"
     default_action = "Allow"
