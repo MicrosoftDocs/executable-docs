@@ -930,16 +930,17 @@
         "configurations": {
             "permissions": []
         }
-        "configurations": {}
     },
     {
-        "status": "active",
+        "status": "inactive",
         "key": "AksOpenAiTerraform/README.md",
         "title": "How to deploy and run an Azure OpenAI ChatGPT application on AKS via Terraform",
         "description": "This article shows how to deploy an AKS cluster and Azure OpenAI Service via Terraform and how to deploy a ChatGPT-like application in Python.",
         "stackDetails": "",
         "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/refs/heads/test_terraform/scenarios/AksOpenAiTerraform/README.md",
         "documentationUrl": "",
-        "configurations": {}
+        "configurations": {
+            "permissions": []
+        }
     }
 ]
