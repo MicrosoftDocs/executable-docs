@@ -1,5 +1,16 @@
-# Variables
-source ./00-variables.sh
+ingressTemplate="ingress.yml"
+ingressName="magic8ball-ingress"
+dnsZoneName="contoso.com"
+dnsZoneResourceGroupName="DnsResourceGroup"
+subdomain="magic8ball"
+host="$subdomain.$dnsZoneName"
+
+echo "[$ingressName] ingress does not exist"
+echo "Creating [$ingressName] ingress..."
+cat $ingressTemplate |
+  yq "(.spec.tls[0].hosts[0])|="\""$host"\" |
+  yq "(.spec.rules[0].host)|="\""$host"\" |
+  kubectl apply -n $namespace -f -
 
 # Retrieve the public IP address from the ingress
 echo "Retrieving the external IP address from the [$ingressName] ingress..."

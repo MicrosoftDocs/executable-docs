@@ -1,18 +1,15 @@
 #!/bin/bash
 
-# Variables
-source ./00-variables.sh
+openAiBase="https://coralopenai.openai.azure.com/"
+openAiType="azure_ad"
+openAiModel="gpt-35-turbo"
+openAiDeployment="gpt-35-turbo"
 
-# Check if namespace exists in the cluster
-result=$(kubectl get namespace -o jsonpath="{.items[?(@.metadata.name=='$namespace')].metadata.name}")
-
-if [[ -n $result ]]; then
-  echo "$namespace namespace already exists in the cluster"
-else
-  echo "$namespace namespace does not exist in the cluster"
-  echo "creating $namespace namespace in the cluster..."
-  kubectl create namespace $namespace
-fi
+# Parameters
+title="Magic 8 Ball"
+label="Pose your question and cross your fingers!"
+temperature="0.9"
+imageWidth="80"
 
 # Create config map
 cat $configMapTemplate |
