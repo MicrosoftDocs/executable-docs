@@ -1,10 +1,14 @@
 import argparse
+import logging
 from textwrap import dedent
 
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from openai import AzureOpenAI
 
 from db import VectorDatabase
+
+# Configure logging
+logging.basicConfig(level=logging.INFO)
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--api-key', dest='api_key', type=str)
@@ -33,6 +37,7 @@ class ChatBot:
         )
 
     def load_file(self, text_file: str):
+        logging.info(f"Loading file: {text_file}")
         with open(text_file, encoding="UTF-8") as f:
             data = f.read()
             chunks = self.text_splitter.create_documents([data])
@@ -40,9 +45,7 @@ class ChatBot:
                 text = chunk.page_content
                 embedding = self.__create_embedding(text)
                 self.db.save_embedding(i, text, embedding)
-
-    def __create_embedding(self, text: str):
-        return self.api.embeddings.create(model="text-embedding-ada-002", input=text).data[0].embedding
+        logging.info("Done loading data.")
 
     def get_answer(self, question: str):
         question_embedding = self.__create_embedding(question)
@@ -71,21 +74,21 @@ class ChatBot:
         )
         return response.choices[0].message.content
 
+    def __create_embedding(self, text: str):
+        return self.api.embeddings.create(model="text-embedding-ada-002", input=text).data[0].embedding
+
 
 def main():
     chat_bot = ChatBot()
 
     if args.populate:
-        print("Loading embedding data into database...")
         chat_bot.load_file("knowledge.txt")
-        print("Done loading data.")
-        return
-
-    while True:
-        q = input("Ask a question (q to exit): ")
-        if q == "q":
-            break
-        print(chat_bot.get_answer(q))
+    else:
+        while True:
+            q = input("Ask a question (q to exit): ")
+            if q == "q":
+                break
+            print(chat_bot.get_answer(q))
 
 
 if __name__ == "__main__":

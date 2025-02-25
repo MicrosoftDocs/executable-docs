@@ -1,0 +1,3 @@
+It seems you've requested a workload titled "new.py," but no content or details are provided for this workload. Please provide more details or specify the objective of the Exec Doc you'd like me to create (e.g., Do you want to deploy a specific resource on Azure, set up a CI/CD pipeline, work with a particular Azure service like Virtual Machines, Kubernetes, Databases, etc.?).
+
+Once you provide this information, I can create a fully detailed and functional Exec Doc adherent to the rules mentioned above. 

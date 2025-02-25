@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pg-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: pg-app
+  template:
+    metadata:
+      labels:
+        app: pg-app
+    spec:
+      containers:
+      - name: pg-app
+        image: postgres:11
+        env:
+        - name: POSTGRES_DB
+          value:

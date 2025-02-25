@@ -14,31 +14,14 @@ ms.custom: innovation-engine
 
 Welcome to this tutorial where we will take you step by step in creating an Azure Kubernetes Web Application that is secured via https. This tutorial assumes you are logged into Azure CLI already and have selected a subscription to use with the CLI. It also assumes that you have Helm installed ([Instructions can be found here](https://helm.sh/docs/intro/install/)).
 
-## Define Environment Variables
-
-The first step in this tutorial is to define environment variables.
-
-```bash
-export RANDOM_ID="$(openssl rand -hex 3)"
-export NETWORK_PREFIX="$(($RANDOM % 254 + 1))"
-export SSL_EMAIL_ADDRESS="$(az account show --query user.name --output tsv)"
-export MY_RESOURCE_GROUP_NAME="myAKSResourceGroup$RANDOM_ID"
-export REGION="westeurope"
-export MY_AKS_CLUSTER_NAME="myAKSCluster$RANDOM_ID"
-export MY_PUBLIC_IP_NAME="myPublicIP$RANDOM_ID"
-export MY_DNS_LABEL="mydnslabel$RANDOM_ID"
-export MY_VNET_NAME="myVNet$RANDOM_ID"
-export MY_VNET_PREFIX="10.$NETWORK_PREFIX.0.0/16"
-export MY_SN_NAME="mySN$RANDOM_ID"
-export MY_SN_PREFIX="10.$NETWORK_PREFIX.0.0/22"
-export FQDN="${MY_DNS_LABEL}.${REGION}.cloudapp.azure.com"
-```
-
 ## Create a resource group
 
 A resource group is a container for related resources. All resources must be placed in a resource group. We will create one for this tutorial. The following command creates a resource group with the previously defined $MY_RESOURCE_GROUP_NAME and $REGION parameters.
 
 ```bash
+export RANDOM_ID="$(openssl rand -hex 3)"
+export MY_RESOURCE_GROUP_NAME="myAKSResourceGroup$RANDOM_ID"
+export REGION="westeurope"
 az group create --name $MY_RESOURCE_GROUP_NAME --location $REGION
 ```
 
@@ -65,6 +48,11 @@ Results:
 A virtual network is the fundamental building block for private networks in Azure. Azure Virtual Network enables Azure resources like VMs to securely communicate with each other and the internet.
 
 ```bash
+export NETWORK_PREFIX="$(($RANDOM % 254 + 1))"
+export MY_VNET_NAME="myVNet$RANDOM_ID"
+export MY_VNET_PREFIX="10.$NETWORK_PREFIX.0.0/16"
+export MY_SN_NAME="mySN$RANDOM_ID"
+export MY_SN_PREFIX="10.$NETWORK_PREFIX.0.0/22"
 az network vnet create \
     --resource-group $MY_RESOURCE_GROUP_NAME \
     --location $REGION \
@@ -129,6 +117,7 @@ This will take a few minutes.
 
 ```bash
 export MY_SN_ID=$(az network vnet subnet list --resource-group $MY_RESOURCE_GROUP_NAME --vnet-name $MY_VNET_NAME --query "[0].id" --output tsv)
+export MY_AKS_CLUSTER_NAME="myAKSCluster$RANDOM_ID"
 az aks create \
   --resource-group $MY_RESOURCE_GROUP_NAME \
   --name $MY_AKS_CLUSTER_NAME \
@@ -176,6 +165,8 @@ kubectl get nodes
 ## Install NGINX Ingress Controller
 
 ```bash
+export MY_PUBLIC_IP_NAME="myPublicIP$RANDOM_ID"
+export MY_DNS_LABEL="mydnslabel$RANDOM_ID"
 export MY_STATIC_IP=$(az network public-ip create --resource-group MC_${MY_RESOURCE_GROUP_NAME}_${MY_AKS_CLUSTER_NAME}_${REGION} --location ${REGION} --name ${MY_PUBLIC_IP_NAME} --dns-name ${MY_DNS_LABEL} --sku Standard --allocation-method static --version IPv4 --zone 1 2 3 --query publicIp.ipAddress -o tsv)
 helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
 helm repo update
@@ -458,6 +449,7 @@ while [[ $(date -u +%s) -le $endtime ]]; do
    fi;
 done
 
+export FQDN="${MY_DNS_LABEL}.${REGION}.cloudapp.azure.com"
 curl "http://$FQDN"
 ```
 
@@ -488,92 +480,70 @@ Helm is a Kubernetes deployment tool for automating creation, packaging, configu
 
 Cert-manager provides Helm charts as a first-class method of installation on Kubernetes.
 
-```bash
-# Add the Jetstack Helm repository
-# This repository is the only supported source of cert-manager charts. There are some other mirrors and copies across the internet, but those are entirely unofficial and could present a security risk.
+1. Add the Jetstack Helm repository
 
-helm repo add jetstack https://charts.jetstack.io
+   This repository is the only supported source of cert-manager charts. There are some other mirrors and copies across the internet, but those are entirely unofficial and could present a security risk.
 
-# Update local Helm Chart repository cache
-helm repo update
+   ```bash
+   helm repo add jetstack https://charts.jetstack.io
+   helm repo update
+   helm install cert-manager jetstack/cert-manager --namespace cert-manager --version v1.7.0
+   ```
 
-# Install Cert-Manager addon via helm by running the following
-helm install cert-manager jetstack/cert-manager --namespace cert-manager --version v1.7.0
+2. Update local Helm Chart repository cache
 
-# ClusterIssuers are Kubernetes resources that represent certificate authorities (CAs) that are able to generate signed certificates by honoring certificate signing requests. All cert-manager certificates require a referenced issuer that is in a ready condition to attempt to honor the request.
-# The issuer we are using can be found in the `cluster-issuer-prod.yml file`
+   ```bash
+   ```
+
+3. Install Cert-Manager addon via helm by running the following:
+
+   ```bash
+   ```
+
+4. Apply Certificate Issuer YAML File
+
+   ClusterIssuers are Kubernetes resources that represent certificate authorities (CAs) that are able to generate signed certificates by honoring certificate signing requests. All cert-manager certificates require a referenced issuer that is in a ready condition to attempt to honor the request.
+   The issuer we are using can be found in the `cluster-issuer-prod.yml file`
         
-cat <<EOF > cluster-issuer-prod.yml
-apiVersion: cert-manager.io/v1
-kind: ClusterIssuer
-metadata:
-  name: letsencrypt-prod
-spec:
-  acme:
-    # You must replace this email address with your own.
-    # Let's Encrypt will use this to contact you about expiring
-    # certificates, and issues related to your account.
-    email: $SSL_EMAIL_ADDRESS
-    # ACME server URL for Let’s Encrypt’s prod environment.
-    # The staging environment will not issue trusted certificates but is
-    # used to ensure that the verification process is working properly
-    # before moving to production
-    server: https://acme-v02.api.letsencrypt.org/directory
-    # Secret resource used to store the account's private key.
-    privateKeySecretRef:
-      name: letsencrypt
-    # Enable the HTTP-01 challenge provider
-    # you prove ownership of a domain by ensuring that a particular
-    # file is present at the domain
-    solvers:
-    - http01:
-        ingress:
-          class: nginx
-        podTemplate:
-          spec:
-            nodeSelector:
-              "kubernetes.io/os": linux
-EOF
+    ```bash
+    export SSL_EMAIL_ADDRESS="$(az account show --query user.name --output tsv)"
+    cat <<EOF > cluster-issuer-prod.yml
+    apiVersion: cert-manager.io/v1
+    kind: ClusterIssuer
+    metadata:
+      name: letsencrypt-prod
+    spec:
+      acme:
+        # You must replace this email address with your own.
+        # Let's Encrypt will use this to contact you about expiring
+        # certificates, and issues related to your account.
+        email: $SSL_EMAIL_ADDRESS
+        # ACME server URL for Let’s Encrypt’s prod environment.
+        # The staging environment will not issue trusted certificates but is
+        # used to ensure that the verification process is working properly
+        # before moving to production
+        server: https://acme-v02.api.letsencrypt.org/directory
+        # Secret resource used to store the account's private key.
+        privateKeySecretRef:
+          name: letsencrypt
+        # Enable the HTTP-01 challenge provider
+        # you prove ownership of a domain by ensuring that a particular
+        # file is present at the domain
+        solvers:
+        - http01:
+            ingress:
+              class: nginx
+            podTemplate:
+              spec:
+                nodeSelector:
+                  "kubernetes.io/os": linux
+    EOF
+    cluster_issuer_variables=$(<cluster-issuer-prod.yml)
+    ```
 
-cluster_issuer_variables=$(<cluster-issuer-prod.yml)
+5. Upate Voting App Application to use Cert-Manager to obtain an SSL Certificate.
 
-# Upate Voting App Application to use Cert-Manager to obtain an SSL Certificate.
-# The full YAML file can be found in `azure-vote-nginx-ssl.yml`
-
-cat << EOF > azure-vote-nginx-ssl.yml
----
-# INGRESS WITH SSL PROD
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: vote-ingress
-  namespace: default
-  annotations:
-    kubernetes.io/tls-acme: "true"
-    nginx.ingress.kubernetes.io/ssl-redirect: "true"
-    cert-manager.io/cluster-issuer: letsencrypt-prod
-spec:
-  ingressClassName: nginx
-  tls:
-  - hosts:
-    - $FQDN
-    secretName: azure-vote-nginx-secret
-  rules:
-    - host: $FQDN
-      http:
-        paths:
-        - path: /
-          pathType: Prefix
-          backend:
-            service:
-              name: azure-vote-front
-              port:
-                number: 80
-EOF
-
-azure_vote_nginx_ssl_variables=$(<azure-vote-nginx-ssl.yml)
-echo "${azure_vote_nginx_ssl_variables//\$FQDN/$FQDN}" | kubectl apply -f -
-```
+   The full YAML file can be found in `azure-vote-nginx-ssl.yml`
 
 ## Browse your AKS Deployment Secured via HTTPS
 

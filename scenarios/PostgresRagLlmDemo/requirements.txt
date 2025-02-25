@@ -1,4 +1,4 @@
 azure-identity==1.17.1
-openai==1.42.0
+openai==1.55.3
 psycopg2==2.9.9
 langchain-text-splitters==0.2.2

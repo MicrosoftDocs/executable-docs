@@ -2,10 +2,10 @@
     {
         "status": "active",
         "key": "azure-docs/articles/aks/learn/quick-kubernetes-deploy-cli.md",
-        "title": "Quickstart: Deploy an Azure Kubernetes Service (AKS) cluster using Azure CLI",
+        "title": "Deploy an Azure Kubernetes Service (AKS) cluster",
         "description": "Learn how to quickly deploy a Kubernetes cluster and deploy an application in Azure Kubernetes Service (AKS) using Azure CLI",
         "stackDetails": "",
-        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-docs/articles/aks/learn/quick-kubernetes-deploy-cli.md",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-aks-docs/articles/aks/learn/quick-kubernetes-deploy-cli.md",
         "documentationUrl": "https://learn.microsoft.com/en-us/azure/aks/learn/quick-kubernetes-deploy-cli",
         "nextSteps": [
             {
@@ -67,8 +67,83 @@
     },
     {
         "status": "active",
+        "key": "azure-databases-docs/articles/mysql/flexible-server/tutorial-deploy-wordpress-on-aks.md",
+        "title": "Tutorial: Deploy WordPress on AKS cluster by using Azure CLI",
+        "description": "Learn how to quickly build and deploy WordPress on AKS with Azure Database for MySQL - Flexible Server.",
+        "stackDetails": [
+            "An Ubuntu 22.04 Linux VM (Standard DS2_v2)",
+            "Azure Database for MySQL - Flexible Server: 8.0.21",
+            "NGINX web server",
+            "PHP version 8.1-fpm",
+            "Latest WordPress",
+            "Network interface with public IP and network security group",
+            "Azure Private DNS Zone for Azure MySQL Flexible Server",
+            "Use port 22 for SSH and ports 80, 443 for web traffic"
+        ],
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-databases-docs/articles/mysql/flexible-server/tutorial-deploy-wordpress-on-aks.md",
+        "documentationUrl": "https://learn.microsoft.com/en-us/azure/mysql/flexible-server/tutorial-deploy-wordpress-on-aks",
+        "nextSteps": [
+            {
+                "title": "Access the Kubernetes web dashboard",
+                "url": "https://learn.microsoft.com/en-us/azure/aks/kubernetes-dashboard"
+            },
+            {
+                "title": "Scale your AKS cluster",
+                "url": "https://learn.microsoft.com/en-us/azure/aks/tutorial-kubernetes-scale"
+            },
+            {
+                "title": "Manage your Azure Database for MySQL flexible server instance",
+                "url": "https://learn.microsoft.com/en-us/azure/mysql/flexible-server/quickstart-create-server-cli"
+            },
+            {
+                "title": "Configure server parameters for your database server",
+                "url": "https://learn.microsoft.com/en-us/azure/mysql/flexible-server/how-to-configure-server-parameters-cli"
+            }
+        ],
+        "configurations": {
+            "permissions": [
+                "Microsoft.Resources/resourceGroups/write",
+                "Microsoft.Network/virtualNetworks/write",
+                "Microsoft.Network/publicIPAddresses/write",
+                "Microsoft.Network/networkSecurityGroups/write",
+                "Microsoft.Network/networkSecurityGroups/securityRules/write",
+                "Microsoft.Network/networkInterfaces/write",
+                "Microsoft.Network/networkInterfaces/ipConfigurations/write",
+                "Microsoft.Storage/storageAccounts/write",
+                "Microsoft.Network/privateDnsZones/write",
+                "Microsoft.Network/privateDnsZones/virtualNetworkLinks/write",
+                "Microsoft.Network/privateDnsZones/privateDnsRecordSets/write",
+                "Microsoft.Network/privateDnsZones/privateDnsRecordSets/A/write",
+                "Microsoft.Network/privateDnsZones/privateDnsRecordSets/TXT/write",
+                "Microsoft.Network/privateDnsZones/privateDnsRecordSets/SRV/write",
+                "Microsoft.Network/privateDnsZones/privateDnsRecordSets/CNAME/write",
+                "Microsoft.Network/privateDnsZones/privateDnsRecordSets/MX/write",
+                "Microsoft.Network/privateDnsZones/privateDnsRecordSets/AAAA/write",
+                "Microsoft.Network/privateDnsZones/privateDnsRecordSets/PTR/write",
+                "Microsoft.Network/privateDnsZones/privateDnsRecordSets/CERT/write",
+                "Microsoft.Network/privateDnsZones/privateDnsRecordSets/NS/write",
+                "Microsoft.Network/privateDnsZones/privateDnsRecordSets/SOA/write",
+                "Microsoft.Network/privateDnsZones/privateDnsRecordSets/CAA/write",
+                "Microsoft.Network/privateDnsZones/privateDnsRecordSets/ANY/write",
+                "Microsoft.Network/privateDnsZones/privateDnsRecordSets/SSHFP/write",
+                "Microsoft.Network/privateDnsZones/privateDnsRecordSets/SPF/write",
+                "Microsoft.Network/privateDnsZones/privateDnsRecordSets/DNSKEY/write",
+                "Microsoft.Network/privateDnsZones/privateDnsRecordSets/DS/write",
+                "Microsoft.Network/privateDnsZones/privateDnsRecordSets/NAPTR/write",
+                "Microsoft.Compute/virtualMachines/write",
+                "Microsoft.Compute/virtualMachines/extensions/write",
+                "Microsoft.Compute/virtualMachines/read",
+                "Microsoft.Authorization/roleAssignments/write",
+                "Microsoft.Authorization/roleAssignments/read",
+                "Microsoft.Authorization/roleDefinitions/read",
+                "Microsoft.Authorization/roleDefinitions/write"
+            ]
+        }
+    },
+    {
+        "status": "active",
         "key": "azure-docs/articles/static-web-apps/get-started-cli.md",
-        "title": "Quickstart: Building your first static site with the Azure Static Web Apps using the CLI",
+        "title": "Deploy a Static site with the Azure Static Web Apps",
         "description": "Learn to deploy a static site to Azure Static Web Apps with the Azure CLI.",
         "stackDetails": "",
         "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-docs/articles/static-web-apps/get-started-cli.md",
@@ -79,7 +154,8 @@
                 "url": "https://learn.microsoft.com/en-us/azure/static-web-apps/add-api"
             }
         ],
-        "configurations": {}
+        "configurations": {
+        }
     },
     {
         "status": "active",
@@ -103,12 +179,13 @@
                 "url": "https://learn.microsoft.com/en-us/azure/virtual-machine-scale-sets/tutorial-autoscale-cli"
             }
         ],
-        "configurations": {}
+        "configurations": {
+        }
     },
     {
         "status": "active",
         "key": "azure-docs/articles/virtual-machines/linux/quick-create-cli.md",
-        "title": "Quickstart: Use the Azure CLI to create a Linux Virtual Machine",
+        "title": "Deploy a Linux virtual machine",
         "description": "In this quickstart, you learn how to use the Azure CLI to create a Linux virtual machine",
         "stackDetails": [
             "An Ubuntu 22.04 Linux VM (Standard DS1_v2)",
@@ -159,7 +236,23 @@
         "stackDetails": "",
         "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-docs/articles/virtual-machines/linux/tutorial-lemp-stack.md",
         "documentationUrl": "https://learn.microsoft.com/en-us/azure/virtual-machines/linux/tutorial-lemp-stack",
-        "configurations": {}
+        "nextSteps": [
+            {
+                "title": "Learn about virtual machines",
+                "url": "https://learn.microsoft.com/en-us/azure/virtual-machines/"
+            },
+            {
+                "title": "Create and manage Linux VMs with the Azure CLI",
+                "url": "https://learn.microsoft.com/en-us/azure/virtual-machines/linux/tutorial-manage-vm"
+            },
+            {
+                "title": "Secure your Linux VM",
+                "url": "https://learn.microsoft.com/en-us/azure/virtual-machines/linux/tutorial-secure-vm"
+            }
+            
+        ],
+        "configurations": {
+        }
     },
     {
         "status": "active",
@@ -183,7 +276,8 @@
                 "url": "https://go.microsoft.com/fwlink/p/?linkid=2259865"
             }
         ],
-        "configurations": {}
+        "configurations": {
+        }
     },
     {
         "status": "active",
@@ -211,7 +305,8 @@
                 "url": "https://learn.microsoft.com/azure/aks/tutorial-kubernetes-app-update?tabs=azure-cli"
             }
         ],
-        "configurations": {}
+        "configurations": {
+        }
     },
     {
         "status": "active",
@@ -221,7 +316,26 @@
         "stackDetails": "",
         "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/CreateRHELVMAndSSH/create-rhel-vm-ssh.md",
         "documentationUrl": "",
-        "configurations": {}
+        "nextSteps": [
+            {
+                "title": "Learn about virtual machines",
+                "url": "https://learn.microsoft.com/en-us/azure/virtual-machines/"
+            },
+            {
+                "title": "Create an Ubuntu Virtual Machine",
+                "url": "https://learn.microsoft.com/en-us/azure/virtual-machines/linux/quick-create-cli"
+            },
+            {
+                "title": "Create custom VM images",
+                "url": "https://learn.microsoft.com/en-us/azure/virtual-machines/linux/tutorial-custom-images"
+            },
+            {
+                "title": "Load Balance VMs",
+                "url": "https://learn.microsoft.com/en-us/azure/load-balancer/quickstart-load-balancer-standard-public-cli"
+            }
+        ],
+        "configurations": {
+        }
     },
     {
         "status": "active",
@@ -254,23 +368,568 @@
         }
     },
     {
+        "status": "inactive",
+        "key": "azure-aks-docs/articles/aks/workload-identity-deploy-cluster.md",
+        "title": "Deploy and configure an AKS cluster with workload identity",
+        "description": "In this Azure Kubernetes Service (AKS) article, you deploy an Azure Kubernetes Service cluster and configure it with a Microsoft Entra Workload ID.",
+        "stackDetails": [],
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-aks-docs/articles/aks/workload-identity-deploy-cluster.md",
+        "documentationUrl": "",
+        "nextSteps": [
+            {
+                "title": "Kubectl Describe Command Reference",
+                "url": "https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands#describe"
+            }
+        ],
+        "configurations": {
+            "permissions": []
+        }
+    },
+    {
+        "status": "active",
+        "key": "ObtainPerformanceMetricsLinuxSustem/obtain-performance-metrics-linux-system.md",
+        "title": "Obtaining Performance metrics from a Linux system",
+        "description": "Learn how to obtainer Performance metrics from a Linux system.",
+        "stackDetails": "",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/ObtainPerformanceMetricsLinuxSustem/obtain-performance-metrics-linux-system.md",
+        "documentationUrl": "",
+        "configurations": {
+            "permissions": [],
+            "configurableParams": [
+                    {
+                        "inputType": "textInput",
+                        "commandKey": "MY_RESOURCE_GROUP_NAME",
+                        "title": "Resource Group Name",
+                        "defaultValue": ""
+                    },
+                    {
+                        "inputType": "textInput",
+                        "commandKey": "MY_VM_NAME",
+                        "title": "VM Name",
+                        "defaultValue": ""
+                    }
+                ]
+        }
+    },
+    {
+        "status": "inactive",
+        "key": "azure-aks-docs/articles/aks/create-postgresql-ha.md",
+        "title": "Create infrastructure for deploying a highly available PostgreSQL database on AKS",
+        "description": "Create the infrastructure needed to deploy a highly available PostgreSQL database on AKS using the CloudNativePG operator.",
+        "stackDetails": "",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-aks-docs/articles/aks/create-postgresql-ha.md",
+        "documentationUrl": "",
+        "nextSteps": [
+            {
+                "title": "Deploy a highly available PostgreSQL database on AKS with Azure CLI",
+                "url": "https://learn.microsoft.com/en-us/azure/aks/deploy-postgresql-ha?tabs=helm"
+            }
+            
+        ],
+        "configurations": {
+        }
+    },
+    {
+        "status": "inactive",
+        "key": "azure-aks-docs/articles/aks/deploy-postgresql-ha.md",
+        "title": "Deploy a highly available PostgreSQL database on AKS with Azure CLI",
+        "description": "In this article, you deploy a highly available PostgreSQL database on AKS using the CloudNativePG operator.",
+        "stackDetails": "",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-aks-docs/articles/aks/deploy-postgresql-ha.md",
+        "documentationUrl": "",
+        "configurations": {
+        }
+    },
+    {
+        "status": "inactive",
+        "key": "azure-aks-docs/articles/aks/postgresql-ha-overview.md",
+        "title": "Overview of deploying a highly available PostgreSQL database on AKS with Azure CLI",
+        "description": "Learn how to deploy a highly available PostgreSQL database on AKS using the CloudNativePG operator.",
+        "stackDetails": "",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-aks-docs/articles/aks/postgresql-ha-overview.md",
+        "documentationUrl": "",
+        "configurations": {
+        }
+    },
+    {
+        "status": "inactive",
+        "key": "CreateContainerAppDeploymentFromSource/create-container-app-deployment-from-source.md",
+        "title": "Create a Container App leveraging Blob Store, SQL, and Computer Vision",
+        "description": "This tutorial shows how to create a Container App leveraging Blob Store, SQL, and Computer Vision",
+        "stackDetails": "",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/CreateContainerAppDeploymentFromSource/create-container-app-deployment-from-source.md",
+        "documentationUrl": "",
+        "nextSteps": [
+            {
+                "title": "Azure Container Apps documentation",
+                "url": "https://learn.microsoft.com/azure/container-apps/"
+            },
+            {
+                "title": "Azure Database for PostgreSQL documentation",
+                "url": "https://learn.microsoft.com/azure/postgresql/"
+            },
+            {
+                "title": "Azure Blob Storage documentation",
+                "url": "https://learn.microsoft.com/azure/storage/blobs/"
+            },
+            {
+                "title": "Azure Computer (AI) Vision Documentation",
+                "url": "https://learn.microsoft.com/azure/ai-services/computer-vision/"
+            }
+        ],
+        "configurations": {
+        }
+    },
+    {
+        "status": "inactive",
+        "key": "BlobVisionOnAKS/blob-vision-aks.md"
+    },
+    {
+        "status": "inactive",
+        "key": "DeployHAPGonARO/deploy-ha-pg-on-aro.md",
+        "title": "Create a Highly Available PostgreSQL Cluster on Azure Red Hat OpenShift",
+        "description": "This tutorial shows how to create a Highly Available PostgreSQL cluster on Azure Red Hat OpenShift (ARO) using the CloudNativePG operator",
+        "stackDetails": "",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/DeployHAPGonARO/deploy-ha-pg-aro.md",
+        "documentationUrl": "",
+        "configurations": {
+        }
+    },
+    {
+        "status": "active",
+        "key": "AIChatApp/ai-chat-app.md",
+        "title": "Create an Azure OpenAI, LangChain, ChromaDB, and Chainlit Chat App in Container Apps",
+        "description": "",
+        "stackDetails": "",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/AIChatApp/ai-chat-app.md",
+        "documentationUrl": "",
+        "nextSteps": [],
+        "configurations": {
+            "permissions": []
+        }
+    },
+    {
+        "status": "active",
+        "key": "ConfigurePythonContainer/configure-python-container.md",
+        "title": "Configure Linux Python apps",
+        "description": "Learn how to configure the Python container in which web apps are run, using both the Azure portal and the Azure CLI.",
+        "stackDetails": "",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/ConfigurePythonContainer/configure-python-container.md",
+        "documentationUrl": "https://learn.microsoft.com/en-us/azure/app-service/configure-language-python",
+        "nextSteps": [],
+        "configurations": {
+            "permissions": []
+        }
+    },
+    {
+        "status": "active",
+        "key": "CreateSpeechService/create-speech-service.md",
+        "title": "Quickstart: The Speech CLI - Speech service",
+        "description": "In this Azure AI Speech CLI quickstart, you interact with speech to text, text to speech, and speech translation without having to write code.",
+        "stackDetails": "",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/CreateSpeechService/create-speech-service.md",
+        "documentationUrl": "https://learn.microsoft.com/en-us/azure/ai-services/speech-service/spx-basics?tabs=windowsinstall%2Cterminal",
+        "nextSteps": [],
+        "configurations": {
+            "permissions": []
+        }
+    },
+    {
+        "status": "inactive",
+        "key": "azure-aks-docs/articles/aks/airflow-create-infrastructure.md",
+        "title": "Create the infrastructure for deploying Apache Airflow on Azure Kubernetes Service (AKS)",
+        "description": "In this article, you create the infrastructure needed to deploy Apache Airflow on Azure Kubernetes Service (AKS) using Helm.",
+        "stackDetails": "",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-aks-docs/articles/aks/airflow-create-infrastructure.md",
+        "documentationUrl": "",
+        "nextSteps": [
+            {
+                "title": "Deploy Apache Airflow on AKS",
+                "url": "https://learn.microsoft.com/en-us/azure/aks/airflow-deploy"
+            }
+        ],
+        "configurations": {
+            "permissions": []
+        }
+    },
+    {
+        "status": "inactive",
+        "key": "azure-aks-docs/articles/aks/airflow-deploy.md",
+        "title": "Configure and deploy Apache Airflow on Azure Kubernetes Service (AKS)",
+        "description": "In this article, you create the infrastructure needed to deploy Apache Airflow on Azure Kubernetes Service (AKS) using Helm.",
+        "stackDetails": "",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-aks-docs/articles/aks/airflow-deploy.md",
+        "documentationUrl": "",
+        "nextSteps": [
+            {
+                "title": "Deploy a MongoDB cluster on Azure Kubernetes Service (AKS)",
+                "url": "https://learn.microsoft.com/en-us/azure/aks/mongodb-overview"
+            },
+            {
+                "title": "Deploy a highly available PostgreSQL database on Azure Kubernetes Service (AKS)",
+                "url": "https://learn.microsoft.com/en-us/azure/aks/postgresql-ha-overview"
+            },
+            {
+                "title": "Deploy a Valkey cluster on Azure Kubernetes Service (AKS)",
+                "url": "https://learn.microsoft.com/en-us/azure/aks/valkey-overview"
+            }
+
+        ],
+        "configurations": {
+            "permissions": [],
+            "configurableParams": [
+                {
+                    "inputType": "textInput",
+                    "commandKey": "MY_RESOURCE_GROUP_NAME",
+                    "title": "Resource Group Name",
+                    "defaultValue": ""
+                },
+                {
+                    "inputType": "textInput",
+                    "commandKey": "MY_CLUSTER_NAME",
+                    "title": "AKS Cluster Name",
+                    "defaultValue": ""
+                }
+            ]
+        }
+    },
+    {
+        "status": "active",
+        "key": "DeployPremiumSSDV2/deploy-premium-ssd-v2.md",
+        "title": "Deploy a Premium SSD v2 managed disk",
+        "description": "Learn how to deploy a Premium SSD v2 and about its regional availability.",
+        "stackDetails": "",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/DeployPremiumSSDV2/deploy-premium-ssd-v2.md",
+        "documentationUrl": "https://learn.microsoft.com/en-us/azure/virtual-machines/disks-deploy-premium-v2?tabs=azure-cli",
+        "nextSteps": [],
+        "configurations": {
+            "permissions": []
+        }
+    },
+    {
+        "status": "inactive",
+        "key": "GPUNodePoolAKS/gpu-node-pool-aks.md",
+        "title": "Create a multi-instance GPU node pool in Azure Kubernetes Service (AKS)",
+        "description": "Learn how to create a multi-instance GPU node pool in Azure Kubernetes Service (AKS).",
+        "stackDetails": "",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/GPUNodePoolAKS/gpu-node-pool-aks.md",
+        "documentationUrl": "https://learn.microsoft.com/en-us/azure/aks/gpu-multi-instance?tabs=azure-cli",
+        "nextSteps": [],
+        "configurations": {
+            "permissions": []
+        }
+    },
+    {
         "status": "active",
         "key": "PostgresRagLlmDemo/README.md",
-        "title": "Quickstart: Deploy a Postgres vector database",
-        "description": "Setup a Postgres vector database and openai resources to run a RAG-LLM model",
+        "title": "Deploy a Postgres vector database",
+        "description": "Set up a Postgres vector database and openai resources to run a RAG-LLM model.",
         "stackDetails": "",
-        "sourceUrl": "https://raw.githubusercontent.com/aamini7/postgres-rag-llm-demo/main/README.md",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/PostgresRagLlmDemo/README.md",
         "documentationUrl": "",
-        "configurations": {}
+        "nextSteps": [],
+        "configurations": {
+            "permissions": []
+        }
+    },
+    {
+        "status": "active",
+        "key": "CreateAOAIDeployment/create-aoai-deployment.md",
+        "title": "Create and manage Azure OpenAI Service deployments with the Azure CLI",
+        "description": "Learn how to use the Azure CLI to create an Azure OpenAI resource and manage deployments with the Azure OpenAI Service.",
+        "stackDetails": "",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/CreateAOAIDeployment/create-aoai-deployment.md",
+        "documentationUrl": "",
+        "nextSteps": [],
+        "configurations": {
+            "permissions": []
+        }
     },
     {
         "status": "active",
         "key": "AksKaito/README.md",
-        "title": "Deploy an AI model on Azure Kubernetes Service (AKS) with the AI toolchain operator (preview)",
-        "description": "Learn how to enable the AI toolchain operator add-on on Azure Kubernetes Service (AKS) to simplify OSS AI model management and deployment.",
+        "title": "Deploy an AI model on AKS with the AI toolchain operator",
+        "description": "Learn how to enable the AI toolchain operator add-on on Azure Kubernetes Service (AKS) to simplify OSS AI model management and deployment",
         "stackDetails": "",
-        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/azure-aks-docs/refs/heads/main/articles/aks/ai-toolchain-operator.md",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/AksKaito/README.md",
         "documentationUrl": "",
+        "nextSteps": [
+            {
+                "title": "Check out the KAITO GitHub repository",
+                "url": "https://github.com/Azure/kaito"
+            }
+        ]
+    },
+    {
+        "status": "inactive",
+        "key": "azure-aks-docs/articles/aks/trusted-access-feature.md",
+        "title": "Get secure resource access to Azure Kubernetes Service (AKS) using Trusted Access",
+        "description": "Learn how to use the Trusted Access feature to give Azure resources access to Azure Kubernetes Service (AKS) clusters.",
+        "stackDetails": "",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-aks-docs/articles/aks/trusted-access-feature.md",
+        "documentationUrl": "https://learn.microsoft.com/en-us/azure/aks/trusted-access-feature",
+        "nextSteps": [
+            {
+                "title": "Deploy and manage cluster extensions for AKS",
+                "url": "https://learn.microsoft.com/en-us/azure/aks/cluster-extensions"
+            },
+            {
+                "title": "Deploy the Azure Machine Learning extension on an AKS or Azure Arc–enabled Kubernetes cluster",
+                "url": "https://learn.microsoft.com/en-us/azure/machine-learning/how-to-deploy-kubernetes-extension"
+            },
+            {
+                "title": "Deploy Azure Backup on an AKS cluster",
+                "url": "https://learn.microsoft.com/en-us/azure/backup/azure-kubernetes-service-backup-overview"
+            },
+            {
+                "title": "Set agentless container posture in Microsoft Defender for Cloud for an AKS cluster",
+                "url": "https://learn.microsoft.com/en-us/azure/defender-for-cloud/concept-agentless-containers"
+            }
+        ],
+        "configurations": {
+            "permissions": [
+            ],
+            "configurableParams": [
+                {
+                    "inputType": "textInput",
+                    "commandKey": "RESOURCE_GROUP_NAME",
+                    "title": "Resource Group Name",
+                    "defaultValue": ""
+                },
+                {
+                    "inputType": "textInput",
+                    "commandKey": "CLUSTER_NAME",
+                    "title": "AKS Cluster Name",
+                    "defaultValue": ""
+                }
+            ]
+        }
+    },
+    {
+        "status": "inactive",
+        "key": "CreateLinuxVMSecureWebServer/create-linux-vm-secure-web-server.md",
+        "title": "Create a NGINX Webserver Secured via HTTPS",
+        "description": "This tutorial shows how to create a NGINX Webserver Secured via HTTPS.",
+        "stackDetails": [
+        ],
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/CreateLinuxVMSecureWebServer/create-linux-vm-secure-web-server.md",
+        "documentationUrl": "",
+        "nextSteps": [
+            {
+                "title": "Learn about virtual machines",
+                "url": "https://learn.microsoft.com/en-us/azure/virtual-machines/"
+            },
+            {
+                "title": "Create and manage Linux VMs with the Azure CLI",
+                "url": "https://learn.microsoft.com/en-us/azure/virtual-machines/linux/tutorial-manage-vm"
+            },
+            {
+                "title": "Secure your Linux VM",
+                "url": "https://learn.microsoft.com/en-us/azure/virtual-machines/linux/tutorial-secure-vm"
+            }
+        ],
+        "configurations": {
+        }
+    },
+    {
+        "status": "active",
+        "key": "azure-docs/articles/confidential-computing/confidential-enclave-nodes-aks-get-started.md",
+        "title": "Quickstart: Deploy an AKS cluster with confidential computing Intel SGX agent nodes by using the Azure CLI",
+        "description": "Learn how to create an Azure Kubernetes Service (AKS) cluster with enclave confidential containers a Hello World app by using the Azure CLI.",
+        "stackDetails": [],
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-docs/articles/confidential-computing/confidential-enclave-nodes-aks-get-started.md",
+        "documentationUrl": "",
+        "nextSteps": [
+            {
+                "title": "Samples to run Python, Node, and other applications through confidential containers",
+                "url": "https://github.com/Azure-Samples/confidential-container-samples"
+            },
+            {
+                "title": "Enclave-aware Azure container samples in GitHub",
+                "url": "https://github.com/Azure-Samples/confidential-computing/blob/main/containersamples/"
+            }
+        ],
+        "configurations": {
+            "permissions": []
+        }
+    },
+    {
+        "status": "active",
+        "key": "azure-management-docs/articles/azure-linux/quickstart-azure-cli.md",
+        "title": "Quickstart: Deploy an Azure Linux Container Host for AKS cluster by using the Azure CLI",
+        "description": "Learn how to quickly create an Azure Linux Container Host for AKS cluster using the Azure CLI.",
+        "stackDetails": [],
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-management-docs/articles/azure-linux/quickstart-azure-cli.md",
+        "documentationUrl": "",
+        "nextSteps": [
+            {
+                "title": "Azure Linux Container Host tutorial",
+                "url": "https://github.com/MicrosoftDocs/azure-management-docs/blob/main/articles/azure-linux/tutorial-azure-linux-create-cluster.md"
+            }
+            
+        ],
+        "configurations": {
+            "permissions": []
+        }
+    },
+    {
+        "status": "active",
+        "key": "azure-docs/articles/virtual-machine-scale-sets/tutorial-use-custom-image-cli.md",
+        "title": "Tutorial - Use a custom VM image in a scale set with Azure CLI",
+        "description": "Learn how to use the Azure CLI to create a custom VM image that you can use to deploy a Virtual Machine Scale Set",
+        "stackDetails": [],
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-docs/articles/virtual-machine-scale-sets/tutorial-use-custom-image-cli.md",
+        "documentationUrl": "",
+        "nextSteps": [
+            {
+                "title": "Deploy applications to your scale sets",
+                "url": "https://learn.microsoft.com/en-us/azure/virtual-machine-scale-sets/tutorial-install-apps-cli"
+            }
+            
+        ],
+        "configurations": {
+            "permissions": []
+        }
+    },
+    {
+        "status": "active",
+        "key": "azure-docs/articles/virtual-network/create-virtual-machine-accelerated-networking.md",
+        "title": "Create an Azure Virtual Machine with Accelerated Networking",
+        "description": "Use Azure portal, Azure CLI, or PowerShell to create Linux or Windows virtual machines with Accelerated Networking enabled for improved network performance.",
+        "stackDetails": [],
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-docs/articles/virtual-network/create-virtual-machine-accelerated-networking.md",
+        "documentationUrl": "https://learn.microsoft.com/en-us/azure/virtual-network/create-virtual-machine-accelerated-networking?tabs=cli",
+        "nextSteps": [
+            {
+                "title": "How Accelerated Networking works in Linux and FreeBSD VMs",
+                "url": "https://learn.microsoft.com/en-us/azure/virtual-network/accelerated-networking-how-it-works"
+            }
+            
+        ],
+        "configurations": {
+            "permissions": []
+        }
+    },
+    {
+        "status": "inactive",
+        "key": "DeployHAPGOnAKSTerraform/deploy-ha-pg-on-aks-terraform.md",
+        "title": "Create a Highly Available PostgreSQL Cluster on Azure Kubernetes Service (AKS) using Terraform",
+        "description": "This tutorial shows how to create a Highly Available PostgreSQL cluster on AKS using the CloudNativePG operator",
+        "stackDetails": [],
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/DeployHAPGOnAKSTerraform/deploy-ha-pg-on-aks-terraform.md",
+        "documentationUrl": "",
+        "nextSteps": [
+            {
+                "title": "Create infrastructure for deploying a highly available PostgreSQL database on AKS",
+                "url": "https://learn.microsoft.com/en-us/azure/aks/create-postgresql-ha?tabs=helm"
+            },
+            {
+                "title": "Deploy a highly available PostgreSQL database on AKS with Azure CLI",
+                "url": "https://learn.microsoft.com/en-us/azure/aks/deploy-postgresql-ha?tabs=helm"
+            }
+            
+        ],
+        "configurations": {
+            "permissions": []
+        }
+    },
+    {
+        "status": "active",
+        "key": "azure-aks-docs/articles/aks/workload-identity-migrate-from-pod-identity.md",
+        "title": "Migrate your Azure Kubernetes Service (AKS) pod to use workload identity",
+        "description": "In this Azure Kubernetes Service (AKS) article, you learn how to configure your Azure Kubernetes Service pod to authenticate with workload identity.",
+        "stackDetails": [],
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-aks-docs/articles/aks/workload-identity-migrate-from-pod-identity.md",
+        "documentationUrl": "",
+        "nextSteps": [
+            {
+                "title": "Use Microsoft Entra Workload ID with Azure Kubernetes Service (AKS)",
+                "url": "https://learn.microsoft.com/en-us/azure/aks/workload-identity-overview"
+            }
+            
+        ],
+        "configurations": {
+            "permissions": [],
+            "configurableParams": [
+                {
+                    "inputType": "textInput",
+                    "commandKey": "MY_AKS_RESOURCE_GROUP",
+                    "title": "Resource Group Name",
+                    "defaultValue": ""
+                },
+                {
+                    "inputType": "textInput",
+                    "commandKey": "MY_AKS_CLUSTER_NAME",
+                    "title": "AKS Cluster Name",
+                    "defaultValue": ""
+                }
+            ]
+        }
+    },
+    {
+        "status": "inactive",
+        "key": "DeployCassandraOnAKS/deploy-cassandra-on-aks.md",
+        "title": "Deploy a Cassandra Cluster on AKS",
+        "description": "Learn how to deploy a Cassandra cluster on an Azure Kubernetes Service (AKS) cluster using Azure CLI and Kubernetes manifests.",
+        "stackDetails": [],
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/DeployCassandraOnAKS/deploy-cassandra-on-aks.md",
+        "documentationUrl": "",
+        "nextSteps": [],
+        "configurations": {
+            "permissions": []
+        }
+    },
+    {
+        "status": "inactive",
+        "key": "DeployClickhouseOnAKS/deploy-clickhouse-on-aks.md",
+        "title": "Deploy ClickHouse Cluster on AKS",
+        "description": "Learn how to deploy a ClickHouse Cluster on Azure Kubernetes Service (AKS) using Azure CLI and Kubernetes manifests.",
+        "stackDetails": [],
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/DeployClickhouseOnAKS/deploy-clickhouse-on-aks.md",
+        "documentationUrl": "",
+        "nextSteps": [],
+        "configurations": {
+            "permissions": []
+        }
+    },
+    {
+        "status": "inactive",
+        "key": "DeployLLMWithTorchserveOnAKS/deploy-llm-with-torchserve-on-aks.md",
+        "title": "Quickstart: Deploy a Large Language Model with TorchServe on Azure Kubernetes Service (AKS)",
+        "description": "Learn how to deploy a large language model using TorchServe on AKS.",
+        "stackDetails": [],
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/DeployLLMWithTorchserveOnAKS/deploy-llm-with-torchserve-on-aks.md",
+        "documentationUrl": "",
+        "nextSteps": [],
+        "configurations": {
+            "permissions": []
+        }
+    },
+    {
+        "status": "active",
+        "key": "DeployTensorflowOnAKS/deploy-tensorflow-on-aks.md",
+        "title": "Setup: Deploy a Tensorflow Cluster on Azure Kubernetes Service (AKS)",
+        "description": "Learn how to deploy a Tensorflow cluster on Azure Kubernetes Service (AKS) using Azure CLI.",
+        "stackDetails": [],
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/DeployTensorflowOnAKS/deploy-tensorflow-on-aks.md",
+        "documentationUrl": "",
+        "nextSteps": [],
+        "configurations": {
+            "permissions": []
+        }
+    },
+    {
+        "status": "inactive",
+        "key": "DeployTrinoOnAKS/deploy-trino-on-aks.md",
+        "title": "Deploy a Trino Cluster on Azure Kubernetes Service (AKS)",
+        "description": "Learn how to deploy a Trino Cluster on AKS using Azure CLI for scalable and distributed SQL query processing.",
+        "stackDetails": [],
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/DeployTrinoOnAKS/deploy-trino-on-aks.md",
+        "documentationUrl": "",
+        "nextSteps": [],
+        "configurations": {
+            "permissions": []
+        }
         "configurations": {}
     },
     {
