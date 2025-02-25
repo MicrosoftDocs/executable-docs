@@ -12,7 +12,7 @@ temperature="0.9"
 imageWidth="80"
 
 # Create config map
-cat $configMapTemplate |
+cat configMap.yml |
     yq "(.data.TITLE)|="\""$title"\" |
     yq "(.data.LABEL)|="\""$label"\" |
     yq "(.data.TEMPERATURE)|="\""$temperature"\" |
@@ -24,7 +24,7 @@ cat $configMapTemplate |
     kubectl apply -n $namespace -f -
 
 # Create deployment
-cat $deploymentTemplate |
+cat deployment.yml |
     yq "(.spec.template.spec.containers[0].image)|="\""$image"\" |
     yq "(.spec.template.spec.containers[0].imagePullPolicy)|="\""$imagePullPolicy"\" |
     yq "(.spec.template.spec.serviceAccountName)|="\""$serviceAccountName"\" |

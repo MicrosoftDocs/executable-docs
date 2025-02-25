@@ -2,14 +2,14 @@
 
 # Install aks-preview Azure extension
 echo "Checking if [aks-preview] extension is already installed..."
-az extension show --name aks-preview &>/dev/null
+az extension show --name aks-preview
 
 if [[ $? == 0 ]]; then
   echo "[aks-preview] extension is already installed"
   
   # Update the extension to make sure you have the latest version installed
   echo "Updating [aks-preview] extension..."
-  az extension update --name aks-preview &>/dev/null
+  az extension update --name aks-preview
 else
   echo "[aks-preview] extension is not installed. Installing..."
   

@@ -11,8 +11,3 @@ aksResourceGroupName="CoralRG"
 # Sample Application
 namespace="magic8ball"
 serviceAccountName="magic8ball-sa"
-
-deploymentTemplate="deployment.yml"
-serviceTemplate="service.yml"
-configMapTemplate="configMap.yml"
-secretTemplate="secret.yml"
