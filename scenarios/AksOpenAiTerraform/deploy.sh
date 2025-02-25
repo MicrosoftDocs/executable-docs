@@ -4,19 +4,19 @@ SUBSCRIPTION_ID=$(az account show --query id --output tsv)
 TENANT_ID=$(az account show --query tenantId --output tsv)
 RESOURCE_GROUP=$(terraform output resource_group_name)
 LOCATION="westus3"
+CLUSTER_NAME=$(terraform output cluster_name)
 
 # Build Image
-ACR_NAME=$(terraform output acr_name)
+ACR_NAME="$(terraform output acr_name)"
 az acr login --name $ACR_NAME
 ACR_URL=$(az acr show --name $ACR_NAME --query loginServer --output tsv)
 docker build -t $ACR_URL/magic8ball:v1 ./app --push
 
 az aks get-credentials \
   --admin \
-  --name $clusterName \
-  --resource-group $resourceGroupName \
-  --subscription $subscriptionId \
-  --only-show-errors
+  --name $CLUSTER_NAME \
+  --resource-group $RESOURCE_GROUP \
+  --subscription $SUBSCRIPTION_ID \
 
 # Install NGINX ingress controller
 helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
@@ -29,7 +29,7 @@ helm install nginx-ingress ingress-nginx/ingress-nginx \
   --set controller.service.annotations."service\.beta\.kubernetes\.io/azure-load-balancer-health-probe-request-path"=/healthz \
   --set controller.metrics.enabled=true \
   --set controller.metrics.serviceMonitor.enabled=true \
-  --set controller.metrics.serviceMonitor.additionalLabels.release="prometheus" \
+  --set controller.metrics.serviceMonitor.additionalLabels.release="prometheus"
 
 # Install Cert manager
 helm repo add jetstack https://charts.jetstack.io

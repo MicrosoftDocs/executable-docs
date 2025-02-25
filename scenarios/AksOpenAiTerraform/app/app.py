@@ -1,22 +1,21 @@
-# - https://levelup.gitconnected.com/its-time-to-create-a-private-chatgpt-for-yourself-today-6503649e7bb6
+# https://levelup.gitconnected.com/its-time-to-create-a-private-chatgpt-for-yourself-today-6503649e7bb6
 #
 # Make sure to provide a value for the following environment variables:
-#
-# - AZURE_OPENAI_BASE (ex: https://eastus.api.cognitive.microsoft.com/)
-# - AZURE_OPENAI_KEY
-# - AZURE_OPENAI_DEPLOYMENT
-# - AZURE_OPENAI_MODEL
-# - TITLE
-# - TEMPERATURE
-# - SYSTEM: give the model instructions about how it should behave and any context it should reference when generating a response. 
-#   Used to describe the assistant's personality.
+#  - AZURE_OPENAI_BASE (ex: https://eastus.api.cognitive.microsoft.com/)
+#  - AZURE_OPENAI_KEY
+#  - AZURE_OPENAI_DEPLOYMENT
+#  - AZURE_OPENAI_MODEL
+#  - TITLE
+#  - TEMPERATURE
+#  - SYSTEM (Used to describe the assistant's personality.)
 #
 # You can use two different authentication methods:
 # 
-# - API key: set the AZURE_OPENAI_TYPE environment variable to azure and the AZURE_OPENAI_KEY environment variable to the key of  
+#  - API key: set the AZURE_OPENAI_TYPE environment variable to azure and the AZURE_OPENAI_KEY environment variable to the key of  
 #   your Azure OpenAI resource. You can use the regional endpoint, such as https://eastus.api.cognitive.microsoft.com/, passed in 
 #   the AZURE_OPENAI_BASE environment variable, to connect to the Azure OpenAI resource.
-# - Azure Active Directory: set the AZURE_OPENAI_TYPE environment variable to azure_ad and use a service principal or managed 
+#
+#  - Azure Active Directory: set the AZURE_OPENAI_TYPE environment variable to azure_ad and use a service principal or managed 
 #   identity with the DefaultAzureCredential object to acquire a token. For more information on the DefaultAzureCredential in Python, 
 #   see https://docs.microsoft.com/en-us/azure/developer/python/azure-sdk-authenticate?tabs=cmd
 #   Make sure to assign the "Cognitive Services User" role to the service principal or managed identity used to authenticate to 
@@ -27,7 +26,6 @@
 #   Hence, make sure to pass the endpoint containing the custom domain in the AZURE_OPENAI_BASE environment variable.
 #
 # Use the following command to run the app: 
-# 
 # - streamlit run app.py
 
 import os

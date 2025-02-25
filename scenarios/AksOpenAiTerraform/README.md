@@ -13,7 +13,8 @@ ms.custom: innovation-engine, linux-related-content
 Run commands below to set up AKS extensions for Azure.
 
 ```bash
-./scripts/register-preview-features.sh
+az extension add --name aks-preview
+az aks install-cli
 ```
 
 ## Set up Subscription ID to authenticate for Terraform
