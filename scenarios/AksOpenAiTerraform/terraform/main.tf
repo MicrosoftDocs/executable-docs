@@ -71,7 +71,7 @@ module "aks_cluster" {
   tenant_id           = local.tenant_id
 
   kubernetes_version       = var.kubernetes_version
-  sku_tier                 = "Free"
+  sku_tier                 = "Standard"
   system_node_pool_vm_size = "Standard_DS2_v2"
   user_node_pool_vm_size   = "Standard_DS2_v2"
 
