@@ -273,7 +273,7 @@ col1, col2 = st.columns([1, 7])
 
 # Display the robot image
 with col1:
-  st.image(image = os.path.join("images", image_file_name), width = image_width)
+  st.image(image = os.path.join("icons", image_file_name), width = image_width)
 
 # Display the title
 with col2:

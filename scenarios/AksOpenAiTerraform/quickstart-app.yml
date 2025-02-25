@@ -2,6 +2,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: magic8ball-configmap
+  namespace: magic8ball
 data:
   TITLE: "Magic 8 Ball"
   LABEL: "Pose your question and cross your fingers!"
@@ -16,121 +17,58 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: magic8ball
+  namespace: magic8ball
   labels:
-    app: magic8ball
+    app.kubernetes.io/name: magic8ball
+    azure.workload.identity/use: "true"
 spec:
   replicas: 3
   selector:
     matchLabels:
-      app: magic8ball
-      azure.workload.identity/use: "true"
-  strategy:
-    rollingUpdate:
-      maxSurge: 1
-      maxUnavailable: 1
-  minReadySeconds: 5
+      app.kubernetes.io/name: magic8ball
   template:
     metadata:
       labels:
-        app: magic8ball
-        azure.workload.identity/use: "true"
-        prometheus.io/scrape: "true"
+        app.kubernetes.io/name: magic8ball
     spec:
-      serviceAccountName: magic8ball-sa
-      topologySpreadConstraints:
-      - maxSkew: 1
-        topologyKey: topology.kubernetes.io/zone
-        whenUnsatisfiable: DoNotSchedule
-        labelSelector:
-          matchLabels:
-            app: magic8ball
-      - maxSkew: 1
-        topologyKey: kubernetes.io/hostname
-        whenUnsatisfiable: DoNotSchedule
-        labelSelector:
-          matchLabels:
-            app: magic8ball
-      nodeSelector:
-        "kubernetes.io/os": linux
       containers:
       - name: magic8ball
-        image: paolosalvatori.azurecr.io/magic8ball:v1
-        imagePullPolicy: Always
-        resources:
-          requests:
-            memory: "128Mi"
-            cpu: "250m"
-          limits:
-            memory: "256Mi"
-            cpu: "500m"
+        image: $IMAGE
         ports:
         - containerPort: 8501
-        livenessProbe:
-          httpGet:
-            path: /
-            port: 8501
-          failureThreshold: 1
-          initialDelaySeconds: 60
-          periodSeconds: 30
-          timeoutSeconds: 5
-        readinessProbe:
-          httpGet:
-            path: /
-            port: 8501
-          failureThreshold: 1
-          initialDelaySeconds: 60
-          periodSeconds: 30
-          timeoutSeconds: 5
-        startupProbe:
-          httpGet:
-            path: /
-            port: 8501
-          failureThreshold: 1
-          initialDelaySeconds: 60
-          periodSeconds: 30
-          timeoutSeconds: 5
         envFrom:
-          - configMapKeyRef: 
+        - configMapRef: 
             name: magic8ball-configmap
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: magic8ball
-  labels:
-    app: magic8ball
+  name: magic8ball-service
+  namespace: magic8ball
 spec:
+  selector:
+    app.kubernetes.io/name: magic8ball
   type: ClusterIP
   ports:
   - protocol: TCP
     port: 8501
-  selector:
-    app: magic8ball
+    targetPort: 8501
 ---
 apiVersion: v1
 kind: ServiceAccount
 metadata:
+  name: magic8ball-service-account
+  namespace: magic8ball
   annotations:
-    azure.workload.identity/client-id: $workloadManagedIdentityClientId
-    azure.workload.identity/tenant-id: $tenantId
-  labels:
-    azure.workload.identity/use: "true"
-  name: $serviceAccountName
-  namespace: $namespace
+    azure.workload.identity/client-id: $WORKLOAD_MANAGED_IDENTITY_CLIENT_ID
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: magic8ball-ingress
+  namespace: magic8ball
   annotations:
-    cert-manager.io/cluster-issuer: letsencrypt-nginx
-    cert-manager.io/acme-challenge-type: http01 
-    nginx.ingress.kubernetes.io/proxy-connect-timeout: "360"
-    nginx.ingress.kubernetes.io/proxy-send-timeout: "360"
-    nginx.ingress.kubernetes.io/proxy-read-timeout: "360"
-    nginx.ingress.kubernetes.io/proxy-next-upstream-timeout: "360"
-    nginx.ingress.kubernetes.io/configuration-snippet: |
-      more_set_headers "X-Frame-Options: SAMEORIGIN";
+    cert-manager.io/cluster-issuer: letsencrypt-dev
 spec:
   ingressClassName: nginx
   tls:
@@ -152,18 +90,15 @@ spec:
 apiVersion: cert-manager.io/v1
 kind: ClusterIssuer
 metadata:
-  name: letsencrypt-nginx
+  name: letsencrypt-dev
+  namespace: cert-manager
 spec:
   acme:
     server: https://acme-v02.api.letsencrypt.org/directory
-    email: {{ .Values.email }}
+    email: $EMAIL
     privateKeySecretRef:
-      name: letsencrypt
+      name: tls-secret
     solvers:
     - http01:
         ingress:
-          class: nginx
-          podTemplate:
-            spec:
-              nodeSelector:
-                "kubernetes.io/os": linux
+          ingressClassName: nginx

@@ -1,70 +1,60 @@
 #!/bin/bash
 
+cd terraform
 SUBSCRIPTION_ID=$(az account show --query id --output tsv)
-TENANT_ID=$(az account show --query tenantId --output tsv)
-RESOURCE_GROUP=$(terraform output resource_group_name)
-LOCATION="westus3"
-CLUSTER_NAME=$(terraform output cluster_name)
+RESOURCE_GROUP=$(terraform output -raw resource_group_name)
+CLUSTER_NAME=$(terraform output -raw cluster_name)
+ACR_NAME="$(terraform output -raw acr_name)"
+# EMAIL="$(terraform output -raw email)"
+EMAIL=ariaamini@microsoft.com
+cd ..
 
 # Build Image
-ACR_NAME="$(terraform output acr_name)"
 az acr login --name $ACR_NAME
 ACR_URL=$(az acr show --name $ACR_NAME --query loginServer --output tsv)
-docker build -t $ACR_URL/magic8ball:v1 ./app --push
+IMAGE=$ACR_URL/magic8ball:v1
+docker build -t $IMAGE ./app --push
 
-az aks get-credentials \
-  --admin \
-  --name $CLUSTER_NAME \
-  --resource-group $RESOURCE_GROUP \
-  --subscription $SUBSCRIPTION_ID \
+# Login
+az aks get-credentials --admin --name $CLUSTER_NAME --resource-group $RESOURCE_GROUP --subscription $SUBSCRIPTION_ID
 
-# Install NGINX ingress controller
+# Install Deps
 helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
-helm install nginx-ingress ingress-nginx/ingress-nginx \
+helm repo add jetstack https://charts.jetstack.io
+helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+helm repo update
+# NGINX ingress controller
+helm install ingress-nginx ingress-nginx/ingress-nginx \
   --create-namespace \
   --namespace "ingress-basic" \
-  --set controller.replicaCount=3 \
+  --set controller.replicaCount=2 \
   --set controller.nodeSelector."kubernetes\.io/os"=linux \
   --set defaultBackend.nodeSelector."kubernetes\.io/os"=linux \
   --set controller.service.annotations."service\.beta\.kubernetes\.io/azure-load-balancer-health-probe-request-path"=/healthz \
   --set controller.metrics.enabled=true \
   --set controller.metrics.serviceMonitor.enabled=true \
   --set controller.metrics.serviceMonitor.additionalLabels.release="prometheus"
-
-# Install Cert manager
-helm repo add jetstack https://charts.jetstack.io
+# Cert manager
 helm install cert-manager jetstack/cert-manager \
   --create-namespace \
-  --namespace "cert-manager" \
-  --set installCRDs=true \
+  --namespace cert-manager \
+  --set crds.enabled=true \
   --set nodeSelector."kubernetes\.io/os"=linux
-
-# Install Prometheus
-helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+# Prometheus
 helm install prometheus prometheus-community/kube-prometheus-stack \
     --create-namespace \
     --namespace prometheus \
     --set prometheus.prometheusSpec.podMonitorSelectorNilUsesHelmValues=false \
     --set prometheus.prometheusSpec.serviceMonitorSelectorNilUsesHelmValues=false
 
-NAMESPACE="magic8ball"
-kubectl create namespace $NAMESPACE
-kubectl apply -f cluster-issuer.yml
-kubectl apply -f service-account.yml
-kubectl apply -n $NAMESPACE -f ingress.yml
-kubectl apply -n $NAMESPACE -f config-map.yml
-kubectl apply -n $NAMESPACE -f deployment.yml
-kubectl apply -f "service.yml" -n $NAMESPACE
+export IMAGE
+export EMAIL
+echo $IMAGE
+kubectl create namespace magic8ball
+envsubst < quickstart-app.yml | kubectl apply -f -
 
 # Add DNS Record
-ingressName="magic8ball-ingress"
-publicIpAddress=$(kubectl get ingress $ingressName -n $namespace -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
-if [ -n $publicIpAddress ]; then
-  echo "[$publicIpAddress] external IP address of the application gateway ingress controller successfully retrieved from the [$ingressName] ingress"
-else
-  echo "Failed to retrieve the external IP address of the application gateway ingress controller from the [$ingressName] ingress"
-  exit
-fi
+publicIpAddress=$(kubectl get ingress magic8ball-ingress -n magic8ball -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
 az network dns record-set a add-record \
   --zone-name "contoso.com" \
   --resource-group $RESOURCE_GROUP \
