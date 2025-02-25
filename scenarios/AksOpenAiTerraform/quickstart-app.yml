@@ -66,7 +66,7 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: magic8ball-ingress
-  namespace: magic8ball
+  namespace: ingress-nginx
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-dev
 spec:

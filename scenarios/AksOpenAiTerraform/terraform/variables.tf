@@ -12,8 +12,3 @@ variable "kubernetes_version" {
   type    = string
   default = "1.30.7"
 }
-
-variable "email" {
-  type    = string
-  default = "ariaamini@microsoft.com"
-}

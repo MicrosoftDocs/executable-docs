@@ -1,18 +1,18 @@
 #!/bin/bash
 
 cd terraform
-SUBSCRIPTION_ID=$(az account show --query id --output tsv)
-RESOURCE_GROUP=$(terraform output -raw resource_group_name)
-CLUSTER_NAME=$(terraform output -raw cluster_name)
-ACR_NAME="$(terraform output -raw acr_name)"
-# EMAIL="$(terraform output -raw email)"
-EMAIL=ariaamini@microsoft.com
+export RESOURCE_GROUP=$(terraform output -raw resource_group_name)
+export CLUSTER_NAME=$(terraform output -raw cluster_name)
+export WORKLOAD_MANAGED_IDENTITY_CLIENT_ID=$(terraform output -raw workload_managed_identity_client_id)
+export ACR_NAME=$(terraform output -raw acr_name)
 cd ..
+export SUBSCRIPTION_ID=$(az account show --query id --output tsv)
+export EMAIL="amini5454@gmail.com"
 
 # Build Image
 az acr login --name $ACR_NAME
-ACR_URL=$(az acr show --name $ACR_NAME --query loginServer --output tsv)
-IMAGE=$ACR_URL/magic8ball:v1
+export ACR_URL=$(az acr show --name $ACR_NAME --query loginServer --output tsv)
+export IMAGE=$ACR_URL/magic8ball:v1
 docker build -t $IMAGE ./app --push
 
 # Login
@@ -47,16 +47,13 @@ helm install prometheus prometheus-community/kube-prometheus-stack \
     --set prometheus.prometheusSpec.podMonitorSelectorNilUsesHelmValues=false \
     --set prometheus.prometheusSpec.serviceMonitorSelectorNilUsesHelmValues=false
 
-export IMAGE
-export EMAIL
-echo $IMAGE
 kubectl create namespace magic8ball
 envsubst < quickstart-app.yml | kubectl apply -f -
 
 # Add DNS Record
-publicIpAddress=$(kubectl get ingress magic8ball-ingress -n magic8ball -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+PUBLIC_IP=$(kubectl get ingress magic8ball-ingress -n magic8ball -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
 az network dns record-set a add-record \
   --zone-name "contoso.com" \
   --resource-group $RESOURCE_GROUP \
   --record-set-name magic8ball \
-  --ipv4-address $publicIpAddress
+  --ipv4-address $PUBLIC_IP

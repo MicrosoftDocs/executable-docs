@@ -30,6 +30,12 @@ resource "azurerm_kubernetes_cluster" "main" {
     vnet_subnet_id = var.system_node_pool_subnet_id
     pod_subnet_id  = var.pod_subnet_id
     zones          = local.zones
+
+    upgrade_settings {
+      max_surge                     = "10%"
+      drain_timeout_in_minutes      = 0
+      node_soak_duration_in_minutes = 0
+    }
   }
 
   identity {
