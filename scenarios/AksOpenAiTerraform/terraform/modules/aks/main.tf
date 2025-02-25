@@ -37,6 +37,13 @@ resource "azurerm_kubernetes_cluster" "main" {
     identity_ids = tolist([azurerm_user_assigned_identity.aks.id])
   }
 
+  network_profile {
+    dns_service_ip = "10.2.0.10"
+    network_plugin = "azure"
+    outbound_type  = "userAssignedNATGateway"
+    service_cidr   = "10.2.0.0/24"
+  }
+
   oms_agent {
     msi_auth_for_monitoring_enabled = true
     log_analytics_workspace_id      = var.log_analytics_workspace_id
