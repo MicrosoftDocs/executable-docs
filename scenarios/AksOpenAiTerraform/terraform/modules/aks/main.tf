@@ -20,6 +20,9 @@ resource "azurerm_kubernetes_cluster" "aks_cluster" {
   image_cleaner_enabled            = true
   image_cleaner_interval_hours     = 72
 
+  workload_identity_enabled        = true
+  oidc_issuer_enabled              = true
+
   default_node_pool {
     name           = "system"
     node_count     = 1
