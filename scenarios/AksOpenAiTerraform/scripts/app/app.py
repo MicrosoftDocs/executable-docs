@@ -1,47 +1,13 @@
-"""
-MIT License
-
-Copyright (c) 2023 Paolo Salvatori
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-"""
-
-# This sample is based on the following article:
-#
 # - https://levelup.gitconnected.com/its-time-to-create-a-private-chatgpt-for-yourself-today-6503649e7bb6
-#
-# Use pip to install the following packages:
-#
-# - streamlit
-# - openai
-# - streamlit-chat
-# - azure.identity
-# - dotenv
 #
 # Make sure to provide a value for the following environment variables:
 #
-# - AZURE_OPENAI_BASE: the URL of your Azure OpenAI resource, for example https://eastus.api.cognitive.microsoft.com/
-# - AZURE_OPENAI_KEY: the key of your Azure OpenAI resource
-# - AZURE_OPENAI_DEPLOYMENT: the name of the ChatGPT deployment used by your Azure OpenAI resource
-# - AZURE_OPENAI_MODEL: the name of the ChatGPT model used by your Azure OpenAI resource, for example gpt-35-turbo
-# - TITLE: the title of the Streamlit app
-# - TEMPERATURE: the temperature used by the OpenAI API to generate the response
+# - AZURE_OPENAI_BASE (ex: https://eastus.api.cognitive.microsoft.com/)
+# - AZURE_OPENAI_KEY
+# - AZURE_OPENAI_DEPLOYMENT
+# - AZURE_OPENAI_MODEL
+# - TITLE
+# - TEMPERATURE
 # - SYSTEM: give the model instructions about how it should behave and any context it should reference when generating a response. 
 #   Used to describe the assistant's personality.
 #
@@ -64,7 +30,6 @@ SOFTWARE.
 # 
 # - streamlit run app.py
 
-# Import packages
 import os
 import sys
 import time

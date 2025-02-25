@@ -62,7 +62,7 @@ module "openai" {
   log_analytics_workspace_id = module.log_analytics_workspace.id
 }
 
-module "aks_cluster" {
+module "aks" {
   source              = "./modules/aks"
   name                = "AksCluster"
   location            = var.location
@@ -252,7 +252,7 @@ resource "azurerm_federated_identity_credential" "this" {
   resource_group_name = azurerm_resource_group.main.name
 
   audience  = ["api://AzureADTokenExchange"]
-  issuer    = module.aks_cluster.oidc_issuer_url
+  issuer    = module.aks.oidc_issuer_url
   parent_id = azurerm_user_assigned_identity.aks_workload.id
   subject   = "system:serviceaccount:${local.namespace}:${local.service_account_name}"
 }
@@ -266,11 +266,11 @@ resource "azurerm_role_assignment" "cognitive_services_user_assignment" {
 resource "azurerm_role_assignment" "network_contributor_assignment" {
   role_definition_name = "Network Contributor"
   scope                = azurerm_resource_group.main.id
-  principal_id         = module.aks_cluster.aks_identity_principal_id
+  principal_id         = module.aks.aks_identity_principal_id
 }
 
 resource "azurerm_role_assignment" "acr_pull_assignment" {
   role_definition_name = "AcrPull"
   scope                = module.container_registry.id
-  principal_id         = module.aks_cluster.kubelet_identity_object_id
+  principal_id         = module.aks.kubelet_identity_object_id
 }

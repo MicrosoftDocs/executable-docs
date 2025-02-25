@@ -1,27 +1,22 @@
-# Variables
+#!/bin/bash
+
 SUBSCRIPTION_ID=$(az account show --query id --output tsv)
 TENANT_ID=$(az account show --query tenantId --output tsv)
 RESOURCE_GROUP=$(terraform output resource_group_name)
 LOCATION="westus3"
 
-# Build/Push App's Docker image
-ACR_NAME=$(terraform output resource_group_name)
+# Build Image
+ACR_NAME=$(terraform output acr_name)
 az acr login --name $ACR_NAME
 ACR_URL=$(az acr show --name $ACR_NAME --query loginServer --output tsv)
-docker build -t $ACR_URL/$ACR_NAME.azurecr.io/magic8ball:v1 ./app --push
+docker build -t $ACR_URL/magic8ball:v1 ./app --push
 
-# Get AKS credentials
 az aks get-credentials \
   --admin \
   --name $clusterName \
   --resource-group $resourceGroupName \
   --subscription $subscriptionId \
   --only-show-errors
-
-# Install Helm
-curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 -o get_helm.sh -s
-chmod 700 get_helm.sh
-./get_helm.sh &>/dev/null
 
 # Install NGINX ingress controller
 helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
