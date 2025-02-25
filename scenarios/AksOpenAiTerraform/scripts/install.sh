@@ -42,5 +42,5 @@ helm install prometheus prometheus-community/kube-prometheus-stack \
 
 kubectl create namespace $namespace # Create workload namespace
 kubectl apply -f cluster-issuer.yml
-kubectl apply -f serviceAccount.yml
+kubectl apply -f service-account.yml
 kubectl apply -n $namespace -f ingress.yml

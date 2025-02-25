@@ -12,7 +12,7 @@ temperature="0.9"
 imageWidth="80"
 
 # Create config map
-cat configMap.yml |
+cat config-map.yml |
     yq "(.data.TITLE)|="\""$title"\" |
     yq "(.data.LABEL)|="\""$label"\" |
     yq "(.data.TEMPERATURE)|="\""$temperature"\" |

@@ -241,26 +241,26 @@ module "blob_private_dns_zone" {
 ###############################################################################
 # Identities/Roles
 ###############################################################################
-resource "azurerm_user_assigned_identity" "aks_workload_identity" {
+resource "azurerm_user_assigned_identity" "aks_workload" {
   name                = "WorkloadManagedIdentity"
   resource_group_name = azurerm_resource_group.main.name
   location            = var.location
 }
 
-resource "azurerm_federated_identity_credential" "federated_identity_credential" {
+resource "azurerm_federated_identity_credential" "this" {
   name                = "${title(local.namespace)}FederatedIdentity"
   resource_group_name = azurerm_resource_group.main.name
 
   audience  = ["api://AzureADTokenExchange"]
   issuer    = module.aks_cluster.oidc_issuer_url
-  parent_id = azurerm_user_assigned_identity.aks_workload_identity.id
+  parent_id = azurerm_user_assigned_identity.aks_workload.id
   subject   = "system:serviceaccount:${local.namespace}:${local.service_account_name}"
 }
 
 resource "azurerm_role_assignment" "cognitive_services_user_assignment" {
   role_definition_name = "Cognitive Services User"
   scope                = module.openai.id
-  principal_id         = azurerm_user_assigned_identity.aks_workload_identity.principal_id
+  principal_id         = azurerm_user_assigned_identity.aks_workload.principal_id
 }
 
 resource "azurerm_role_assignment" "network_contributor_assignment" {

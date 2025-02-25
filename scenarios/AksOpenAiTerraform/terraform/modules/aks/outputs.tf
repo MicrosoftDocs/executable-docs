@@ -7,7 +7,7 @@ output "id" {
 }
 
 output "aks_identity_principal_id" {
-  value = azurerm_user_assigned_identity.aks_identity.principal_id
+  value = azurerm_user_assigned_identity.aks.id
 }
 
 output "kubelet_identity_object_id" {
