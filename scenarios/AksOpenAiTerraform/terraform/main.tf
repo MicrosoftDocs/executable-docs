@@ -29,7 +29,7 @@ locals {
 ###############################################################################
 # Resource Group
 ###############################################################################
-resource "azurerm_resource_group" "rg" {
+resource "azurerm_resource_group" "main" {
   name     = "${var.resource_group_name_prefix}-${local.random_id}-rg"
   location = var.location
 
@@ -45,7 +45,7 @@ module "openai" {
   source              = "./modules/openai"
   name                = "OpenAi-${local.random_id}"
   location            = var.location
-  resource_group_name = azurerm_resource_group.rg.name
+  resource_group_name = azurerm_resource_group.main.name
 
   sku_name = "S0"
   deployments = [
@@ -66,8 +66,8 @@ module "aks_cluster" {
   source              = "./modules/aks"
   name                = "AksCluster"
   location            = var.location
-  resource_group_name = azurerm_resource_group.rg.name
-  resource_group_id   = azurerm_resource_group.rg.id
+  resource_group_name = azurerm_resource_group.main.name
+  resource_group_id   = azurerm_resource_group.main.id
   tenant_id           = local.tenant_id
 
   kubernetes_version       = var.kubernetes_version
@@ -88,7 +88,7 @@ module "container_registry" {
   source              = "./modules/container_registry"
   name                = "acr${local.random_id}"
   location            = var.location
-  resource_group_name = azurerm_resource_group.rg.name
+  resource_group_name = azurerm_resource_group.main.name
 
   sku = "Premium"
 
@@ -99,14 +99,14 @@ module "storage_account" {
   source              = "./modules/storage_account"
   name                = "boot${random_string.storage_account_suffix.result}"
   location            = var.location
-  resource_group_name = azurerm_resource_group.rg.name
+  resource_group_name = azurerm_resource_group.main.name
 }
 
 module "key_vault" {
   source              = "./modules/key_vault"
   name                = "KeyVault-${local.random_id}"
   location            = var.location
-  resource_group_name = azurerm_resource_group.rg.name
+  resource_group_name = azurerm_resource_group.main.name
 
   tenant_id = local.tenant_id
   sku_name  = "standard"
@@ -118,7 +118,7 @@ module "log_analytics_workspace" {
   source              = "./modules/log_analytics"
   name                = "Workspace"
   location            = var.location
-  resource_group_name = azurerm_resource_group.rg.name
+  resource_group_name = azurerm_resource_group.main.name
 
   sku               = "PerGB2018"
   retention_in_days = 30
@@ -131,7 +131,7 @@ module "virtual_network" {
   source              = "./modules/virtual_network"
   name                = "AksVNet"
   location            = var.location
-  resource_group_name = azurerm_resource_group.rg.name
+  resource_group_name = azurerm_resource_group.main.name
 
   address_space = ["10.0.0.0/8"]
   subnets = [
@@ -171,7 +171,7 @@ module "nat_gateway" {
   source              = "./modules/nat_gateway"
   name                = "NatGateway"
   location            = var.location
-  resource_group_name = azurerm_resource_group.rg.name
+  resource_group_name = azurerm_resource_group.main.name
 
   subnet_ids = module.virtual_network.subnet_ids
 }
@@ -180,7 +180,7 @@ module "bastion_host" {
   source              = "./modules/bastion_host"
   name                = "BastionHost"
   location            = var.location
-  resource_group_name = azurerm_resource_group.rg.name
+  resource_group_name = azurerm_resource_group.main.name
 
   subnet_id = module.virtual_network.subnet_ids["AzureBastionSubnet"]
 
@@ -193,7 +193,7 @@ module "bastion_host" {
 module "acr_private_dns_zone" {
   source              = "./modules/dns"
   location            = var.location
-  resource_group_name = azurerm_resource_group.rg.name
+  resource_group_name = azurerm_resource_group.main.name
 
   name                           = "privatelink.azurecr.io"
   subresource_name               = "account"
@@ -205,7 +205,7 @@ module "acr_private_dns_zone" {
 module "openai_private_dns_zone" {
   source              = "./modules/dns"
   location            = var.location
-  resource_group_name = azurerm_resource_group.rg.name
+  resource_group_name = azurerm_resource_group.main.name
 
   name                           = "privatelink.openai.azure.com"
   subresource_name               = "registry"
@@ -217,7 +217,7 @@ module "openai_private_dns_zone" {
 module "key_vault_private_dns_zone" {
   source              = "./modules/dns"
   location            = var.location
-  resource_group_name = azurerm_resource_group.rg.name
+  resource_group_name = azurerm_resource_group.main.name
 
   name                           = "privatelink.vaultcore.azure.net"
   subresource_name               = "vault"
@@ -229,7 +229,7 @@ module "key_vault_private_dns_zone" {
 module "blob_private_dns_zone" {
   source              = "./modules/dns"
   location            = var.location
-  resource_group_name = azurerm_resource_group.rg.name
+  resource_group_name = azurerm_resource_group.main.name
 
   name                           = "privatelink.blob.core.windows.net"
   subresource_name               = "blob"
@@ -243,13 +243,13 @@ module "blob_private_dns_zone" {
 ###############################################################################
 resource "azurerm_user_assigned_identity" "aks_workload_identity" {
   name                = "WorkloadManagedIdentity"
-  resource_group_name = azurerm_resource_group.rg.name
+  resource_group_name = azurerm_resource_group.main.name
   location            = var.location
 }
 
 resource "azurerm_federated_identity_credential" "federated_identity_credential" {
   name                = "${title(local.namespace)}FederatedIdentity"
-  resource_group_name = azurerm_resource_group.rg.name
+  resource_group_name = azurerm_resource_group.main.name
 
   audience  = ["api://AzureADTokenExchange"]
   issuer    = module.aks_cluster.oidc_issuer_url
@@ -265,7 +265,7 @@ resource "azurerm_role_assignment" "cognitive_services_user_assignment" {
 
 resource "azurerm_role_assignment" "network_contributor_assignment" {
   role_definition_name = "Network Contributor"
-  scope                = azurerm_resource_group.rg.id
+  scope                = azurerm_resource_group.main.id
   principal_id         = module.aks_cluster.aks_identity_principal_id
 }
 
