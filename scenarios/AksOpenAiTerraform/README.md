@@ -17,10 +17,86 @@ az extension add --name aks-preview
 az aks install-cli
 ```
 
-## Run Terraform
+## Provision Resources
+
+Provision all infrastructure using terraform.
 
 ```bash
+export SUBSCRIPTION_ID="b7684763-6bf2-4be5-8fdd-f9fadb0f27a1"
+export EMAIL="amini5454@gmail.com"
+
 export ARM_SUBSCRIPTION_ID=$SUBSCRIPTION_ID
-terraform init
-terraform apply
+terraform -chdir=infra init
+terraform -chdir=infra apply
+
+# Save outputs
+export RESOURCE_GROUP=$(terraform -chdir=infra output -raw resource_group_name)
+export CLUSTER_NAME=$(terraform -chdir=infra output -raw cluster_name)
+export WORKLOAD_IDENTITY_CLIENT_ID=$(terraform -chdir=infra output -raw workload_identity_client_id)
+export ACR_NAME=$(terraform -chdir=infra output -raw acr_name)
+```
+
+# Login
+
+Login to AKS cluster
+
+```bash
+az aks get-credentials --admin --name $CLUSTER_NAME --resource-group $RESOURCE_GROUP --subscription $SUBSCRIPTION_ID
+```
+
+## Build Dockerfile
+
+Build app's container image
+
+```bash
+export IMAGE="$ACR_NAME.azurecr.io/magic8ball:v1"
+az acr login --name $ACR_NAME
+docker build -t $IMAGE ./magic8ball --push
+```
+
+# Deploy App
+
+```bash
+helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+helm repo add jetstack https://charts.jetstack.io
+helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+helm repo update
+
+helm install ingress-nginx ingress-nginx/ingress-nginx \
+  --set controller.replicaCount=2 \
+  --set controller.nodeSelector."kubernetes\.io/os"=linux \
+  --set defaultBackend.nodeSelector."kubernetes\.io/os"=linux \
+  --set controller.service.annotations."service\.beta\.kubernetes\.io/azure-load-balancer-health-probe-request-path"=/healthz \
+  --set controller.metrics.enabled=true \
+  --set controller.metrics.serviceMonitor.enabled=true \
+  --set controller.metrics.serviceMonitor.additionalLabels.release="prometheus"
+helm install cert-manager jetstack/cert-manager \
+  --set crds.enabled=true \
+  --set nodeSelector."kubernetes\.io/os"=linux
+helm install prometheus prometheus-community/kube-prometheus-stack \
+    --set prometheus.prometheusSpec.podMonitorSelectorNilUsesHelmValues=false \
+    --set prometheus.prometheusSpec.serviceMonitorSelectorNilUsesHelmValues=false
+
+envsubst < quickstart-app.yml | kubectl apply -f -
+```
+
+# Wait for App to Finish
+
+Wait for public IP
+
+```bash
+kubectl wait --for=jsonpath='{.status.loadBalancer.ingress[0].ip}' ingress/magic8ball-ingress
+```
+
+# Add DNS Record
+
+Have DNS point to app
+
+```bash
+PUBLIC_IP=$(kubectl get ingress magic8ball-ingress -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+az network dns record-set a add-record \
+  --zone-name "contoso.com" \
+  --resource-group $RESOURCE_GROUP \
+  --record-set-name magic8ball \
+  --ipv4-address $PUBLIC_IP
 ```

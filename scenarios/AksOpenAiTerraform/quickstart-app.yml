@@ -33,7 +33,6 @@ spec:
       containers:
       - name: magic8ball
         image: $IMAGE
-        imagePullPolicy: Always
         ports:
         - containerPort: 8501
         envFrom:
@@ -43,22 +42,15 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: magic8ball-service
+  name: magic8ball
 spec:
   selector:
     app.kubernetes.io/name: magic8ball
   type: ClusterIP
   ports:
   - protocol: TCP
-    port: 8501
+    port: 80
     targetPort: 8501
----
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: magic8ball-sa
-  annotations:
-    azure.workload.identity/client-id: $WORKLOAD_IDENTITY_CLIENT_ID
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
@@ -73,8 +65,7 @@ spec:
     - magic8ball.contoso.com
     secretName: tls-secret
   rules:
-  - host: magic8ball.contoso.com
-    http:
+  - http:
       paths:
       - path: /
         pathType: Prefix
@@ -82,7 +73,7 @@ spec:
           service:
             name: magic8ball
             port:
-              number: 8501
+              number: 80
 ---
 apiVersion: cert-manager.io/v1
 kind: ClusterIssuer
@@ -98,3 +89,10 @@ spec:
     - http01:
         ingress:
           ingressClassName: nginx
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: magic8ball-sa
+  annotations:
+    azure.workload.identity/client-id: $WORKLOAD_IDENTITY_CLIENT_ID
