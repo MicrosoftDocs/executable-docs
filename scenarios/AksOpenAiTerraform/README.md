@@ -9,53 +9,56 @@ ms.custom: innovation-engine, linux-related-content
 ---
 
 ## Install AKS extension
-
 Run commands below to set up AKS extensions for Azure.
-
 ```bash
 az extension add --name aks-preview
 az aks install-cli
 ```
 
 ## Provision Resources
-
-Provision all infrastructure using terraform.
-
+Run terraform to provision all the required Azure resources
 ```bash
+export EMAIL="ariaamini@microsoft.com"
 export SUBSCRIPTION_ID="b7684763-6bf2-4be5-8fdd-f9fadb0f27a1"
-export EMAIL="amini5454@gmail.com"
 
-export ARM_SUBSCRIPTION_ID=$SUBSCRIPTION_ID
+export LOCATION="westus3"
+export KUBERNETES_VERSION="1.30.7"
+export AZURE_OPENAI_MODEL="gpt-4o-mini"
+export AZURE_OPENAI_VERSION="2024-07-18"
+
+# Run Terraform
+export TF_VAR_location=$LOCATION
+export TF_VAR_kubernetes_version=$KUBERNETES_VERSION
+export TF_VAR_model_name=$AZURE_OPENAI_MODEL
+export TF_VAR_model_version=$AZURE_OPENAI_VERSION
+
+export ARM_SUBSCRIPTION_ID=$SUBSCRIPTION_ID  # Used by terraform to find sub.
 terraform -chdir=infra init
 terraform -chdir=infra apply
 
 # Save outputs
 export RESOURCE_GROUP=$(terraform -chdir=infra output -raw resource_group_name)
-export CLUSTER_NAME=$(terraform -chdir=infra output -raw cluster_name)
 export WORKLOAD_IDENTITY_CLIENT_ID=$(terraform -chdir=infra output -raw workload_identity_client_id)
-export ACR_NAME=$(terraform -chdir=infra output -raw acr_name)
+export AZURE_OPENAI_ENDPOINT=$(terraform -chdir=infra output -raw openai_endpoint)
+export ACR_LOGIN_URL=$(terraform -chdir=infra output -raw acr_login_url)
+export IMAGE="$ACR_NAME.azurecr.io/magic8ball:v1"
 ```
 
 # Login
-
 Login to AKS cluster
-
 ```bash
-az aks get-credentials --admin --name $CLUSTER_NAME --resource-group $RESOURCE_GROUP --subscription $SUBSCRIPTION_ID
+az aks get-credentials --admin --name AksCluster --resource-group $RESOURCE_GROUP --subscription $SUBSCRIPTION_ID
 ```
 
 ## Build Dockerfile
-
 Build app's container image
-
 ```bash
-export IMAGE="$ACR_NAME.azurecr.io/magic8ball:v1"
 az acr login --name $ACR_NAME
 docker build -t $IMAGE ./magic8ball --push
 ```
 
-# Deploy App
-
+# Install Helm Charts
+Install Prometheus, nginx-ingress, and cert-manager
 ```bash
 helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
 helm repo add jetstack https://charts.jetstack.io
@@ -76,26 +79,23 @@ helm install cert-manager jetstack/cert-manager \
 helm install prometheus prometheus-community/kube-prometheus-stack \
     --set prometheus.prometheusSpec.podMonitorSelectorNilUsesHelmValues=false \
     --set prometheus.prometheusSpec.serviceMonitorSelectorNilUsesHelmValues=false
+```
 
+# Deploy App
+```bash
 envsubst < quickstart-app.yml | kubectl apply -f -
 ```
 
-# Wait for App to Finish
-
-Wait for public IP
-
+# Wait for public IP
 ```bash
 kubectl wait --for=jsonpath='{.status.loadBalancer.ingress[0].ip}' ingress/magic8ball-ingress
 ```
 
 # Add DNS Record
-
-Have DNS point to app
-
 ```bash
 PUBLIC_IP=$(kubectl get ingress magic8ball-ingress -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
 az network dns record-set a add-record \
-  --zone-name "contoso.com" \
+  --zone-name "143252357.contoso.com" \
   --resource-group $RESOURCE_GROUP \
   --record-set-name magic8ball \
   --ipv4-address $PUBLIC_IP
