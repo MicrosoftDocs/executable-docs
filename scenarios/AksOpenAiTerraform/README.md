@@ -17,22 +17,10 @@ az extension add --name aks-preview
 az aks install-cli
 ```
 
-## Set up Subscription ID to authenticate for Terraform
-
-Terraform uses the ARM_SUBSCRIPTION_ID environment variable to authenticate while using CLI.
-
-```bash
-export ARM_SUBSCRIPTION_ID=$SUBSCRIPTION_ID
-```
-
-## Init Terraform
-
-```bash
-terraform init
-```
-
 ## Run Terraform
 
 ```bash
+export ARM_SUBSCRIPTION_ID=$SUBSCRIPTION_ID
+terraform init
 terraform apply
 ```

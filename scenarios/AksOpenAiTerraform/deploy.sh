@@ -4,11 +4,13 @@ cd terraform
 export RESOURCE_GROUP=$(terraform output -raw resource_group_name)
 export CLUSTER_NAME=$(terraform output -raw cluster_name)
 export WORKLOAD_IDENTITY_CLIENT_ID=$(terraform output -raw workload_identity_client_id)
+export ACR_NAME=$(terraform output -raw acr_name)
 cd ..
 
+# Delete
 export SUBSCRIPTION_ID=$(az account show --query id --output tsv)
-export ACR_URL="privatelink.azurecr.io/magic8ball:v1"
 export EMAIL="amini5454@gmail.com"
+export IMAGE="acrguqrbpys.azurecr.io/magic8ball:v1"
 
 # Build Image
 az acr login --name $ACR_NAME
