@@ -1,9 +1,5 @@
-locals {
-    zones = ["2", "3"]
-}
-
-resource "azurerm_user_assigned_identity" "aks" {
-  name                = "${var.name}Identity"
+resource "azurerm_user_assigned_identity" "workload" {
+  name                = "WorkloadManagedIdentity"
   resource_group_name = var.resource_group_name
   location            = var.location
 }
@@ -13,7 +9,6 @@ resource "azurerm_kubernetes_cluster" "main" {
   location                         = var.location
   resource_group_name              = var.resource_group_name
   kubernetes_version               = var.kubernetes_version
-  dns_prefix                       = lower(var.name)
   automatic_upgrade_channel        = "stable"
   sku_tier                         = var.sku_tier
 
@@ -25,11 +20,8 @@ resource "azurerm_kubernetes_cluster" "main" {
 
   default_node_pool {
     name           = "system"
-    node_count     = 1
+    node_count     = 2
     vm_size        = var.system_node_pool_vm_size
-    vnet_subnet_id = var.system_node_pool_subnet_id
-    pod_subnet_id  = var.pod_subnet_id
-    zones          = local.zones
 
     upgrade_settings {
       max_surge                     = "10%"
@@ -40,14 +32,12 @@ resource "azurerm_kubernetes_cluster" "main" {
 
   identity {
     type         = "UserAssigned"
-    identity_ids = tolist([azurerm_user_assigned_identity.aks.id])
+    identity_ids = tolist([azurerm_user_assigned_identity.workload.id])
   }
 
   network_profile {
-    dns_service_ip = "10.2.0.10"
-    network_plugin = "azure"
+    network_plugin = "kubenet"
     outbound_type  = "userAssignedNATGateway"
-    service_cidr   = "10.2.0.0/24"
   }
 
   oms_agent {
@@ -56,15 +46,12 @@ resource "azurerm_kubernetes_cluster" "main" {
   }
 }
 
-resource "azurerm_kubernetes_cluster_node_pool" "node_pool" {
+resource "azurerm_kubernetes_cluster_node_pool" "this" {
   kubernetes_cluster_id = azurerm_kubernetes_cluster.main.id
   name                  = "user"
-  vm_size               = var.user_node_pool_vm_size
   mode                  = "User"
-  zones                 = local.zones
-  vnet_subnet_id        = var.user_node_pool_subnet_id
-  pod_subnet_id         = var.pod_subnet_id
   orchestrator_version  = var.kubernetes_version
+  vm_size               = var.user_node_pool_vm_size
   os_type               = "Linux"
   priority              = "Regular"
 }

@@ -3,16 +3,15 @@
 cd terraform
 export RESOURCE_GROUP=$(terraform output -raw resource_group_name)
 export CLUSTER_NAME=$(terraform output -raw cluster_name)
-export WORKLOAD_MANAGED_IDENTITY_CLIENT_ID=$(terraform output -raw workload_managed_identity_client_id)
-export ACR_NAME=$(terraform output -raw acr_name)
+export WORKLOAD_IDENTITY_CLIENT_ID=$(terraform output -raw workload_identity_client_id)
 cd ..
+
+export ACR_URL="privatelink.azurecr.io/magic8ball:v1"
 export SUBSCRIPTION_ID=$(az account show --query id --output tsv)
 export EMAIL="amini5454@gmail.com"
 
 # Build Image
 az acr login --name $ACR_NAME
-export ACR_URL=$(az acr show --name $ACR_NAME --query loginServer --output tsv)
-export IMAGE=$ACR_URL/magic8ball:v1
 docker build -t $IMAGE ./app --push
 
 # Login
@@ -25,8 +24,6 @@ helm repo add prometheus-community https://prometheus-community.github.io/helm-c
 helm repo update
 # NGINX ingress controller
 helm install ingress-nginx ingress-nginx/ingress-nginx \
-  --create-namespace \
-  --namespace "ingress-basic" \
   --set controller.replicaCount=2 \
   --set controller.nodeSelector."kubernetes\.io/os"=linux \
   --set defaultBackend.nodeSelector."kubernetes\.io/os"=linux \
@@ -36,18 +33,13 @@ helm install ingress-nginx ingress-nginx/ingress-nginx \
   --set controller.metrics.serviceMonitor.additionalLabels.release="prometheus"
 # Cert manager
 helm install cert-manager jetstack/cert-manager \
-  --create-namespace \
-  --namespace cert-manager \
   --set crds.enabled=true \
   --set nodeSelector."kubernetes\.io/os"=linux
 # Prometheus
 helm install prometheus prometheus-community/kube-prometheus-stack \
-    --create-namespace \
-    --namespace prometheus \
     --set prometheus.prometheusSpec.podMonitorSelectorNilUsesHelmValues=false \
     --set prometheus.prometheusSpec.serviceMonitorSelectorNilUsesHelmValues=false
 
-kubectl create namespace magic8ball
 envsubst < quickstart-app.yml | kubectl apply -f -
 
 # Add DNS Record

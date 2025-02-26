@@ -2,7 +2,6 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: magic8ball-configmap
-  namespace: magic8ball
 data:
   TITLE: "Magic 8 Ball"
   LABEL: "Pose your question and cross your fingers!"
@@ -10,14 +9,13 @@ data:
   IMAGE_WIDTH: "80"
   AZURE_OPENAI_TYPE: azure_ad
   AZURE_OPENAI_BASE: https://myopenai.openai.azure.com/
-  AZURE_OPENAI_MODEL: gpt-35-turbo
-  AZURE_OPENAI_DEPLOYMENT: magic8ballGPT
+  AZURE_OPENAI_MODEL: gpt-4o-mini
+  AZURE_OPENAI_DEPLOYMENT: gpt-4o-mini
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: magic8ball
-  namespace: magic8ball
   labels:
     app.kubernetes.io/name: magic8ball
     azure.workload.identity/use: "true"
@@ -31,9 +29,11 @@ spec:
       labels:
         app.kubernetes.io/name: magic8ball
     spec:
+      serviceAccountName: magic8ball-sa
       containers:
       - name: magic8ball
         image: $IMAGE
+        imagePullPolicy: Always
         ports:
         - containerPort: 8501
         envFrom:
@@ -44,7 +44,6 @@ apiVersion: v1
 kind: Service
 metadata:
   name: magic8ball-service
-  namespace: magic8ball
 spec:
   selector:
     app.kubernetes.io/name: magic8ball
@@ -57,16 +56,14 @@ spec:
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: magic8ball-service-account
-  namespace: magic8ball
+  name: magic8ball-sa
   annotations:
-    azure.workload.identity/client-id: $WORKLOAD_MANAGED_IDENTITY_CLIENT_ID
+    azure.workload.identity/client-id: $WORKLOAD_IDENTITY_CLIENT_ID
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: magic8ball-ingress
-  namespace: ingress-nginx
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-dev
 spec:
@@ -91,7 +88,6 @@ apiVersion: cert-manager.io/v1
 kind: ClusterIssuer
 metadata:
   name: letsencrypt-dev
-  namespace: cert-manager
 spec:
   acme:
     server: https://acme-v02.api.letsencrypt.org/directory

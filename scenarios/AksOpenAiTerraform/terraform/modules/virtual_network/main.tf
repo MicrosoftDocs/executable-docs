@@ -1,29 +1,73 @@
 resource "azurerm_virtual_network" "vnet" {
   name                = var.name
-  address_space       = var.address_space
   location            = var.location
   resource_group_name = var.resource_group_name
+  
+  address_space       = var.address_space
 }
 
-resource "azurerm_subnet" "subnet" {
-  for_each = { for subnet in var.subnets : subnet.name => subnet }
+resource "azurerm_subnet" "bastion" {
+  name                 = "AzureBastionSubnet"
+  resource_group_name  = var.resource_group_name
+  
+  virtual_network_name = azurerm_virtual_network.vnet.name
+  address_prefixes     = ["10.243.2.0/24"]
+}
 
-  name                              = each.key
-  resource_group_name               = var.resource_group_name
-  virtual_network_name              = azurerm_virtual_network.vnet.name
-  address_prefixes                  = each.value.address_prefixes
-  private_endpoint_network_policies = "Enabled"
+resource "azurerm_public_ip" "public_ip" {
+  name                = "PublicIp"
+  location            = var.location
+  resource_group_name = var.resource_group_name
+  
+  allocation_method   = "Static"
+  sku                 = "Standard"
+}
 
-  dynamic "delegation" {
-    for_each = each.value.delegation != null ? [each.value.delegation] : []
-    content {
-      name = "delegation"
+resource "azurerm_bastion_host" "bastion_host" {
+  name                = var.name
+  location            = var.location
+  resource_group_name = var.resource_group_name
 
-      service_delegation {
-        name    = delegation.value.service_delegation.name
-        actions = delegation.value.service_delegation.actions
-      }
-    }
+  ip_configuration {
+    name                 = "configuration"
+    subnet_id            = azurerm_subnet.bastion.id
+    public_ip_address_id = azurerm_public_ip.public_ip.id
+  }
+}
+
+resource "azurerm_monitor_diagnostic_setting" "settings" {
+  name                       = "BastionDiagnosticsSettings"
+  target_resource_id         = azurerm_bastion_host.bastion_host.id
+  log_analytics_workspace_id = var.log_analytics_workspace_id
+
+  enabled_log {
+    category = "BastionAuditLogs"
+  }
+
+  metric {
+    category = "AllMetrics"
+  }
+}
+
+resource "azurerm_monitor_diagnostic_setting" "pip_settings" {
+  name                       = "BastionDdosDiagnosticsSettings"
+  target_resource_id         = azurerm_public_ip.public_ip.id
+  log_analytics_workspace_id = var.log_analytics_workspace_id
+
+  enabled_log {
+    category = "DDoSProtectionNotifications"
+  }
+
+  enabled_log {
+    category = "DDoSMitigationFlowLogs"
+  }
+
+  enabled_log {
+    category = "DDoSMitigationReports"
+  }
+
+  metric {
+    category = "AllMetrics"
   }
 }
 

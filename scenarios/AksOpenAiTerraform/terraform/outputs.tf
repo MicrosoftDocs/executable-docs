@@ -6,8 +6,8 @@ output "cluster_name" {
     value = module.aks.name
 }
 
-output "workload_managed_identity_client_id" {
-    value = azurerm_user_assigned_identity.aks_workload.client_id
+output "workload_identity_client_id" {
+    value = module.aks.workload_identity.client_id
 }
 
 output "acr_name" {
