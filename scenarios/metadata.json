@@ -1,8 +1,8 @@
 [
     {
         "status": "active",
-        "key": "azure-aks-docs/articles/aks/learn/quick-kubernetes-deploy-cli.md",
-        "title": "Quickstart: Deploy an Azure Kubernetes Service (AKS) cluster using Azure CLI",
+        "key": "azure-docs/articles/aks/learn/quick-kubernetes-deploy-cli.md",
+        "title": "Deploy an Azure Kubernetes Service (AKS) cluster",
         "description": "Learn how to quickly deploy a Kubernetes cluster and deploy an application in Azure Kubernetes Service (AKS) using Azure CLI",
         "stackDetails": "",
         "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-aks-docs/articles/aks/learn/quick-kubernetes-deploy-cli.md",
@@ -143,7 +143,7 @@
     {
         "status": "active",
         "key": "azure-docs/articles/static-web-apps/get-started-cli.md",
-        "title": "Quickstart: Building your first static site with the Azure Static Web Apps using the CLI",
+        "title": "Deploy a Static site with the Azure Static Web Apps",
         "description": "Learn to deploy a static site to Azure Static Web Apps with the Azure CLI.",
         "stackDetails": "",
         "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-docs/articles/static-web-apps/get-started-cli.md",
@@ -159,11 +159,11 @@
     },
     {
         "status": "active",
-        "key": "azure-compute-docs/articles/virtual-machine-scale-sets/flexible-virtual-machine-scale-sets-cli.md",
+        "key": "azure-docs/articles/virtual-machine-scale-sets/flexible-virtual-machine-scale-sets-cli.md",
         "title": "Create virtual machines in a Flexible scale set using Azure CLI",
         "description": "Learn how to create a Virtual Machine Scale Set in Flexible orchestration mode using Azure CLI.",
         "stackDetails": "",
-        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-compute-docs/articles/virtual-machine-scale-sets/flexible-virtual-machine-scale-sets-cli.md",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-docs/articles/virtual-machine-scale-sets/flexible-virtual-machine-scale-sets-cli.md",
         "documentationUrl": "https://learn.microsoft.com/en-us/azure/virtual-machine-scale-sets/flexible-virtual-machine-scale-sets-cli",
         "nextSteps": [
             {
@@ -184,8 +184,8 @@
     },
     {
         "status": "active",
-        "key": "azure-compute-docs/articles/virtual-machines/linux/quick-create-cli.md",
-        "title": "Quickstart: Use the Azure CLI to create a Linux Virtual Machine",
+        "key": "azure-docs/articles/virtual-machines/linux/quick-create-cli.md",
+        "title": "Deploy a Linux virtual machine",
         "description": "In this quickstart, you learn how to use the Azure CLI to create a Linux virtual machine",
         "stackDetails": [
             "An Ubuntu 22.04 Linux VM (Standard DS1_v2)",
@@ -193,7 +193,7 @@
             "Network interface with public IP and network security group",
             "Port 22 will be opened"
         ],
-        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-compute-docs/articles/virtual-machines/linux/quick-create-cli.md",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-docs/articles/virtual-machines/linux/quick-create-cli.md",
         "documentationUrl": "https://learn.microsoft.com/en-us/azure/virtual-machines/linux/quick-create-cli",
         "nextSteps": [
             {
@@ -230,11 +230,11 @@
     },
     {
         "status": "active",
-        "key": "azure-compute-docs/articles/virtual-machines/linux/tutorial-lemp-stack.md",
+        "key": "azure-docs/articles/virtual-machines/linux/tutorial-lemp-stack.md",
         "title": "Tutorial - Deploy a LEMP stack using WordPress on a VM",
         "description": "In this tutorial, you learn how to install the LEMP stack, and WordPress, on a Linux virtual machine in Azure.",
         "stackDetails": "",
-        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-compute-docs/articles/virtual-machines/linux/tutorial-lemp-stack.md",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-docs/articles/virtual-machines/linux/tutorial-lemp-stack.md",
         "documentationUrl": "https://learn.microsoft.com/en-us/azure/virtual-machines/linux/tutorial-lemp-stack",
         "nextSteps": [
             {
@@ -256,7 +256,7 @@
     },
     {
         "status": "active",
-        "key": "DeployIGonAKS/deploy-ig-on-aks.md",
+        "key": "DeployIGonAKS/README.md",
         "title": "Deploy Inspektor Gadget in an Azure Kubernetes Service cluster",
         "description": "This tutorial shows how to deploy Inspektor Gadget in an AKS cluster",
         "stackDetails": "",
@@ -281,11 +281,11 @@
     },
     {
         "status": "active",
-        "key": "CreateAKSWebApp/create-aks-webapp.md",
+        "key": "CreateAKSWebApp/README.md",
         "title": "Deploy a Scalable & Secure Azure Kubernetes Service cluster using the Azure CLI",
         "description": "This tutorial where we will take you step by step in creating an Azure Kubernetes Web Application that is secured via https.",
         "stackDetails": "",
-        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/CreateAKSWebApp/create-aks-webapp.md",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/CreateAKSWebApp/README.md",
         "documentationUrl": "",
         "nextSteps": [
             {
@@ -610,11 +610,11 @@
     },
     {
         "status": "active",
-        "key": "PostgresRAGLLM/postgres-rag-llm.md",
-        "title": "Quickstart: Deploy a Postgres vector database",
+        "key": "PostgresRagLlmDemo/README.md",
+        "title": "Deploy a Postgres vector database",
         "description": "Set up a Postgres vector database and openai resources to run a RAG-LLM model.",
         "stackDetails": "",
-        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/PostgresRAGLLM/postgres-rag-llm.md",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/PostgresRagLlmDemo/README.md",
         "documentationUrl": "",
         "nextSteps": [],
         "configurations": {
@@ -636,8 +636,8 @@
     },
     {
         "status": "active",
-        "key": "AKSKaito/aks-kaito.md",
-        "title": "Deploy an AI model on Azure Kubernetes Service (AKS) with the AI toolchain operator (preview)",
+        "key": "AksKaito/README.md",
+        "title": "Deploy an AI model on AKS with the AI toolchain operator",
         "description": "Learn how to enable the AI toolchain operator add-on on Azure Kubernetes Service (AKS) to simplify OSS AI model management and deployment",
         "stackDetails": "",
         "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/AKSKaito/aks-kaito.md",
@@ -763,7 +763,7 @@
     },
     {
         "status": "active",
-        "key": "azure-compute-docs/articles/virtual-machine-scale-sets/tutorial-use-custom-image-cli.md",
+        "key": "azure-docs/articles/virtual-machine-scale-sets/tutorial-use-custom-image-cli.md",
         "title": "Tutorial - Use a custom VM image in a scale set with Azure CLI",
         "description": "Learn how to use the Azure CLI to create a custom VM image that you can use to deploy a Virtual Machine Scale Set",
         "stackDetails": [],
