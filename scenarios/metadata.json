@@ -919,5 +919,57 @@
         "configurations": {
             "permissions": []
         }
+    },
+    {
+        "status": "active",
+        "key": "FixFstabIssuesRepairVM/fix-fstab-issues-repair-vm.md",
+        "title": "Troubleshoot Linux VM boot issues due to fstab errors",
+        "description": "Explains why Linux VM cannot start and how to solve the problem.",
+        "stackDetails": "",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/FixFstabIssuesRepairVM/fix-fstab-issues-repair-vm.md",
+        "documentationUrl": "https://learn.microsoft.com/en-us/troubleshoot/azure/virtual-machines/linux/linux-virtual-machine-cannot-start-fstab-errors#use-azure-linux-auto-repair-alar",
+        "configurations": {
+            "permissions": [],
+            "configurableParams": [
+                    {
+                        "inputType": "textInput",
+                        "commandKey": "MY_RESOURCE_GROUP_NAME",
+                        "title": "Resource Group Name",
+                        "defaultValue": ""
+                    },
+                    {
+                        "inputType": "textInput",
+                        "commandKey": "MY_VM_NAME",
+                        "title": "VM Name",
+                        "defaultValue": ""
+                    }
+                ]
+        } 
+    },
+    {
+        "status": "active",
+        "key": "KernelBootIssuesRepairVM/kernel-related-boot-issues-repairvm.md",
+        "title": "Troubleshoot Linux VM boot issues due to fstab errors",
+        "description": "Explains why Linux VM cannot start and how to solve the problem.",
+        "stackDetails": "",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/KernelBootIssuesRepairVM/kernel-related-boot-issues-repairvm.md",
+        "documentationUrl": "https://learn.microsoft.com/en-us/troubleshoot/azure/virtual-machines/linux/kernel-related-boot-issues#missing-initramfs-alar",
+        "configurations": {
+            "permissions": [],
+            "configurableParams": [
+                    {
+                        "inputType": "textInput",
+                        "commandKey": "MY_RESOURCE_GROUP_NAME",
+                        "title": "Resource Group Name",
+                        "defaultValue": ""
+                    },
+                    {
+                        "inputType": "textInput",
+                        "commandKey": "MY_VM_NAME",
+                        "title": "VM Name",
+                        "defaultValue": ""
+                    }
+                ]
+        } 
     }
 ]
