@@ -18,103 +18,15 @@ locals {
 resource "azurerm_resource_group" "main" {
   name     = "${var.resource_group_name_prefix}-${local.random_id}-rg"
   location = var.location
-
-  lifecycle {
-    ignore_changes = [tags]
-  }
 }
 
-module "openai" {
-  source              = "./modules/openai"
-  name                = "OpenAi-${local.random_id}"
-  location            = var.location
+###############################################################################
+# Kubernetes
+###############################################################################
+resource "azurerm_user_assigned_identity" "workload" {
+  name                = "WorkloadManagedIdentity"
   resource_group_name = azurerm_resource_group.main.name
-
-  sku_name = "S0"
-  deployments = [
-    {
-      name = var.model_name
-      model = {
-        name    = var.model_name
-        version = var.model_version
-      }
-    }
-  ]
-  custom_subdomain_name = "magic8ball-${local.random_id}"
-
-  log_analytics_workspace_id = module.log_analytics_workspace.id
-}
-
-module "aks" {
-  source              = "./modules/aks"
-  name                = "AksCluster"
   location            = var.location
-  resource_group_name = azurerm_resource_group.main.name
-  resource_group_id   = azurerm_resource_group.main.id
-  tenant_id           = local.tenant_id
-
-  kubernetes_version       = var.kubernetes_version
-  sku_tier                 = "Standard"
-  system_node_pool_vm_size = "Standard_DS2_v2"
-  user_node_pool_vm_size   = "Standard_DS2_v2"
-
-  system_node_pool_subnet_id = module.virtual_network.subnet_ids["SystemSubnet"]
-  user_node_pool_subnet_id   = module.virtual_network.subnet_ids["UserSubnet"]
-  pod_subnet_id              = module.virtual_network.subnet_ids["PodSubnet"]
-
-  log_analytics_workspace_id = module.log_analytics_workspace.id
-
-  depends_on = [module.nat_gateway]
-}
-
-module "container_registry" {
-  source              = "./modules/container_registry"
-  name                = "acr${local.random_id}"
-  location            = var.location
-  resource_group_name = azurerm_resource_group.main.name
-
-  sku = "Premium"
-
-  log_analytics_workspace_id = module.log_analytics_workspace.id
-}
-
-module "storage_account" {
-  source              = "./modules/storage_account"
-  name                = "boot${local.random_id}"
-  location            = var.location
-  resource_group_name = azurerm_resource_group.main.name
-}
-
-module "key_vault" {
-  source              = "./modules/key_vault"
-  name                = "KeyVault${local.random_id}"
-  location            = var.location
-  resource_group_name = azurerm_resource_group.main.name
-
-  tenant_id = local.tenant_id
-  sku_name  = "standard"
-
-  log_analytics_workspace_id = module.log_analytics_workspace.id
-}
-
-module "log_analytics_workspace" {
-  source              = "./modules/log_analytics"
-  name                = "Workspace"
-  location            = var.location
-  resource_group_name = azurerm_resource_group.main.name
-
-  sku               = "PerGB2018"
-  retention_in_days = 30
-}
-
-module "virtual_network" {
-  source              = "./modules/virtual_network"
-  name                = "AksVNet"
-  location            = var.location
-  resource_group_name = azurerm_resource_group.main.name
-
-  address_space = ["10.0.0.0/8"]
-  log_analytics_workspace_id = module.log_analytics_workspace.id
 }
 
 resource "azurerm_federated_identity_credential" "this" {
@@ -122,27 +34,194 @@ resource "azurerm_federated_identity_credential" "this" {
   resource_group_name = azurerm_resource_group.main.name
 
   audience  = ["api://AzureADTokenExchange"]
-  issuer    = module.aks.oidc_issuer_url
-  parent_id = module.aks.workload_identity.id
+  issuer    = azurerm_kubernetes_cluster.main.oidc_issuer_url
+  parent_id = azurerm_user_assigned_identity.workload.id
   subject   = "system:serviceaccount:default:magic8ball-sa"
 }
 
-# resource "azurerm_role_assignment" "cognitive_services_user_assignment" {
-#   role_definition_name = "Cognitive Services User"
-#   scope                = module.openai.id
-#   principal_id         = module.aks.workload_identity_client_id
-# }
+resource "azurerm_kubernetes_cluster" "main" {
+  name                = "AksCluster"
+  location            = var.location
+  resource_group_name = azurerm_resource_group.main.name
 
-# resource "azurerm_role_assignment" "network_contributor_assignment" {
-#   role_definition_name = "Network Contributor"
-#   scope                = azurerm_resource_group.main.id
-#   principal_id         = module.aks.workload_identity_client_id
-# }
+  dns_prefix                = "AksCluster${local.random_id}"
+  kubernetes_version        = var.kubernetes_version
+  automatic_upgrade_channel = "stable"
+  sku_tier                  = "Standard"
 
-# resource "azurerm_role_assignment" "acr_pull_assignment" {
-#   role_definition_name = "AcrPull"
-#   scope                = module.container_registry.id
-#   principal_id         = module.aks.workload_identity_client_id
+  image_cleaner_enabled        = true
+  image_cleaner_interval_hours = 72
 
-#   skip_service_principal_aad_check = true
-# }
+  workload_identity_enabled = true
+  oidc_issuer_enabled       = true
+
+  default_node_pool {
+    name       = "system"
+    node_count = 2
+    vm_size    = "Standard_DS2_v2"
+
+    upgrade_settings {
+      max_surge                     = "10%"
+      drain_timeout_in_minutes      = 0
+      node_soak_duration_in_minutes = 0
+    }
+  }
+
+  identity {
+    type         = "UserAssigned"
+    identity_ids = tolist([azurerm_user_assigned_identity.workload.id])
+  }
+
+  network_profile {
+    network_plugin = "kubenet"
+    outbound_type  = "userAssignedNATGateway"
+  }
+}
+
+resource "azurerm_kubernetes_cluster_node_pool" "this" {
+  kubernetes_cluster_id = azurerm_kubernetes_cluster.main.id
+  name                  = "user"
+  mode                  = "User"
+  orchestrator_version  = var.kubernetes_version
+  vm_size               = "Standard_DS2_v2"
+  os_type               = "Linux"
+  priority              = "Regular"
+}
+
+###############################################################################
+# OpenAI
+###############################################################################
+resource "azurerm_cognitive_account" "openai" {
+  name                = "OpenAi-${local.random_id}"
+  location            = var.location
+  resource_group_name = azurerm_resource_group.main.name
+
+  kind                          = "OpenAI"
+  custom_subdomain_name         = "magic8ball-${local.random_id}"
+  sku_name                      = "S0"
+  public_network_access_enabled = true
+
+  identity {
+    type = "SystemAssigned"
+  }
+}
+
+resource "azurerm_cognitive_deployment" "deployment" {
+  name                 = var.model_name
+  cognitive_account_id = azurerm_cognitive_account.openai.id
+
+  model {
+    format  = "OpenAI"
+    name    = var.model_name
+    version = var.model_version
+  }
+
+  sku {
+    name = "Standard"
+  }
+}
+
+###############################################################################
+# Key Vault
+###############################################################################
+resource "azurerm_key_vault" "this" {
+  name                = "KeyVault${local.random_id}"
+  location            = var.location
+  resource_group_name = azurerm_resource_group.main.name
+  tenant_id           = local.tenant_id
+
+  sku_name                        = "standard"
+  enabled_for_deployment          = true
+  enabled_for_disk_encryption     = true
+  enabled_for_template_deployment = true
+  enable_rbac_authorization       = true
+  purge_protection_enabled        = false
+  soft_delete_retention_days      = 30
+
+  network_acls {
+    bypass         = "AzureServices"
+    default_action = "Allow"
+  }
+}
+
+###############################################################################
+# Container Registry
+###############################################################################
+resource "azurerm_container_registry" "this" {
+  name                   = "acr${local.random_id}"
+  resource_group_name    = azurerm_resource_group.main.name
+  location               = var.location
+  sku                    = "Premium"
+  anonymous_pull_enabled = true
+}
+
+###############################################################################
+# Storage Account
+###############################################################################
+resource "azurerm_storage_account" "storage_account" {
+  name                = "boot${local.random_id}"
+  location            = var.location
+  resource_group_name = azurerm_resource_group.main.name
+
+  account_kind             = "StorageV2"
+  account_tier             = "Standard"
+  account_replication_type = "LRS"
+  is_hns_enabled           = false
+
+  allow_nested_items_to_be_public = false
+}
+
+###############################################################################
+# Networking
+###############################################################################
+resource "azurerm_virtual_network" "this" {
+  name                = "Vnet"
+  location            = var.location
+  resource_group_name = azurerm_resource_group.main.name
+  address_space       = ["10.0.0.0/8"]
+}
+
+resource "azurerm_subnet" "this" {
+  name                = "AzureBastionSubnet"
+  resource_group_name = azurerm_resource_group.main.name
+
+  virtual_network_name = azurerm_virtual_network.this.name
+  address_prefixes     = ["10.243.2.0/24"]
+}
+
+resource "azurerm_public_ip" "this" {
+  name                = "PublicIp"
+  location            = var.location
+  resource_group_name = azurerm_resource_group.main.name
+
+  allocation_method = "Static"
+  sku               = "Standard"
+}
+
+resource "azurerm_bastion_host" "this" {
+  name                = "BastionHost"
+  location            = var.location
+  resource_group_name = azurerm_resource_group.main.name
+
+  ip_configuration {
+    name                 = "configuration"
+    subnet_id            = azurerm_subnet.this.id
+    public_ip_address_id = azurerm_public_ip.this.id
+  }
+}
+
+resource "azurerm_nat_gateway" "this" {
+  name                = "NatGateway"
+  location            = var.location
+  resource_group_name = azurerm_resource_group.main.name
+}
+
+resource "azurerm_subnet_nat_gateway_association" "gateway_association" {
+  subnet_id      = azurerm_subnet.this.id
+  nat_gateway_id = azurerm_nat_gateway.this.id
+}
+
+resource "azurerm_nat_gateway_public_ip_association" "nat_gategay_public_ip_association" {
+  nat_gateway_id       = azurerm_nat_gateway.this.id
+  public_ip_address_id = azurerm_public_ip.this.id
+}

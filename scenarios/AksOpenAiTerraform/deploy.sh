@@ -6,8 +6,8 @@ export CLUSTER_NAME=$(terraform output -raw cluster_name)
 export WORKLOAD_IDENTITY_CLIENT_ID=$(terraform output -raw workload_identity_client_id)
 cd ..
 
-export ACR_URL="privatelink.azurecr.io/magic8ball:v1"
 export SUBSCRIPTION_ID=$(az account show --query id --output tsv)
+export ACR_URL="privatelink.azurecr.io/magic8ball:v1"
 export EMAIL="amini5454@gmail.com"
 
 # Build Image
@@ -22,7 +22,6 @@ helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
 helm repo add jetstack https://charts.jetstack.io
 helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
 helm repo update
-# NGINX ingress controller
 helm install ingress-nginx ingress-nginx/ingress-nginx \
   --set controller.replicaCount=2 \
   --set controller.nodeSelector."kubernetes\.io/os"=linux \
@@ -31,15 +30,14 @@ helm install ingress-nginx ingress-nginx/ingress-nginx \
   --set controller.metrics.enabled=true \
   --set controller.metrics.serviceMonitor.enabled=true \
   --set controller.metrics.serviceMonitor.additionalLabels.release="prometheus"
-# Cert manager
 helm install cert-manager jetstack/cert-manager \
   --set crds.enabled=true \
   --set nodeSelector."kubernetes\.io/os"=linux
-# Prometheus
 helm install prometheus prometheus-community/kube-prometheus-stack \
     --set prometheus.prometheusSpec.podMonitorSelectorNilUsesHelmValues=false \
     --set prometheus.prometheusSpec.serviceMonitorSelectorNilUsesHelmValues=false
 
+# Run deployment
 envsubst < quickstart-app.yml | kubectl apply -f -
 
 # Add DNS Record
