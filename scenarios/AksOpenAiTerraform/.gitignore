@@ -37,3 +37,4 @@ override.tf.json
 terraform.rc
 
 .venv
+.vscode
