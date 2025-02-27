@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: cnpg-controller-manager-config
+  namespace: cnpg-system
+type: Opaque
+stringData:
+  ENABLE_AZURE_PVC_UPDATES: 'true'
