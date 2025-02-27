@@ -29,6 +29,7 @@ spec:
       containers:
       - name: magic8ball
         image: $IMAGE
+        imagePullPolicy: Always
         ports:
         - containerPort: 8501
         envFrom:
@@ -38,53 +39,15 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: magic8ball
+  name: magic8ball-service
 spec:
   selector:
     app.kubernetes.io/name: magic8ball
-  type: ClusterIP
+  type: LoadBalancer
   ports:
   - protocol: TCP
     port: 80
     targetPort: 8501
----
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: magic8ball-ingress
-  annotations:
-    cert-manager.io/cluster-issuer: letsencrypt-dev
-spec:
-  ingressClassName: nginx
-  tls:
-  - hosts:
-    - magic8ball.contoso.com
-    secretName: tls-secret
-  rules:
-  - http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: magic8ball
-            port:
-              number: 80
----
-apiVersion: cert-manager.io/v1
-kind: ClusterIssuer
-metadata:
-  name: letsencrypt-dev
-spec:
-  acme:
-    server: https://acme-v02.api.letsencrypt.org/directory
-    email: $EMAIL
-    privateKeySecretRef:
-      name: tls-secret
-    solvers:
-    - http01:
-        ingress:
-          ingressClassName: nginx
 ---
 apiVersion: v1
 kind: ServiceAccount
