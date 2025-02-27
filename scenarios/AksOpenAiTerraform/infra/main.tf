@@ -79,12 +79,11 @@ resource "azurerm_user_assigned_identity" "workload" {
 }
 
 resource "azurerm_federated_identity_credential" "this" {
-  name                = "FederatedIdentity"
-  resource_group_name = azurerm_resource_group.main.name
-
+  name                = azurerm_user_assigned_identity.workload.name
+  resource_group_name = azurerm_user_assigned_identity.workload.resource_group_name
+  parent_id           = azurerm_user_assigned_identity.workload.id
   audience  = ["api://AzureADTokenExchange"]
   issuer    = azurerm_kubernetes_cluster.main.oidc_issuer_url
-  parent_id = azurerm_user_assigned_identity.workload.id
   subject   = "system:serviceaccount:default:magic8ball-sa"
 }
 
@@ -99,11 +98,6 @@ resource "azurerm_cognitive_account" "openai" {
   kind                          = "OpenAI"
   custom_subdomain_name         = "magic8ball-${local.random_id}"
   sku_name                      = "S0"
-  public_network_access_enabled = true
-
-  identity {
-    type = "SystemAssigned"
-  }
 }
 
 resource "azurerm_cognitive_deployment" "deployment" {
@@ -119,6 +113,15 @@ resource "azurerm_cognitive_deployment" "deployment" {
   sku {
     name = "Standard"
   }
+}
+
+resource "azurerm_role_assignment" "cognitive_services_user" {
+  scope                = azurerm_cognitive_account.openai.id
+  role_definition_name = "Cognitive Services OpenAI Contributor"
+  principal_id         = azurerm_user_assigned_identity.workload.principal_id
+  principal_type       = "ServicePrincipal"
+  
+  skip_service_principal_aad_check = true
 }
 
 ###############################################################################

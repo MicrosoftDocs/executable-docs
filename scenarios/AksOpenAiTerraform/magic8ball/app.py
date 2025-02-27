@@ -6,11 +6,10 @@ import streamlit as st
 from azure.identity import DefaultAzureCredential, get_bearer_token_provider
 
 deployment = os.getenv("AZURE_OPENAI_DEPLOYMENT")
-api_version = os.environ.get("AZURE_OPENAI_VERSION")
 azure_endpoint = os.getenv("AZURE_OPENAI_ENDPOINT")
 
 client = AzureOpenAI(
-    api_version=api_version,
+    api_version="2024-10-21",
     azure_endpoint=azure_endpoint,
     azure_ad_token_provider=get_bearer_token_provider(
         DefaultAzureCredential(), "https://cognitiveservices.azure.com/.default"
