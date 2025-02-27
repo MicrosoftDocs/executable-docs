@@ -77,10 +77,12 @@ if prompt := st.chat_input(
     with st.chat_message("user"):
         st.write(prompt)
 
-    # Print Response
+    # Loading indicator
     response = None
-    with st.spinner("Loading response..."):  # Loading indicator
+    with st.spinner("Loading response..."): 
         response = call_api(st.session_state.messages)
+
+    # Print Response
     st.session_state.messages.append({"role": "assistant", "content": response})
     with st.chat_message("assistant"):
         st.write(response)
