@@ -8,7 +8,7 @@ ms.author: ariaamini
 ms.custom: innovation-engine, linux-related-content 
 ---
 
-## Provision Resources
+## Provision Resources (~10 minutes)
 Run terraform to provision all the required Azure resources
 ```bash
 # Terraform parses TF_VAR_* (Ex: TF_VAR_xname -> xname)

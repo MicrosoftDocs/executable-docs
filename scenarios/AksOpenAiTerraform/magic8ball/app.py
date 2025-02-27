@@ -5,7 +5,7 @@ from openai import AzureOpenAI
 import streamlit as st
 from azure.identity import DefaultAzureCredential, get_bearer_token_provider
 
-deployment = os.getenv("AZURE_OPENAI_DEPLOYMENT")
+azure_deployment = os.getenv("AZURE_OPENAI_DEPLOYMENT")
 azure_endpoint = os.getenv("AZURE_OPENAI_ENDPOINT")
 
 client = AzureOpenAI(
@@ -19,8 +19,8 @@ client = AzureOpenAI(
 
 def call_api(messages):
     completion = client.chat.completions.create(
-        model=deployment,
         messages=messages,
+        model=azure_deployment
     )
     return completion.choices[0].message.content
 
@@ -79,7 +79,7 @@ if prompt := st.chat_input(
 
     # Loading indicator
     response = None
-    with st.spinner("Loading response..."): 
+    with st.spinner("Loading response..."):
         response = call_api(st.session_state.messages)
 
     # Print Response

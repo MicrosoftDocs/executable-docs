@@ -12,7 +12,6 @@ metadata:
   name: magic8ball
   labels:
     app.kubernetes.io/name: magic8ball
-    azure.workload.identity/use: "true"
 spec:
   replicas: 3
   selector:
@@ -22,6 +21,7 @@ spec:
     metadata:
       labels:
         app.kubernetes.io/name: magic8ball
+        azure.workload.identity/use: "true"
     spec:
       serviceAccountName: magic8ball-sa
       containers:
@@ -37,11 +37,11 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: magic8ball-service
+  name: magic8ball
 spec:
+  type: LoadBalancer
   selector:
     app.kubernetes.io/name: magic8ball
-  type: LoadBalancer
   ports:
   - protocol: TCP
     port: 80
@@ -53,3 +53,4 @@ metadata:
   name: magic8ball-sa
   annotations:
     azure.workload.identity/client-id: $WORKLOAD_IDENTITY_CLIENT_ID
+    azure.workload.identity/tenant-id: $TENANT_ID

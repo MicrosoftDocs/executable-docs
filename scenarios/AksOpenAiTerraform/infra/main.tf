@@ -31,11 +31,12 @@ resource "azurerm_kubernetes_cluster" "main" {
   name                = "AksCluster"
   location            = var.location
   resource_group_name = azurerm_resource_group.main.name
-
+  
   sku_tier                  = "Standard"
-  kubernetes_version        = var.kubernetes_version
   dns_prefix                = "AksCluster${local.random_id}"
+  kubernetes_version        = var.kubernetes_version
   automatic_upgrade_channel = "stable"
+
   workload_identity_enabled = true
   oidc_issuer_enabled       = true
 
@@ -45,7 +46,7 @@ resource "azurerm_kubernetes_cluster" "main" {
   default_node_pool {
     name       = "agentpool"
     vm_size    = "Standard_DS2_v2"
-    node_count = 2
+    node_count = 1
 
     upgrade_settings {
       max_surge                     = "10%"
@@ -63,7 +64,7 @@ resource "azurerm_kubernetes_cluster" "main" {
 resource "azurerm_kubernetes_cluster_node_pool" "this" {
   name       = "userpool"
   mode       = "User"
-  node_count = 2
+  node_count = 1
 
   kubernetes_cluster_id = azurerm_kubernetes_cluster.main.id
   orchestrator_version  = var.kubernetes_version
@@ -117,7 +118,7 @@ resource "azurerm_cognitive_deployment" "deployment" {
 
 resource "azurerm_role_assignment" "cognitive_services_user" {
   scope                = azurerm_cognitive_account.openai.id
-  role_definition_name = "Cognitive Services OpenAI Contributor"
+  role_definition_name = "Cognitive Services User"
   principal_id         = azurerm_user_assigned_identity.workload.principal_id
   principal_type       = "ServicePrincipal"
   
