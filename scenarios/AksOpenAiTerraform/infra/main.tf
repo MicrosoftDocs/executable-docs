@@ -164,29 +164,6 @@ resource "azurerm_bastion_host" "this" {
 }
 
 ###############################################################################
-# Key Vault
-###############################################################################
-resource "azurerm_key_vault" "this" {
-  name                = "KeyVault${local.random_id}"
-  location            = var.location
-  resource_group_name = azurerm_resource_group.main.name
-  tenant_id           = local.tenant_id
-
-  sku_name                        = "standard"
-  enabled_for_deployment          = true
-  enabled_for_disk_encryption     = true
-  enabled_for_template_deployment = true
-  enable_rbac_authorization       = true
-  purge_protection_enabled        = false
-  soft_delete_retention_days      = 30
-
-  network_acls {
-    bypass         = "AzureServices"
-    default_action = "Allow"
-  }
-}
-
-###############################################################################
 # Container Registry
 ###############################################################################
 resource "azurerm_container_registry" "this" {
@@ -195,20 +172,4 @@ resource "azurerm_container_registry" "this" {
   location               = var.location
   sku                    = "Premium"
   anonymous_pull_enabled = true
-}
-
-###############################################################################
-# Storage Account
-###############################################################################
-resource "azurerm_storage_account" "storage_account" {
-  name                = "boot${local.random_id}"
-  location            = var.location
-  resource_group_name = azurerm_resource_group.main.name
-
-  account_kind             = "StorageV2"
-  account_tier             = "Standard"
-  account_replication_type = "LRS"
-  is_hns_enabled           = false
-
-  allow_nested_items_to_be_public = false
 }
