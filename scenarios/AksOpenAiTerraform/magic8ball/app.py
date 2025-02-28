@@ -3,24 +3,25 @@
 import os
 from openai import AzureOpenAI
 import streamlit as st
-from azure.identity import DefaultAzureCredential, get_bearer_token_provider
+from azure.identity import WorkloadIdentityCredential, get_bearer_token_provider
 
 azure_deployment = os.getenv("AZURE_OPENAI_DEPLOYMENT")
 azure_endpoint = os.getenv("AZURE_OPENAI_ENDPOINT")
+workload_identity_client_id = os.getenv("WORKLOAD_IDENTITY_CLIENT_ID")
 
 client = AzureOpenAI(
     api_version="2024-10-21",
     azure_endpoint=azure_endpoint,
     azure_ad_token_provider=get_bearer_token_provider(
-        DefaultAzureCredential(), "https://cognitiveservices.azure.com/.default"
+        WorkloadIdentityCredential(client_id=workload_identity_client_id),
+        "https://cognitiveservices.azure.com/.default",
     ),
 )
 
 
 def call_api(messages):
     completion = client.chat.completions.create(
-        messages=messages,
-        model=azure_deployment
+        messages=messages, model=azure_deployment
     )
     return completion.choices[0].message.content
 

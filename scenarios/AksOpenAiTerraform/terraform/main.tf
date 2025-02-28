@@ -1,3 +1,20 @@
+###############################################################################
+# Plugin setup
+###############################################################################
+terraform {
+  required_providers {
+    azurerm = {
+      source  = "hashicorp/azurerm"
+      version = "~> 4.20.0"
+    }
+  }
+}
+
+provider "azurerm" {
+  features {}
+}
+###############################################################################
+
 data "azurerm_client_config" "current" {
 }
 
@@ -161,15 +178,4 @@ resource "azurerm_bastion_host" "this" {
     subnet_id            = azurerm_subnet.this.id
     public_ip_address_id = azurerm_public_ip.this.id
   }
-}
-
-###############################################################################
-# Container Registry
-###############################################################################
-resource "azurerm_container_registry" "this" {
-  name                   = "acr${local.random_id}"
-  resource_group_name    = azurerm_resource_group.main.name
-  location               = var.location
-  sku                    = "Premium"
-  anonymous_pull_enabled = true
 }
