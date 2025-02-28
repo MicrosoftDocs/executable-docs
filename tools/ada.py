@@ -4,7 +4,7 @@ import os
 import sys
 import subprocess
 import shutil
-import pkg_resources
+from importlib.metadata import version, PackageNotFoundError
 import csv
 import time
 from datetime import datetime
@@ -13,11 +13,11 @@ from collections import defaultdict
 
 client = AzureOpenAI(
     api_key=os.getenv("AZURE_OPENAI_API_KEY"),
-    api_version="2024-02-01",
+    api_version="2024-12-01-preview",
     azure_endpoint=os.getenv("AZURE_OPENAI_ENDPOINT")
 )
 
-deployment_name = 'gpt-4o'
+deployment_name = 'o3-mini'
 
 REQUIRED_PACKAGES = [
     'openai',
@@ -27,11 +27,16 @@ REQUIRED_PACKAGES = [
 
 for package in REQUIRED_PACKAGES:
     try:
-        pkg_resources.get_distribution(package)
-    except pkg_resources.DistributionNotFound:
+        # Attempt to get the package version
+        version(package)
+    except PackageNotFoundError:
         subprocess.check_call([sys.executable, "-m", "pip", "install", package])
 
 system_prompt = """Exec Docs is a vehicle that transforms standard markdown into interactive, executable learning content, allowing code commands within the document to be run step-by-step or “one-click”. This is powered by the Innovation Engine, an open-source CLI tool that powers the execution and testing of these markdown scripts and can integrate with automated CI/CD pipelines. You are an Exec Doc writing expert. You will either write a new exec doc from scratch if no doc is attached or update an existing one if it is attached. You must adhere to the following rules while presenting your output:
+
+## IF YOU ARE UPDATING AN EXISTING DOC
+
+Ensure that every piece of information outside of code blocks – such as metadata, descriptions, comments, instructions, and any other narrative content – is preserved. The final output should be a comprehensive document that retains all correct code blocks as well as the rich contextual and descriptive details from the source doc, creating the best of both worlds. 
 
 ### Prerequisites
 
@@ -322,8 +327,9 @@ def main():
 
     if os.path.isfile(user_input) and user_input.endswith('.md'):
         input_type = 'file'
-        with open(user_input, "r") as f:
+        with open(user_input, "r", encoding='latin-1') as f:
             input_content = f.read()
+            input_content = f"CONVERT THE FOLLOWING EXISTING DOCUMENT INTO AN EXEC DOC. THIS IS A CONVERSION TASK, NOT CREATION FROM SCRATCH. PRESERVE ALL ORIGINAL CONTENT, STRUCTURE, AND NARRATIVE OUTSIDE OF CODE BLOCKS:\n\n{input_content}"
     else:
         input_type = 'workload_description'
         input_content = user_input
@@ -335,7 +341,7 @@ def main():
     if input_type == 'file':
         output_file = f"converted_{os.path.splitext(os.path.basename(user_input))[0]}.md"
     else:
-        output_file = "generated_exec_doc.md"
+        output_file = "generated_exec_doccc.md"
 
     start_time = time.time()
     errors_encountered = []
@@ -361,7 +367,7 @@ def main():
                     {"role": "system", "content": system_prompt},
                     {"role": "user", "content": input_content},
                     {"role": "assistant", "content": output_file_content},
-                    {"role": "user", "content": f"The following error(s) have occurred during testing:\n{errors_text}\nPlease carefully analyze these errors and make necessary corrections to the document to prevent them from happening again. Try to find different solutions if the same errors keep occurring. \nGiven that context, please think hard and don't hurry. I want you to correct the converted document in ALL instances where this error has been or can be found. Then, correct ALL other errors apart from this that you see in the doc. ONLY GIVE THE UPDATED DOC, NOTHING ELSE"}
+                    {"role": "user", "content": f"The following error(s) have occurred during testing:\n{errors_text}\n{additional_instruction}\n\nPlease carefully analyze these errors and make necessary corrections to the document to prevent them from happening again. Try to find different solutions if the same errors keep occurring. \nGiven that context, please think hard and don't hurry. I want you to correct the converted document in ALL instances where this error has been or can be found. Then, correct ALL other errors apart from this that you see in the doc. ONLY GIVE THE UPDATED DOC, NOTHING ELSE"}
                 ]
             )
             output_file_content = response.choices[0].message.content
@@ -386,7 +392,10 @@ def main():
                 response = client.chat.completions.create(
                     model=deployment_name,
                     messages=[
-                        f"The following errors have occurred during testing:\n{errors_text}\n{additional_instruction}\nPlease carefully analyze these errors and make necessary corrections to the document to prevent them from happening again. ONLY GIVE THE UPDATED DOC, NOTHING ELSE"
+                        {"role": "system", "content": system_prompt},
+                        {"role": "user", "content": input_content},
+                        {"role": "assistant", "content": output_file_content},
+                        {"role": "user", "content": f"Take the working converted Exec Doc and merge it with the original source document provided for conversion as needed. Ensure that every piece of information outside of code blocks – such as metadata, descriptions, comments, instructions, and any other narrative content – is preserved. The final output should be a comprehensive document that retains all correct code blocks as well as the rich contextual and descriptive details from the source doc, creating the best of both worlds. ONLY GIVE THE UPDATED DOC, NOTHING ELSE"}
                     ]
                 )
             output_file_content = response.choices[0].message.content
@@ -399,24 +408,54 @@ def main():
             error_log = get_last_error_log()
             errors_encountered.append(error_log.strip())
             errors_text = "\n\n ".join(errors_encountered)
-            # Process and count error messages
+            
+            # Process and categorize error messages
             error_counts = defaultdict(int)
-            for error in errors_encountered:
-                lines = error.strip().split('\n')
-                for line in lines:
-                    if 'Error' in line or 'Exception' in line:
-                        error_counts[line] += 1
-
-            # Identify repeating errors
-            repeating_errors = {msg: count for msg, count in error_counts.items() if count > 1}
-
-            # Prepare additional instruction if there are repeating errors
-            if repeating_errors:
-                repeating_errors_text = "\n".join([f"Error '{msg}' has occurred {count} times." for msg, count in repeating_errors.items()])
-                additional_instruction = f"The following errors have occurred multiple times:\n{repeating_errors_text}\nPlease consider trying a different approach to fix these errors."
+            # Extract the core error message - focus on the actual error type
+            error_key = ""
+            for line in error_log.strip().split('\n'):
+                if 'Error:' in line:
+                    error_key = line.strip()
+                    break
+            
+            if not error_key and error_log.strip():
+                error_key = error_log.strip().split('\n')[0]  # Use first line if no clear error
+            
+            # Store this specific error type and count occurrences
+            if error_key:
+                error_counts[error_key] += 1
+                for prev_error in errors_encountered[:-1]:  # Check previous errors
+                    if error_key in prev_error:
+                        error_counts[error_key] += 1
+            
+            # Progressive strategies based on error repetition
+            strategies = [
+                "Look carefully at the exact error message and fix that specific issue.",
+                "Simplify the code block causing the error. Break it into smaller, simpler steps.",
+                "Remove the result block from the code block causing the error.",
+                "Try a completely different command or approach that achieves the same result.",
+                "Fundamentally reconsider this section. Replace it with the most basic, reliable approach possible.",
+                "Remove the problematic section entirely and rebuild it from scratch with a minimalist approach."
+            ]
+            
+            # Determine which strategy to use based on error count
+            if error_key in error_counts:
+                strategy_index = min(error_counts[error_key] - 1, len(strategies) - 1)
+                current_strategy = strategies[strategy_index]
+                
+                additional_instruction = f"""
+                Error '{error_key}' has occurred {error_counts[error_key]} times.
+                
+                NEW STRATEGY: {current_strategy}
+                
+                Previous approaches aren't working. Make a significant change following this strategy.
+                Focus on reliability over complexity. Remember to provide valid JSON output where needed.
+                """
             else:
                 additional_instruction = ""
+            
             print(f"\nError: {error_log.strip()}")
+            print(f"\nStrategy: {additional_instruction}")
             attempt += 1
             success = False
 
