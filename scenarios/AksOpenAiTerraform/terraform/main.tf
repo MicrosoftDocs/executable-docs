@@ -1,5 +1,5 @@
 ###############################################################################
-# Plugin setup
+# azurerm plugin setup
 ###############################################################################
 terraform {
   required_providers {
@@ -13,8 +13,10 @@ terraform {
 provider "azurerm" {
   features {}
 }
-###############################################################################
 
+###############################################################################
+# Resource Group
+###############################################################################
 data "azurerm_client_config" "current" {
 }
 
@@ -76,18 +78,6 @@ resource "azurerm_kubernetes_cluster" "main" {
     type         = "UserAssigned"
     identity_ids = tolist([azurerm_user_assigned_identity.workload.id])
   }
-}
-
-resource "azurerm_kubernetes_cluster_node_pool" "this" {
-  name       = "userpool"
-  mode       = "User"
-  node_count = 1
-
-  kubernetes_cluster_id = azurerm_kubernetes_cluster.main.id
-  orchestrator_version  = var.kubernetes_version
-  vm_size               = "Standard_DS2_v2"
-  os_type               = "Linux"
-  priority              = "Regular"
 }
 
 resource "azurerm_user_assigned_identity" "workload" {
