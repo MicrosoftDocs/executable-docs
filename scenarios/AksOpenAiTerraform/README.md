@@ -31,22 +31,22 @@ az aks get-credentials --admin --name AksCluster --resource-group $RESOURCE_GROU
 ```
 
 # Install Helm Charts
-Install Prometheus, nginx-ingress, and cert-manager
+Install nginx and cert-manager
 ```bash
 helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
 helm repo add jetstack https://charts.jetstack.io
 helm repo update
 
-export HOSTNAME=$(terraform -chdir=terraform output -raw hostname)
-export STATIC_IP=$(terraform -chdir=terraform output -raw static_ip)
-helm install ingress-nginx ingress-nginx/ingress-nginx \
+STATIC_IP=$(terraform -chdir=terraform output -raw static_ip)
+DNS_LABEL=$(terraform -chdir=terraform output -raw dns_label)
+helm upgrade --install ingress-nginx ingress-nginx/ingress-nginx \
   --set controller.replicaCount=2 \
   --set controller.nodeSelector."kubernetes\.io/os"=linux \
   --set defaultBackend.nodeSelector."kubernetes\.io/os"=linux \
-  --set controller.service.annotations."service\.beta\.kubernetes\.io/azure-dns-label-name"=$HOSTNAME \
+  --set controller.service.annotations."service\.beta\.kubernetes\.io/azure-dns-label-name"=$DNS_LABEL \
   --set controller.service.loadBalancerIP=$STATIC_IP \
   --set controller.service.annotations."service\.beta\.kubernetes\.io/azure-load-balancer-health-probe-request-path"=/healthz
-helm install cert-manager jetstack/cert-manager \
+helm upgrade --install cert-manager jetstack/cert-manager \
   --set crds.enabled=true \
   --set nodeSelector."kubernetes\.io/os"=linux
 ```
@@ -55,16 +55,16 @@ helm install cert-manager jetstack/cert-manager \
 Apply/Deploy Manifest File 
 ```bash
 export IMAGE="aamini8/magic8ball:v1"
+export HOSTNAME=$(terraform -chdir=terraform output -raw hostname)
 export WORKLOAD_IDENTITY_CLIENT_ID=$(terraform -chdir=terraform output -raw workload_identity_client_id)
 export AZURE_OPENAI_DEPLOYMENT=$(terraform -chdir=terraform output -raw openai_deployment)
 export AZURE_OPENAI_ENDPOINT=$(terraform -chdir=terraform output -raw openai_endpoint)
-export DNS_LABEL=$(terraform -chdir=terraform output -raw dns_label)
 envsubst < quickstart-app.yml | kubectl apply -f -
 ```
 
 ## Wait for public IP
 ```bash
 kubectl wait --for=jsonpath="{.status.loadBalancer.ingress[0].ip}" service/magic8ball
-PUBLIC_IP=$(kubectl get service/magic8ball -o=jsonpath="{.status.loadBalancer.ingress[0].ip}")
+PUBLIC_IP=$(kubectl get service ingress-nginx-controller -o=jsonpath="{.status.loadBalancer.ingress[0].ip}")
 echo "Connect to app: $PUBLIC_IP"
 ```
