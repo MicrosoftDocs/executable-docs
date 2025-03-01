@@ -64,7 +64,7 @@ envsubst < quickstart-app.yml | kubectl apply -f -
 
 ## Wait for public IP
 ```bash
-kubectl wait --for=jsonpath="{.status.loadBalancer.ingress[0].ip}" service/magic8ball
-PUBLIC_IP=$(kubectl get service ingress-nginx-controller -o=jsonpath="{.status.loadBalancer.ingress[0].ip}")
-echo "Connect to app: $PUBLIC_IP"
+kubectl wait --for=jsonpath="{.status.loadBalancer.ingress[0].ip}" service/ingress-nginx-controller
+PUBLIC_IP=$(kubectl get service/ingress-nginx-controller -o=jsonpath="{.status.loadBalancer.ingress[0].ip}")
+echo "Visit: https://$HOSTNAME (IP Address: $PUBLIC_IP)"
 ```
