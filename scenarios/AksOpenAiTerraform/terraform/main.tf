@@ -145,37 +145,10 @@ resource "azurerm_role_assignment" "cognitive_services_user" {
 ###############################################################################
 # Networking
 ###############################################################################
-resource "azurerm_virtual_network" "this" {
-  name                = "Vnet"
-  location            = var.location
-  resource_group_name = azurerm_resource_group.main.name
-
-  address_space = ["10.0.0.0/8"]
-}
-
-resource "azurerm_subnet" "this" {
-  name                 = "AzureBastionSubnet"
-  resource_group_name  = azurerm_resource_group.main.name
-  
-  virtual_network_name = azurerm_virtual_network.this.name
-  address_prefixes     = ["10.243.2.0/24"]
-}
-
 resource "azurerm_public_ip" "this" {
   name                = "PublicIp"
+  domain_name_label   = "magic8ball-${local.random_id}"
   location            = var.location
-  resource_group_name = azurerm_resource_group.main.name
+  resource_group_name = azurerm_kubernetes_cluster.main.node_resource_group
   allocation_method   = "Static"
-}
-
-resource "azurerm_bastion_host" "this" {
-  name                = "BastionHost"
-  location            = var.location
-  resource_group_name = azurerm_resource_group.main.name
-
-  ip_configuration {
-    name                 = "configuration"
-    subnet_id            = azurerm_subnet.this.id
-    public_ip_address_id = azurerm_public_ip.this.id
-  }
 }

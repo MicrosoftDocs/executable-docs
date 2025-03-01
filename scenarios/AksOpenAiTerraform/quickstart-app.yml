@@ -40,13 +40,12 @@ kind: Service
 metadata:
   name: magic8ball
 spec:
-  type: LoadBalancer
   selector:
     app.kubernetes.io/name: magic8ball
   ports:
-  - protocol: TCP
-    port: 80
+  - port: 80
     targetPort: 8501
+    protocol: TCP
 ---
 apiVersion: v1
 kind: ServiceAccount
@@ -55,3 +54,42 @@ metadata:
   annotations:
     azure.workload.identity/client-id: $WORKLOAD_IDENTITY_CLIENT_ID
     azure.workload.identity/tenant-id: $TENANT_ID
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: magic8ball
+  annotations:
+    cert-manager.io/issuer: letsencrypt-dev
+spec:
+  ingressClassName: nginx
+  tls:
+  - hosts:
+    - $HOSTNAME
+    secretName: tls-secret
+  rules:
+  - host: $HOSTNAME
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: magic8ball
+            port:
+              number: 80
+---
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: letsencrypt-dev
+spec:
+  acme:
+    server: https://acme-v02.api.letsencrypt.org/directory
+    email: $EMAIL
+    privateKeySecretRef:
+      name: tls-secret
+    solvers:
+    - http01:
+        ingress:
+          ingressClassName: nginx

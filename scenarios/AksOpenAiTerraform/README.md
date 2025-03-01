@@ -13,7 +13,7 @@ Run terraform to provision all the Azure resources required to setup your new Op
 ```bash
 # Terraform parses TF_VAR_* as vars (Ex: TF_VAR_name -> name)
 export TF_VAR_location="westus3"  
-export TF_VAR_kubernetes_version="1.30.7"
+export TF_VAR_kubernetes_version="1.30.9"
 export TF_VAR_model_name="gpt-4o-mini"
 export TF_VAR_model_version="2024-07-18"
 # Terraform consumes sub id as $ARM_SUBSCRIPTION_ID
@@ -30,6 +30,27 @@ RESOURCE_GROUP=$(terraform -chdir=terraform output -raw resource_group_name)
 az aks get-credentials --admin --name AksCluster --resource-group $RESOURCE_GROUP --subscription $SUBSCRIPTION_ID
 ```
 
+# Install Helm Charts
+Install Prometheus, nginx-ingress, and cert-manager
+```bash
+helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+helm repo add jetstack https://charts.jetstack.io
+helm repo update
+
+export HOSTNAME=$(terraform -chdir=terraform output -raw hostname)
+export STATIC_IP=$(terraform -chdir=terraform output -raw static_ip)
+helm install ingress-nginx ingress-nginx/ingress-nginx \
+  --set controller.replicaCount=2 \
+  --set controller.nodeSelector."kubernetes\.io/os"=linux \
+  --set defaultBackend.nodeSelector."kubernetes\.io/os"=linux \
+  --set controller.service.annotations."service\.beta\.kubernetes\.io/azure-dns-label-name"=$HOSTNAME \
+  --set controller.service.loadBalancerIP=$STATIC_IP \
+  --set controller.service.annotations."service\.beta\.kubernetes\.io/azure-load-balancer-health-probe-request-path"=/healthz
+helm install cert-manager jetstack/cert-manager \
+  --set crds.enabled=true \
+  --set nodeSelector."kubernetes\.io/os"=linux
+```
+
 ## Deploy
 Apply/Deploy Manifest File 
 ```bash
@@ -37,6 +58,7 @@ export IMAGE="aamini8/magic8ball:v1"
 export WORKLOAD_IDENTITY_CLIENT_ID=$(terraform -chdir=terraform output -raw workload_identity_client_id)
 export AZURE_OPENAI_DEPLOYMENT=$(terraform -chdir=terraform output -raw openai_deployment)
 export AZURE_OPENAI_ENDPOINT=$(terraform -chdir=terraform output -raw openai_endpoint)
+export DNS_LABEL=$(terraform -chdir=terraform output -raw dns_label)
 envsubst < quickstart-app.yml | kubectl apply -f -
 ```
 
