@@ -68,7 +68,8 @@ spec:
     - $HOSTNAME
     secretName: tls-secret
   rules:
-  - http:
+  - host: $HOSTNAME
+    http:
       paths:
       - path: /
         pathType: Prefix
