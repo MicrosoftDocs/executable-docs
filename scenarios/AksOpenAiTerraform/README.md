@@ -8,7 +8,7 @@ ms.author: ariaamini
 ms.custom: innovation-engine, linux-related-content 
 ---
 
-## Provision Resources with Terraform (~8 minutes)
+## Provision Resources with Terraform (~5 minutes)
 Run terraform to provision all the Azure resources required to setup your new OpenAI website.
 ```bash
 # Terraform parses TF_VAR_* as vars (Ex: TF_VAR_name -> name)
@@ -31,7 +31,7 @@ az aks get-credentials --admin --name AksCluster --resource-group $RESOURCE_GROU
 ```
 
 # Install Helm Charts
-Install nginx and cert-manager
+Install nginx and cert-manager through Helm
 ```bash
 helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
 helm repo add jetstack https://charts.jetstack.io
@@ -55,6 +55,8 @@ helm upgrade --install cert-manager jetstack/cert-manager \
 Apply/Deploy Manifest File 
 ```bash
 export IMAGE="aamini8/magic8ball:v1"
+# Uncomment below to manually build docker image yourself instead of using pre-built image.
+# docker build -t <YOUR IMAGE NAME> ./magic8ball --push
 export HOSTNAME=$(terraform -chdir=terraform output -raw hostname)
 export WORKLOAD_IDENTITY_CLIENT_ID=$(terraform -chdir=terraform output -raw workload_identity_client_id)
 export AZURE_OPENAI_DEPLOYMENT=$(terraform -chdir=terraform output -raw openai_deployment)
