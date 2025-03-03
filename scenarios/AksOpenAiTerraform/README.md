@@ -64,9 +64,8 @@ export AZURE_OPENAI_ENDPOINT=$(terraform -chdir=terraform output -raw openai_end
 envsubst < quickstart-app.yml | kubectl apply -f -
 ```
 
-## Wait for public IP
+## Wait for host to be ready
 ```bash
-kubectl wait --for=jsonpath="{.status.loadBalancer.ingress[0].ip}" service/ingress-nginx-controller
-PUBLIC_IP=$(kubectl get service/ingress-nginx-controller -o=jsonpath="{.status.loadBalancer.ingress[0].ip}")
+kubectl wait --for=condition=Ready certificate/tls-secret
 echo "Visit: https://$HOSTNAME"
 ```
