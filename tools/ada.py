@@ -455,7 +455,7 @@ def main():
                 additional_instruction = ""
             
             print(f"\nError: {error_log.strip()}")
-            print(f"\nStrategy: {additional_instruction}")
+            print(f"\n{'!'*40}\nApplying an error troubleshooting strategy...\n{'!'*40}")
             attempt += 1
             success = False
 

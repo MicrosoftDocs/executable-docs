@@ -971,5 +971,31 @@
                     }
                 ]
         } 
+    },
+    {
+        "status": "active",
+        "key": "TroubleshootVMGrubError/troubleshoot-vm-grub-error-repairvm.md",
+        "title": "Linux VM boots to GRUB rescue",
+        "description": "Provides troubleshooting guidance for GRUB rescue issues with Linux virtual machines.",
+        "stackDetails": "",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/TroubleshootVMGrubError/troubleshoot-vm-grub-error-repairvm.md",
+        "documentationUrl": "https://learn.microsoft.com/en-us/troubleshoot/azure/virtual-machines/linux/troubleshoot-vm-boot-error",
+        "configurations": {
+            "permissions": [],
+            "configurableParams": [
+                    {
+                        "inputType": "textInput",
+                        "commandKey": "MY_RESOURCE_GROUP_NAME",
+                        "title": "Resource Group Name",
+                        "defaultValue": ""
+                    },
+                    {
+                        "inputType": "textInput",
+                        "commandKey": "MY_VM_NAME",
+                        "title": "VM Name",
+                        "defaultValue": ""
+                    }
+                ]
+        } 
     }
 ]
