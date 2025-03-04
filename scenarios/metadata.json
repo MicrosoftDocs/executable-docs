@@ -1109,5 +1109,27 @@
         ],
         "configurations": {
         }
+    },
+    {
+        "status": "active",
+        "key": "azure-compute-docs/articles/virtual-machines/linux/multiple-nics.md",
+        "title": "Deploy container group to Azure virtual network",
+        "description": "Learn how to deploy a container group to a new or existing Azure virtual network via the Azure CLI.",
+        "stackDetails": [
+        ],
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-compute-docs/articles/virtual-machines/linux/multiple-nics.md",
+        "documentationUrl": "https://learn.microsoft.com/en-us/azure/virtual-machines/linux/multiple-nics",
+        "nextSteps": [
+            {
+                "title": "Review Linux VM Sizes",
+                "url": "https://learn.microsoft.com/en-us/azure/virtual-machines/sizes"
+            },
+            {
+                "title": "Manage virtual machine access using just in time",
+                "url": "https://learn.microsoft.com/en-us/azure/security-center/security-center-just-in-time"
+            }
+        ],
+        "configurations": {
+        }
     }
 ]
