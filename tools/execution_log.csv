@@ -185,3 +185,38 @@ Error: command exited with 'exit status 1' and the message 'ERROR: {""error"":{"
 '
 StdErr: ERROR: {""error"":{""code"":""InvalidTemplateDeployment"",""message"":""The template deployment 'ag_deploy_OiVkDXNnyLGZHtL9M3XLZKPNnaMATBx6' is not valid according to the validation procedure. The tracking id is '26b03af6-8be7-4272-a5a5-6c59aad9b563'. See inner errors for details."",""details"":[{""code"":""ApplicationGatewayRequestRoutingRulePriorityCannotBeEmpty"",""target"":""/subscriptions/325e7c34-99fb-4190-aa87-1df746c67705/resourceGroups/MyAKSResourceGroup94a26c/providers/Microsoft.Network/applicationGateways/MyAppGateway94a26c"",""message"":""Priority for the request routing rule /subscriptions/325e7c34-99fb-4190-aa87-1df746c67705/resourceGroups/MyAKSResourceGroup94a26c/providers/Microsoft.Network/applicationGateways/MyAppGateway94a26c/requestRoutingRules/rule1 cannot be empty. All request routing rules should have a priority defined starting from api-version 2021-08-01"",""details"":[]}]}}",957.5963819026947,Failure
 2025-02-28 00:31:26,file,doc1.md,converted_doc1.md,0,,91.56127834320068,Success
+2025-03-03 21:35:51,file,doc2.md,converted_doc2.md,11,"time=2025-03-03T20:03:34-08:00 level=error msg=Error testing scenario: failed to execute code block 0 on step 2.
+Error: command exited with 'exit status 1' and the message 'ERROR: Invalid image ""SuseSles15SP3"". Use a valid image URN, custom image name, custom image id, VHD blob URI, or pick an image from ['CentOS85Gen2', 'Debian11', 'OpenSuseLeap154Gen2', 'RHELRaw8LVMGen2', 'SuseSles15SP5', 'Ubuntu2204', 'Ubuntu2404', 'Ubuntu2404Pro', 'FlatcarLinuxFreeGen2', 'Win2022Datacenter', 'Win2022AzureEditionCore', 'Win2019Datacenter', 'Win2016Datacenter', 'Win2012R2Datacenter', 'Win2012Datacenter'].
+See vm create -h for more information on specifying an image.
+'
+StdErr: ERROR: Invalid image ""SuseSles15SP3"". Use a valid image URN, custom image name, custom image id, VHD blob URI, or pick an image from ['CentOS85Gen2', 'Debian11', 'OpenSuseLeap154Gen2', 'RHELRaw8LVMGen2', 'SuseSles15SP5', 'Ubuntu2204', 'Ubuntu2404', 'Ubuntu2404Pro', 'FlatcarLinuxFreeGen2', 'Win2022Datacenter', 'Win2022AzureEditionCore', 'Win2019Datacenter', 'Win2016Datacenter', 'Win2012R2Datacenter', 'Win2012Datacenter'].
+See vm create -h for more information on specifying an image.
+
+ time=2025-03-03T20:07:31-08:00 level=error msg=Error testing scenario: failed to execute code block 0 on step 3.
+Error: command exited with 'exit status 255' and the message 'Pseudo-terminal will not be allocated because stdin is not a terminal.
+ssh: connect to host 52.174.34.95 port 22: Connection timed out
+'
+StdErr: Pseudo-terminal will not be allocated because stdin is not a terminal.
+ssh: connect to host 52.174.34.95 port 22: Connection timed out
+
+ The 'ie test' command timed out after 11 minutes.
+
+ The 'ie test' command timed out after 11 minutes.
+
+ The 'ie test' command timed out after 11 minutes.
+
+ The 'ie test' command timed out after 11 minutes.
+
+ The 'ie test' command timed out after 11 minutes.
+
+ The 'ie test' command timed out after 11 minutes.
+
+ time=2025-03-03T21:23:19-08:00 level=error msg=Error testing scenario: failed to execute code block 2 on step 7.
+Error: %!s(<nil>)
+StdErr:
+
+ time=2025-03-03T21:24:06-08:00 level=error msg=Error testing scenario: failed to execute code block 0 on step 0.
+Error: %!s(<nil>)
+StdErr:
+
+ The 'ie test' command timed out after 11 minutes.",5596.252681970596,Failure

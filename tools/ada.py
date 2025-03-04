@@ -102,7 +102,7 @@ Check if all prerequisites below are met before writing the Exec Doc. ***If any 
 
 7. Ensure that the Exec Doc does not require any user interaction during its execution. The document should not include any commands or scripts that prompt the user for input or expect interaction with the terminal. All inputs must be predefined and handled automatically within the script.
 
-7. Appropriately add metadata at the start of the Exec Doc. Here are some mandatory fields:
+8. Appropriately add metadata at the start of the Exec Doc. Here are some mandatory fields:
 
     - title = the title of the Exec Doc
     - description = the description of the Exec Doc
@@ -126,13 +126,13 @@ Check if all prerequisites below are met before writing the Exec Doc. ***If any 
     ---
     ```
 
-7. Ensure the environment variable names are not placeholders i.e. <> but have a certain generic, useful name. For the location/region parameter, default to "WestUS2" or "centralindia". Additionally, appropriately add descriptions below every section explaining what is happening in that section in crisp but necessary detail so that the user can learn as they go.
+9. Ensure the environment variable names are not placeholders i.e. <> but have a certain generic, useful name. For the location/region parameter, default to "WestUS2" or "centralindia". Additionally, appropriately add descriptions below every section explaining what is happening in that section in crisp but necessary detail so that the user can learn as they go.
 
-8. Don't start and end your answer with ``` backticks!!! Don't add backticks to the metadata at the top!!!. 
+10. Don't start and end your answer with ``` backticks!!! Don't add backticks to the metadata at the top!!!. 
 
-8. Ensure that any info, literally any info whether it is a comment, tag, description, etc., which is not within a code block remains unchanged. Preserve ALL details of the doc.
+11. Ensure that any info, literally any info whether it is a comment, tag, description, etc., which is not within a code block remains unchanged. Preserve ALL details of the doc.
 
-8. Environment variables are dynamic values that store configuration settings, system paths, and other information that can be accessed throughout a doc. By using environment variables, you can separate configuration details from the code, making it easier to manage and deploy applications in an environment like Exec Docs. 
+12. Environment variables are dynamic values that store configuration settings, system paths, and other information that can be accessed throughout a doc. By using environment variables, you can separate configuration details from the code, making it easier to manage and deploy applications in an environment like Exec Docs. 
 
     Declare environment variables _as they are being used_ in the Exec Doc using the export command. This is a best practice to ensure that the variables are accessible throughout the doc. 
 
@@ -170,7 +170,7 @@ Check if all prerequisites below are met before writing the Exec Doc. ***If any 
 
     >**Note:** Don't have any spaces around the equal sign when declaring environment variables.
 
-9. A major component of Exec Docs is automated infrastructure deployment on the cloud. While testing the doc, if you do not update relevant environment variable names, the doc will fail when run/executed more than once as the resource group or other resources will already exist from the previous runs. 
+13. A major component of Exec Docs is automated infrastructure deployment on the cloud. While testing the doc, if you do not update relevant environment variable names, the doc will fail when run/executed more than once as the resource group or other resources will already exist from the previous runs. 
 
     Add a random suffix at the end of _relevant_ environment variable(s). The example below shows how this would work when you are creating a resource group.
 
@@ -186,7 +186,7 @@ Check if all prerequisites below are met before writing the Exec Doc. ***If any 
     
     >**Note:** You can generate your own random suffix or use the one provided in the example above. The `openssl rand -hex 3` command generates a random 3-character hexadecimal string. This string is then appended to the resource group name to ensure that the resource group name is unique for each deployment.
 
-10. In Exec Docs, result blocks are distinguished by a custom expected_similarity comment tag followed by a code block. These result blocks indicate to Innovation Engine what the minimum degree of similarity should be between the actual and the expected output of a code block (one which returns something in the terminal that is relevant to benchmark against). Learn More: [Result Blocks](https://github.com/Azure/InnovationEngine/blob/main/README.md#result-blocks). 
+14. In Exec Docs, result blocks are distinguished by a custom expected_similarity comment tag followed by a code block. These result blocks indicate to Innovation Engine what the minimum degree of similarity should be between the actual and the expected output of a code block (one which returns something in the terminal that is relevant to benchmark against). Learn More: [Result Blocks](https://github.com/Azure/InnovationEngine/blob/main/README.md#result-blocks). 
 
     Add result block(s) below code block(s) that you would want Innovation Engine to verify i.e. code block(s) which produce an output in the terminal that is relevant to benchmark against. Follow these steps when adding a result block below a code block for the first time:
 
@@ -227,7 +227,7 @@ Check if all prerequisites below are met before writing the Exec Doc. ***If any 
 
     >**Note:** Result blocks are not required but recommended for commands that return some output in the terminal. They help Innovation Engine verify the output of a command and act as checkpoints to ensure that the doc is moving in the right direction.
 
-11. Redacting PII from the output helps protect sensitive information from being inadvertently shared or exposed. This is crucial for maintaining privacy, complying with data protection regulations, and furthering the company's security posture. 
+15. Redacting PII from the output helps protect sensitive information from being inadvertently shared or exposed. This is crucial for maintaining privacy, complying with data protection regulations, and furthering the company's security posture. 
 
     Ensure result block(s) have all the PII (Personally Identifiable Information) stricken out from them and replaced with x’s. 
 
@@ -257,7 +257,7 @@ Check if all prerequisites below are met before writing the Exec Doc. ***If any 
     
     >**Note:** Here are some examples of PII in result blocks: Unique identifiers for resources, Email Addresses, Phone Numbers, IP Addresses, Credit Card Numbers, Social Security Numbers (SSNs), Usernames, Resource Names, Subscription IDs, Resource Group Names, Tenant IDs, Service Principal Names, Client IDs, Secrets and Keys.
 
-12. If you are converting an existing Azure Doc to an Exec Doc and if the existing doc contains a "Delete Resources" (or equivalent section) comprising resource/other deletion command(s), remove the code blocks in that section or remove that section entirely 
+16. If you are converting an existing Azure Doc to an Exec Doc and if the existing doc contains a "Delete Resources" (or equivalent section) comprising resource/other deletion command(s), remove the code blocks in that section or remove that section entirely 
 
     >**Note:** We remove commands from this section ***only*** in Exec Docs. This is because Innovation Engine executes all relevant command(s) that it encounters, inlcuding deleting the resources. That would be counterproductive to automated deployment of cloud infrastructure
 
@@ -320,19 +320,46 @@ def log_data_to_csv(data):
         writer.writerow(data)
 
 def main():
-    print("\nWelcome to ADA - AI Documentation Assistant!\n")
-    print("This tool helps you write and troubleshoot Executable Documents efficiently!\n")
-    
-    user_input = input("Please enter the path to your markdown file for conversion or describe your intended workload: ")
+    print("\nWelcome to ADA - AI Documentation Assistant!")
+    print("\nThis tool helps you write and troubleshoot Executable Documents efficiently!")
+    print("\nPlease select one of the following options:")
+    print("  1. Enter path to markdown file for conversion")
+    print("  2. Describe workload for new Exec Doc")
+    print("  3. Generate description for shell script")
+    print("  4. Redact PII from an existing Exec Doc")
+    choice = input("Enter the number corresponding to your choice: ")
 
-    if os.path.isfile(user_input) and user_input.endswith('.md'):
-        input_type = 'file'
-        with open(user_input, "r", encoding='latin-1') as f:
-            input_content = f.read()
-            input_content = f"CONVERT THE FOLLOWING EXISTING DOCUMENT INTO AN EXEC DOC. THIS IS A CONVERSION TASK, NOT CREATION FROM SCRATCH. PRESERVE ALL ORIGINAL CONTENT, STRUCTURE, AND NARRATIVE OUTSIDE OF CODE BLOCKS:\n\n{input_content}"
+    if choice == "1":
+        user_input = input("Enter the path to your markdown file: ")
+        if os.path.isfile(user_input) and user_input.endswith('.md'):
+            input_type = 'file'
+            with open(user_input, "r") as f:
+                input_content = f.read()
+                input_content = f"CONVERT THE FOLLOWING EXISTING DOCUMENT INTO AN EXEC DOC. THIS IS A CONVERSION TASK, NOT CREATION FROM SCRATCH. DON'T EXPLAIN WHAT YOU ARE DOING BEHIND THE SCENES INSIDE THE DOC. PRESERVE ALL ORIGINAL CONTENT, STRUCTURE, AND NARRATIVE OUTSIDE OF CODE BLOCKS:\n\n{input_content}"
+        else:
+            print("Invalid file path or file type. Please provide a valid markdown file.")
+            sys.exit(1)
+    elif choice == "2":
+        user_input = input("Describe your workload for the new Exec Doc: ")
+        if os.path.isfile(user_input):
+            input_type = 'workload_description'
+            input_content = user_input
+    elif choice == "3":
+        user_input = input("Enter the path to your shell script (provide context and details): ")
+    elif choice == "4":
+        user_input = input("Enter the path to your Exec Doc for PII redaction: ")
     else:
-        input_type = 'workload_description'
-        input_content = user_input
+        print("Invalid choice. Exiting.")
+        sys.exit(1)
+
+    # if os.path.isfile(user_input) and user_input.endswith('.md'):
+    #     input_type = 'file'
+    #     with open(user_input, "r") as f:
+    #         input_content = f.read()
+    #         input_content = f"CONVERT THE FOLLOWING EXISTING DOCUMENT INTO AN EXEC DOC. THIS IS A CONVERSION TASK, NOT CREATION FROM SCRATCH. DON'T EXPLAIN WHAT YOU ARE DOING BEHIND THE SCENES INSIDE THE DOC. PRESERVE ALL ORIGINAL CONTENT, STRUCTURE, AND NARRATIVE OUTSIDE OF CODE BLOCKS:\n\n{input_content}"
+    # else:
+    #     input_type = 'workload_description'
+    #     input_content = user_input
 
     install_innovation_engine()
 
