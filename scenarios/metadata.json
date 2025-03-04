@@ -1,7 +1,7 @@
 [
     {
         "status": "active",
-        "key": "azure-docs/articles/aks/learn/quick-kubernetes-deploy-cli.md",
+        "key": "azure-aks-docs/articles/aks/learn/quick-kubernetes-deploy-cli.md",
         "title": "Deploy an Azure Kubernetes Service (AKS) cluster",
         "description": "Learn how to quickly deploy a Kubernetes cluster and deploy an application in Azure Kubernetes Service (AKS) using Azure CLI",
         "stackDetails": "",
@@ -1083,6 +1083,28 @@
             {
                 "title": "Expand virtual hard disks on a Linux VM",
                 "url": "https://learn.microsoft.com/en-us/azure/virtual-machines/linux/expand-disks"
+            }
+        ],
+        "configurations": {
+        }
+    },
+    {
+        "status": "active",
+        "key": "azure-compute-docs/articles/container-instances/container-instances-vnet.md",
+        "title": "Deploy container group to Azure virtual network",
+        "description": "Learn how to deploy a container group to a new or existing Azure virtual network via the Azure CLI.",
+        "stackDetails": [
+        ],
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-compute-docs/articles/container-instances/container-instances-vnet.md",
+        "documentationUrl": "https://learn.microsoft.com/en-us/azure/container-instances/container-instances-vnet",
+        "nextSteps": [
+            {
+                "title": "Create an Azure container group with virtual network",
+                "url": "https://github.com/Azure/azure-quickstart-templates/tree/master/quickstarts/microsoft.containerinstance/aci-vnet"
+            },
+            {
+                "title": " Deploy to Azure Container Instances from Azure Container Registry using a managed identity",
+                "url": "https://learn.microsoft.com/en-us/azure/container-instances/using-azure-container-registry-mi"
             }
         ],
         "configurations": {
