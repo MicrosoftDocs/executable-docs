@@ -1,5 +1,3 @@
-# https://levelup.gitconnected.com/its-time-to-create-a-private-chatgpt-for-yourself-today-6503649e7bb6
-
 import os
 from openai import AzureOpenAI
 import streamlit as st
