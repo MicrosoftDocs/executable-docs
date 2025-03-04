@@ -37,7 +37,7 @@ if "messages" not in st.session_state:
 if "disabled" not in st.session_state:
     st.session_state.disabled = False
 
-st.title("Magic 8 Ball")
+st.title(":robot_face: Magic 8 Ball")
 for message in st.session_state.messages[1:]:  # Print previous messages
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
