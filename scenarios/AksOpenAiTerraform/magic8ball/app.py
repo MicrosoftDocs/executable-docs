@@ -58,7 +58,8 @@ if prompt := st.chat_input(
     # Print Response
     with st.chat_message("assistant"):
         messages = st.session_state.messages
-        response = st.write_stream(ask_openai_api(messages))
+        with st.spinner("Loading..."):
+            response = st.write_stream(ask_openai_api(messages))
     st.session_state.messages.append({"role": "assistant", "content": response})
 
     # Re-enable textbox
