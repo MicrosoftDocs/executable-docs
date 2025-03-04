@@ -997,5 +997,23 @@
                     }
                 ]
         } 
+    },
+    {
+        "status": "active",
+        "key": "azure-docs/articles/batch/quick-create-cli.md",
+        "title": "Quickstart: Use the Azure CLI to create a Batch account and run a job",
+        "description": "Follow this quickstart to use the Azure CLI to create a Batch account, a pool of compute nodes, and a job that runs basic tasks on the pool.",
+        "stackDetails": [
+        ],
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-docs/articles/batch/quick-create-cli.md",
+        "documentationUrl": "https://learn.microsoft.com/en-us/azure/batch/quick-create-cli",
+        "nextSteps": [
+            {
+                "title": "Tutorial: Run a parallel workload with Azure Batch",
+                "url": "https://learn.microsoft.com/en-us/azure/batch/tutorial-parallel-python"
+            }
+        ],
+        "configurations": {
+        }
     }
 ]
