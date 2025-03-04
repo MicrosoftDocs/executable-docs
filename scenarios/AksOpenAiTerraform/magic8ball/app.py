@@ -19,37 +19,16 @@ client = AzureOpenAI(
 )
 
 
-def call_api(messages):
+def ask_openai_api(messages: list[str]):
     completion = client.chat.completions.create(
-        messages=messages, model=azure_deployment
+        messages=messages, model=azure_deployment, stream=True, max_tokens=20
     )
-    return completion.choices[0].message.content
+    return completion
 
 
 assistant_prompt = """
-You are the famous Magic 8 Ball. You need to randomly reply to any question with one of the following answers:
-
-- It is certain.
-- It is decidedly so.
-- Without a doubt.
-- Yes definitely.
-- You may rely on it.
-- As I see it, yes.
-- Most likely.
-- Outlook good.
-- Yes.
-- Signs point to yes.
-- Ask again later.
-- Better not tell you now.
-- Cannot predict now.
-- Concentrate and ask again.
-- Don't count on it.
-- My reply is no.
-- My sources say no.
-- Outlook not so good.
-- Very doubtful.
-
-If the question the user provides is unclear, remind them: "Ask the magic8ball any question and I will predict your future!"
+Answer as a magic 8 ball and make random predictions.
+If the question is not clear, respond with "Ask the Magic 8 Ball a question about your future."
 """
 
 # Init state
@@ -76,15 +55,11 @@ if prompt := st.chat_input(
     with st.chat_message("user"):
         st.write(prompt)
 
-    # Loading indicator
-    response = None
-    with st.spinner("Loading response..."):
-        response = call_api(st.session_state.messages)
-
     # Print Response
-    st.session_state.messages.append({"role": "assistant", "content": response})
     with st.chat_message("assistant"):
-        st.write(response)
+        messages = st.session_state.messages
+        response = st.write_stream(ask_openai_api(messages))
+    st.session_state.messages.append({"role": "assistant", "content": response})
 
     # Re-enable textbox
     st.session_state.disabled = False
