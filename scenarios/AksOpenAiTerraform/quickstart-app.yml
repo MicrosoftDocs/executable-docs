@@ -14,7 +14,7 @@ metadata:
   labels:
     app.kubernetes.io/name: magic8ball
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       app.kubernetes.io/name: magic8ball

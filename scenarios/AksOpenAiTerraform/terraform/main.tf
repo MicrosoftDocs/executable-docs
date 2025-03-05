@@ -65,7 +65,7 @@ resource "azurerm_kubernetes_cluster" "main" {
   default_node_pool {
     name       = "agentpool"
     vm_size    = "Standard_DS2_v2"
-    node_count = 1
+    node_count = 2
 
     upgrade_settings {
       max_surge                     = "10%"
