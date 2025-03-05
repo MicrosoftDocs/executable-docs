@@ -18,7 +18,7 @@
             }
         ],
         "configurations": {
-            "permissions": [
+            "permissions": [Spee
                 "Microsoft.Resources/resourceGroups/write",
                 "Microsoft.Resources/resourceGroups/read",
                 "Microsoft.Network/virtualNetworks/write",
@@ -513,7 +513,7 @@
     {
         "status": "active",
         "key": "CreateSpeechService/create-speech-service.md",
-        "title": "Quickstart: The Speech CLI - Speech service",
+        "title": "Deploy an Azure AI Speech service",
         "description": "In this Azure AI Speech CLI quickstart, you interact with speech to text, text to speech, and speech translation without having to write code.",
         "stackDetails": "",
         "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/CreateSpeechService/create-speech-service.md",
@@ -624,7 +624,7 @@
     {
         "status": "active",
         "key": "CreateAOAIDeployment/create-aoai-deployment.md",
-        "title": "Create and manage Azure OpenAI Service deployments with the Azure CLI",
+        "title": "Deploy an Azure OpenAI Service",
         "description": "Learn how to use the Azure CLI to create an Azure OpenAI resource and manage deployments with the Azure OpenAI Service.",
         "stackDetails": "",
         "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/CreateAOAIDeployment/create-aoai-deployment.md",
