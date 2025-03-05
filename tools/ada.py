@@ -10,6 +10,9 @@ import time
 from datetime import datetime
 from openai import AzureOpenAI
 from collections import defaultdict
+import re
+import json
+import yaml  # Add this import at the top of your file
 
 client = AzureOpenAI(
     api_key=os.getenv("AZURE_OPENAI_API_KEY"),
@@ -289,6 +292,280 @@ def get_last_error_log():
                 return "".join(lines[error_index:])
     return "No error log found."
 
+def generate_script_description(script_path, context=""):
+    """Generate descriptions around a shell script without modifying the code."""
+    if not os.path.isfile(script_path):
+        print(f"\nError: The file {script_path} does not exist.")
+        return None
+
+    try:
+        with open(script_path, "r") as f:
+            script_content = f.read()
+    except Exception as e:
+        print(f"\nError reading script: {e}")
+        return None
+
+    # Create output filename
+    script_name = os.path.splitext(os.path.basename(script_path))[0]
+    output_file = f"{script_name}_documented.md"
+
+    print("\nGenerating documentation for shell script...")
+    
+    # Prepare prompt for the LLM
+    script_prompt = f"""Create an Exec Doc that explains this shell script in detail.
+    DO NOT CHANGE ANY CODE in the script. Instead:
+    1. Add clear descriptions before and after each functional block
+    2. Explain what each section does
+    3. Format as a proper markdown document with appropriate headings and structure
+    4. Include all the necessary metadata in the front matter
+    
+    Script context provided by user: {context}
+    
+    Here is the script content:
+    ```
+    {script_content}
+    ```
+    """
+
+    response = client.chat.completions.create(
+        model=deployment_name,
+        messages=[
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": script_prompt}
+        ]
+    )
+    
+    doc_content = response.choices[0].message.content
+    
+    # Save the generated documentation
+    try:
+        with open(output_file, "w") as f:
+            f.write(doc_content)
+        print(f"\nScript documentation saved to: {output_file}")
+        return output_file
+    except Exception as e:
+        print(f"\nError saving documentation: {e}")
+        return None
+
+def redact_pii_from_doc(doc_path):
+    """Redact PII from result blocks in an Exec Doc."""
+    if not os.path.isfile(doc_path):
+        print(f"\nError: The file {doc_path} does not exist.")
+        return None
+
+    try:
+        with open(doc_path, "r") as f:
+            doc_content = f.read()
+    except Exception as e:
+        print(f"\nError reading document: {e}")
+        return None
+
+    # Create output filename
+    doc_name = os.path.splitext(os.path.basename(doc_path))[0]
+    output_file = f"{doc_name}_redacted.md"
+
+    print("\nRedacting PII from document...")
+    
+    # Use the LLM to identify and redact PII
+    redaction_prompt = """Redacting PII from the output helps protect sensitive information from being inadvertently shared or exposed. This is crucial for maintaining privacy, complying with data protection regulations, and furthering the company's security posture. 
+
+    Ensure result block(s) have all the PII (Personally Identifiable Information) stricken out from them and replaced with x’s. 
+
+    **Example:** 
+
+    ```markdown
+        Results: 
+
+        <!-- expected_similarity=0.3 --> 
+
+        ```JSON 
+        {{ 
+            "id": "/subscriptions/xxxxx-xxxxx-xxxxx-xxxxx/resourceGroups/MyResourceGroupxxx",
+                "location": "eastus",
+                "managedBy": null,
+                "name": "MyResourceGroupxxx",
+                "properties": {{
+                    "provisioningState": "Succeeded"
+                }},
+                "tags": null,
+                "type": "Microsoft.Resources/resourceGroups" 
+        }} 
+        ```
+    ```
+
+    >**Note:** The number of x's used to redact PII need not be the same as the number of characters in the original PII. Furthermore, it is recommended not to redact the key names in the output, only the values containing the PII (which are usually strings).
+    
+    >**Note:** Here are some examples of PII in result blocks: Unique identifiers for resources, Email Addresses, Phone Numbers, IP Addresses, Credit Card Numbers, Social Security Numbers (SSNs), Usernames, Resource Names, Subscription IDs, Resource Group Names, Tenant IDs, Service Principal Names, Client IDs, Secrets and Keys.
+    
+    Document content:
+    """
+
+    response = client.chat.completions.create(
+        model=deployment_name,
+        messages=[
+            {"role": "system", "content": "You are an AI specialized in PII redaction. Either redact the PII or return the document as is - nothing els is acceptable."},
+            {"role": "user", "content": redaction_prompt + "\n\n" + doc_content}
+        ]
+    )
+    
+    redacted_content = response.choices[0].message.content
+    
+    # Save the redacted document
+    try:
+        with open(output_file, "w") as f:
+            f.write(redacted_content)
+        print(f"\nRedacted document saved to: {output_file}")
+        return output_file
+    except Exception as e:
+        print(f"\nError saving redacted document: {e}")
+        return None
+
+def generate_dependency_files(doc_path):
+    """Extract and generate dependency files referenced in an Exec Doc."""
+    if not os.path.isfile(doc_path):
+        print(f"\nError: The file {doc_path} does not exist.")
+        return False
+
+    try:
+        with open(doc_path, "r") as f:
+            doc_content = f.read()
+    except Exception as e:
+        print(f"\nError reading document: {e}")
+        return False
+
+    # Directory where the doc is located
+    doc_dir = os.path.dirname(doc_path) or "."
+    
+    print("\nAnalyzing document for dependencies...")
+    
+    # Enhanced prompt for better dependency file identification
+    dependency_prompt = """Analyze this Exec Doc and identify ANY files that the user is instructed to create.
+    
+    Look specifically for:
+    1. Files where the doc says "Create a file named X" or similar instructions
+    2. Files that are referenced in commands (e.g., kubectl apply -f filename.yaml)
+    3. YAML files (configuration, templates, manifests)
+    4. JSON files (configuration, templates, API payloads)
+    5. Shell scripts (.sh files)
+    6. Any other files where content is provided and meant to be saved separately
+
+    IMPORTANT: Include files even if their full content is provided in the document!
+    If the doc instructs the user to create a file and provides its content, this IS a dependency file.
+
+    For each file you identify:
+    1. Extract the exact filename with its extension
+    2. Use the exact content provided in the document
+    3. Format your response as a JSON list
+    """
+
+    response = client.chat.completions.create(
+        model=deployment_name,
+        messages=[
+            {"role": "system", "content": "You are an AI specialized in extracting and generating dependency files."},
+            {"role": "user", "content": dependency_prompt + "\n\n" + doc_content}
+        ]
+    )
+    
+    try:
+        # Extract the JSON part from the response with improved robustness
+        response_text = response.choices[0].message.content
+        
+        # Find JSON content between triple backticks with more flexible pattern matching
+        json_match = re.search(r'```(?:json)?(.+?)```', response_text, re.DOTALL)
+        if json_match:
+            # Clean the extracted JSON content
+            json_content = json_match.group(1).strip()
+            try:
+                dependency_list = json.loads(json_content)
+            except json.JSONDecodeError:
+                # Try removing any non-JSON text at the beginning or end
+                json_content = re.search(r'(\[.+?\])', json_content, re.DOTALL)
+                if json_content:
+                    dependency_list = json.loads(json_content.group(1))
+                else:
+                    raise ValueError("Could not extract valid JSON from response")
+        else:
+            # Try to parse the entire response as JSON
+            try:
+                dependency_list = json.loads(response_text)
+            except json.JSONDecodeError:
+                # Last resort: look for anything that looks like a JSON array
+                array_match = re.search(r'\[(.*?)\]', response_text.replace('\n', ''), re.DOTALL)
+                if array_match:
+                    try:
+                        dependency_list = json.loads('[' + array_match.group(1) + ']')
+                    except:
+                        raise ValueError("Could not extract valid JSON from response")
+                else:
+                    raise ValueError("Response did not contain valid JSON")
+        
+        if not dependency_list:
+            print("\nNo dependency files identified.")
+            return True
+        
+        # Create each dependency file with type-specific handling
+        created_files = []
+        for dep in dependency_list:
+            filename = dep.get("filename")
+            content = dep.get("content")
+            file_type = dep.get("type", "").lower()
+            
+            if not filename or not content:
+                continue
+                
+            file_path = os.path.join(doc_dir, filename)
+            
+            # Check if file already exists
+            if os.path.exists(file_path):
+                print(f"\nFile already exists: {filename} - Skipping")
+                continue
+            
+            # Validate and format content based on file type
+            try:
+                if filename.endswith('.json') or file_type == 'json':
+                    # Validate JSON
+                    try:
+                        parsed = json.loads(content)
+                        content = json.dumps(parsed, indent=2)  # Pretty-print JSON
+                    except json.JSONDecodeError:
+                        print(f"\nWarning: Content for {filename} is not valid JSON. Saving as plain text.")
+                
+                elif filename.endswith('.yaml') or filename.endswith('.yml') or file_type == 'yaml':
+                    # Validate YAML
+                    try:
+                        parsed = yaml.safe_load(content)
+                        content = yaml.dump(parsed, default_flow_style=False)  # Pretty-print YAML
+                    except yaml.YAMLError:
+                        print(f"\nWarning: Content for {filename} is not valid YAML. Saving as plain text.")
+                
+                elif filename.endswith('.sh') or file_type == 'shell':
+                    # Ensure shell scripts are executable
+                    is_executable = True
+                
+                # Write the file
+                with open(file_path, "w") as f:
+                    f.write(content)
+                
+                # Make shell scripts executable if needed
+                if (filename.endswith('.sh') or file_type == 'shell') and is_executable:
+                    os.chmod(file_path, os.stat(file_path).st_mode | 0o111)  # Add executable bit
+                
+                created_files.append(filename)
+            except Exception as e:
+                print(f"\nError creating {filename}: {e}")
+        
+        if created_files:
+            print(f"\nCreated {len(created_files)} dependency files: {', '.join(created_files)}")
+        else:
+            print("\nNo new dependency files were created.")
+        
+        return True
+    except Exception as e:
+        print(f"\nError generating dependency files: {e}")
+        print("\nResponse from model was not valid JSON. Raw response:")
+        # print(response.choices[0].message.content[:500] + "..." if len(response.choices[0].message.content) > 500 else response.choices[0].message.content)
+        return False
+    
 def remove_backticks_from_file(file_path):
     with open(file_path, "r") as f:
         lines = f.readlines()
@@ -319,56 +596,185 @@ def log_data_to_csv(data):
             writer.writeheader()
         writer.writerow(data)
 
+def generate_title_from_description(description):
+    """Generate a title for the Exec Doc based on the workload description."""
+    print("\nGenerating title for your Exec Doc...")
+    
+    title_prompt = """Create a concise, descriptive title for an Executable Document (Exec Doc) based on the following workload description. 
+    The title should:
+    1. Be clear and informative
+    2. Start with an action verb (Deploy, Create, Configure, etc.) when appropriate
+    3. Mention the main Azure service(s) involved
+    4. Be formatted like a typical Azure quickstart or tutorial title
+    5. Not exceed 10 words
+    
+    Return ONLY the title text, nothing else.
+    
+    Workload description:
+    """
+    
+    try:
+        response = client.chat.completions.create(
+            model=deployment_name,
+            messages=[
+                {"role": "system", "content": "You are an AI specialized in creating concise, descriptive titles."},
+                {"role": "user", "content": title_prompt + description}
+            ]
+        )
+        
+        title = response.choices[0].message.content.strip()
+        # Remove any quotes, backticks or other formatting that might be included
+        title = title.strip('"\'`')
+        print(f"\nGenerated title: {title}")
+        return title
+    except Exception as e:
+        print(f"\nError generating title: {e}")
+        return "Azure Executable Documentation Guide"  # Default fallback title
+
+def perform_security_check(doc_path):
+    """Perform a comprehensive security vulnerability check on an Exec Doc."""
+    if not os.path.isfile(doc_path):
+        print(f"\nError: The file {doc_path} does not exist.")
+        return None
+
+    try:
+        with open(doc_path, "r") as f:
+            doc_content = f.read()
+    except Exception as e:
+        print(f"\nError reading document: {e}")
+        return None
+
+    # Create output filename
+    doc_name = os.path.splitext(os.path.basename(doc_path))[0]
+    output_file = f"{doc_name}_security_report.md"
+
+    print("\nPerforming comprehensive security vulnerability analysis...")
+    
+    # Use the LLM to analyze security vulnerabilities
+    security_prompt = """Conduct a thorough, state-of-the-art security vulnerability analysis of this Exec Doc. Analyze both static aspects (code review) and dynamic aspects (runtime behavior).
+
+    Focus on:
+    1. Authentication and authorization vulnerabilities
+    2. Potential for privilege escalation
+    3. Resource exposure risks
+    4. Data handling and privacy concerns
+    5. Network security considerations
+    6. Input validation vulnerabilities
+    7. Command injection risks
+    8. Cloud-specific security threats
+    9. Compliance issues with security best practices
+    10. Secret management practices
+    
+    Structure your report with the following sections:
+    1. Executive Summary - Overall risk assessment
+    2. Methodology - How the analysis was performed
+    3. Findings - Detailed description of each vulnerability found
+    4. Recommendations - Specific remediation steps for each issue
+    5. Best Practices - General security improvements
+    
+    For each vulnerability found, include:
+    - Severity (Critical, High, Medium, Low)
+    - Location in code
+    - Description of the vulnerability
+    - Potential impact
+    - Recommended fix with code example where appropriate
+    
+    Use the OWASP Top 10 and cloud security best practices as frameworks for your analysis.
+    Format the output as a professional Markdown document with appropriate headings, tables, and code blocks.
+    
+    Document content:
+    """
+
+    response = client.chat.completions.create(
+        model=deployment_name,
+        messages=[
+            {"role": "system", "content": "You are an AI specialized in security vulnerability assessment and report generation."},
+            {"role": "user", "content": security_prompt + "\n\n" + doc_content}
+        ]
+    )
+    
+    report_content = response.choices[0].message.content
+    
+    # Save the security report
+    try:
+        with open(output_file, "w") as f:
+            f.write(report_content)
+        print(f"\nSecurity analysis report saved to: {output_file}")
+        return output_file
+    except Exception as e:
+        print(f"\nError saving security report: {e}")
+        return None
+    
 def main():
     print("\nWelcome to ADA - AI Documentation Assistant!")
     print("\nThis tool helps you write and troubleshoot Executable Documents efficiently!")
     print("\nPlease select one of the following options:")
-    print("  1. Enter path to markdown file for conversion")
-    print("  2. Describe workload for new Exec Doc")
-    print("  3. Generate description for shell script")
+    print("  1. Enter path to markdown file for conversion to Exec Doc")
+    print("  2. Describe workload to generate a new Exec Doc")
+    print("  3. Add descriptions to a shell script as an Exec Doc")
     print("  4. Redact PII from an existing Exec Doc")
-    choice = input("Enter the number corresponding to your choice: ")
+    print("  5. Perform security vulnerability check on an Exec Doc")
+    choice = input("\nEnter the number corresponding to your choice: ")
 
     if choice == "1":
-        user_input = input("Enter the path to your markdown file: ")
-        if os.path.isfile(user_input) and user_input.endswith('.md'):
-            input_type = 'file'
-            with open(user_input, "r") as f:
-                input_content = f.read()
-                input_content = f"CONVERT THE FOLLOWING EXISTING DOCUMENT INTO AN EXEC DOC. THIS IS A CONVERSION TASK, NOT CREATION FROM SCRATCH. DON'T EXPLAIN WHAT YOU ARE DOING BEHIND THE SCENES INSIDE THE DOC. PRESERVE ALL ORIGINAL CONTENT, STRUCTURE, AND NARRATIVE OUTSIDE OF CODE BLOCKS:\n\n{input_content}"
-        else:
-            print("Invalid file path or file type. Please provide a valid markdown file.")
+        user_input = input("\nEnter the path to your markdown file: ")
+        if not os.path.isfile(user_input) or not user_input.endswith('.md'):
+            print("\nInvalid file path or file type. Please provide a valid markdown file.")
             sys.exit(1)
+        input_type = 'file'
+        with open(user_input, "r") as f:
+            input_content = f.read()
+            input_content = f"CONVERT THE FOLLOWING EXISTING DOCUMENT INTO AN EXEC DOC. THIS IS A CONVERSION TASK, NOT CREATION FROM SCRATCH. DON'T EXPLAIN WHAT YOU ARE DOING BEHIND THE SCENES INSIDE THE DOC. PRESERVE ALL ORIGINAL CONTENT, STRUCTURE, AND NARRATIVE OUTSIDE OF CODE BLOCKS:\n\n{input_content}"
+            if input("\nMake new files referenced in the doc for its execution? (y/n): ").lower() == 'y':
+                generate_dependency_files(user_input) 
     elif choice == "2":
-        user_input = input("Describe your workload for the new Exec Doc: ")
-        if os.path.isfile(user_input):
-            input_type = 'workload_description'
-            input_content = user_input
+        user_input = input("\nDescribe your workload for the new Exec Doc: ")
+        if not user_input:
+            print("\nInvalid input. Please provide a workload description.")
+            sys.exit(1)
+        input_type = 'workload_description'
+        input_content = user_input
     elif choice == "3":
-        user_input = input("Enter the path to your shell script (provide context and details): ")
+        user_input = input("\nEnter the path to your shell script: ")
+        context = input("\nProvide additional context for the script (optional): ")
+        if not os.path.isfile(user_input):
+            print("\nInvalid file path. Please provide a valid shell script.")
+            sys.exit(1)
+        input_type = 'shell_script'
+        output_file = generate_script_description(user_input, context)
+        remove_backticks_from_file(output_file)
+        sys.exit(0)
     elif choice == "4":
-        user_input = input("Enter the path to your Exec Doc for PII redaction: ")
+        user_input = input("\nEnter the path to your Exec Doc for PII redaction: ")
+        if not os.path.isfile(user_input) or not user_input.endswith('.md'):
+            print("\nInvalid file path or file type. Please provide a valid markdown file.")
+            sys.exit(1)
+        input_type = 'pii_redaction'
+        output_file = redact_pii_from_doc(user_input)
+        remove_backticks_from_file(output_file)
+        sys.exit(0)
+    elif choice == "5":
+        user_input = input("\nEnter the path to your Exec Doc for security analysis: ")
+        if not os.path.isfile(user_input) or not user_input.endswith('.md'):
+            print("\nInvalid file path or file type. Please provide a valid markdown file.")
+            sys.exit(1)
+        input_type = 'security_check'
+        output_file = perform_security_check(user_input)
+        if output_file:
+            print(f"\nSecurity analysis complete. Report saved to: {output_file}")
+        sys.exit(0)
     else:
-        print("Invalid choice. Exiting.")
+        print("\nInvalid choice. Exiting.")
         sys.exit(1)
-
-    # if os.path.isfile(user_input) and user_input.endswith('.md'):
-    #     input_type = 'file'
-    #     with open(user_input, "r") as f:
-    #         input_content = f.read()
-    #         input_content = f"CONVERT THE FOLLOWING EXISTING DOCUMENT INTO AN EXEC DOC. THIS IS A CONVERSION TASK, NOT CREATION FROM SCRATCH. DON'T EXPLAIN WHAT YOU ARE DOING BEHIND THE SCENES INSIDE THE DOC. PRESERVE ALL ORIGINAL CONTENT, STRUCTURE, AND NARRATIVE OUTSIDE OF CODE BLOCKS:\n\n{input_content}"
-    # else:
-    #     input_type = 'workload_description'
-    #     input_content = user_input
 
     install_innovation_engine()
 
     max_attempts = 11
     attempt = 1
     if input_type == 'file':
-        output_file = f"converted_{os.path.splitext(os.path.basename(user_input))[0]}.md"
+        output_file = f"{os.path.splitext(os.path.basename(user_input))[0]}_converted.md"
     else:
-        output_file = "generated_exec_doccc.md"
+        output_file = f"{generate_title_from_description(user_input)}_ai_generated.md"
 
     start_time = time.time()
     errors_encountered = []
@@ -407,7 +813,7 @@ def main():
         try:
             result = subprocess.run(["ie", "test", output_file], capture_output=True, text=True, timeout=660)
         except subprocess.TimeoutExpired:
-            print("The 'ie test' command timed out after 11 minutes.")
+            print("\nThe 'ie test' command timed out after 11 minutes.")
             errors_encountered.append("The 'ie test' command timed out after 11 minutes.")
             attempt += 1
             continue  # Proceed to the next attempt

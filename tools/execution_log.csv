@@ -220,3 +220,9 @@ Error: %!s(<nil>)
 StdErr:
 
  The 'ie test' command timed out after 11 minutes.",5596.252681970596,Failure
+2025-03-05 00:02:15,workload_description,create a linux vm and ssh into it,Deploy Linux VM and SSH into Instance.md,1,"time=2025-03-05T00:00:35-08:00 level=error msg=Error testing scenario: failed to execute code block 0 on step 2.
+Error: command exited with 'exit status 1' and the message 'ERROR: Invalid image ""UbuntuLTS"". Use a valid image URN, custom image name, custom image id, VHD blob URI, or pick an image from ['CentOS85Gen2', 'Debian11', 'OpenSuseLeap154Gen2', 'RHELRaw8LVMGen2', 'SuseSles15SP5', 'Ubuntu2204', 'Ubuntu2404', 'Ubuntu2404Pro', 'FlatcarLinuxFreeGen2', 'Win2022Datacenter', 'Win2022AzureEditionCore', 'Win2019Datacenter', 'Win2016Datacenter', 'Win2012R2Datacenter', 'Win2012Datacenter'].
+See vm create -h for more information on specifying an image.
+'
+StdErr: ERROR: Invalid image ""UbuntuLTS"". Use a valid image URN, custom image name, custom image id, VHD blob URI, or pick an image from ['CentOS85Gen2', 'Debian11', 'OpenSuseLeap154Gen2', 'RHELRaw8LVMGen2', 'SuseSles15SP5', 'Ubuntu2204', 'Ubuntu2404', 'Ubuntu2404Pro', 'FlatcarLinuxFreeGen2', 'Win2022Datacenter', 'Win2022AzureEditionCore', 'Win2019Datacenter', 'Win2016Datacenter', 'Win2012R2Datacenter', 'Win2012Datacenter'].
+See vm create -h for more information on specifying an image.",153.62026572227478,Success

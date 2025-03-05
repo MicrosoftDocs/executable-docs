@@ -1,136 +1,507 @@
 ---
-title: 'Quickstart: Use Terraform to create a Linux VM'
-description: In this quickstart, you learn how to use Terraform to create a Linux virtual machine
-author: tomarchermsft
-ms.service: azure-virtual-machines
-ms.collection: linux
+title: 'Quickstart: Deploy an Azure Kubernetes Service (AKS) cluster using Azure CLI'
+description: Learn how to quickly deploy a Kubernetes cluster and deploy an application in Azure Kubernetes Service (AKS) using Azure CLI.
 ms.topic: quickstart
-ms.date: 07/24/2023
-ms.author: tarcher
-ms.custom: devx-track-terraform, linux-related-content
-content_well_notification: 
-  - AI-contribution
-ai-usage: ai-assisted
+ms.date: 04/09/2024
+author: nickomang
+ms.author: nickoman
+ms.custom: H1Hack27Feb2017, mvc, devcenter, devx-track-azurecli, mode-api, innovation-engine, linux-related-content
+#Customer intent: As a developer or cluster operator, I want to deploy an AKS cluster and deploy an application so I can see how to run applications using the managed Kubernetes service in Azure.
 ---
 
-# Quickstart: Use Terraform to create a Linux VM
+# Quickstart: Deploy an Azure Kubernetes Service (AKS) cluster using Azure CLI
 
-**Applies to:** :heavy_check_mark: Linux VMs 
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2286152)
 
-Article tested with the following Terraform and Terraform provider versions:
+Azure Kubernetes Service (AKS) is a managed Kubernetes service that lets you quickly deploy and manage clusters. In this quickstart, you learn how to:
 
-This article shows you how to create a complete Linux environment and supporting resources with Terraform. Those resources include a virtual network, subnet, public IP address, and more.
-
-[!INCLUDE [Terraform abstract](~/azure-dev-docs-pr/articles/terraform/includes/abstract.md)]
-
-In this article, you learn how to:
-> [!div class="checklist"]
-> * Create a random value for the Azure resource group name using [random_pet](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/pet).
-> * Create an Azure resource group using [azurerm_resource_group](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/resource_group).
-> * Create a virtual network (VNET) using [azurerm_virtual_network](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/virtual_network).
-> * Create a subnet using [azurerm_subnet](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/subnet).
-> * Create a public IP using [azurerm_public_ip](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/public_ip).
-> * Create a network security group using [azurerm_network_security_group](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/network_security_group).
-> * Create a network interface using [azurerm_network_interface](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/network_interface).
-> * Create an association between the network security group and the network interface using [azurerm_network_interface_security_group_association](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/network_interface_security_group_association).
-> * Generate a random value for a unique storage account name using [random_id](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/id).
-> * Create a storage account for boot diagnostics using [azurerm_storage_account](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/storage_account).
-> * Create a Linux VM using [azurerm_linux_virtual_machine](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/linux_virtual_machine)
-> * Create an AzAPI resource [azapi_resource](https://registry.terraform.io/providers/Azure/azapi/latest/docs/resources/azapi_resource).
-> * Create an AzAPI resource to generate an SSH key pair using [azapi_resource_action](https://registry.terraform.io/providers/Azure/azapi/latest/docs/resources/azapi_resource_action).
-
-## Prerequisites
-
-- [Install and configure Terraform](/azure/developer/terraform/quickstart-configure)
-
-## Implement the Terraform code
+- Deploy an AKS cluster using the Azure CLI.
+- Run a sample multi-container application with a group of microservices and web front ends simulating a retail scenario.
 
 > [!NOTE]
-> The sample code for this article is located in the [Azure Terraform GitHub repo](https://github.com/Azure/terraform/tree/master/quickstart/101-vm-with-infrastructure). You can view the log file containing the [test results from current and previous versions of Terraform](https://github.com/Azure/terraform/tree/master/quickstart/101-vm-with-infrastructure/TestRecord.md).
->
-> See more [articles and sample code showing how to use Terraform to manage Azure resources](/azure/terraform)
+> To get started with quickly provisioning an AKS cluster, this article includes steps to deploy a cluster with default settings for evaluation purposes only. Before deploying a production-ready cluster, we recommend that you familiarize yourself with our [baseline reference architecture][baseline-reference-architecture] to consider how it aligns with your business requirements.
 
-1. Create a directory in which to test the sample Terraform code and make it the current directory.
+## Before you begin
 
-1. Create a file named `providers.tf` and insert the following code:
+This quickstart assumes a basic understanding of Kubernetes concepts. For more information, see [Kubernetes core concepts for Azure Kubernetes Service (AKS)][kubernetes-concepts].
 
-    :::code language="Terraform" source="~/terraform_samples/quickstart/101-vm-with-infrastructure/providers.tf":::
+- [!INCLUDE [quickstarts-free-trial-note](~/reusable-content/ce-skilling/azure/includes/quickstarts-free-trial-note.md)]
 
-1. Create a file named `ssh.tf` and insert the following code:
+[!INCLUDE [azure-cli-prepare-your-environment-no-header.md](~/reusable-content/azure-cli/azure-cli-prepare-your-environment-no-header.md)]
 
-    :::code language="Terraform" source="~/terraform_samples/quickstart/101-vm-with-infrastructure/ssh.tf":::
+- This article requires version 2.0.64 or later of the Azure CLI. If you're using Azure Cloud Shell, the latest version is already installed there.
+- Make sure that the identity you're using to create your cluster has the appropriate minimum permissions. For more details on access and identity for AKS, see [Access and identity options for Azure Kubernetes Service (AKS)](../concepts-identity.md).
+- If you have multiple Azure subscriptions, select the appropriate subscription ID in which the resources should be billed using the [az account set](/cli/azure/account#az-account-set) command. For more information, see [How to manage Azure subscriptions – Azure CLI](/cli/azure/manage-azure-subscriptions-azure-cli?tabs=bash#change-the-active-subscription).
 
-1. Create a file named `main.tf` and insert the following code:
+## Define environment variables
 
-    :::code language="Terraform" source="~/terraform_samples/quickstart/101-vm-with-infrastructure/main.tf":::
+Define the following environment variables for use throughout this quickstart:
 
-1. Create a file named `variables.tf` and insert the following code:
+```azurecli-interactive
+export RANDOM_ID="$(openssl rand -hex 3)"
+export MY_RESOURCE_GROUP_NAME="myAKSResourceGroup$RANDOM_ID"
+export REGION="westeurope"
+export MY_AKS_CLUSTER_NAME="myAKSCluster$RANDOM_ID"
+export MY_DNS_LABEL="mydnslabel$RANDOM_ID"
+```
 
-    :::code language="Terraform" source="~/terraform_samples/quickstart/101-vm-with-infrastructure/variables.tf":::
+## Create a resource group
 
-1. Create a file named `outputs.tf` and insert the following code:
+An [Azure resource group][azure-resource-group] is a logical group in which Azure resources are deployed and managed. When you create a resource group, you're prompted to specify a location. This location is the storage location of your resource group metadata and where your resources run in Azure if you don't specify another region during resource creation.
 
-    :::code language="Terraform" source="~/terraform_samples/quickstart/101-vm-with-infrastructure/outputs.tf":::
+Create a resource group using the [`az group create`][az-group-create] command.
 
-## Initialize Terraform
+```azurecli-interactive
+az group create --name $MY_RESOURCE_GROUP_NAME --location $REGION
+```
 
-[!INCLUDE [terraform-init.md](~/azure-dev-docs-pr/articles/terraform/includes/terraform-init.md)]
+Results:
+<!-- expected_similarity=0.3 -->
+```JSON
+{
+  "id": "/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/myAKSResourceGroupxxxxxx",
+  "location": "eastus",
+  "managedBy": null,
+  "name": "testResourceGroup",
+  "properties": {
+    "provisioningState": "Succeeded"
+  },
+  "tags": null,
+  "type": "Microsoft.Resources/resourceGroups"
+}
+```
 
-## Create a Terraform execution plan
+## Create an AKS cluster
 
-[!INCLUDE [terraform-plan.md](~/azure-dev-docs-pr/articles/terraform/includes/terraform-plan.md)]
+Create an AKS cluster using the [`az aks create`][az-aks-create] command. The following example creates a cluster with one node and enables a system-assigned managed identity.
 
-## Apply a Terraform execution plan
+```azurecli-interactive
+az aks create \
+    --resource-group $MY_RESOURCE_GROUP_NAME \
+    --name $MY_AKS_CLUSTER_NAME \
+    --node-count 1 \
+    --generate-ssh-keys
+```
 
-[!INCLUDE [terraform-apply-plan.md](~/azure-dev-docs-pr/articles/terraform/includes/terraform-apply-plan.md)]
+> [!NOTE]
+> When you create a new cluster, AKS automatically creates a second resource group to store the AKS resources. For more information, see [Why are two resource groups created with AKS?](../faq.yml)
 
-Cost information isn't presented during the virtual machine creation process for Terraform like it is for the [Azure portal](quick-create-portal.md). If you want to learn more about how cost works for virtual machines, see the [Cost optimization Overview page](../plan-to-manage-costs.md).
+## Connect to the cluster
 
-## Verify the results
+To manage a Kubernetes cluster, use the Kubernetes command-line client, [kubectl][kubectl]. `kubectl` is already installed if you use Azure Cloud Shell. To install `kubectl` locally, use the [`az aks install-cli`][az-aks-install-cli] command.
 
-#### [Azure CLI](#tab/azure-cli)
+1. Configure `kubectl` to connect to your Kubernetes cluster using the [az aks get-credentials][az-aks-get-credentials] command. This command downloads credentials and configures the Kubernetes CLI to use them.
 
-1. Get the Azure resource group name.
-
-    ```console
-    resource_group_name=$(terraform output -raw resource_group_name)
+    ```azurecli-interactive
+    az aks get-credentials --resource-group $MY_RESOURCE_GROUP_NAME --name $MY_AKS_CLUSTER_NAME
     ```
 
-1. Run [az vm list](/cli/azure/vm#az-vm-list) with a [JMESPath](/cli/azure/query-azure-cli) query to display the names of the virtual machines created in the resource group.
+1. Verify the connection to your cluster using the [kubectl get][kubectl-get] command. This command returns a list of the cluster nodes.
 
-    ```azurecli
-    az vm list \
-      --resource-group $resource_group_name \
-      --query "[].{\"VM Name\":name}" -o table
+    ```azurecli-interactive
+    kubectl get nodes
     ```
 
-#### [Azure PowerShell](#tab/azure-powershell)
+## Deploy the application
 
-1. Get the Azure resource group name.
+To deploy the application, you use a manifest file to create all the objects required to run the [AKS Store application](https://github.com/Azure-Samples/aks-store-demo). A [Kubernetes manifest file][kubernetes-deployment] defines a cluster's desired state, such as which container images to run. The manifest includes the following Kubernetes deployments and services:
 
-    ```console
-    $resource_group_name=$(terraform output -raw resource_group_name)
+:::image type="content" source="media/quick-kubernetes-deploy-portal/aks-store-architecture.png" alt-text="Screenshot of Azure Store sample architecture." lightbox="media/quick-kubernetes-deploy-portal/aks-store-architecture.png":::
+
+- **Store front**: Web application for customers to view products and place orders.
+- **Product service**: Shows product information.
+- **Order service**: Places orders.
+- **Rabbit MQ**: Message queue for an order queue.
+
+> [!NOTE]
+> We don't recommend running stateful containers, such as Rabbit MQ, without persistent storage for production. These are used here for simplicity, but we recommend using managed services, such as Azure CosmosDB or Azure Service Bus.
+
+1. Create a file named `aks-store-quickstart.yaml` and copy in the following manifest:
+
+    ```yaml
+    apiVersion: apps/v1
+    kind: StatefulSet
+    metadata:
+      name: rabbitmq
+    spec:
+      serviceName: rabbitmq
+      replicas: 1
+      selector:
+        matchLabels:
+          app: rabbitmq
+      template:
+        metadata:
+          labels:
+            app: rabbitmq
+        spec:
+          nodeSelector:
+            "kubernetes.io/os": linux
+          containers:
+          - name: rabbitmq
+            image: mcr.microsoft.com/mirror/docker/library/rabbitmq:3.10-management-alpine
+            ports:
+            - containerPort: 5672
+              name: rabbitmq-amqp
+            - containerPort: 15672
+              name: rabbitmq-http
+            env:
+            - name: RABBITMQ_DEFAULT_USER
+              value: "username"
+            - name: RABBITMQ_DEFAULT_PASS
+              value: "password"
+            resources:
+              requests:
+                cpu: 10m
+                memory: 128Mi
+              limits:
+                cpu: 250m
+                memory: 256Mi
+            volumeMounts:
+            - name: rabbitmq-enabled-plugins
+              mountPath: /etc/rabbitmq/enabled_plugins
+              subPath: enabled_plugins
+          volumes:
+          - name: rabbitmq-enabled-plugins
+            configMap:
+              name: rabbitmq-enabled-plugins
+              items:
+              - key: rabbitmq_enabled_plugins
+                path: enabled_plugins
+    ---
+    apiVersion: v1
+    data:
+      rabbitmq_enabled_plugins: |
+        [rabbitmq_management,rabbitmq_prometheus,rabbitmq_amqp1_0].
+    kind: ConfigMap
+    metadata:
+      name: rabbitmq-enabled-plugins            
+    ---
+    apiVersion: v1
+    kind: Service
+    metadata:
+      name: rabbitmq
+    spec:
+      selector:
+        app: rabbitmq
+      ports:
+        - name: rabbitmq-amqp
+          port: 5672
+          targetPort: 5672
+        - name: rabbitmq-http
+          port: 15672
+          targetPort: 15672
+      type: ClusterIP
+    ---
+    apiVersion: apps/v1
+    kind: Deployment
+    metadata:
+      name: order-service
+    spec:
+      replicas: 1
+      selector:
+        matchLabels:
+          app: order-service
+      template:
+        metadata:
+          labels:
+            app: order-service
+        spec:
+          nodeSelector:
+            "kubernetes.io/os": linux
+          containers:
+          - name: order-service
+            image: ghcr.io/azure-samples/aks-store-demo/order-service:latest
+            ports:
+            - containerPort: 3000
+            env:
+            - name: ORDER_QUEUE_HOSTNAME
+              value: "rabbitmq"
+            - name: ORDER_QUEUE_PORT
+              value: "5672"
+            - name: ORDER_QUEUE_USERNAME
+              value: "username"
+            - name: ORDER_QUEUE_PASSWORD
+              value: "password"
+            - name: ORDER_QUEUE_NAME
+              value: "orders"
+            - name: FASTIFY_ADDRESS
+              value: "0.0.0.0"
+            resources:
+              requests:
+                cpu: 1m
+                memory: 50Mi
+              limits:
+                cpu: 75m
+                memory: 128Mi
+            startupProbe:
+              httpGet:
+                path: /health
+                port: 3000
+              failureThreshold: 5
+              initialDelaySeconds: 20
+              periodSeconds: 10
+            readinessProbe:
+              httpGet:
+                path: /health
+                port: 3000
+              failureThreshold: 3
+              initialDelaySeconds: 3
+              periodSeconds: 5
+            livenessProbe:
+              httpGet:
+                path: /health
+                port: 3000
+              failureThreshold: 5
+              initialDelaySeconds: 3
+              periodSeconds: 3
+          initContainers:
+          - name: wait-for-rabbitmq
+            image: busybox
+            command: ['sh', '-c', 'until nc -zv rabbitmq 5672; do echo waiting for rabbitmq; sleep 2; done;']
+            resources:
+              requests:
+                cpu: 1m
+                memory: 50Mi
+              limits:
+                cpu: 75m
+                memory: 128Mi    
+    ---
+    apiVersion: v1
+    kind: Service
+    metadata:
+      name: order-service
+    spec:
+      type: ClusterIP
+      ports:
+      - name: http
+        port: 3000
+        targetPort: 3000
+      selector:
+        app: order-service
+    ---
+    apiVersion: apps/v1
+    kind: Deployment
+    metadata:
+      name: product-service
+    spec:
+      replicas: 1
+      selector:
+        matchLabels:
+          app: product-service
+      template:
+        metadata:
+          labels:
+            app: product-service
+        spec:
+          nodeSelector:
+            "kubernetes.io/os": linux
+          containers:
+          - name: product-service
+            image: ghcr.io/azure-samples/aks-store-demo/product-service:latest
+            ports:
+            - containerPort: 3002
+            env: 
+            - name: AI_SERVICE_URL
+              value: "http://ai-service:5001/"
+            resources:
+              requests:
+                cpu: 1m
+                memory: 1Mi
+              limits:
+                cpu: 2m
+                memory: 20Mi
+            readinessProbe:
+              httpGet:
+                path: /health
+                port: 3002
+              failureThreshold: 3
+              initialDelaySeconds: 3
+              periodSeconds: 5
+            livenessProbe:
+              httpGet:
+                path: /health
+                port: 3002
+              failureThreshold: 5
+              initialDelaySeconds: 3
+              periodSeconds: 3
+    ---
+    apiVersion: v1
+    kind: Service
+    metadata:
+      name: product-service
+    spec:
+      type: ClusterIP
+      ports:
+      - name: http
+        port: 3002
+        targetPort: 3002
+      selector:
+        app: product-service
+    ---
+    apiVersion: apps/v1
+    kind: Deployment
+    metadata:
+      name: store-front
+    spec:
+      replicas: 1
+      selector:
+        matchLabels:
+          app: store-front
+      template:
+        metadata:
+          labels:
+            app: store-front
+        spec:
+          nodeSelector:
+            "kubernetes.io/os": linux
+          containers:
+          - name: store-front
+            image: ghcr.io/azure-samples/aks-store-demo/store-front:latest
+            ports:
+            - containerPort: 8080
+              name: store-front
+            env: 
+            - name: VUE_APP_ORDER_SERVICE_URL
+              value: "http://order-service:3000/"
+            - name: VUE_APP_PRODUCT_SERVICE_URL
+              value: "http://product-service:3002/"
+            resources:
+              requests:
+                cpu: 1m
+                memory: 200Mi
+              limits:
+                cpu: 1000m
+                memory: 512Mi
+            startupProbe:
+              httpGet:
+                path: /health
+                port: 8080
+              failureThreshold: 3
+              initialDelaySeconds: 5
+              periodSeconds: 5
+            readinessProbe:
+              httpGet:
+                path: /health
+                port: 8080
+              failureThreshold: 3
+              initialDelaySeconds: 3
+              periodSeconds: 3
+            livenessProbe:
+              httpGet:
+                path: /health
+                port: 8080
+              failureThreshold: 5
+              initialDelaySeconds: 3
+              periodSeconds: 3
+    ---
+    apiVersion: v1
+    kind: Service
+    metadata:
+      name: store-front
+    spec:
+      ports:
+      - port: 80
+        targetPort: 8080
+      selector:
+        app: store-front
+      type: LoadBalancer
     ```
 
-1. Run [Get-AzVm](/powershell/module/az.compute/get-azvm)  to display the names of all the virtual machines in the resource group.
+    For a breakdown of YAML manifest files, see [Deployments and YAML manifests](../concepts-clusters-workloads.md#deployments-and-yaml-manifests).
 
-    ```azurepowershell
-    Get-AzVm -ResourceGroupName $resource_group_name
+    If you create and save the YAML file locally, then you can upload the manifest file to your default directory in CloudShell by selecting the **Upload/Download files** button and selecting the file from your local file system.
+
+1. Deploy the application using the [`kubectl apply`][kubectl-apply] command and specify the name of your YAML manifest.
+
+    ```azurecli-interactive
+    kubectl apply -f aks-store-quickstart.yaml
     ```
 
----
+## Test the application
 
-## Clean up resources
+You can validate that the application is running by visiting the public IP address or the application URL.
 
-[!INCLUDE [terraform-plan-destroy.md](~/azure-dev-docs-pr/articles/terraform/includes/terraform-plan-destroy.md)]
+Get the application URL using the following commands:
 
-## Troubleshoot Terraform on Azure
+```azurecli-interactive
+runtime="5 minutes"
+endtime=$(date -ud "$runtime" +%s)
+while [[ $(date -u +%s) -le $endtime ]]
+do
+   STATUS=$(kubectl get pods -l app=store-front -o 'jsonpath={..status.conditions[?(@.type=="Ready")].status}')
+   echo $STATUS
+   if [ "$STATUS" == 'True' ]
+   then
+      export IP_ADDRESS=$(kubectl get service store-front --output 'jsonpath={..status.loadBalancer.ingress[0].ip}')
+      echo "Service IP Address: $IP_ADDRESS"
+      break
+   else
+      sleep 10
+   fi
+done
+```
 
-[Troubleshoot common problems when using Terraform on Azure](/azure/developer/terraform/troubleshoot)
+```azurecli-interactive
+curl $IP_ADDRESS
+```
+
+Results:
+<!-- expected_similarity=0.3 -->
+```HTML
+<!doctype html>
+<html lang="">
+   <head>
+      <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      <link rel="icon" href="/favicon.ico">
+      <title>store-front</title>
+      <script defer="defer" src="/js/chunk-vendors.df69ae47.js"></script>
+      <script defer="defer" src="/js/app.7e8cfbb2.js"></script>
+      <link href="/css/app.a5dc49f6.css" rel="stylesheet">
+   </head>
+   <body>
+      <div id="app"></div>
+   </body>
+</html>
+```
+
+```OUTPUT
+echo "You can now visit your web server at $IP_ADDRESS"
+```
+
+:::image type="content" source="media/quick-kubernetes-deploy-cli/aks-store-application.png" alt-text="Screenshot of AKS Store sample application." lightbox="media/quick-kubernetes-deploy-cli/aks-store-application.png":::
+
+## Delete the cluster
+
+If you don't plan on going through the [AKS tutorial][aks-tutorial], clean up unnecessary resources to avoid Azure charges. You can remove the resource group, container service, and all related resources using the [`az group delete`][az-group-delete] command.
+
+> [!NOTE]
+> The AKS cluster was created with a system-assigned managed identity, which is the default identity option used in this quickstart. The platform manages this identity so you don't need to manually remove it.
 
 ## Next steps
 
-In this quickstart, you deployed a simple virtual machine using Terraform. To learn more about Azure virtual machines, continue to the tutorial for Linux VMs.
+In this quickstart, you deployed a Kubernetes cluster and then deployed a simple multi-container application to it. This sample application is for demo purposes only and doesn't represent all the best practices for Kubernetes applications. For guidance on creating full solutions with AKS for production, see [AKS solution guidance][aks-solution-guidance].
+
+To learn more about AKS and walk through a complete code-to-deployment example, continue to the Kubernetes cluster tutorial.
 
 > [!div class="nextstepaction"]
-> [Azure Linux virtual machine tutorials](./tutorial-manage-vm.md)
+> [AKS tutorial][aks-tutorial]
+
+<!-- LINKS - external -->
+[kubectl]: https://kubernetes.io/docs/reference/kubectl/
+[kubectl-apply]: https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands#apply
+[kubectl-get]: https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands#get
+
+<!-- LINKS - internal -->
+[kubernetes-concepts]: ../concepts-clusters-workloads.md
+[aks-tutorial]: ../tutorial-kubernetes-prepare-app.md
+[azure-resource-group]: /azure/azure-resource-manager/management/overview
+[az-aks-create]: /cli/azure/aks#az-aks-create
+[az-aks-get-credentials]: /cli/azure/aks#az-aks-get-credentials
+[az-aks-install-cli]: /cli/azure/aks#az-aks-install-cli
+[az-group-create]: /cli/azure/group#az-group-create
+[az-group-delete]: /cli/azure/group#az-group-delete
+[kubernetes-deployment]: ../concepts-clusters-workloads.md#deployments-and-yaml-manifests
+[aks-solution-guidance]: /azure/architecture/reference-architectures/containers/aks-start-here?toc=/azure/aks/toc.json&bc=/azure/aks/breadcrumb/toc.json
+[baseline-reference-architecture]: /azure/architecture/reference-architectures/containers/aks/baseline-aks?toc=/azure/aks/toc.json&bc=/azure/aks/breadcrumb/toc.json
