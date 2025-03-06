@@ -424,14 +424,14 @@ def generate_dependency_files(doc_path):
     """Extract and generate dependency files referenced in an Exec Doc."""
     if not os.path.isfile(doc_path):
         print(f"\nError: The file {doc_path} does not exist.")
-        return False
+        return False, []
 
     try:
         with open(doc_path, "r") as f:
             doc_content = f.read()
     except Exception as e:
         print(f"\nError reading document: {e}")
-        return False
+        return False, []
 
     # Directory where the doc is located
     doc_dir = os.path.dirname(doc_path) or "."
@@ -447,10 +447,12 @@ def generate_dependency_files(doc_path):
     3. YAML files (configuration, templates, manifests)
     4. JSON files (configuration, templates, API payloads)
     5. Shell scripts (.sh files)
-    6. Any other files where content is provided and meant to be saved separately
+    6. Terraform files (.tf or .tfvars)
+    7. Any other files where content is provided and meant to be saved separately
 
     IMPORTANT: Include files even if their full content is provided in the document!
     If the doc instructs the user to create a file and provides its content, this IS a dependency file.
+    Look for patterns like "create the following file" or "save this content to filename.xyz".
 
     For each file you identify:
     1. Extract the exact filename with its extension
@@ -465,6 +467,8 @@ def generate_dependency_files(doc_path):
             {"role": "user", "content": dependency_prompt + "\n\n" + doc_content}
         ]
     )
+    
+    created_dep_files = []
     
     try:
         # Extract the JSON part from the response with improved robustness
@@ -501,7 +505,7 @@ def generate_dependency_files(doc_path):
         
         if not dependency_list:
             print("\nNo dependency files identified.")
-            return True
+            return True, []
         
         # Create each dependency file with type-specific handling
         created_files = []
@@ -518,8 +522,25 @@ def generate_dependency_files(doc_path):
             # Check if file already exists
             if os.path.exists(file_path):
                 print(f"\nFile already exists: {filename} - Skipping")
+                # Load content from existing file
+                try:
+                    with open(file_path, "r") as f:
+                        existing_content = f.read()
+                    created_dep_files.append({
+                        "filename": filename,
+                        "path": file_path,
+                        "type": file_type,
+                        "content": existing_content  # Include content
+                    })
+                except Exception as e:
+                    print(f"\nWarning: Could not read content from {filename}: {e}")
+                    created_dep_files.append({
+                        "filename": filename,
+                        "path": file_path,
+                        "type": file_type
+                    })
                 continue
-            
+                        
             # Validate and format content based on file type
             try:
                 if filename.endswith('.json') or file_type == 'json':
@@ -538,6 +559,10 @@ def generate_dependency_files(doc_path):
                     except yaml.YAMLError:
                         print(f"\nWarning: Content for {filename} is not valid YAML. Saving as plain text.")
                 
+                elif filename.endswith('.tf') or filename.endswith('.tfvars') or file_type == 'terraform':
+                    # Just store terraform files as-is
+                    pass
+                
                 elif filename.endswith('.sh') or file_type == 'shell':
                     # Ensure shell scripts are executable
                     is_executable = True
@@ -547,10 +572,16 @@ def generate_dependency_files(doc_path):
                     f.write(content)
                 
                 # Make shell scripts executable if needed
-                if (filename.endswith('.sh') or file_type == 'shell') and is_executable:
+                if (filename.endswith('.sh') or file_type == 'shell') and 'is_executable' in locals() and is_executable:
                     os.chmod(file_path, os.stat(file_path).st_mode | 0o111)  # Add executable bit
                 
                 created_files.append(filename)
+                created_dep_files.append({
+                    "filename": filename,
+                    "path": file_path,
+                    "type": file_type,
+                    "content": content
+                })
             except Exception as e:
                 print(f"\nError creating {filename}: {e}")
         
@@ -559,13 +590,126 @@ def generate_dependency_files(doc_path):
         else:
             print("\nNo new dependency files were created.")
         
-        return True
+        return True, created_dep_files
     except Exception as e:
         print(f"\nError generating dependency files: {e}")
         print("\nResponse from model was not valid JSON. Raw response:")
-        # print(response.choices[0].message.content[:500] + "..." if len(response.choices[0].message.content) > 500 else response.choices[0].message.content)
-        return False
+        return False, []
+
+def update_dependency_file(file_info, error_message, main_doc_path):
+    """Update a dependency file based on error message."""
+    filename = file_info["filename"]
+    file_path = file_info["path"]
+    file_type = file_info["type"]
     
+    print(f"\nUpdating dependency file: {filename} based on error...")
+    
+    try:
+        with open(file_path, "r") as f:
+            file_content = f.read()
+        
+        with open(main_doc_path, "r") as f:
+            doc_content = f.read()
+        
+        # Prompt for fixing the dependency file
+        fix_prompt = f"""The following dependency file related to the Exec Doc is causing errors:
+
+        File: {filename}
+        Type: {file_type}
+        Error: {error_message}
+
+        Here is the current content of the file: 
+        
+        {file_content}
+        
+        Here is the main Exec Doc for context:
+
+        {doc_content}
+
+        Please fix the issue in the dependency file. Return ONLY the corrected file content, nothing else.
+        """
+        
+        response = client.chat.completions.create(
+            model=deployment_name,
+            messages=[
+                {"role": "system", "content": "You are an AI specialized in fixing technical issues in configuration and code files."},
+                {"role": "user", "content": fix_prompt}
+            ]
+        )
+        
+        updated_content = response.choices[0].message.content
+        
+        # Remove any markdown formatting that might have been added
+        updated_content = re.sub(r'^```.*$', '', updated_content, flags=re.MULTILINE)
+        updated_content = re.sub(r'^```$', '', updated_content, flags=re.MULTILINE)
+        updated_content = updated_content.strip()
+        
+        # Validate the updated content based on file type
+        if filename.endswith('.json') or file_type == 'json':
+            try:
+                parsed = json.loads(updated_content)
+                updated_content = json.dumps(parsed, indent=2)  # Pretty-print JSON
+            except json.JSONDecodeError:
+                print(f"\nWarning: Updated content for {filename} is not valid JSON.")
+        
+        elif filename.endswith('.yaml') or filename.endswith('.yml') or file_type == 'yaml':
+            try:
+                parsed = yaml.safe_load(updated_content)
+                updated_content = yaml.dump(parsed, default_flow_style=False)  # Pretty-print YAML
+            except yaml.YAMLError:
+                print(f"\nWarning: Updated content for {filename} is not valid YAML.")
+        
+        # Write the updated content to the file
+        with open(file_path, "w") as f:
+            f.write(updated_content)
+        
+        print(f"\nUpdated dependency file: {filename}")
+        return True
+    except Exception as e:
+        print(f"\nError updating dependency file {filename}: {e}")
+        return False
+
+def analyze_error(error_log, dependency_files=[]):
+    """Analyze error log to determine if issue is in main doc or dependency files."""
+    if not dependency_files:
+        return {"type": "main_doc", "file": None}
+    
+    for dep_file in dependency_files:
+        filename = dep_file["filename"]
+        # Check if error mentions the dependency file name
+        if filename in error_log:
+            return {
+                "type": "dependency_file",
+                "file": dep_file,
+                "message": error_log
+            }
+    
+    # If no specific dependency file is mentioned, check for patterns
+    error_patterns = [
+        r"Error: open (.*?): no such file or directory",
+        r"couldn't find file (.*?)( |$|\n)",
+        r"failed to read (.*?):( |$|\n)",
+        r"file (.*?) not found",
+        r"YAML|yaml parsing error",
+        r"JSON|json parsing error",
+        r"invalid format in (.*?)( |$|\n)"
+    ]
+    
+    for pattern in error_patterns:
+        matches = re.search(pattern, error_log, re.IGNORECASE)
+        if matches and len(matches.groups()) > 0:
+            file_mentioned = matches.group(1)
+            for dep_file in dependency_files:
+                if dep_file["filename"] in file_mentioned:
+                    return {
+                        "type": "dependency_file",
+                        "file": dep_file,
+                        "message": error_log
+                    }
+    
+    # Default to main doc if no specific dependency file issues found
+    return {"type": "main_doc", "file": None}
+
 def remove_backticks_from_file(file_path):
     with open(file_path, "r") as f:
         lines = f.readlines()
@@ -725,8 +869,9 @@ def main():
         with open(user_input, "r") as f:
             input_content = f.read()
             input_content = f"CONVERT THE FOLLOWING EXISTING DOCUMENT INTO AN EXEC DOC. THIS IS A CONVERSION TASK, NOT CREATION FROM SCRATCH. DON'T EXPLAIN WHAT YOU ARE DOING BEHIND THE SCENES INSIDE THE DOC. PRESERVE ALL ORIGINAL CONTENT, STRUCTURE, AND NARRATIVE OUTSIDE OF CODE BLOCKS:\n\n{input_content}"
-            if input("\nMake new files referenced in the doc for its execution? (y/n): ").lower() == 'y':
-                generate_dependency_files(user_input) 
+        # We'll generate dependency files later in the process
+        dependency_files = []
+        generate_deps = input("\nMake new files referenced in the doc for its execution? (y/n): ").lower() == 'y'
     elif choice == "2":
         user_input = input("\nDescribe your workload for the new Exec Doc: ")
         if not user_input:
@@ -734,6 +879,8 @@ def main():
             sys.exit(1)
         input_type = 'workload_description'
         input_content = user_input
+        dependency_files = []
+        generate_deps = True
     elif choice == "3":
         user_input = input("\nEnter the path to your shell script: ")
         context = input("\nProvide additional context for the script (optional): ")
@@ -778,8 +925,13 @@ def main():
 
     start_time = time.time()
     errors_encountered = []
+    errors_text = ""  # Initialize errors_text here
+    success = False
+    dependency_files_generated = False
+    additional_instruction = ""
 
     while attempt <= max_attempts:
+        made_dependency_change = False
         if attempt == 1:
             print(f"\n{'='*40}\nAttempt {attempt}: Generating Exec Doc...\n{'='*40}")
             response = client.chat.completions.create(
@@ -792,20 +944,47 @@ def main():
             output_file_content = response.choices[0].message.content
             with open(output_file, "w") as f:
                 f.write(output_file_content)
+                
+            # Generate dependency files after first creation
+            if generate_deps and not dependency_files_generated:
+                _, dependency_files = generate_dependency_files(output_file)
+                dependency_files_generated = True
         else:
             print(f"\n{'='*40}\nAttempt {attempt}: Generating corrections based on error...\n{'='*40}")
-            response = client.chat.completions.create(
-                model=deployment_name,
-                messages=[
-                    {"role": "system", "content": system_prompt},
-                    {"role": "user", "content": input_content},
-                    {"role": "assistant", "content": output_file_content},
-                    {"role": "user", "content": f"The following error(s) have occurred during testing:\n{errors_text}\n{additional_instruction}\n\nPlease carefully analyze these errors and make necessary corrections to the document to prevent them from happening again. Try to find different solutions if the same errors keep occurring. \nGiven that context, please think hard and don't hurry. I want you to correct the converted document in ALL instances where this error has been or can be found. Then, correct ALL other errors apart from this that you see in the doc. ONLY GIVE THE UPDATED DOC, NOTHING ELSE"}
-                ]
-            )
-            output_file_content = response.choices[0].message.content
-            with open(output_file, "w") as f:
-                f.write(output_file_content)
+            
+            # Use a flag to track if we made a dependency change
+            # made_dependency_change = False
+            
+            # Analyze if the error is in the main doc or in dependency files
+            error_analysis = analyze_error(errors_text, dependency_files)
+            
+            if error_analysis["type"] == "dependency_file" and error_analysis["file"]:
+                # If error is in a dependency file, try to fix it
+                dep_file = error_analysis["file"]
+                print(f"\nDetected issue in dependency file: {dep_file['filename']}")
+                update_dependency_file(dep_file, error_analysis["message"], output_file)
+                made_dependency_change = True  # Set the flag
+            else:
+                # If error is in main doc or unknown, update the main doc
+                response = client.chat.completions.create(
+                    model=deployment_name,
+                    messages=[
+                        {"role": "system", "content": system_prompt},
+                        {"role": "user", "content": input_content},
+                        {"role": "assistant", "content": output_file_content},
+                        {"role": "user", "content": f"The following error(s) have occurred during testing:\n{errors_text}\n{additional_instruction}\n\nPlease carefully analyze these errors and make necessary corrections to the document to prevent them from happening again. Try to find different solutions if the same errors keep occurring. \nGiven that context, please think hard and don't hurry. I want you to correct the converted document in ALL instances where this error has been or can be found. Then, correct ALL other errors apart from this that you see in the doc. ONLY GIVE THE UPDATED DOC, NOTHING ELSE"}
+                    ]
+                )
+                output_file_content = response.choices[0].message.content
+                with open(output_file, "w") as f:
+                    f.write(output_file_content)
+                    
+                # Check if we need to regenerate dependency files after updating main doc
+                if generate_deps and dependency_files_generated:
+                    # Regenerate dependency files if major changes were made to the main doc
+                    _, updated_dependency_files = generate_dependency_files(output_file)
+                    if updated_dependency_files:
+                        dependency_files = updated_dependency_files
 
         remove_backticks_from_file(output_file)
 
@@ -817,6 +996,7 @@ def main():
             errors_encountered.append("The 'ie test' command timed out after 11 minutes.")
             attempt += 1
             continue  # Proceed to the next attempt
+            
         if result.returncode == 0:
             print(f"\n{'*'*40}\nAll tests passed successfully.\n{'*'*40}")
             success = True
@@ -831,9 +1011,15 @@ def main():
                         {"role": "user", "content": f"Take the working converted Exec Doc and merge it with the original source document provided for conversion as needed. Ensure that every piece of information outside of code blocks – such as metadata, descriptions, comments, instructions, and any other narrative content – is preserved. The final output should be a comprehensive document that retains all correct code blocks as well as the rich contextual and descriptive details from the source doc, creating the best of both worlds. ONLY GIVE THE UPDATED DOC, NOTHING ELSE"}
                     ]
                 )
-            output_file_content = response.choices[0].message.content
-            with open(output_file, "w") as f:
-                f.write(output_file_content)
+                output_file_content = response.choices[0].message.content
+                with open(output_file, "w") as f:
+                    f.write(output_file_content)
+                    
+            # Generate dependency files for successful docs if not already done
+            if (input_type == 'file' or input_type == 'workload_description') and not dependency_files_generated and generate_deps:
+                print("\nGenerating dependency files for the successful document...")
+                _, dependency_files = generate_dependency_files(output_file)
+                
             remove_backticks_from_file(output_file)
             break
         else:
@@ -889,7 +1075,10 @@ def main():
             
             print(f"\nError: {error_log.strip()}")
             print(f"\n{'!'*40}\nApplying an error troubleshooting strategy...\n{'!'*40}")
-            attempt += 1
+            
+            # Only increment attempt if we didn't make a dependency change
+            if not made_dependency_change:
+                attempt += 1
             success = False
 
     if attempt > max_attempts:

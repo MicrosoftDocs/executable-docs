@@ -1221,3 +1221,18 @@ See vm create -h for more information on specifying an image.
 '
 StdErr: ERROR: Invalid image ""UbuntuLTS"". Use a valid image URN, custom image name, custom image id, VHD blob URI, or pick an image from ['CentOS85Gen2', 'Debian11', 'OpenSuseLeap154Gen2', 'RHELRaw8LVMGen2', 'SuseSles15SP5', 'Ubuntu2204', 'Ubuntu2404', 'Ubuntu2404Pro', 'FlatcarLinuxFreeGen2', 'Win2022Datacenter', 'Win2022AzureEditionCore', 'Win2019Datacenter', 'Win2016Datacenter', 'Win2012R2Datacenter', 'Win2012Datacenter'].
 See vm create -h for more information on specifying an image.",87.87348413467407,Success
+2025-03-05 22:12:36,workload_description,create a linux vm and ssh into it,Deploy Linux VM with SSH Access in Azure_ai_generated.md,1,"time=2025-03-05T22:10:23-08:00 level=error msg=Error testing scenario: failed to execute code block 0 on step 2.
+Error: command exited with 'exit status 1' and the message 'ERROR: Invalid image ""UbuntuLTS"". Use a valid image URN, custom image name, custom image id, VHD blob URI, or pick an image from ['CentOS85Gen2', 'Debian11', 'OpenSuseLeap154Gen2', 'RHELRaw8LVMGen2', 'SuseSles15SP5', 'Ubuntu2204', 'Ubuntu2404', 'Ubuntu2404Pro', 'FlatcarLinuxFreeGen2', 'Win2022Datacenter', 'Win2022AzureEditionCore', 'Win2019Datacenter', 'Win2016Datacenter', 'Win2012R2Datacenter', 'Win2012Datacenter'].
+See vm create -h for more information on specifying an image.
+'
+StdErr: ERROR: Invalid image ""UbuntuLTS"". Use a valid image URN, custom image name, custom image id, VHD blob URI, or pick an image from ['CentOS85Gen2', 'Debian11', 'OpenSuseLeap154Gen2', 'RHELRaw8LVMGen2', 'SuseSles15SP5', 'Ubuntu2204', 'Ubuntu2404', 'Ubuntu2404Pro', 'FlatcarLinuxFreeGen2', 'Win2022Datacenter', 'Win2022AzureEditionCore', 'Win2019Datacenter', 'Win2016Datacenter', 'Win2012R2Datacenter', 'Win2012Datacenter'].
+See vm create -h for more information on specifying an image.",160.46278858184814,Success
+2025-03-06 00:09:24,file,doc.md,doc_converted.md,2,"time=2025-03-06T00:04:08-08:00 level=error msg=Error testing scenario: failed to execute code block 1 on step 5.
+Error: command exited with 'exit status 127' and the message 'bash: line 2: Get-AzVm: command not found
+'
+StdErr: bash: line 2: Get-AzVm: command not found
+
+ time=2025-03-06T00:06:37-08:00 level=error msg=Error testing scenario: failed to execute code block 1 on step 5.
+Error: command exited with 'exit status 127' and the message 'bash: line 2: pwsh: command not found
+'
+StdErr: bash: line 2: pwsh: command not found",578.4860949516296,Success
