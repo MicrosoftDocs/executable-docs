@@ -10,7 +10,6 @@ Welcome to ADA! This tool helps you convert documents and troubleshoot errors ef
 - Redacts Personally Identifiable Information (PII) from Exec Doc result blocks.
 - Automatically identifies and generates dependency files referenced in documents.
 - Performs comprehensive security vulnerability analysis on Exec Docs.
-- Runs tests on the converted document using the Innovation Engine.
 - Logs execution data to a CSV file for analytics.
 
 ## Prerequisites
@@ -149,6 +148,33 @@ Welcome to ADA! This tool helps you convert documents and troubleshoot errors ef
 7. **Dependency Generation**: Optionally identifies and creates dependency files referenced in the document.
 
 8. **Logging**: Logs execution data to `execution_log.csv`.
+
+## Advanced Features
+
+### Dependency File Management
+ADA can identify, generate, and manage auxiliary files referenced in your Exec Docs:
+- Automatically detects files referenced in the document
+- Creates dependency files with proper formatting based on file type
+- Tracks existing files to prevent overwriting user modifications
+- Intelligently updates dependency files when errors are detected
+- Regenerates dependencies when major document changes occur
+
+### Error Resolution System
+When errors occur during testing, ADA employs a sophisticated resolution system:
+- Analyzes errors to determine if they originate in main document or dependency files
+- Uses progressive troubleshooting strategies for persistent errors
+- Only counts attempts against the maximum when fixing the main document
+- Provides specific strategies for different error patterns
+- Remembers previous errors to avoid repetitive solutions
+
+### Progressive Error Strategies
+ADA uses increasingly more aggressive strategies when encountering repeated errors:
+1. Target specific issues identified in error messages
+2. Simplify complex code blocks into smaller, manageable steps
+3. Remove problematic result blocks that may be causing validation issues
+4. Try alternative commands or approaches to achieve the same result
+5. Completely redesign problematic sections with simpler implementations
+6. Remove and rebuild problematic sections from scratch
 
 ## Logging
 
