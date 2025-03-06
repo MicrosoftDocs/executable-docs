@@ -226,3 +226,998 @@ See vm create -h for more information on specifying an image.
 '
 StdErr: ERROR: Invalid image ""UbuntuLTS"". Use a valid image URN, custom image name, custom image id, VHD blob URI, or pick an image from ['CentOS85Gen2', 'Debian11', 'OpenSuseLeap154Gen2', 'RHELRaw8LVMGen2', 'SuseSles15SP5', 'Ubuntu2204', 'Ubuntu2404', 'Ubuntu2404Pro', 'FlatcarLinuxFreeGen2', 'Win2022Datacenter', 'Win2022AzureEditionCore', 'Win2019Datacenter', 'Win2016Datacenter', 'Win2012R2Datacenter', 'Win2012Datacenter'].
 See vm create -h for more information on specifying an image.",153.62026572227478,Success
+2025-03-05 11:22:50,file,doc.md,doc_converted.md,11,"time=2025-03-05T11:10:31-08:00 level=error msg=Error testing scenario: failed to execute code block 0 on step 1.
+Error: invalid character '\x1b' looking for beginning of value
+StdErr:
+
+ time=2025-03-05T11:11:10-08:00 level=error msg=Error testing scenario: failed to execute code block 0 on step 1.
+Error: invalid character 'I' looking for beginning of value
+StdErr:
+
+ time=2025-03-05T11:13:50-08:00 level=error msg=Error testing scenario: failed to execute code block 0 on step 3.
+Error: command exited with 'exit status 1' and the message '
+Error: creating Linux Virtual Machine (Subscription: ""325e7c34-99fb-4190-aa87-1df746c67705""
+Resource Group Name: ""rg-bold-caiman""
+Virtual Machine Name: ""myVM""): performing CreateOrUpdate: unexpected status 409 (409 Conflict) with error: SkuNotAvailable: The requested VM size for resource 'Following SKUs have failed for Capacity Restrictions: Standard_DS1_v2' is currently not available in location 'eastus'. Please try another size or deploy to a different location or different zone. See https://aka.ms/azureskunotavailable for details.
+
+  with azurerm_linux_virtual_machine.my_terraform_vm,
+  on main.tf line 93, in resource ""azurerm_linux_virtual_machine"" ""my_terraform_vm"":
+  93: resource ""azurerm_linux_virtual_machine"" ""my_terraform_vm"" {
+
+'
+StdErr: 
+Error: creating Linux Virtual Machine (Subscription: ""325e7c34-99fb-4190-aa87-1df746c67705""
+Resource Group Name: ""rg-bold-caiman""
+Virtual Machine Name: ""myVM""): performing CreateOrUpdate: unexpected status 409 (409 Conflict) with error: SkuNotAvailable: The requested VM size for resource 'Following SKUs have failed for Capacity Restrictions: Standard_DS1_v2' is currently not available in location 'eastus'. Please try another size or deploy to a different location or different zone. See https://aka.ms/azureskunotavailable for details.
+
+  with azurerm_linux_virtual_machine.my_terraform_vm,
+  on main.tf line 93, in resource ""azurerm_linux_virtual_machine"" ""my_terraform_vm"":
+  93: resource ""azurerm_linux_virtual_machine"" ""my_terraform_vm"" {
+
+ time=2025-03-05T11:15:42-08:00 level=error msg=Error testing scenario: failed to execute code block 0 on step 3.
+Error: command exited with 'exit status 1' and the message '
+Error: deleting Network Interface (Subscription: ""325e7c34-99fb-4190-aa87-1df746c67705""
+Resource Group Name: ""rg-bold-caiman""
+Network Interface Name: ""myNIC""): performing Delete: unexpected status 400 (400 Bad Request) with error: NicReservedForAnotherVm: Nic(s) in request is reserved for another Virtual Machine for 180 seconds. Please provide another nic(s) or retry after 180 seconds. Reserved VM: /subscriptions/325e7c34-99fb-4190-aa87-1df746c67705/resourceGroups/rg-bold-caiman/providers/Microsoft.Compute/virtualMachines/myVM
+
+'
+StdErr: 
+Error: deleting Network Interface (Subscription: ""325e7c34-99fb-4190-aa87-1df746c67705""
+Resource Group Name: ""rg-bold-caiman""
+Network Interface Name: ""myNIC""): performing Delete: unexpected status 400 (400 Bad Request) with error: NicReservedForAnotherVm: Nic(s) in request is reserved for another Virtual Machine for 180 seconds. Please provide another nic(s) or retry after 180 seconds. Reserved VM: /subscriptions/325e7c34-99fb-4190-aa87-1df746c67705/resourceGroups/rg-bold-caiman/providers/Microsoft.Compute/virtualMachines/myVM
+
+ time=2025-03-05T11:16:24-08:00 level=error msg=Error testing scenario: failed to execute code block 0 on step 2.
+Error: command exited with 'exit status 1' and the message 'There are some problems with the configuration, described below.
+
+The Terraform configuration must be valid before initialization so that
+Terraform can determine which modules and providers need to be installed.
+
+Error: Duplicate resource ""random_pet"" configuration
+
+  on network.tf line 1:
+   1: resource ""random_pet"" ""rg_name"" {
+
+A random_pet resource named ""rg_name"" was already declared at main.tf:1,1-32.
+Resource names must be unique per type in each module.
+
+
+Error: Duplicate resource ""azurerm_resource_group"" configuration
+
+  on network.tf line 5:
+   5: resource ""azurerm_resource_group"" ""rg"" {
+
+A azurerm_resource_group resource named ""rg"" was already declared at
+main.tf:5,1-39. Resource names must be unique per type in each module.
+
+
+Error: Duplicate resource ""azurerm_virtual_network"" configuration
+
+  on network.tf line 11:
+  11: resource ""azurerm_virtual_network"" ""my_terraform_network"" {
+
+A azurerm_virtual_network resource named ""my_terraform_network"" was already
+declared at main.tf:11,1-58. Resource names must be unique per type in each
+module.
+
+
+Error: Duplicate resource ""azurerm_subnet"" configuration
+
+  on network.tf line 19:
+  19: resource ""azurerm_subnet"" ""my_terraform_subnet"" {
+
+A azurerm_subnet resource named ""my_terraform_subnet"" was already declared at
+main.tf:19,1-48. Resource names must be unique per type in each module.
+
+
+Error: Duplicate resource ""azurerm_public_ip"" configuration
+
+  on network.tf line 27:
+  27: resource ""azurerm_public_ip"" ""my_terraform_public_ip"" {
+
+A azurerm_public_ip resource named ""my_terraform_public_ip"" was already
+declared at main.tf:27,1-54. Resource names must be unique per type in each
+module.
+
+
+Error: Duplicate resource ""azurerm_network_security_group"" configuration
+
+  on network.tf line 35:
+  35: resource ""azurerm_network_security_group"" ""my_terraform_nsg"" {
+
+A azurerm_network_security_group resource named ""my_terraform_nsg"" was
+already declared at main.tf:35,1-61. Resource names must be unique per type
+in each module.
+
+
+Error: Duplicate resource ""azurerm_network_interface"" configuration
+
+  on network.tf line 54:
+  54: resource ""azurerm_network_interface"" ""my_terraform_nic"" {
+
+A azurerm_network_interface resource named ""my_terraform_nic"" was already
+declared at main.tf:54,1-56. Resource names must be unique per type in each
+module.
+
+
+Error: Duplicate resource ""azurerm_network_interface_security_group_association"" configuration
+
+  on network.tf line 68:
+  68: resource ""azurerm_network_interface_security_group_association"" ""example"" {
+
+A azurerm_network_interface_security_group_association resource named
+""example"" was already declared at main.tf:68,1-74. Resource names must be
+unique per type in each module.
+
+
+Error: Duplicate resource ""random_id"" configuration
+
+  on network.tf line 74:
+  74: resource ""random_id"" ""random_id"" {
+
+A random_id resource named ""random_id"" was already declared at
+main.tf:74,1-33. Resource names must be unique per type in each module.
+
+
+Error: Duplicate resource ""azurerm_storage_account"" configuration
+
+  on network.tf line 82:
+  82: resource ""azurerm_storage_account"" ""my_storage_account"" {
+
+A azurerm_storage_account resource named ""my_storage_account"" was already
+declared at main.tf:84,1-56. Resource names must be unique per type in each
+module.
+
+
+Error: Duplicate resource ""azurerm_linux_virtual_machine"" configuration
+
+  on vm.tf line 1:
+   1: resource ""azurerm_linux_virtual_machine"" ""my_terraform_vm"" {
+
+A azurerm_linux_virtual_machine resource named ""my_terraform_vm"" was already
+declared at main.tf:93,1-59. Resource names must be unique per type in each
+module.
+
+'
+StdErr: There are some problems with the configuration, described below.
+
+The Terraform configuration must be valid before initialization so that
+Terraform can determine which modules and providers need to be installed.
+
+Error: Duplicate resource ""random_pet"" configuration
+
+  on network.tf line 1:
+   1: resource ""random_pet"" ""rg_name"" {
+
+A random_pet resource named ""rg_name"" was already declared at main.tf:1,1-32.
+Resource names must be unique per type in each module.
+
+
+Error: Duplicate resource ""azurerm_resource_group"" configuration
+
+  on network.tf line 5:
+   5: resource ""azurerm_resource_group"" ""rg"" {
+
+A azurerm_resource_group resource named ""rg"" was already declared at
+main.tf:5,1-39. Resource names must be unique per type in each module.
+
+
+Error: Duplicate resource ""azurerm_virtual_network"" configuration
+
+  on network.tf line 11:
+  11: resource ""azurerm_virtual_network"" ""my_terraform_network"" {
+
+A azurerm_virtual_network resource named ""my_terraform_network"" was already
+declared at main.tf:11,1-58. Resource names must be unique per type in each
+module.
+
+
+Error: Duplicate resource ""azurerm_subnet"" configuration
+
+  on network.tf line 19:
+  19: resource ""azurerm_subnet"" ""my_terraform_subnet"" {
+
+A azurerm_subnet resource named ""my_terraform_subnet"" was already declared at
+main.tf:19,1-48. Resource names must be unique per type in each module.
+
+
+Error: Duplicate resource ""azurerm_public_ip"" configuration
+
+  on network.tf line 27:
+  27: resource ""azurerm_public_ip"" ""my_terraform_public_ip"" {
+
+A azurerm_public_ip resource named ""my_terraform_public_ip"" was already
+declared at main.tf:27,1-54. Resource names must be unique per type in each
+module.
+
+
+Error: Duplicate resource ""azurerm_network_security_group"" configuration
+
+  on network.tf line 35:
+  35: resource ""azurerm_network_security_group"" ""my_terraform_nsg"" {
+
+A azurerm_network_security_group resource named ""my_terraform_nsg"" was
+already declared at main.tf:35,1-61. Resource names must be unique per type
+in each module.
+
+
+Error: Duplicate resource ""azurerm_network_interface"" configuration
+
+  on network.tf line 54:
+  54: resource ""azurerm_network_interface"" ""my_terraform_nic"" {
+
+A azurerm_network_interface resource named ""my_terraform_nic"" was already
+declared at main.tf:54,1-56. Resource names must be unique per type in each
+module.
+
+
+Error: Duplicate resource ""azurerm_network_interface_security_group_association"" configuration
+
+  on network.tf line 68:
+  68: resource ""azurerm_network_interface_security_group_association"" ""example"" {
+
+A azurerm_network_interface_security_group_association resource named
+""example"" was already declared at main.tf:68,1-74. Resource names must be
+unique per type in each module.
+
+
+Error: Duplicate resource ""random_id"" configuration
+
+  on network.tf line 74:
+  74: resource ""random_id"" ""random_id"" {
+
+A random_id resource named ""random_id"" was already declared at
+main.tf:74,1-33. Resource names must be unique per type in each module.
+
+
+Error: Duplicate resource ""azurerm_storage_account"" configuration
+
+  on network.tf line 82:
+  82: resource ""azurerm_storage_account"" ""my_storage_account"" {
+
+A azurerm_storage_account resource named ""my_storage_account"" was already
+declared at main.tf:84,1-56. Resource names must be unique per type in each
+module.
+
+
+Error: Duplicate resource ""azurerm_linux_virtual_machine"" configuration
+
+  on vm.tf line 1:
+   1: resource ""azurerm_linux_virtual_machine"" ""my_terraform_vm"" {
+
+A azurerm_linux_virtual_machine resource named ""my_terraform_vm"" was already
+declared at main.tf:93,1-59. Resource names must be unique per type in each
+module.
+
+ time=2025-03-05T11:16:58-08:00 level=error msg=Error testing scenario: failed to execute code block 0 on step 2.
+Error: command exited with 'exit status 1' and the message 'There are some problems with the configuration, described below.
+
+The Terraform configuration must be valid before initialization so that
+Terraform can determine which modules and providers need to be installed.
+
+Error: Duplicate resource ""random_pet"" configuration
+
+  on network.tf line 1:
+   1: resource ""random_pet"" ""rg_name"" {
+
+A random_pet resource named ""rg_name"" was already declared at main.tf:1,1-32.
+Resource names must be unique per type in each module.
+
+
+Error: Duplicate resource ""azurerm_resource_group"" configuration
+
+  on network.tf line 5:
+   5: resource ""azurerm_resource_group"" ""rg"" {
+
+A azurerm_resource_group resource named ""rg"" was already declared at
+main.tf:5,1-39. Resource names must be unique per type in each module.
+
+
+Error: Duplicate resource ""azurerm_virtual_network"" configuration
+
+  on network.tf line 11:
+  11: resource ""azurerm_virtual_network"" ""my_terraform_network"" {
+
+A azurerm_virtual_network resource named ""my_terraform_network"" was already
+declared at main.tf:11,1-58. Resource names must be unique per type in each
+module.
+
+
+Error: Duplicate resource ""azurerm_subnet"" configuration
+
+  on network.tf line 19:
+  19: resource ""azurerm_subnet"" ""my_terraform_subnet"" {
+
+A azurerm_subnet resource named ""my_terraform_subnet"" was already declared at
+main.tf:19,1-48. Resource names must be unique per type in each module.
+
+
+Error: Duplicate resource ""azurerm_public_ip"" configuration
+
+  on network.tf line 27:
+  27: resource ""azurerm_public_ip"" ""my_terraform_public_ip"" {
+
+A azurerm_public_ip resource named ""my_terraform_public_ip"" was already
+declared at main.tf:27,1-54. Resource names must be unique per type in each
+module.
+
+
+Error: Duplicate resource ""azurerm_network_security_group"" configuration
+
+  on network.tf line 35:
+  35: resource ""azurerm_network_security_group"" ""my_terraform_nsg"" {
+
+A azurerm_network_security_group resource named ""my_terraform_nsg"" was
+already declared at main.tf:35,1-61. Resource names must be unique per type
+in each module.
+
+
+Error: Duplicate resource ""azurerm_network_interface"" configuration
+
+  on network.tf line 54:
+  54: resource ""azurerm_network_interface"" ""my_terraform_nic"" {
+
+A azurerm_network_interface resource named ""my_terraform_nic"" was already
+declared at main.tf:54,1-56. Resource names must be unique per type in each
+module.
+
+
+Error: Duplicate resource ""azurerm_network_interface_security_group_association"" configuration
+
+  on network.tf line 68:
+  68: resource ""azurerm_network_interface_security_group_association"" ""example"" {
+
+A azurerm_network_interface_security_group_association resource named
+""example"" was already declared at main.tf:68,1-74. Resource names must be
+unique per type in each module.
+
+
+Error: Duplicate resource ""random_id"" configuration
+
+  on network.tf line 74:
+  74: resource ""random_id"" ""random_id"" {
+
+A random_id resource named ""random_id"" was already declared at
+main.tf:74,1-33. Resource names must be unique per type in each module.
+
+
+Error: Duplicate resource ""azurerm_storage_account"" configuration
+
+  on network.tf line 82:
+  82: resource ""azurerm_storage_account"" ""my_storage_account"" {
+
+A azurerm_storage_account resource named ""my_storage_account"" was already
+declared at main.tf:84,1-56. Resource names must be unique per type in each
+module.
+
+
+Error: Duplicate resource ""azurerm_linux_virtual_machine"" configuration
+
+  on vm.tf line 1:
+   1: resource ""azurerm_linux_virtual_machine"" ""my_terraform_vm"" {
+
+A azurerm_linux_virtual_machine resource named ""my_terraform_vm"" was already
+declared at main.tf:93,1-59. Resource names must be unique per type in each
+module.
+
+'
+StdErr: There are some problems with the configuration, described below.
+
+The Terraform configuration must be valid before initialization so that
+Terraform can determine which modules and providers need to be installed.
+
+Error: Duplicate resource ""random_pet"" configuration
+
+  on network.tf line 1:
+   1: resource ""random_pet"" ""rg_name"" {
+
+A random_pet resource named ""rg_name"" was already declared at main.tf:1,1-32.
+Resource names must be unique per type in each module.
+
+
+Error: Duplicate resource ""azurerm_resource_group"" configuration
+
+  on network.tf line 5:
+   5: resource ""azurerm_resource_group"" ""rg"" {
+
+A azurerm_resource_group resource named ""rg"" was already declared at
+main.tf:5,1-39. Resource names must be unique per type in each module.
+
+
+Error: Duplicate resource ""azurerm_virtual_network"" configuration
+
+  on network.tf line 11:
+  11: resource ""azurerm_virtual_network"" ""my_terraform_network"" {
+
+A azurerm_virtual_network resource named ""my_terraform_network"" was already
+declared at main.tf:11,1-58. Resource names must be unique per type in each
+module.
+
+
+Error: Duplicate resource ""azurerm_subnet"" configuration
+
+  on network.tf line 19:
+  19: resource ""azurerm_subnet"" ""my_terraform_subnet"" {
+
+A azurerm_subnet resource named ""my_terraform_subnet"" was already declared at
+main.tf:19,1-48. Resource names must be unique per type in each module.
+
+
+Error: Duplicate resource ""azurerm_public_ip"" configuration
+
+  on network.tf line 27:
+  27: resource ""azurerm_public_ip"" ""my_terraform_public_ip"" {
+
+A azurerm_public_ip resource named ""my_terraform_public_ip"" was already
+declared at main.tf:27,1-54. Resource names must be unique per type in each
+module.
+
+
+Error: Duplicate resource ""azurerm_network_security_group"" configuration
+
+  on network.tf line 35:
+  35: resource ""azurerm_network_security_group"" ""my_terraform_nsg"" {
+
+A azurerm_network_security_group resource named ""my_terraform_nsg"" was
+already declared at main.tf:35,1-61. Resource names must be unique per type
+in each module.
+
+
+Error: Duplicate resource ""azurerm_network_interface"" configuration
+
+  on network.tf line 54:
+  54: resource ""azurerm_network_interface"" ""my_terraform_nic"" {
+
+A azurerm_network_interface resource named ""my_terraform_nic"" was already
+declared at main.tf:54,1-56. Resource names must be unique per type in each
+module.
+
+
+Error: Duplicate resource ""azurerm_network_interface_security_group_association"" configuration
+
+  on network.tf line 68:
+  68: resource ""azurerm_network_interface_security_group_association"" ""example"" {
+
+A azurerm_network_interface_security_group_association resource named
+""example"" was already declared at main.tf:68,1-74. Resource names must be
+unique per type in each module.
+
+
+Error: Duplicate resource ""random_id"" configuration
+
+  on network.tf line 74:
+  74: resource ""random_id"" ""random_id"" {
+
+A random_id resource named ""random_id"" was already declared at
+main.tf:74,1-33. Resource names must be unique per type in each module.
+
+
+Error: Duplicate resource ""azurerm_storage_account"" configuration
+
+  on network.tf line 82:
+  82: resource ""azurerm_storage_account"" ""my_storage_account"" {
+
+A azurerm_storage_account resource named ""my_storage_account"" was already
+declared at main.tf:84,1-56. Resource names must be unique per type in each
+module.
+
+
+Error: Duplicate resource ""azurerm_linux_virtual_machine"" configuration
+
+  on vm.tf line 1:
+   1: resource ""azurerm_linux_virtual_machine"" ""my_terraform_vm"" {
+
+A azurerm_linux_virtual_machine resource named ""my_terraform_vm"" was already
+declared at main.tf:93,1-59. Resource names must be unique per type in each
+module.
+
+ time=2025-03-05T11:17:48-08:00 level=error msg=Error testing scenario: failed to execute code block 0 on step 2.
+Error: command exited with 'exit status 1' and the message 'There are some problems with the configuration, described below.
+
+The Terraform configuration must be valid before initialization so that
+Terraform can determine which modules and providers need to be installed.
+
+Error: Duplicate resource ""random_pet"" configuration
+
+  on network.tf line 1:
+   1: resource ""random_pet"" ""rg_name"" {
+
+A random_pet resource named ""rg_name"" was already declared at main.tf:1,1-32.
+Resource names must be unique per type in each module.
+
+
+Error: Duplicate resource ""azurerm_resource_group"" configuration
+
+  on network.tf line 5:
+   5: resource ""azurerm_resource_group"" ""rg"" {
+
+A azurerm_resource_group resource named ""rg"" was already declared at
+main.tf:5,1-39. Resource names must be unique per type in each module.
+
+
+Error: Duplicate resource ""azurerm_virtual_network"" configuration
+
+  on network.tf line 11:
+  11: resource ""azurerm_virtual_network"" ""my_terraform_network"" {
+
+A azurerm_virtual_network resource named ""my_terraform_network"" was already
+declared at main.tf:11,1-58. Resource names must be unique per type in each
+module.
+
+
+Error: Duplicate resource ""azurerm_subnet"" configuration
+
+  on network.tf line 19:
+  19: resource ""azurerm_subnet"" ""my_terraform_subnet"" {
+
+A azurerm_subnet resource named ""my_terraform_subnet"" was already declared at
+main.tf:19,1-48. Resource names must be unique per type in each module.
+
+
+Error: Duplicate resource ""azurerm_public_ip"" configuration
+
+  on network.tf line 27:
+  27: resource ""azurerm_public_ip"" ""my_terraform_public_ip"" {
+
+A azurerm_public_ip resource named ""my_terraform_public_ip"" was already
+declared at main.tf:27,1-54. Resource names must be unique per type in each
+module.
+
+
+Error: Duplicate resource ""azurerm_network_security_group"" configuration
+
+  on network.tf line 35:
+  35: resource ""azurerm_network_security_group"" ""my_terraform_nsg"" {
+
+A azurerm_network_security_group resource named ""my_terraform_nsg"" was
+already declared at main.tf:35,1-61. Resource names must be unique per type
+in each module.
+
+
+Error: Duplicate resource ""azurerm_network_interface"" configuration
+
+  on network.tf line 54:
+  54: resource ""azurerm_network_interface"" ""my_terraform_nic"" {
+
+A azurerm_network_interface resource named ""my_terraform_nic"" was already
+declared at main.tf:54,1-56. Resource names must be unique per type in each
+module.
+
+
+Error: Duplicate resource ""azurerm_network_interface_security_group_association"" configuration
+
+  on network.tf line 68:
+  68: resource ""azurerm_network_interface_security_group_association"" ""example"" {
+
+A azurerm_network_interface_security_group_association resource named
+""example"" was already declared at main.tf:68,1-74. Resource names must be
+unique per type in each module.
+
+
+Error: Duplicate resource ""random_id"" configuration
+
+  on network.tf line 74:
+  74: resource ""random_id"" ""random_id"" {
+
+A random_id resource named ""random_id"" was already declared at
+main.tf:74,1-33. Resource names must be unique per type in each module.
+
+
+Error: Duplicate resource ""azurerm_storage_account"" configuration
+
+  on network.tf line 82:
+  82: resource ""azurerm_storage_account"" ""my_storage_account"" {
+
+A azurerm_storage_account resource named ""my_storage_account"" was already
+declared at main.tf:84,1-56. Resource names must be unique per type in each
+module.
+
+
+Error: Duplicate resource ""azurerm_linux_virtual_machine"" configuration
+
+  on vm.tf line 1:
+   1: resource ""azurerm_linux_virtual_machine"" ""my_terraform_vm"" {
+
+A azurerm_linux_virtual_machine resource named ""my_terraform_vm"" was already
+declared at main.tf:93,1-59. Resource names must be unique per type in each
+module.
+
+'
+StdErr: There are some problems with the configuration, described below.
+
+The Terraform configuration must be valid before initialization so that
+Terraform can determine which modules and providers need to be installed.
+
+Error: Duplicate resource ""random_pet"" configuration
+
+  on network.tf line 1:
+   1: resource ""random_pet"" ""rg_name"" {
+
+A random_pet resource named ""rg_name"" was already declared at main.tf:1,1-32.
+Resource names must be unique per type in each module.
+
+
+Error: Duplicate resource ""azurerm_resource_group"" configuration
+
+  on network.tf line 5:
+   5: resource ""azurerm_resource_group"" ""rg"" {
+
+A azurerm_resource_group resource named ""rg"" was already declared at
+main.tf:5,1-39. Resource names must be unique per type in each module.
+
+
+Error: Duplicate resource ""azurerm_virtual_network"" configuration
+
+  on network.tf line 11:
+  11: resource ""azurerm_virtual_network"" ""my_terraform_network"" {
+
+A azurerm_virtual_network resource named ""my_terraform_network"" was already
+declared at main.tf:11,1-58. Resource names must be unique per type in each
+module.
+
+
+Error: Duplicate resource ""azurerm_subnet"" configuration
+
+  on network.tf line 19:
+  19: resource ""azurerm_subnet"" ""my_terraform_subnet"" {
+
+A azurerm_subnet resource named ""my_terraform_subnet"" was already declared at
+main.tf:19,1-48. Resource names must be unique per type in each module.
+
+
+Error: Duplicate resource ""azurerm_public_ip"" configuration
+
+  on network.tf line 27:
+  27: resource ""azurerm_public_ip"" ""my_terraform_public_ip"" {
+
+A azurerm_public_ip resource named ""my_terraform_public_ip"" was already
+declared at main.tf:27,1-54. Resource names must be unique per type in each
+module.
+
+
+Error: Duplicate resource ""azurerm_network_security_group"" configuration
+
+  on network.tf line 35:
+  35: resource ""azurerm_network_security_group"" ""my_terraform_nsg"" {
+
+A azurerm_network_security_group resource named ""my_terraform_nsg"" was
+already declared at main.tf:35,1-61. Resource names must be unique per type
+in each module.
+
+
+Error: Duplicate resource ""azurerm_network_interface"" configuration
+
+  on network.tf line 54:
+  54: resource ""azurerm_network_interface"" ""my_terraform_nic"" {
+
+A azurerm_network_interface resource named ""my_terraform_nic"" was already
+declared at main.tf:54,1-56. Resource names must be unique per type in each
+module.
+
+
+Error: Duplicate resource ""azurerm_network_interface_security_group_association"" configuration
+
+  on network.tf line 68:
+  68: resource ""azurerm_network_interface_security_group_association"" ""example"" {
+
+A azurerm_network_interface_security_group_association resource named
+""example"" was already declared at main.tf:68,1-74. Resource names must be
+unique per type in each module.
+
+
+Error: Duplicate resource ""random_id"" configuration
+
+  on network.tf line 74:
+  74: resource ""random_id"" ""random_id"" {
+
+A random_id resource named ""random_id"" was already declared at
+main.tf:74,1-33. Resource names must be unique per type in each module.
+
+
+Error: Duplicate resource ""azurerm_storage_account"" configuration
+
+  on network.tf line 82:
+  82: resource ""azurerm_storage_account"" ""my_storage_account"" {
+
+A azurerm_storage_account resource named ""my_storage_account"" was already
+declared at main.tf:84,1-56. Resource names must be unique per type in each
+module.
+
+
+Error: Duplicate resource ""azurerm_linux_virtual_machine"" configuration
+
+  on vm.tf line 1:
+   1: resource ""azurerm_linux_virtual_machine"" ""my_terraform_vm"" {
+
+A azurerm_linux_virtual_machine resource named ""my_terraform_vm"" was already
+declared at main.tf:93,1-59. Resource names must be unique per type in each
+module.
+
+ time=2025-03-05T11:20:29-08:00 level=error msg=Error testing scenario: failed to execute code block 0 on step 4.
+Error: command exited with 'exit status 1' and the message '
+Error: Provider produced inconsistent result after apply
+
+When applying changes to azurerm_network_security_group.my_terraform_nsg,
+provider ""provider[\""registry.terraform.io/hashicorp/azurerm\""]"" produced an
+unexpected new value: Root resource was present, but now absent.
+
+This is a bug in the provider, which should be reported in the provider's own
+issue tracker.
+
+Error: Provider produced inconsistent result after apply
+
+When applying changes to azurerm_virtual_network.my_terraform_network,
+provider ""provider[\""registry.terraform.io/hashicorp/azurerm\""]"" produced an
+unexpected new value: Root resource was present, but now absent.
+
+This is a bug in the provider, which should be reported in the provider's own
+issue tracker.
+
+Error: creating Network Interface (Subscription: ""325e7c34-99fb-4190-aa87-1df746c67705""
+Resource Group Name: ""rg-bold-caiman""
+Network Interface Name: ""myNIC""): performing CreateOrUpdate: unexpected status 400 (400 Bad Request) with error: InvalidResourceReference: Resource /subscriptions/325e7c34-99fb-4190-aa87-1df746c67705/resourceGroups/rg-bold-caiman/providers/Microsoft.Network/virtualNetworks/myVnet/subnets/mySubnet referenced by resource /subscriptions/325e7c34-99fb-4190-aa87-1df746c67705/resourceGroups/rg-bold-caiman/providers/Microsoft.Network/networkInterfaces/myNIC was not found. Please make sure that the referenced resource exists, and that both resources are in the same region.
+
+  with azurerm_network_interface.my_terraform_nic,
+  on network.tf line 54, in resource ""azurerm_network_interface"" ""my_terraform_nic"":
+  54: resource ""azurerm_network_interface"" ""my_terraform_nic"" {
+
+
+Error: retrieving Storage Account (Subscription: ""325e7c34-99fb-4190-aa87-1df746c67705""
+Resource Group Name: ""rg-bold-caiman""
+Storage Account Name: ""diag0bdcb34b14495a71""): unexpected status 404 (404 Not Found) with error: ResourceNotFound: The Resource 'Microsoft.Storage/storageAccounts/diag0bdcb34b14495a71' under resource group 'rg-bold-caiman' was not found. For more details please go to https://aka.ms/ARMResourceNotFoundFix
+
+  with azurerm_storage_account.my_storage_account,
+  on network.tf line 82, in resource ""azurerm_storage_account"" ""my_storage_account"":
+  82: resource ""azurerm_storage_account"" ""my_storage_account"" {
+
+
+Error: Failed to create/update resource
+
+  with azapi_resource.ssh_public_key,
+  on ssh.tf line 15, in resource ""azapi_resource"" ""ssh_public_key"":
+  15: resource ""azapi_resource"" ""ssh_public_key"" {
+
+creating/updating Resource: (ResourceId
+""/subscriptions/325e7c34-99fb-4190-aa87-1df746c67705/resourceGroups/rg-bold-caiman/providers/Microsoft.Compute/sshPublicKeys/sshevidentjaguar""
+/ Api Version ""2022-11-01""): GET
+https://management.azure.com/subscriptions/325e7c34-99fb-4190-aa87-1df746c67705/resourceGroups/rg-bold-caiman/providers/Microsoft.Compute/sshPublicKeys/sshevidentjaguar
+--------------------------------------------------------------------------------
+RESPONSE 404: 404 Not Found
+ERROR CODE: ResourceNotFound
+--------------------------------------------------------------------------------
+{
+  ""error"": {
+    ""code"": ""ResourceNotFound"",
+    ""message"": ""The Resource 'Microsoft.Compute/sshPublicKeys/sshevidentjaguar' under resource group 'rg-bold-caiman' was not found. For more details please go to https://aka.ms/ARMResourceNotFoundFix""
+  }
+}
+--------------------------------------------------------------------------------
+
+'
+StdErr: 
+Error: Provider produced inconsistent result after apply
+
+When applying changes to azurerm_network_security_group.my_terraform_nsg,
+provider ""provider[\""registry.terraform.io/hashicorp/azurerm\""]"" produced an
+unexpected new value: Root resource was present, but now absent.
+
+This is a bug in the provider, which should be reported in the provider's own
+issue tracker.
+
+Error: Provider produced inconsistent result after apply
+
+When applying changes to azurerm_virtual_network.my_terraform_network,
+provider ""provider[\""registry.terraform.io/hashicorp/azurerm\""]"" produced an
+unexpected new value: Root resource was present, but now absent.
+
+This is a bug in the provider, which should be reported in the provider's own
+issue tracker.
+
+Error: creating Network Interface (Subscription: ""325e7c34-99fb-4190-aa87-1df746c67705""
+Resource Group Name: ""rg-bold-caiman""
+Network Interface Name: ""myNIC""): performing CreateOrUpdate: unexpected status 400 (400 Bad Request) with error: InvalidResourceReference: Resource /subscriptions/325e7c34-99fb-4190-aa87-1df746c67705/resourceGroups/rg-bold-caiman/providers/Microsoft.Network/virtualNetworks/myVnet/subnets/mySubnet referenced by resource /subscriptions/325e7c34-99fb-4190-aa87-1df746c67705/resourceGroups/rg-bold-caiman/providers/Microsoft.Network/networkInterfaces/myNIC was not found. Please make sure that the referenced resource exists, and that both resources are in the same region.
+
+  with azurerm_network_interface.my_terraform_nic,
+  on network.tf line 54, in resource ""azurerm_network_interface"" ""my_terraform_nic"":
+  54: resource ""azurerm_network_interface"" ""my_terraform_nic"" {
+
+
+Error: retrieving Storage Account (Subscription: ""325e7c34-99fb-4190-aa87-1df746c67705""
+Resource Group Name: ""rg-bold-caiman""
+Storage Account Name: ""diag0bdcb34b14495a71""): unexpected status 404 (404 Not Found) with error: ResourceNotFound: The Resource 'Microsoft.Storage/storageAccounts/diag0bdcb34b14495a71' under resource group 'rg-bold-caiman' was not found. For more details please go to https://aka.ms/ARMResourceNotFoundFix
+
+  with azurerm_storage_account.my_storage_account,
+  on network.tf line 82, in resource ""azurerm_storage_account"" ""my_storage_account"":
+  82: resource ""azurerm_storage_account"" ""my_storage_account"" {
+
+
+Error: Failed to create/update resource
+
+  with azapi_resource.ssh_public_key,
+  on ssh.tf line 15, in resource ""azapi_resource"" ""ssh_public_key"":
+  15: resource ""azapi_resource"" ""ssh_public_key"" {
+
+creating/updating Resource: (ResourceId
+""/subscriptions/325e7c34-99fb-4190-aa87-1df746c67705/resourceGroups/rg-bold-caiman/providers/Microsoft.Compute/sshPublicKeys/sshevidentjaguar""
+/ Api Version ""2022-11-01""): GET
+https://management.azure.com/subscriptions/325e7c34-99fb-4190-aa87-1df746c67705/resourceGroups/rg-bold-caiman/providers/Microsoft.Compute/sshPublicKeys/sshevidentjaguar
+--------------------------------------------------------------------------------
+RESPONSE 404: 404 Not Found
+ERROR CODE: ResourceNotFound
+--------------------------------------------------------------------------------
+{
+  ""error"": {
+    ""code"": ""ResourceNotFound"",
+    ""message"": ""The Resource 'Microsoft.Compute/sshPublicKeys/sshevidentjaguar' under resource group 'rg-bold-caiman' was not found. For more details please go to https://aka.ms/ARMResourceNotFoundFix""
+  }
+}
+--------------------------------------------------------------------------------
+
+ time=2025-03-05T11:21:26-08:00 level=error msg=Error testing scenario: failed to execute code block 0 on step 2.
+Error: command exited with 'exit status 1' and the message '
+Error: Failed to query available provider packages
+
+Could not retrieve the list of available versions for provider
+hashicorp/azapi: provider registry registry.terraform.io does not have a
+provider named registry.terraform.io/hashicorp/azapi
+
+Did you intend to use azure/azapi? If so, you must specify that source
+address in each module which requires that provider. To see which modules are
+currently depending on hashicorp/azapi, run the following command:
+    terraform providers
+
+'
+StdErr: 
+Error: Failed to query available provider packages
+
+Could not retrieve the list of available versions for provider
+hashicorp/azapi: provider registry registry.terraform.io does not have a
+provider named registry.terraform.io/hashicorp/azapi
+
+Did you intend to use azure/azapi? If so, you must specify that source
+address in each module which requires that provider. To see which modules are
+currently depending on hashicorp/azapi, run the following command:
+    terraform providers
+
+ time=2025-03-05T11:22:09-08:00 level=error msg=Error testing scenario: failed to execute code block 0 on step 4.
+Error: command exited with 'exit status 1' and the message 'There are some problems with the configuration, described below.
+
+The Terraform configuration must be valid before initialization so that
+Terraform can determine which modules and providers need to be installed.
+
+Error: Duplicate resource ""random_pet"" configuration
+
+  on network.tf line 1:
+   1: resource ""random_pet"" ""rg_name"" {
+
+A random_pet resource named ""rg_name"" was already declared at main.tf:2,1-32.
+Resource names must be unique per type in each module.
+
+
+Error: Duplicate resource ""azurerm_resource_group"" configuration
+
+  on network.tf line 5:
+   5: resource ""azurerm_resource_group"" ""rg"" {
+
+A azurerm_resource_group resource named ""rg"" was already declared at
+main.tf:12,1-39. Resource names must be unique per type in each module.
+
+
+Error: Duplicate resource ""azurerm_network_interface_security_group_association"" configuration
+
+  on network.tf line 68:
+  68: resource ""azurerm_network_interface_security_group_association"" ""nsg_assoc"" {
+
+A azurerm_network_interface_security_group_association resource named
+""nsg_assoc"" was already declared at main.tf:75,1-76. Resource names must be
+unique per type in each module.
+
+'
+StdErr: There are some problems with the configuration, described below.
+
+The Terraform configuration must be valid before initialization so that
+Terraform can determine which modules and providers need to be installed.
+
+Error: Duplicate resource ""random_pet"" configuration
+
+  on network.tf line 1:
+   1: resource ""random_pet"" ""rg_name"" {
+
+A random_pet resource named ""rg_name"" was already declared at main.tf:2,1-32.
+Resource names must be unique per type in each module.
+
+
+Error: Duplicate resource ""azurerm_resource_group"" configuration
+
+  on network.tf line 5:
+   5: resource ""azurerm_resource_group"" ""rg"" {
+
+A azurerm_resource_group resource named ""rg"" was already declared at
+main.tf:12,1-39. Resource names must be unique per type in each module.
+
+
+Error: Duplicate resource ""azurerm_network_interface_security_group_association"" configuration
+
+  on network.tf line 68:
+  68: resource ""azurerm_network_interface_security_group_association"" ""nsg_assoc"" {
+
+A azurerm_network_interface_security_group_association resource named
+""nsg_assoc"" was already declared at main.tf:75,1-76. Resource names must be
+unique per type in each module.
+
+ time=2025-03-05T11:22:50-08:00 level=error msg=Error testing scenario: failed to execute code block 0 on step 4.
+Error: command exited with 'exit status 1' and the message 'There are some problems with the configuration, described below.
+
+The Terraform configuration must be valid before initialization so that
+Terraform can determine which modules and providers need to be installed.
+
+Error: Duplicate resource ""random_pet"" configuration
+
+  on network.tf line 1:
+   1: resource ""random_pet"" ""rg_name"" {
+
+A random_pet resource named ""rg_name"" was already declared at main.tf:2,1-32.
+Resource names must be unique per type in each module.
+
+
+Error: Duplicate resource ""azurerm_resource_group"" configuration
+
+  on network.tf line 5:
+   5: resource ""azurerm_resource_group"" ""rg"" {
+
+A azurerm_resource_group resource named ""rg"" was already declared at
+main.tf:12,1-39. Resource names must be unique per type in each module.
+
+
+Error: Duplicate resource ""azurerm_network_interface_security_group_association"" configuration
+
+  on network.tf line 68:
+  68: resource ""azurerm_network_interface_security_group_association"" ""nsg_assoc"" {
+
+A azurerm_network_interface_security_group_association resource named
+""nsg_assoc"" was already declared at main.tf:75,1-76. Resource names must be
+unique per type in each module.
+
+'
+StdErr: There are some problems with the configuration, described below.
+
+The Terraform configuration must be valid before initialization so that
+Terraform can determine which modules and providers need to be installed.
+
+Error: Duplicate resource ""random_pet"" configuration
+
+  on network.tf line 1:
+   1: resource ""random_pet"" ""rg_name"" {
+
+A random_pet resource named ""rg_name"" was already declared at main.tf:2,1-32.
+Resource names must be unique per type in each module.
+
+
+Error: Duplicate resource ""azurerm_resource_group"" configuration
+
+  on network.tf line 5:
+   5: resource ""azurerm_resource_group"" ""rg"" {
+
+A azurerm_resource_group resource named ""rg"" was already declared at
+main.tf:12,1-39. Resource names must be unique per type in each module.
+
+
+Error: Duplicate resource ""azurerm_network_interface_security_group_association"" configuration
+
+  on network.tf line 68:
+  68: resource ""azurerm_network_interface_security_group_association"" ""nsg_assoc"" {
+
+A azurerm_network_interface_security_group_association resource named
+""nsg_assoc"" was already declared at main.tf:75,1-76. Resource names must be
+unique per type in each module.",873.9581248760223,Failure
+2025-03-05 12:00:05,workload_description,create a linux vm and ssh into it,Deploy a Linux VM and Connect via SSH_ai_generated.md,1,"time=2025-03-05T11:58:41-08:00 level=error msg=Error testing scenario: failed to execute code block 0 on step 2.
+Error: command exited with 'exit status 1' and the message 'ERROR: Invalid image ""UbuntuLTS"". Use a valid image URN, custom image name, custom image id, VHD blob URI, or pick an image from ['CentOS85Gen2', 'Debian11', 'OpenSuseLeap154Gen2', 'RHELRaw8LVMGen2', 'SuseSles15SP5', 'Ubuntu2204', 'Ubuntu2404', 'Ubuntu2404Pro', 'FlatcarLinuxFreeGen2', 'Win2022Datacenter', 'Win2022AzureEditionCore', 'Win2019Datacenter', 'Win2016Datacenter', 'Win2012R2Datacenter', 'Win2012Datacenter'].
+See vm create -h for more information on specifying an image.
+'
+StdErr: ERROR: Invalid image ""UbuntuLTS"". Use a valid image URN, custom image name, custom image id, VHD blob URI, or pick an image from ['CentOS85Gen2', 'Debian11', 'OpenSuseLeap154Gen2', 'RHELRaw8LVMGen2', 'SuseSles15SP5', 'Ubuntu2204', 'Ubuntu2404', 'Ubuntu2404Pro', 'FlatcarLinuxFreeGen2', 'Win2022Datacenter', 'Win2022AzureEditionCore', 'Win2019Datacenter', 'Win2016Datacenter', 'Win2012R2Datacenter', 'Win2012Datacenter'].
+See vm create -h for more information on specifying an image.",109.34437084197998,Success
+2025-03-05 15:01:21,workload_description,create a linux vm and ssh into it ,Create Linux VM with SSH Access on Azure_ai_generated.md,1,"time=2025-03-05T15:00:22-08:00 level=error msg=Error testing scenario: failed to execute code block 0 on step 1.
+Error: command exited with 'exit status 1' and the message 'ERROR: Invalid image ""UbuntuLTS"". Use a valid image URN, custom image name, custom image id, VHD blob URI, or pick an image from ['CentOS85Gen2', 'Debian11', 'OpenSuseLeap154Gen2', 'RHELRaw8LVMGen2', 'SuseSles15SP5', 'Ubuntu2204', 'Ubuntu2404', 'Ubuntu2404Pro', 'FlatcarLinuxFreeGen2', 'Win2022Datacenter', 'Win2022AzureEditionCore', 'Win2019Datacenter', 'Win2016Datacenter', 'Win2012R2Datacenter', 'Win2012Datacenter'].
+See vm create -h for more information on specifying an image.
+'
+StdErr: ERROR: Invalid image ""UbuntuLTS"". Use a valid image URN, custom image name, custom image id, VHD blob URI, or pick an image from ['CentOS85Gen2', 'Debian11', 'OpenSuseLeap154Gen2', 'RHELRaw8LVMGen2', 'SuseSles15SP5', 'Ubuntu2204', 'Ubuntu2404', 'Ubuntu2404Pro', 'FlatcarLinuxFreeGen2', 'Win2022Datacenter', 'Win2022AzureEditionCore', 'Win2019Datacenter', 'Win2016Datacenter', 'Win2012R2Datacenter', 'Win2012Datacenter'].
+See vm create -h for more information on specifying an image.",87.87348413467407,Success
