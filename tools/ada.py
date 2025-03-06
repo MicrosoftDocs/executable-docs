@@ -438,6 +438,31 @@ def generate_dependency_files(doc_path):
     
     print("\nAnalyzing document for dependencies...")
     
+    # First, detect file creation patterns in the document to avoid conflicts
+    file_creation_patterns = [
+        # Cat heredoc to a file
+        (r'cat\s*<<\s*[\'"]?(EOF|END)[\'"]?\s*>\s*([^\s;]+)', 1),
+        # Echo content to a file
+        (r'echo\s+.*?>\s*([^\s;]+)', 0),
+        # Tee command
+        (r'tee\s+([^\s;]+)', 0)
+    ]
+    
+    doc_created_files = []
+    for pattern, group_idx in file_creation_patterns:
+        matches = re.findall(pattern, doc_content, re.DOTALL)
+        for match in matches:
+            if isinstance(match, tuple):
+                filename = match[group_idx]
+            else:
+                filename = match
+            doc_created_files.append(filename)
+    
+    if doc_created_files:
+        print("\nDetected file creation commands in document:")
+        for file in doc_created_files:
+            print(f"  - {file}")
+    
     # Enhanced prompt for better dependency file identification
     dependency_prompt = """Analyze this Exec Doc and identify ANY files that the user is instructed to create.
     
@@ -507,9 +532,23 @@ def generate_dependency_files(doc_path):
             print("\nNo dependency files identified.")
             return True, []
         
+        # Filter out dependency files that have inline creation commands in the document
+        filtered_deps = []
+        for dep in dependency_list:
+            filename = dep.get("filename")
+            if not filename:
+                continue
+                
+            if filename in doc_created_files:
+                print(f"\nWARNING: File '{filename}' is both created in document and identified as a dependency.")
+                print(f"  - Skipping dependency management for this file to avoid conflicts.")
+                continue
+            
+            filtered_deps.append(dep)
+        
         # Create each dependency file with type-specific handling
         created_files = []
-        for dep in dependency_list:
+        for dep in filtered_deps:
             filename = dep.get("filename")
             content = dep.get("content")
             file_type = dep.get("type", "").lower()
@@ -596,6 +635,60 @@ def generate_dependency_files(doc_path):
         print("\nResponse from model was not valid JSON. Raw response:")
         return False, []
 
+# Add this function after generate_dependency_files function (approximately line 609)
+
+def transform_document_for_dependencies(doc_path, dependency_files):
+    """Remove file creation commands from document when using dependency files."""
+    if not dependency_files:
+        return False
+    
+    try:
+        with open(doc_path, "r") as f:
+            doc_content = f.read()
+            
+        original_content = doc_content
+        modified = False
+        
+        for dep_file in dependency_files:
+            filename = dep_file["filename"]
+            
+            # Pattern to match cat/EOF blocks for file creation
+            cat_pattern = re.compile(
+                r'```(?:bash|azurecli|azure-cli-interactive|azurecli-interactive)\s*\n'
+                r'(.*?cat\s*<<\s*[\'"]?(EOF|END)[\'"]?\s*>\s*' + re.escape(filename) + r'.*?EOF.*?)'
+                r'\n```',
+                re.DOTALL
+            )
+            
+            # Replace with a reference to the external file
+            if cat_pattern.search(doc_content):
+                replacement = f"```bash\n# Using external file: {filename}\n```\n\n"
+                doc_content = cat_pattern.sub(replacement, doc_content)
+                modified = True
+                print(f"\nTransformed document to use external {filename} instead of inline creation")
+                
+            # Handle other file creation patterns (echo, tee)
+            echo_pattern = re.compile(
+                r'```(?:bash|azurecli|azure-cli-interactive|azurecli-interactive)\s*\n'
+                r'(.*?echo\s+.*?>\s*' + re.escape(filename) + r'.*?)'
+                r'\n```',
+                re.DOTALL
+            )
+            if echo_pattern.search(doc_content):
+                replacement = f"```bash\n# Using external file: {filename}\n```\n\n"
+                doc_content = echo_pattern.sub(replacement, doc_content)
+                modified = True
+                
+        if modified:
+            with open(doc_path, "w") as f:
+                f.write(doc_content)
+            print("\nDocument transformed to use external dependency files")
+            return True
+        return False
+    except Exception as e:
+        print(f"\nError transforming document: {e}")
+        return False
+    
 def update_dependency_file(file_info, error_message, main_doc_path):
     """Update a dependency file based on error message."""
     filename = file_info["filename"]
@@ -857,7 +950,7 @@ def main():
     print("  2. Describe workload to generate a new Exec Doc")
     print("  3. Add descriptions to a shell script as an Exec Doc")
     print("  4. Redact PII from an existing Exec Doc")
-    print("  5. Perform security vulnerability check on an Exec Doc")
+    print("  5. Generate a security analysis report for an Exec Doc")
     choice = input("\nEnter the number corresponding to your choice: ")
 
     if choice == "1":
@@ -949,6 +1042,15 @@ def main():
             if generate_deps and not dependency_files_generated:
                 _, dependency_files = generate_dependency_files(output_file)
                 dependency_files_generated = True
+
+                 # Generate dependency files after first creation
+            if generate_deps and not dependency_files_generated:
+                _, dependency_files = generate_dependency_files(output_file)
+                dependency_files_generated = True
+                
+                # Add this new line to transform the document after dependency generation
+                if dependency_files:
+                    transform_document_for_dependencies(output_file, dependency_files)
         else:
             print(f"\n{'='*40}\nAttempt {attempt}: Generating corrections based on error...\n{'='*40}")
             

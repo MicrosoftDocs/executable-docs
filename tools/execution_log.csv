@@ -1236,3 +1236,33 @@ StdErr: bash: line 2: Get-AzVm: command not found
 Error: command exited with 'exit status 127' and the message 'bash: line 2: pwsh: command not found
 '
 StdErr: bash: line 2: pwsh: command not found",578.4860949516296,Success
+2025-03-06 12:42:03,workload_description,create a linux vm and ssh into it using terraform,Deploy Linux VM and SSH using Terraform_ai_generated.md,2,"time=2025-03-06T12:36:09-08:00 level=error msg=Error testing scenario: failed to execute code block 0 on step 4.
+Error: Expected output does not match actual output.
+Got:                                         
+""""
+                                             
+Expected:                                    
+x.x.x.x
+                                                  
+Expected Score:0.300000                            
+Actual Score:0.000000                              
+StdErr:
+
+ time=2025-03-06T12:38:45-08:00 level=error msg=Error testing scenario: failed to execute code block 0 on step 5.
+Error: command exited with 'exit status 255' and the message 'Pseudo-terminal will not be allocated because stdin is not a terminal.
+ssh: Could not resolve hostname x.x.x.x: Name or service not known
+'
+StdErr: Pseudo-terminal will not be allocated because stdin is not a terminal.
+ssh: Could not resolve hostname x.x.x.x: Name or service not known",490.6871666908264,Success
+2025-03-06 13:11:31,file,convert.md,convert_converted.md,0,,97.25097727775574,Success
+2025-03-06 13:17:04,workload_description,create a linux vm and ssh into it,Deploy Linux VM with SSH Access_ai_generated.md,2,"time=2025-03-06T13:14:15-08:00 level=error msg=Error testing scenario: failed to execute code block 0 on step 1.
+Error: command exited with 'exit status 1' and the message 'ERROR: Invalid image ""UbuntuLTS"". Use a valid image URN, custom image name, custom image id, VHD blob URI, or pick an image from ['CentOS85Gen2', 'Debian11', 'OpenSuseLeap154Gen2', 'RHELRaw8LVMGen2', 'SuseSles15SP5', 'Ubuntu2204', 'Ubuntu2404', 'Ubuntu2404Pro', 'FlatcarLinuxFreeGen2', 'Win2022Datacenter', 'Win2022AzureEditionCore', 'Win2019Datacenter', 'Win2016Datacenter', 'Win2012R2Datacenter', 'Win2012Datacenter'].
+See vm create -h for more information on specifying an image.
+'
+StdErr: ERROR: Invalid image ""UbuntuLTS"". Use a valid image URN, custom image name, custom image id, VHD blob URI, or pick an image from ['CentOS85Gen2', 'Debian11', 'OpenSuseLeap154Gen2', 'RHELRaw8LVMGen2', 'SuseSles15SP5', 'Ubuntu2204', 'Ubuntu2404', 'Ubuntu2404Pro', 'FlatcarLinuxFreeGen2', 'Win2022Datacenter', 'Win2022AzureEditionCore', 'Win2019Datacenter', 'Win2016Datacenter', 'Win2012R2Datacenter', 'Win2012Datacenter'].
+See vm create -h for more information on specifying an image.
+
+ time=2025-03-06T13:14:46-08:00 level=error msg=Error testing scenario: failed to execute code block 0 on step 1.
+Error: command exited with 'exit status 1' and the message 'ERROR: {""error"":{""code"":""InvalidTemplateDeployment"",""message"":""The template deployment 'vm_deploy_sx95BEHUMfLmMWthesw8MpVq7FOIx45d' is not valid according to the validation procedure. The tracking id is '44b14b15-e2ea-4ac8-b5db-a9415338882f'. See inner errors for details."",""details"":[{""code"":""SkuNotAvailable"",""message"":""The requested VM size for resource 'Following SKUs have failed for Capacity Restrictions: Standard_B1s' is currently not available in location 'westus2'. Please try another size or deploy to a different location or different zone. See https://aka.ms/azureskunotavailable for details.""}]}}
+'
+StdErr: ERROR: {""error"":{""code"":""InvalidTemplateDeployment"",""message"":""The template deployment 'vm_deploy_sx95BEHUMfLmMWthesw8MpVq7FOIx45d' is not valid according to the validation procedure. The tracking id is '44b14b15-e2ea-4ac8-b5db-a9415338882f'. See inner errors for details."",""details"":[{""code"":""SkuNotAvailable"",""message"":""The requested VM size for resource 'Following SKUs have failed for Capacity Restrictions: Standard_B1s' is currently not available in location 'westus2'. Please try another size or deploy to a different location or different zone. See https://aka.ms/azureskunotavailable for details.""}]}}",245.48310685157776,Success
