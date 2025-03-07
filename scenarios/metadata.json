@@ -1136,7 +1136,7 @@
         "status": "active",
         "key": "azure-compute-docs/articles/virtual-machines/linux/quick-create-terraform.md",
         "title": "Quickstart: Use Terraform to create a Linux VM",
-        "description": "In this quickstart, you learn how to use Terraform to create a Linux virtual machine",
+        "description": "In this quickstart, you learn how to use Terraform to create a Linux virtual machine.",
         "stackDetails": [
         ],
         "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-compute-docs/articles/virtual-machines/linux/quick-create-terraform.md",
