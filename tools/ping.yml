@@ -1,9 +1,0 @@
-- gather_facts: false
-  hosts: all
-  tasks:
-  - name: run ping
-    ping: null
-  vars:
-    ansible_password: '{{ lookup(''env'',''SSH_PASSWORD'') }}'
-    ansible_ssh_common_args: -o StrictHostKeyChecking=no
-    ansible_user: '{{ lookup(''env'',''SSH_USER'') }}'
