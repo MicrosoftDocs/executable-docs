@@ -34,9 +34,9 @@ Not all documentation is suitable for conversion to Exec Docs. Use these filters
    
    **Example:**
    ```markdown
-    ```bash
-    az group create --name myResourceGroup --location eastus
-    ```
+        ```bash
+        az group create --name myResourceGroup --location eastus
+        ```
    ```
 
    >**Note:** This rule does not apply to output code blocks, which are used to display the results of commands, scripts, or other operations. These blocks help in illustrating what the expected output should look like. They include, but are not limited to, the following types: _output, json, yaml, console, text, and log._
@@ -57,10 +57,10 @@ Not all documentation is suitable for conversion to Exec Docs. Use these filters
    
    **Example of supported command:**
    ```markdown
-    ```bash
-    export VM_NAME="myVM"
-    az vm create --name $VM_NAME --resource-group myResourceGroup --image UbuntuLTS
-    ```
+        ```bash
+        export VM_NAME="myVM"
+        az vm create --name $VM_NAME --resource-group myResourceGroup --image UbuntuLTS
+        ```
    ```
 
 3. **Azure Portal Custom Cloud Shell Constraints**
@@ -77,17 +77,17 @@ Not all documentation is suitable for conversion to Exec Docs. Use these filters
     
    **Example of supported command:**
    ```markdown
-    ```bash
-    az group create --name myResourceGroup --location eastus
-    ```
+        ```bash
+        az group create --name myResourceGroup --location eastus
+        ```
    ```
    
    **Example of potentially unsupported command:**
    ```markdown
-    ```bash
-    # This requires elevated Graph API permissions and would fail
-    az ad app create --display-name myApp --native-app
-    ```
+        ```bash
+        # This requires elevated Graph API permissions and would fail
+        az ad app create --display-name myApp --native-app
+        ```
    ```
 
 This filter system ensures that you select documentation that can be effectively transformed into executable docs that provide value through automated deployment capabilities.
@@ -162,7 +162,7 @@ Check if all prerequisites below are met before writing the Exec Doc. ***If any 
     **Example:** 
 
     ```markdown 
-    # Quickstart: Deploy an Azure Kubernetes Service (AKS) cluster using Azure CLI 
+        # Quickstart: Deploy an Azure Kubernetes Service (AKS) cluster using Azure CLI 
     ``` 
 
 ### Writing Requirements
@@ -404,12 +404,12 @@ Check if all prerequisites below are met before writing the Exec Doc. ***If any 
 
         **Deeplink Template:**
         ```markdown
-        [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://ms.portal.azure.com/#view/Microsoft_Azure_CloudNative/SubscriptionSelectionPage.ReactView/isLearnMode~/true/referer/docs/tutorialKey/<add_file_path_of_Exec_Doc>)
+            [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://ms.portal.azure.com/#view/Microsoft_Azure_CloudNative/SubscriptionSelectionPage.ReactView/isLearnMode~/true/referer/docs/tutorialKey/<add_file_path_of_Exec_Doc>)
         ```
 
         **Deeplink for Example Exec Doc:**
         ```markdown
-        [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://ms.portal.azure.com/#view/Microsoft_Azure_CloudNative/SubscriptionSelectionPage.ReactView/isLearnMode~/true/referer/docs/tutorialKey/azure-docs%2farticles%2faks%2fquick-kubernetes-deploy-cli.md)
+            [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://ms.portal.azure.com/#view/Microsoft_Azure_CloudNative/SubscriptionSelectionPage.ReactView/isLearnMode~/true/referer/docs/tutorialKey/azure-docs%2farticles%2faks%2fquick-kubernetes-deploy-cli.md)
         ```
 
         **Example of Button in Live Exec Doc:**
