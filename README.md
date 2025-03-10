@@ -62,6 +62,13 @@ Not all documentation is suitable for conversion to Exec Docs. Use these filters
         ```
    ```
 
+    **Example of unsupported command:**
+    ```markdown
+          ```sql
+            SELECT * FROM myTable WHERE id = 1;
+          ```
+    ```
+
 3. **Azure Portal Custom Cloud Shell Constraints**
     - **Supported scenarios:**
         - Standard Azure resource operations (create, read, update, delete)
