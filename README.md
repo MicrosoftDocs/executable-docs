@@ -23,8 +23,6 @@ These experiences utilize [Innovation Engine](https://github.com/Azure/Innovatio
 
 Not all documentation is suitable for conversion to Exec Docs. Use these filters to determine if a document can be effectively converted:
 
-### Technical Constraints
-
 1. **Supported Code Block Types**
    - The document must contain code blocks using at least one of these types:
      - `bash`
@@ -70,7 +68,7 @@ Not all documentation is suitable for conversion to Exec Docs. Use these filters
         - Commands running within the user's subscription scope
         - Standard service deployments (VMs, storage, networking)
     
-    - **Not supported without special configuration:**
+    - **Not supported currrently:**
         - Commands requiring elevated Microsoft Graph API permissions
         - Operations needing KeyVault special access
         - Cross-subscription or tenant-level operations
@@ -83,7 +81,7 @@ Not all documentation is suitable for conversion to Exec Docs. Use these filters
         ```
    ```
    
-   **Example of potentially unsupported command:**
+   **Example of unsupported command:**
    ```markdown
         ```bash
         # This requires elevated Graph API permissions and would fail
@@ -91,7 +89,7 @@ Not all documentation is suitable for conversion to Exec Docs. Use these filters
         ```
    ```
 
-This filter system ensures that you select documentation that can be effectively transformed into executable docs that provide value through automated deployment capabilities.
+This filter system ensures that you select documentation that can be effectively transformed into executable docs that provide value through automated deployment capabilities. Please reach out to the [Exec Docs Team](#contact-information-for-exec-docs) if you have any questions about the suitability of a document for conversion to an Exec Doc.
 
 ## How to Write an Exec Doc
 
