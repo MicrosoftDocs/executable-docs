@@ -43,7 +43,7 @@ Not all documentation is suitable for conversion to Exec Docs. Use these filters
    >**Note:** While Innovation Engine can _parse_ a code block of any type, given its current features, it can only _execute_ code blocks of the types above. So, it is important to ensure that the code blocks in your Exec Doc are of the types above. 
 
 2. **Command Execution Limitations**
-   - **Not supported for direct execution (unless executed via bash):**
+   - **Not supported for direct execution:**
      - PowerShell scripts 
      - Python, Ruby, or Node.js code 
      - SQL commands
