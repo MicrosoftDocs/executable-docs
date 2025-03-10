@@ -31,6 +31,7 @@ Not all documentation is suitable for conversion to Exec Docs. Use these filters
      - `azurecli`
      - `azure-cli-interactive`
      - `azurecli-interactive`
+     - `terraform`
    
    **Example:**
    ```markdown
