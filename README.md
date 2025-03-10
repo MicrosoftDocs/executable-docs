@@ -8,6 +8,7 @@ These experiences utilize [Innovation Engine](https://github.com/Azure/Innovatio
 
 ## Table of Contents
 
+- [Selecting Documentation for Exec Docs](#selecting-documentation-for-exec-docs)
 - [How to Write an Exec Doc](#how-to-write-an-exec-doc)
     - [Training Resources (Optional)](#training-resources-optional)
     - [Setup](#setup)
@@ -17,6 +18,79 @@ These experiences utilize [Innovation Engine](https://github.com/Azure/Innovatio
 - [Current Exec Docs Experience](#current-exec-docs-experience)
 - [Frequently Asked Questions (FAQs)](#frequently-asked-questions-faqs)
 - [Contact Information for Exec Docs](#contact-information-for-exec-docs)
+
+## Selecting Documentation for Exec Docs
+
+Not all documentation is suitable for conversion to Exec Docs. Use these filters to determine if a document can be effectively converted:
+
+### Technical Constraints
+
+1. **Supported Code Block Types**
+   - The document must contain code blocks using at least one of these types:
+     - `bash`
+     - `azurecli`
+     - `azure-cli-interactive`
+     - `azurecli-interactive`
+   
+   **Example:**
+   ```markdown
+    ```bash
+    az group create --name myResourceGroup --location eastus
+    ```
+   ```
+
+   >**Note:** This rule does not apply to output code blocks, which are used to display the results of commands, scripts, or other operations. These blocks help in illustrating what the expected output should look like. They include, but are not limited to, the following types: _output, json, yaml, console, text, and log._
+
+   >**Note:** While Innovation Engine can _parse_ a code block of any type, given its current features, it can only _execute_ code blocks of the types above. So, it is important to ensure that the code blocks in your Exec Doc are of the types above. 
+
+2. **Command Execution Limitations**
+   - **Not supported for direct execution (unless executed via bash):**
+     - PowerShell scripts 
+     - Python, Ruby, or Node.js code 
+     - SQL commands
+     - GUI-based instructions
+   
+   - **Supported execution context:**
+     - Commands that run in a Linux/bash environment
+     - Azure CLI commands
+     - Terraform commands (with appropriate setup)
+   
+   **Example of supported command:**
+   ```markdown
+    ```bash
+    export VM_NAME="myVM"
+    az vm create --name $VM_NAME --resource-group myResourceGroup --image UbuntuLTS
+    ```
+   ```
+
+3. **Azure Portal Custom Cloud Shell Constraints**
+    - **Supported scenarios:**
+        - Standard Azure resource operations (create, read, update, delete)
+        - Commands running within the user's subscription scope
+        - Standard service deployments (VMs, storage, networking)
+    
+    - **Not supported without special configuration:**
+        - Commands requiring elevated Microsoft Graph API permissions
+        - Operations needing KeyVault special access
+        - Cross-subscription or tenant-level operations
+        - Commands requiring admin consent
+    
+   **Example of supported command:**
+   ```markdown
+    ```bash
+    az group create --name myResourceGroup --location eastus
+    ```
+   ```
+   
+   **Example of potentially unsupported command:**
+   ```markdown
+    ```bash
+    # This requires elevated Graph API permissions and would fail
+    az ad app create --display-name myApp --native-app
+    ```
+   ```
+
+This filter system ensures that you select documentation that can be effectively transformed into executable docs that provide value through automated deployment capabilities.
 
 ## How to Write an Exec Doc
 
@@ -81,26 +155,7 @@ Check if all prerequisites below are met before writing the Exec Doc. ***If any 
     │       └── my-script.yaml 
     ``` 
 
-6. Code blocks are used to provide examples, commands, or other code snippets in Exec Docs. They are distinguished by a triple backtick (```) at the start and end of the block. 
-
-    Ensure that the Exec Doc contains at least 1 code block and every input code block's type in the Exec Doc is taken from this list: 
-
-    - bash 
-    - azurecli
-    - azure-cli-interactive 
-    - azurecli-interactive  
-
-    **Example:** 
-
-    ```bash 
-    az group create --name $MY_RESOURCE_GROUP_NAME --location $REGION 
-    ``` 
-
-    >**Note:** This rule does not apply to output code blocks, which are used to display the results of commands, scripts, or other operations. These blocks help in illustrating what the expected output should look like. They include, but are not limited to, the following types: _output, json, yaml, console, text, and log._
-
-    >**Note:** While Innovation Engine can _parse_ a code block of any type, given its current features, it can only _execute_ code blocks of the types above. So, it is important to ensure that the code blocks in your Exec Doc are of the types above. 
-
-7. Headings are used to organize content in a document. The number of hashes indicates the level of the heading. For example, a single hash (#) denotes an h1 heading, two hashes (##) denote an h2 heading, and so on. Innovation Engine uses headings to structure the content of an Exec Doc and to provide a clear outline of the document's contents. 
+6. Headings are used to organize content in a document. The number of hashes indicates the level of the heading. For example, a single hash (#) denotes an h1 heading, two hashes (##) denote an h2 heading, and so on. Innovation Engine uses headings to structure the content of an Exec Doc and to provide a clear outline of the document's contents. 
 
     Ensure there is at least one h1 heading in the Exec Doc, denoted by a single hash (#) at the start of the line. 
 

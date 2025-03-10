@@ -1,0 +1,9 @@
+plugin: azure_rm
+include_vm_resource_groups:
+  - ${RESOURCE_GROUP}
+auth_source: auto
+conditional_groups:
+  linux: "'ubuntu' in image.offer"
+  windows: "'WindowsServer' in image.offer"
+keyed_groups:
+ - key: tags.applicationRole

@@ -1,0 +1,11 @@
+- gather_facts: false
+  hosts: windows
+  tasks:
+  - name: run win_ping
+    win_ping: null
+  vars:
+    ansible_connection: winrm
+    ansible_password: '{{ lookup(''env'',''WIN_PASSWORD'') }}'
+    ansible_user: '{{ lookup(''env'',''WIN_USER'') }}'
+    ansible_winrm_server_cert_validation: ignore
+    ansible_winrm_transport: ntlm

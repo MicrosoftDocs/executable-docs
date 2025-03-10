@@ -1266,3 +1266,56 @@ See vm create -h for more information on specifying an image.
 Error: command exited with 'exit status 1' and the message 'ERROR: {""error"":{""code"":""InvalidTemplateDeployment"",""message"":""The template deployment 'vm_deploy_sx95BEHUMfLmMWthesw8MpVq7FOIx45d' is not valid according to the validation procedure. The tracking id is '44b14b15-e2ea-4ac8-b5db-a9415338882f'. See inner errors for details."",""details"":[{""code"":""SkuNotAvailable"",""message"":""The requested VM size for resource 'Following SKUs have failed for Capacity Restrictions: Standard_B1s' is currently not available in location 'westus2'. Please try another size or deploy to a different location or different zone. See https://aka.ms/azureskunotavailable for details.""}]}}
 '
 StdErr: ERROR: {""error"":{""code"":""InvalidTemplateDeployment"",""message"":""The template deployment 'vm_deploy_sx95BEHUMfLmMWthesw8MpVq7FOIx45d' is not valid according to the validation procedure. The tracking id is '44b14b15-e2ea-4ac8-b5db-a9415338882f'. See inner errors for details."",""details"":[{""code"":""SkuNotAvailable"",""message"":""The requested VM size for resource 'Following SKUs have failed for Capacity Restrictions: Standard_B1s' is currently not available in location 'westus2'. Please try another size or deploy to a different location or different zone. See https://aka.ms/azureskunotavailable for details.""}]}}",245.48310685157776,Success
+2025-03-06 18:43:21,file,convert.md,convert_converted.md,11,"time=2025-03-06T18:01:49-08:00 level=error msg=Error testing scenario: failed to execute code block 0 on step 0.
+Error: unexpected end of JSON input
+StdErr:
+
+ time=2025-03-06T18:03:00-08:00 level=error msg=Error testing scenario: failed to execute code block 1 on step 1.
+Error: command exited with 'exit status 1' and the message 'WARNING: Consider upgrading security for your workloads using Azure Trusted Launch VMs. To know more about Trusted Launch, please visit https://aka.ms/TrustedLaunch.
+ERROR: {""error"":{""code"":""InvalidTemplateDeployment"",""message"":""The template deployment 'vm_deploy_uwCOm6AsMFaPq38JK3iUeOr5GzysgPPQ' is not valid according to the validation procedure. The tracking id is '4b44146b-f9ec-45c0-b06e-4547a098c85d'. See inner errors for details."",""details"":[{""code"":""SkuNotAvailable"",""message"":""The requested VM size for resource 'Following SKUs have failed for Capacity Restrictions: Standard_DS1_v2' is currently not available in location 'eastus'. Please try another size or deploy to a different location or different zone. See https://aka.ms/azureskunotavailable for details.""}]}}
+'
+StdErr: WARNING: Consider upgrading security for your workloads using Azure Trusted Launch VMs. To know more about Trusted Launch, please visit https://aka.ms/TrustedLaunch.
+ERROR: {""error"":{""code"":""InvalidTemplateDeployment"",""message"":""The template deployment 'vm_deploy_uwCOm6AsMFaPq38JK3iUeOr5GzysgPPQ' is not valid according to the validation procedure. The tracking id is '4b44146b-f9ec-45c0-b06e-4547a098c85d'. See inner errors for details."",""details"":[{""code"":""SkuNotAvailable"",""message"":""The requested VM size for resource 'Following SKUs have failed for Capacity Restrictions: Standard_DS1_v2' is currently not available in location 'eastus'. Please try another size or deploy to a different location or different zone. See https://aka.ms/azureskunotavailable for details.""}]}}
+
+ time=2025-03-06T18:04:04-08:00 level=error msg=Error testing scenario: failed to execute code block 1 on step 1.
+Error: command exited with 'exit status 1' and the message 'WARNING: Consider upgrading security for your workloads using Azure Trusted Launch VMs. To know more about Trusted Launch, please visit https://aka.ms/TrustedLaunch.
+ERROR: {""error"":{""code"":""InvalidTemplateDeployment"",""message"":""The template deployment 'vm_deploy_NH1l0tnhOQitW1xREka8tnjlo6i9gBYS' is not valid according to the validation procedure. The tracking id is '53aa2916-7335-490c-bcf1-69953a136620'. See inner errors for details."",""details"":[{""code"":""SkuNotAvailable"",""message"":""The requested VM size for resource 'Following SKUs have failed for Capacity Restrictions: Standard_B1s' is currently not available in location 'westus2'. Please try another size or deploy to a different location or different zone. See https://aka.ms/azureskunotavailable for details.""}]}}
+'
+StdErr: WARNING: Consider upgrading security for your workloads using Azure Trusted Launch VMs. To know more about Trusted Launch, please visit https://aka.ms/TrustedLaunch.
+ERROR: {""error"":{""code"":""InvalidTemplateDeployment"",""message"":""The template deployment 'vm_deploy_NH1l0tnhOQitW1xREka8tnjlo6i9gBYS' is not valid according to the validation procedure. The tracking id is '53aa2916-7335-490c-bcf1-69953a136620'. See inner errors for details."",""details"":[{""code"":""SkuNotAvailable"",""message"":""The requested VM size for resource 'Following SKUs have failed for Capacity Restrictions: Standard_B1s' is currently not available in location 'westus2'. Please try another size or deploy to a different location or different zone. See https://aka.ms/azureskunotavailable for details.""}]}}
+
+ time=2025-03-06T18:09:03-08:00 level=error msg=Error testing scenario: failed to execute code block 0 on step 2.
+Error: command exited with 'exit status 127' and the message 'bash: line 2: =: command not found
+'
+StdErr: bash: line 2: =: command not found
+
+ time=2025-03-06T18:13:52-08:00 level=error msg=Error testing scenario: failed to execute code block 0 on step 2.
+Error: command exited with 'exit status 127' and the message 'bash: line 2: =: command not found
+'
+StdErr: bash: line 2: =: command not found
+
+ time=2025-03-06T18:18:58-08:00 level=error msg=Error testing scenario: failed to execute code block 1 on step 1.
+Error: invalid character '{' after top-level value
+StdErr: WARNING: Consider upgrading security for your workloads using Azure Trusted Launch VMs. To know more about Trusted Launch, please visit https://aka.ms/TrustedLaunch.
+
+ time=2025-03-06T18:23:55-08:00 level=error msg=Error testing scenario: failed to execute code block 1 on step 1.
+Error: invalid character '{' after top-level value
+StdErr: WARNING: Consider upgrading security for your workloads using Azure Trusted Launch VMs. To know more about Trusted Launch, please visit https://aka.ms/TrustedLaunch.
+
+ time=2025-03-06T18:28:29-08:00 level=error msg=Error testing scenario: failed to execute code block 1 on step 1.
+Error: invalid character '{' after top-level value
+StdErr: WARNING: Consider upgrading security for your workloads using Azure Trusted Launch VMs. To know more about Trusted Launch, please visit https://aka.ms/TrustedLaunch.
+
+ time=2025-03-06T18:34:32-08:00 level=error msg=Error testing scenario: failed to execute code block 1 on step 2.
+Error: command exited with 'exit status 127' and the message 'bash: line 2: ansible-inventory: command not found
+'
+StdErr: bash: line 2: ansible-inventory: command not found
+
+ time=2025-03-06T18:35:22-08:00 level=error msg=Error testing scenario: failed to execute code block 0 on step 0.
+Error: command exited with 'exit status 1' and the message ''
+StdErr:
+
+ time=2025-03-06T18:43:21-08:00 level=error msg=Error testing scenario: failed to execute code block 1 on step 2.
+Error: command exited with 'exit status 127' and the message 'bash: line 2: ansible-inventory: command not found
+'
+StdErr: bash: line 2: ansible-inventory: command not found",2563.7570362091064,Failure

@@ -1,194 +1,387 @@
 ---
-title: 'How-to: Create and deploy an Azure OpenAI Service resource'
-titleSuffix: Azure OpenAI
-description: Learn how to get started with Azure OpenAI Service and create your first resource and deploy your first model in the Azure CLI or the Azure portal.
-#services: cognitive-services
-manager: nitinme
-ms.service: azure-ai-openai
-ms.custom: devx-track-azurecli, build-2023, build-2023-dataai, devx-track-azurepowershell, innovation-engine
-ms.topic: how-to
-ms.date: 01/31/2025
-zone_pivot_groups: openai-create-resource
-author: mrbullwinkle
-ms.author: mbullwin
-recommendations: false
+title: Tutorial - Configure dynamic inventories for Azure Virtual Machines using Ansible
+description: Learn how to populate your Ansible inventory dynamically from information in Azure
+keywords: ansible, azure, devops, bash, cloudshell, dynamic inventory
+ms.topic: tutorial
+ms.date: 08/14/2024
+ms.custom: devx-track-ansible, devx-track-azurecli, devx-track-azurepowershell, linux-related-content
+author: ansibleexpert
+ms.author: ansibleexpert
 ---
 
-# Create and deploy an Azure OpenAI Service resource
+# Tutorial: Configure dynamic inventories of your Azure resources using Ansible
 
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2303211)
+[!INCLUDE [ansible-28-note.md](includes/ansible-28-note.md)]
 
-This article describes how to get started with Azure OpenAI Service and provides step-by-step instructions to create a resource and deploy a model. You can create resources in Azure in several different ways:
+Before you begin, ensure that your environment has Ansible installed.
 
-- The [Azure portal](https://portal.azure.com/?microsoft_azure_marketplace_ItemHideKey=microsoft_openai_tip#create/Microsoft.CognitiveServicesOpenAI)
-- The REST APIs, the Azure CLI, PowerShell, or client libraries
-- Azure Resource Manager (ARM) templates
+Set the following environment variables. These declarations ensure unique resource names and provide needed configuration so that the Exec Doc runs non-interactively.
 
-In this article, you review examples for creating and deploying resources in the Azure portal and with the Azure CLI.
+```bash
+export RANDOM_SUFFIX=$(openssl rand -hex 3)
+export RESOURCE_GROUP="ansibleinventorytestrg${RANDOM_SUFFIX}"
+export REGION="centralindia"
+export ADMIN_PASSWORD="P@ssw0rd123!"
+```
+
+The [Ansible dynamic inventory](https://docs.ansible.com/ansible/latest/user_guide/intro_dynamic_inventory.html) feature removes the burden of maintaining static inventory files.
+
+In this tutorial, you use Azure's dynamic-inventory plug-in to populate your Ansible inventory.
+
+In this article, you learn how to:
+
+> [!div class="checklist"]
+> * Configure two test virtual machines.
+> * Add tags to Azure virtual machines.
+> * Generate a dynamic inventory.
+> * Use conditional and keyed groups to populate group memberships.
+> * Run playbooks against groups within the dynamic inventory.
 
 ## Prerequisites
 
-- An Azure subscription. <a href="https://azure.microsoft.com/free/ai-services" target="_blank">Create one for free</a>.
-- Access permissions to [create Azure OpenAI resources and to deploy models](../how-to/role-based-access-control.md).
-- The Azure CLI. For more information, see [How to install the Azure CLI](/cli/azure/install-azure-cli).
+[!INCLUDE [open-source-devops-prereqs-azure-subscription.md](../includes/open-source-devops-prereqs-azure-subscription.md)]
+[!INCLUDE [open-source-devops-prereqs-create-service-principal.md](../includes/open-source-devops-prereqs-create-service-principal.md)]
+[!INCLUDE [ansible-prereqs-cloudshell-use-or-vm-creation2.md](includes/ansible-prereqs-cloudshell-use-or-vm-creation2.md)]
 
-## Create an Azure resource group
+## Create Azure VMs
 
-To create an Azure OpenAI resource, you need an Azure resource group. When you create a new resource through the Azure CLI, you can also create a new resource group or instruct Azure to use an existing group. The following example shows how to create a new resource group named OAIResourceGroup with the az group create command. The resource group is created in the East US location.
+1. Sign in to the [Azure portal](https://go.microsoft.com/fwlink/p/?LinkID=525040).
 
-```azurecli
-export RANDOM_SUFFIX=$(openssl rand -hex 3)
-export REGION="eastus"
-export OAI_RESOURCE_GROUP="OAIResourceGroup$RANDOM_SUFFIX"
-az group create --name $OAI_RESOURCE_GROUP --location $REGION
+2. Open [Cloud Shell](/azure/cloud-shell/overview).
+
+3. Create an Azure resource group to hold the virtual machines for this tutorial.
+
+    > [!IMPORTANT]
+    > The Azure resource group you create in this step must have a name that is entirely lower-case. Otherwise, the generation of the dynamic inventory will fail.
+
+    # [Azure CLI](#tab/azure-cli)
+    ```azurecli-interactive
+    az group create --resource-group $RESOURCE_GROUP --location $REGION
+    ```
+    # [Azure PowerShell]
+    ```azurepowershell
+    New-AzResourceGroup -Name $RESOURCE_GROUP -Location $REGION
+    ```
+
+4. Create two virtual machines on Azure using one of the following techniques:
+
+    - **Ansible playbook** – The articles [Create a basic Linux virtual machine in Azure with Ansible](./vm-configure.md) and [Create a basic Windows virtual machine in Azure with Ansible](./vm-configure-windows.md) illustrate how to create a virtual machine from an Ansible playbook.
+
+    - **Azure CLI** – Issue each of the following commands in Cloud Shell to create the two virtual machines. Note that the --size parameter is provided to avoid unavailable SKU errors.
+    
+        # [Azure CLI](#tab/azure-cli)
+        ```azurecli-interactive
+        az vm create \
+          --resource-group $RESOURCE_GROUP \
+          --name win-vm \
+          --image MicrosoftWindowsServer:WindowsServer:2019-Datacenter:latest \
+          --size Standard_B1s \
+          --admin-username azureuser \
+          --admin-password $ADMIN_PASSWORD
+
+        az vm create \
+          --resource-group $RESOURCE_GROUP \
+          --name linux-vm \
+          --image Ubuntu2204 \
+          --size Standard_B1s \
+          --admin-username azureuser \
+          --admin-password $ADMIN_PASSWORD
+        ```
+    
+        # [Azure PowerShell]
+        ```azurepowershell
+        $adminUsername = "azureuser"
+        $adminPassword = ConvertTo-SecureString $env:ADMIN_PASSWORD -AsPlainText -Force
+        $credential = New-Object System.Management.Automation.PSCredential ($adminUsername, $adminPassword);
+
+        New-AzVM `
+          -ResourceGroupName $RESOURCE_GROUP `
+          -Location $REGION `
+          -Image MicrosoftWindowsServer:WindowsServer:2019-Datacenter:latest `
+          -Name win-vm `
+          -Size Standard_B1s `
+          -OpenPorts 3389 `
+          -Credential $credential
+
+        New-AzVM `
+          -ResourceGroupName $RESOURCE_GROUP `
+          -Location $REGION `
+          -Image Ubuntu2204 `
+          -Name linux-vm `
+          -Size Standard_B1s `
+          -OpenPorts 22 `
+          -Credential $credential
+        ```
+        (Replace any password placeholders with the variable ADMIN_PASSWORD.)
+
+## Add application role tags
+
+Tags are used to organize and categorize Azure resources. Assigning the Azure VMs an application role allows you to use the tags as group names within the Azure dynamic inventory.
+
+Run the following commands to update the VM tags:
+
+# [Azure CLI](#tab/azure-cli)
+```azurecli-interactive
+az vm update \
+  --resource-group $RESOURCE_GROUP \
+  --name linux-vm \
+  --set tags.applicationRole='message-broker'
+
+az vm update \
+  --resource-group $RESOURCE_GROUP \
+  --name win-vm \
+  --set tags.applicationRole='web-server'
 ```
 
-Results: 
+# [Azure PowerShell]
+```azurepowershell
+Update-AzVM -VM (Get-AzVM -Name win-vm -ResourceGroupName $RESOURCE_GROUP) -Tag @{applicationRole="web-server"}
+Update-AzVM -VM (Get-AzVM -Name linux-vm -ResourceGroupName $RESOURCE_GROUP) -Tag @{applicationRole="message-broker"}
+```
+
+Learn more about Azure tagging strategies at [Define your tagging strategy](/azure/cloud-adoption-framework/ready/azure-best-practices/resource-tagging).
+
+## Generate a dynamic inventory
+
+Ansible provides an [Azure dynamic-inventory plug-in](https://github.com/ansible/ansible/blob/stable-2.9/lib/ansible/plugins/inventory/azure_rm.py). 
+
+The following steps walk you through using the plug-in:
+
+1. Create a dynamic inventory named "myazure_rm.yml" with the basic configuration.
+
+```bash
+cat <<EOF > myazure_rm.yml
+plugin: azure_rm
+include_vm_resource_groups:
+  - ${RESOURCE_GROUP}
+auth_source: auto
+EOF
+```
+
+2. Run the following command to query the VMs within the resource group.
+
+```bash
+ansible-inventory -i myazure_rm.yml --graph
+```
+
+Results:
 
 <!-- expected_similarity=0.3 -->
-
-```JSON
-{
-  "id": "/subscriptions/xxxxx/resourceGroups/OAIResourceGroupxxxxx",
-  "location": "eastus",
-  "managedBy": null,
-  "name": "OAIResourceGroupxxxxx",
-  "properties": {
-    "provisioningState": "Succeeded"
-  },
-  "tags": null,
-  "type": "Microsoft.Resources/resourceGroups"
-}
-```
-
-## Create a resource
-
-Use the az cognitiveservices account create command to create an Azure OpenAI resource in the resource group. In the following example, you create a resource named MyOpenAIResource in the OAI_RESOURCE_GROUP resource group. When you try the example, update the code to use your desired values for the resource group and resource name.
-
-```azurecli
-export OPENAI_RESOURCE_NAME="MyOpenAIResource$RANDOM_SUFFIX"
-az cognitiveservices account create \
---name $OPENAI_RESOURCE_NAME \
---resource-group $OAI_RESOURCE_GROUP \
---location $REGION \
---kind OpenAI \
---sku s0
-```
-
-Results: 
-
-<!-- expected_similarity=0.3 -->
-
-```JSON
-{
-  "id": "/subscriptions/xxxxx/resourceGroups/OAIResourceGroupxxxxx/providers/Microsoft.CognitiveServices/accounts/MyOpenAIResourcexxxxx",
-  "kind": "OpenAI",
-  "location": "eastus",
-  "name": "MyOpenAIResourcexxxxx",
-  "properties": {
-    "provisioningState": "Succeeded"
-  },
-  "sku": {
-    "name": "s0"
-  },
-  "type": "Microsoft.CognitiveServices/accounts"
-}
-```
-
-## Retrieve information about the resource
-
-After you create the resource, you can use different commands to find useful information about your Azure OpenAI Service instance. The following examples demonstrate how to retrieve the REST API endpoint base URL and the access keys for the new resource.
-
-### Get the endpoint URL
-
-Use the az cognitiveservices account show command to retrieve the REST API endpoint base URL for the resource. In this example, we direct the command output through the jq JSON processor to locate the .properties.endpoint value.
-
-When you try the example, update the code to use your values for the resource group and resource.
-
-```azurecli
-az cognitiveservices account show \
---name $OPENAI_RESOURCE_NAME \
---resource-group $OAI_RESOURCE_GROUP \
-| jq -r .properties.endpoint
-```
-
-Results: 
-
-<!-- expected_similarity=0.3 -->
-
 ```text
-https://openaiendpointxxxxx.cognitiveservices.azure.com/
+@all:
+  |--@ungrouped:
+      |--linux-vm_abc123
+      |--win-vm_def456
 ```
 
-### Get the primary API key
+## Find Azure VM hostvars
 
-To retrieve the access keys for the resource, use the az cognitiveservices account keys list command. In this example, we direct the command output through the jq JSON processor to locate the .key1 value.
+Run the following command to view all the hostvars:
 
-When you try the example, update the code to use your values for the resource group and resource.
-
-```azurecli
-az cognitiveservices account keys list \
---name $OPENAI_RESOURCE_NAME \
---resource-group $OAI_RESOURCE_GROUP \
-| jq -r .key1
+```bash
+ansible-inventory -i myazure_rm.yml --list
 ```
 
-Results: 
+Results:
 
 <!-- expected_similarity=0.3 -->
-
-```text
-xxxxxxxxxxxxxxxxxxxxxx
-```
-
-## Deploy a model
-
-To deploy a model, use the az cognitiveservices account deployment create command. In the following example, you deploy an instance of the text-embedding-ada-002 model and give it the name MyModel. When you try the example, update the code to use your values for the resource group and resource. You don't need to change the model-version, model-format, sku-capacity, or sku-name values.
-
-```azurecli
-export MODEL_DEPLOYMENT_NAME="MyModel"
-az cognitiveservices account deployment create \
---name $OPENAI_RESOURCE_NAME \
---resource-group $OAI_RESOURCE_GROUP \
---deployment-name $MODEL_DEPLOYMENT_NAME \
---model-name text-embedding-ada-002 \
---model-version "1"  \
---model-format OpenAI \
---sku-capacity "1" \
---sku-name "Standard"
-```
-
-Results: 
-
-<!-- expected_similarity=0.3 -->
-
-```JSON
+```json
 {
-  "deploymentName": "MyModel",
-  "provisioningState": "Succeeded"
+  "_meta": {
+    "hostvars": {
+      "linux-vm_abc123": {
+         "ansible_host": "x.x.x.x"
+      },
+      "win-vm_def456": {
+         "ansible_host": "x.x.x.x"
+      }
+    }
+  }
 }
 ```
 
-> [!IMPORTANT]
-> When you access the model via the API, you need to refer to the deployment name rather than the underlying model name in API calls, which is one of the [key differences](../how-to/switching-endpoints.yml) between OpenAI and Azure OpenAI. OpenAI only requires the model name. Azure OpenAI always requires deployment name, even when using the model parameter. In our docs, we often have examples where deployment names are represented as identical to model names to help indicate which model works with a particular API endpoint. Ultimately your deployment names can follow whatever naming convention is best for your use case.
+## Assign group membership with conditional_groups
 
-## Delete a model from your resource
+Each conditional group is made of two parts: the name of the group and the condition for adding a member to the group.
 
-You can delete any model deployed from your resource with the az cognitiveservices account deployment delete command. In the following example, the original document provided instructions to delete a model named MyModel. When you try the example, update the code to use your values for the resource group, resource, and deployed model.
+Use the property image.offer to create conditional group membership for the linux-vm.
 
-(Note: The deletion code block has been removed from this Exec Doc as deletion commands are not executed automatically in Exec Docs.)
+Open the myazure_rm.yml dynamic inventory and update it to include the following conditional_groups section. This overwrites the previous file.
 
-## Delete a resource
+```bash
+cat <<EOF > myazure_rm.yml
+plugin: azure_rm
+include_vm_resource_groups:
+  - ${RESOURCE_GROUP}
+auth_source: auto
+conditional_groups:
+  linux: "'ubuntu' in image.offer"
+  windows: "'WindowsServer' in image.offer"
+EOF
+```
 
-If you want to clean up after these exercises, you can remove your Azure OpenAI resource by deleting the resource through the Azure CLI. You can also delete the resource group. If you choose to delete the resource group, all resources contained in the group are also deleted.
+Run the ansible-inventory command with the --graph option:
 
-To remove the resource group and its associated resources, the original document provided a command example. Be sure to update the example code to use your values for the resource group and resource.
+```bash
+ansible-inventory -i myazure_rm.yml --graph
+```
 
-(Note: The deletion code block has been removed from this Exec Doc as deletion commands are not executed automatically in Exec Docs.)
+Results:
+
+<!-- expected_similarity=0.3 -->
+```text
+@all:
+  |--@linux:
+      |--linux-vm_abc123
+  |--@ungrouped:
+  |--@windows:
+      |--win-vm_def456
+```
+
+From the output, you can see the VMs are no longer associated with the "ungrouped" group. Instead, each VM is assigned to a new group created by the dynamic inventory.
+
+## Assign group membership with keyed_groups
+
+Keyed groups assign group membership in a similar manner as conditional groups, but the group name is dynamically populated based on the resource tag.
+
+Update the myazure_rm.yml dynamic inventory to include the keyed_groups section. This overwrites the previous file.
+
+```bash
+cat <<EOF > myazure_rm.yml
+plugin: azure_rm
+include_vm_resource_groups:
+  - ${RESOURCE_GROUP}
+auth_source: auto
+conditional_groups:
+  linux: "'ubuntu' in image.offer"
+  windows: "'WindowsServer' in image.offer"
+keyed_groups:
+  - key: tags.applicationRole
+EOF
+```
+
+Run the ansible-inventory command with the --graph option:
+
+```bash
+ansible-inventory -i myazure_rm.yml --graph
+```
+
+Results:
+
+<!-- expected_similarity=0.3 -->
+```text
+@all:
+  |--@_message_broker:
+      |--linux-vm_abc123
+  |--@_web_server:
+      |--win-vm_def456
+  |--@linux:
+      |--linux-vm_abc123
+  |--@ungrouped:
+  |--@windows:
+      |--win-vm_def456
+```
+
+From the output, you see two more groups _message_broker and _web_server. By using a keyed group, the applicationRole tag populates the group names and group memberships.
+
+## Run playbooks with group name patterns
+
+Use the groups created by the dynamic inventory to target subgroups.
+
+1. Create a playbook called win_ping.yml with the following contents. Predefined variables are provided so that no interactive prompts occur.
+
+```bash
+cat <<EOF > win_ping.yml
+---
+- hosts: windows
+  gather_facts: false
+
+  vars:
+    username: "azureuser"
+    password: "${ADMIN_PASSWORD}"
+    ansible_user: "{{ username }}"
+    ansible_password: "{{ password }}"
+    ansible_connection: winrm
+    ansible_winrm_transport: ntlm
+    ansible_winrm_server_cert_validation: ignore
+
+  tasks:
+    - name: run win_ping
+      win_ping:
+EOF
+```
+
+2. Run the win_ping.yml playbook.
+
+```bash
+ansible-playbook win_ping.yml -i myazure_rm.yml
+```
+
+Results:
+
+<!-- expected_similarity=0.3 -->
+```text
+PLAY [windows] *************************************************************
+
+TASK [run win_ping] *******************************************************
+ok: [win-vm_def456]
+
+PLAY RECAP ***************************************************************
+win-vm_def456              : ok=1    changed=0    unreachable=0    failed=0
+```
+
+If you get the error "winrm or requests is not installed: No module named 'winrm'", install pywinrm with the following command:
+
+```bash
+pip install "pywinrm>=0.3.0"
+```
+
+3. Create a second playbook named ping.yml with the following contents. Predefined variables are provided so that no interactive prompts occur.
+
+```bash
+cat <<EOF > ping.yml
+---
+- hosts: all
+  gather_facts: false
+
+  vars:
+    username: "azureuser"
+    password: "${ADMIN_PASSWORD}"
+    ansible_user: "{{ username }}"
+    ansible_password: "{{ password }}"
+    ansible_ssh_common_args: '-o StrictHostKeyChecking=no'
+
+  tasks:
+    - name: run ping
+      ping:
+EOF
+```
+
+4. Run the ping.yml playbook.
+
+```bash
+ansible-playbook ping.yml -i myazure_rm.yml
+```
+
+Results:
+
+<!-- expected_similarity=0.3 -->
+```text
+PLAY [all] *************************************************************
+TASK [run ping] *******************************************************
+ok: [linux-vm_abc123]
+
+PLAY RECAP *************************************************************
+linux-vm_abc123            : ok=1    changed=0    unreachable=0    failed=0
+```
+
+## Clean up resources
+
+(Note: In Exec Docs, deletion commands that remove resources are omitted to prevent accidental deletion during automated execution.)
+
+---
 
 ## Next steps
 
-- [Get started with the Azure OpenAI security building block](/azure/developer/ai/get-started-securing-your-ai-app?tabs=github-codespaces&pivots=python)
-- Make API calls and generate text with [Azure OpenAI Service quickstarts](../quickstart.md).
-- Learn more about the [Azure OpenAI Service models](../concepts/models.md).
-- For information on pricing visit the [Azure OpenAI pricing page](https://azure.microsoft.com/pricing/details/cognitive-services/openai-service/)
+> [!div class="nextstepaction"]
+> [Quickstart: Configure Linux virtual machines in Azure using Ansible](./vm-configure.md)
