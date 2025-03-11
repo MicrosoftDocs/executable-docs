@@ -47,7 +47,7 @@ resource "azurerm_resource_group" "main" {
 # Kubernetes
 ###############################################################################
 resource "azurerm_kubernetes_cluster" "main" {
-  name                = "AksCluster"
+  name                = "AksCluster-${local.random_id}"
   location            = var.location
   resource_group_name = azurerm_resource_group.main.name
   
