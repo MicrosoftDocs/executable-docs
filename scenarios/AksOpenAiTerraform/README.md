@@ -8,16 +8,19 @@ ms.author: ariaamini
 ms.custom: innovation-engine, linux-related-content 
 ---
 
+## Authenticate
+Create a new service principal and pass it to Terraform so it can manage Azure resources on your behalf.
+```bash
+export SERVICE_PRINCIPAL=$(az ad sp create-for-rbac --name "ExecutableDocs" --role="Contributor" --scopes="/subscriptions/$SUBSCRIPTION_ID")
+export ARM_CLIENT_ID=$(jq .appId <<< "$SERVICE_PRINCIPAL")
+export ARM_CLIENT_SECRET=$(jq .password <<< "$SERVICE_PRINCIPAL")
+export ARM_TENANT_ID=$(jq .tenant <<< "$SERVICE_PRINCIPAL")
+export ARM_SUBSCRIPTION_ID=$SUBSCRIPTION_ID
+```
+
 ## Provision Resources with Terraform (~5 minutes)
 Run terraform to provision all the Azure resources required to setup your new OpenAI website.
 ```bash
-# Authenticate
-export ARM_SUBSCRIPTION_ID=$SUBSCRIPTION_ID
-az ad sp create-for-rbac --name "ExecutableDocs" --role="Contributor" --scopes="/subscriptions/$ARM_SUBSCRIPTION_ID"
-export ARM_CLIENT_ID=$(jq .appId <<< "$SP")
-export ARM_CLIENT_SECRET=$(jq .password <<< "$SP")
-export ARM_TENANT_ID=$(jq .tenant <<< "$SP")
-
 # Terraform parses TF_VAR_* as vars (Ex: TF_VAR_name -> name)
 export TF_VAR_location=$REGION
 export TF_VAR_kubernetes_version="1.30.9"
