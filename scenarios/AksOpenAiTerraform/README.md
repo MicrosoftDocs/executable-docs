@@ -67,6 +67,6 @@ envsubst < quickstart-app.yml | kubectl apply -f -
 
 ## Wait for host to be ready
 ```bash
-kubectl wait --for=condition=Ready certificate/tls-secret
+kubectl wait --for=condition=Ready --timeout=5m certificate/tls-secret
 echo "Visit: https://$HOSTNAME"
 ```
