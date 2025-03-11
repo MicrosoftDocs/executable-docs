@@ -1,21 +1,22 @@
 # ADA - AI Documentation Assistant
 
-Welcome to ADA! This tool helps you convert documents and troubleshoot errors efficiently using OpenAI's Large Language Models and the Azure Innovation Engine.
+Welcome to ADA! This tool helps you convert documents and troubleshoot errors efficiently using Azure OpenAI's Large Language Models and the Azure Innovation Engine.
 
 ## Features
 
-- Converts input documents using OpenAI's LLMs.
-- Automatically installs required packages and the Innovation Engine.
-- Runs tests on the converted document using the Innovation Engine.
-- Provides detailed error logs and generates troubleshooting steps.
-- Merges code blocks from the updated document with non-code content from the original document.
+- Converts source markdown files to Exec Docs with proper formatting.
+- Generates new Exec Docs from workload descriptions with auto-generated titles.
+- Creates documentation for shell scripts while preserving the original code.
+- Redacts Personally Identifiable Information (PII) from Exec Doc result blocks.
+- Automatically identifies and generates dependency files referenced in documents.
+- Performs comprehensive security vulnerability analysis on Exec Docs.
 - Logs execution data to a CSV file for analytics.
 
 ## Prerequisites
 
 - Python 3.6 or higher
 - An Azure OpenAI API key
-- Required Python packages: `openai`, `azure-identity`, `requests`
+- Required Python packages: `openai`, `azure-identity`, `requests`, `pyyaml`
 
 ## Installation
 
@@ -27,7 +28,7 @@ Welcome to ADA! This tool helps you convert documents and troubleshoot errors ef
 
 2. Install the required Python packages:
     ```bash
-    pip install openai azure-identity requests 
+    pip install openai azure-identity requests pyyaml
     ```
 
 3. Ensure you have the Azure OpenAI API key and endpoint set as environment variables:
@@ -49,7 +50,7 @@ Welcome to ADA! This tool helps you convert documents and troubleshoot errors ef
         - **Subscription**: Choose your Azure subscription.
         - **Resource Group**: Select an existing resource group or create a new one.
         - **Region**: Choose the region closest to your location.
-        - **Name**: Provide a unique name for your OpenAI resource.
+        - **Name**: Provide a unique name for your Azure OpenAI resource.
         - **Pricing Tier**: Select the appropriate pricing tier (e.g., Standard S0).
     - Click "Review + create" and then "Create" to deploy the resource.
 
@@ -69,7 +70,7 @@ Welcome to ADA! This tool helps you convert documents and troubleshoot errors ef
 
     5. **Set Environment Variables in Linux**:
     - Open your terminal.
-    - Edit the `.bashrc` file using a text editor, such as `nano`:
+    - Edit the [.bashrc](http://_vscodecontentref_/2) file using a text editor, such as `nano`:
         ```bash
         nano ~/.bashrc
         ```
@@ -79,7 +80,7 @@ Welcome to ADA! This tool helps you convert documents and troubleshoot errors ef
         export AZURE_OPENAI_ENDPOINT="<your_endpoint>"
         ```
     - Save and exit the editor (`Ctrl + X`, then `Y`, and `Enter` for nano).
-    - Apply the changes by sourcing the `.bashrc` file:
+    - Apply the changes by sourcing the [.bashrc](http://_vscodecontentref_/3) file:
         ```bash
         source ~/.bashrc
         ```
@@ -100,49 +101,87 @@ Welcome to ADA! This tool helps you convert documents and troubleshoot errors ef
     python ada.py
     ```
 
-2. Enter the path to the input file or describe your intended workload when prompted.
+2. Choose from the available options:
+   - Option 1: Convert an existing markdown file to an Exec Doc
+   - Option 2: Describe a workload to generate a new Exec Doc
+   - Option 3: Add descriptions to a shell script as an Exec Doc
+   - Option 4: Redact PII from an existing Exec Doc
+   - Option 5: Perform security vulnerability check on an Exec Doc
 
-3. The script will process the file or description, convert it using OpenAI's GPT-4O model, and perform testing using the Innovation Engine.
+3. Follow the prompts to provide the required information:
+   - For file conversion, provide the path to your input file
+   - For workload descriptions, describe your intended workload in detail
+   - For shell script documentation, provide the path to your script and optional context
+   - For PII redaction, provide the path to your Exec Doc
+   - For security checks, provide the path to your Exec Doc
 
-4. If the tests fail, the script will generate troubleshooting steps and attempt to correct the document.
+4. The tool will process your request based on the selected option:
+   - For options 1 and 2, it will convert or create an Exec Doc and run tests using Innovation Engine
+   - For options 3, 4, and 5, it will generate the requested output and save it to a file
 
-5. If the tests pass successfully, the script will merge code blocks from the updated document with non-code content from the original document.
-
-6. The final merged document will be saved, and a summary will be displayed.
+5. For document conversion or creation, if the tests pass successfully, the final document will be saved with proper formatting.
 
 ## Script Workflow
 
 1. **Initialization**: The script initializes the Azure OpenAI client and checks for required packages.
 
-2. **Input File or Workload Description**: Prompts the user to enter the path to the input file or describe their intended workload.
+2. **Option Selection**: Prompts the user to select from available options for document processing.
 
-3. **System Prompt**: Prepares the system prompt for the AI model.
+3. **Input Collection**: Collects necessary inputs based on the selected option.
 
-4. **File Content or Workload Description**: Reads the content of the input file or uses the provided workload description.
+4. **Processing Based on Option**:
+   - **Convert Markdown**: Converts an existing markdown file to an Exec Doc
+   - **Generate New Doc**: Creates an Exec Doc from a workload description
+   - **Document Script**: Adds detailed explanations to a shell script
+   - **Redact PII**: Removes personally identifiable information from result blocks
+   - **Security Check**: Performs comprehensive security analysis
 
-5. **Install Innovation Engine**: Checks if the Innovation Engine is installed and installs it if necessary.
+5. **For Document Conversion and Generation**:
+   - Install Innovation Engine if needed
+   - Process the document using Azure OpenAI's model
+   - Run tests on the document using Innovation Engine
+   - If tests fail, generate troubleshooting steps and attempt corrections
+   - If tests pass, finalize the document
 
-6. **Conversion and Testing**:
-    - Attempts to convert the document using OpenAI's GPT-4O model.
-    - Runs tests on the converted document using the Innovation Engine.
-    - If tests fail, generates troubleshooting steps and attempts to correct the document.
+6. **Final Output**: Saves the processed document and provides the file path.
 
-7. **Merge Documents**:
-    - If tests pass successfully, merges code blocks from the updated document with non-code content from the original document.
-    - Ensures that anything not within code blocks remains unchanged from the original document.
+7. **Dependency Generation**: Optionally identifies and creates dependency files referenced in the document.
 
-8. **Remove Backticks**: Ensures that backticks are properly handled in the document.
+8. **Logging**: Logs execution data to `execution_log.csv`.
 
-9. **Logging**: Logs execution data to `execution_log.csv`.
+## Advanced Features
 
-10. **Final Output**: Saves the final merged document and provides the path.
+### Dependency File Management
+ADA can identify, generate, and manage auxiliary files referenced in your Exec Docs:
+- Automatically detects files referenced in the document
+- Creates dependency files with proper formatting based on file type
+- Tracks existing files to prevent overwriting user modifications
+- Intelligently updates dependency files when errors are detected
+- Regenerates dependencies when major document changes occur
+
+### Error Resolution System
+When errors occur during testing, ADA employs a sophisticated resolution system:
+- Analyzes errors to determine if they originate in main document or dependency files
+- Uses progressive troubleshooting strategies for persistent errors
+- Only counts attempts against the maximum when fixing the main document
+- Provides specific strategies for different error patterns
+- Remembers previous errors to avoid repetitive solutions
+
+### Progressive Error Strategies
+ADA uses increasingly more aggressive strategies when encountering repeated errors:
+1. Target specific issues identified in error messages
+2. Simplify complex code blocks into smaller, manageable steps
+3. Remove problematic result blocks that may be causing validation issues
+4. Try alternative commands or approaches to achieve the same result
+5. Completely redesign problematic sections with simpler implementations
+6. Remove and rebuild problematic sections from scratch
 
 ## Logging
 
 The script logs the following data to `execution_log.csv`:
 
 - Timestamp: The date and time when the script was run.
-- Type: Whether the input was a file or a workload description.
+- Type: The type of processing performed (file conversion, workload description, etc.).
 - Input: The path to the input file or the workload description.
 - Output: The path to the output file.
 - Number of Attempts: The number of attempts made to generate a successful document.
