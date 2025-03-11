@@ -12,7 +12,7 @@ ms.custom: innovation-engine, linux-related-content
 Run terraform to provision all the Azure resources required to setup your new OpenAI website.
 ```bash
 # Terraform parses TF_VAR_* as vars (Ex: TF_VAR_name -> name)
-export TF_VAR_location="westus3"  
+export TF_VAR_location=$REGION  
 export TF_VAR_kubernetes_version="1.30.9"
 export TF_VAR_model_name="gpt-4o-mini"
 export TF_VAR_model_version="2024-07-18"
