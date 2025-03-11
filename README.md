@@ -19,6 +19,8 @@ These experiences utilize [Innovation Engine](https://github.com/Azure/Innovatio
 - [Frequently Asked Questions (FAQs)](#frequently-asked-questions-faqs)
 - [Contact Information for Exec Docs](#contact-information-for-exec-docs)
 
+I'll update the highlighted section with the clarified information about command execution limitations:
+
 ## Selecting Documentation for Exec Docs
 
 Not all documentation is suitable for conversion to Exec Docs. Use these filters to determine if a document can be effectively converted:
@@ -44,15 +46,16 @@ Not all documentation is suitable for conversion to Exec Docs. Use these filters
 
 2. **Command Execution Limitations**
    - **Not supported for direct execution:**
-     - PowerShell scripts 
-     - Python, Ruby, or Node.js code 
-     - SQL commands
+     - PowerShell scripts
      - GUI-based instructions
+     - Direct code blocks containing Python, SQL, or other languages (these should be executed via BASH commands)
    
    - **Supported execution context:**
      - Commands that run in a Linux/bash environment
      - Azure CLI commands
-     - Terraform commands (with appropriate setup)
+     - Terraform commands (works without any special setup)
+     - Python scripts executed via BASH (e.g., `python myApp.py`)
+     - SQL queries executed via database CLI tools
    
    **Example of supported command:**
    ```markdown
@@ -68,6 +71,8 @@ Not all documentation is suitable for conversion to Exec Docs. Use these filters
             SELECT * FROM myTable WHERE id = 1;
           ```
     ```
+
+    >**Note:** The key principle is that if a code block can be executed in a BASH terminal as written (the way a human would execute it), then it will work with Exec Docs.
 
 3. **Azure Portal Custom Cloud Shell Constraints**
     - **Supported scenarios:**
