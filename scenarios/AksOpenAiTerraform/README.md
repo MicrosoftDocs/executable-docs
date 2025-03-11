@@ -27,7 +27,8 @@ terraform -chdir=terraform apply -auto-approve
 In order to use the kubectl to run commands on the newly created cluster, you must first login.
 ```bash
 RESOURCE_GROUP=$(terraform -chdir=terraform output -raw resource_group_name)
-az aks get-credentials --admin --name AksCluster --resource-group $RESOURCE_GROUP --subscription $SUBSCRIPTION_ID
+AKS_CLUSTER_NAME=$(terraform -chdir=terraform output -raw aks_cluster_name)
+az aks get-credentials --admin --name $AKS_CLUSTER_NAME --resource-group $RESOURCE_GROUP --subscription $SUBSCRIPTION_ID
 ```
 
 # Install Helm Charts
