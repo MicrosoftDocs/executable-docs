@@ -8,13 +8,13 @@ ms.author: ariaamini
 ms.custom: innovation-engine, linux-related-content 
 ---
 
-## Authenticate
+## Authenticate (~1 minute)
 Create a new service principal and pass it to Terraform so it can manage Azure resources on your behalf.
 ```bash
 export SERVICE_PRINCIPAL=$(az ad sp create-for-rbac --name "ExecutableDocs" --role="Contributor" --scopes="/subscriptions/$SUBSCRIPTION_ID")
-export ARM_CLIENT_ID=$(jq .appId <<< "$SERVICE_PRINCIPAL")
-export ARM_CLIENT_SECRET=$(jq .password <<< "$SERVICE_PRINCIPAL")
-export ARM_TENANT_ID=$(jq .tenant <<< "$SERVICE_PRINCIPAL")
+export ARM_CLIENT_ID=$(jq -r .appId <<< "$SERVICE_PRINCIPAL")
+export ARM_CLIENT_SECRET=$(jq -r .password <<< "$SERVICE_PRINCIPAL")
+export ARM_TENANT_ID=$(jq -r .tenant <<< "$SERVICE_PRINCIPAL")
 export ARM_SUBSCRIPTION_ID=$SUBSCRIPTION_ID
 ```
 
