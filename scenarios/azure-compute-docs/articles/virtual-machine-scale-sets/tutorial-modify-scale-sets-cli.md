@@ -287,7 +287,8 @@ These properties describe the configuration of a VM instance within a scale set,
 You can perform updates to individual VM instances in a scale set just like you would a standalone VM. For example, attaching a new data disk to instance 1:
 
 ```azurecli-interactive
-az vm disk attach --resource-group $MY_RESOURCE_GROUP_NAME --vm-name $INSTANCE_NAME --name disk_name1 --new
+export DISK_NAME="disk_name$RANDOM_SUFFIX"
+az vm disk attach --resource-group $MY_RESOURCE_GROUP_NAME --vm-name $INSTANCE_NAME --name $DISK_NAME --new
 ```
 
 Running [az vm show](/cli/azure/vm#az-vm-show) again, we now will see that the VM instance has the new disk attached.
@@ -303,11 +304,11 @@ Running [az vm show](/cli/azure/vm#az-vm-show) again, we now will see that the V
         "diskSizeGb": 1023,
         "lun": 0,
         "managedDisk": {
-          "id": "/subscriptions/xxxxx/resourceGroups/myResourceGroupxxx/providers/Microsoft.Compute/disks/disk_name1",
+          "id": "/subscriptions/xxxxx/resourceGroups/myResourceGroupxxx/providers/Microsoft.Compute/disks/disk_namexxxx",
           "resourceGroup": "myResourceGroupxxx",
           "storageAccountType": "Premium_LRS"
         },
-        "name": "disk_name1",
+        "name": "disk_namexxxx",
         "toBeDetached": false
       }
     ]

@@ -27,9 +27,7 @@ Not all documentation is suitable for conversion to Exec Docs. Use these filters
 
 1. **Command Execution Limitations**
    - **Supported:**
-     - Any command that can run in a BASH terminal
-     - Azure CLI commands (e.g. azurecli, azure-cli-interactive, azurecli-interactive)
-     - Terraform commands
+     - Any command that can run in a BASH terminal (e.g. azurecli, azure-cli-interactive, azurecli-interactive, terraform commands)
 
    - **Not supported:**
      - PowerShell scripts
