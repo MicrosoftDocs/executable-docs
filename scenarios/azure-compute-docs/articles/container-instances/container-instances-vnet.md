@@ -99,7 +99,9 @@ az container create \
   --vnet-address-prefix 10.0.0.0/16 \
   --subnet $MY_SUBNET_NAME \
   --subnet-address-prefix 10.0.0.0/24 \
-  --os-type Linux
+  --os-type Linux \
+  --cpu 1.0 \
+  --memory 1.5
 ```
 
 A successful operation should produce output similar to the following JSON:
@@ -362,7 +364,9 @@ az container create \
   --restart-policy never \
   --vnet $MY_VNET_NAME \
   --subnet $MY_SUBNET_NAME \
-  --os-type Linux
+  --os-type Linux \
+  --cpu 1.0 \
+  --memory 1.5
 ```
 
 After this second container deployment completes, pull its logs so you can see the output of the `wget` command it executed:
