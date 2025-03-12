@@ -99,6 +99,7 @@ az container create \
   --vnet-address-prefix 10.0.0.0/16 \
   --subnet $MY_SUBNET_NAME \
   --subnet-address-prefix 10.0.0.0/24
+  --os-type Linux
 ```
 
 A successful operation should produce output similar to the following JSON:
@@ -286,7 +287,7 @@ Deploy the container group with the [az container create][az-container-create] c
 
 ```azurecli-interactive
 az container create --resource-group $MY_RESOURCE_GROUP_NAME \
-  --file container-instances-vnet.yaml
+  --file container-instances-vnet.yaml --os-type Linux
 ```
 
 The following Bash command is for the automated deployment pathway.
@@ -360,6 +361,7 @@ az container create \
   --restart-policy never \
   --vnet $MY_VNET_NAME \
   --subnet $MY_SUBNET_NAME
+  --os-type Linux
 ```
 
 After this second container deployment completes, pull its logs so you can see the output of the `wget` command it executed:
