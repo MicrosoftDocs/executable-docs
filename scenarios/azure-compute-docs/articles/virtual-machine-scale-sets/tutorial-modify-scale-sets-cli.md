@@ -16,7 +16,7 @@ Throughout the lifecycle of your applications, you may need to modify or update 
 Below, we declare environment variables that will be used throughout this document. A random suffix is appended to resource names that need to be unique for each deployment. The REGION is set to WestUS2.
 
 ```bash
-export RANDOM_SUFFIX=adcc95
+export RANDOM_SUFFIX=$(openssl rand -hex 3)
 export MY_RESOURCE_GROUP_NAME="myResourceGroup$RANDOM_SUFFIX"
 export SCALE_SET_NAME="myScaleSet$RANDOM_SUFFIX"
 export NEW_INSTANCE_NAME="myNewInstance$RANDOM_SUFFIX"
