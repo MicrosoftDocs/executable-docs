@@ -56,8 +56,9 @@ helm upgrade --install cert-manager jetstack/cert-manager \
 Apply/Deploy Manifest File 
 ```bash
 export IMAGE="aamini8/magic8ball:latest"
-# Uncomment below to manually build docker image yourself instead of using pre-built image.
+# (Uncomment below to manually build docker image yourself instead of using pre-built image.)
 # docker build -t <YOUR IMAGE NAME> ./magic8ball --push
+
 export HOSTNAME=$(terraform -chdir=terraform output -raw hostname)
 export WORKLOAD_IDENTITY_CLIENT_ID=$(terraform -chdir=terraform output -raw workload_identity_client_id)
 export AZURE_OPENAI_DEPLOYMENT=$(terraform -chdir=terraform output -raw openai_deployment)
