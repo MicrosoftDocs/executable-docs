@@ -199,7 +199,8 @@ az vmss create \
   --admin-username azureuser \
   --generate-ssh-keys \
   --instance-count 5 \
-  --os-disk-size-gb 64
+  --os-disk-size-gb 64 \
+  --admin-username azureuser
 ```
 
 ## Updating individual VM instances in a scale set
@@ -320,7 +321,7 @@ Running [az vm show](/cli/azure/vm#az-vm-show) again, we now will see that the V
 There are times where you might want to add a new VM to your scale set but want different configuration options than those listed in the scale set model. VMs can be added to a scale set during creation by using the [az vm create](/cli/azure/vmss#az-vmss-create) command and specifying the scale set name you want the instance added to.
 
 ```azurecli-interactive
-az vm create --name $NEW_INSTANCE_NAME --resource-group $MY_RESOURCE_GROUP_NAME --vmss $SCALE_SET_NAME --image RHELRaw8LVMGen2
+az vm create --name $NEW_INSTANCE_NAME --resource-group $MY_RESOURCE_GROUP_NAME --vmss $SCALE_SET_NAME --image RHELRaw8LVMGen2 --admin-username azureuser
 ```
 
 ```output
