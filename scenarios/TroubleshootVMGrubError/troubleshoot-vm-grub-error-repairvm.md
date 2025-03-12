@@ -35,7 +35,7 @@ This article discusses multiple conditions that cause GRUB rescue issues and pro
 
 During the boot process, the boot loader tries to locate the Linux kernel and hand off the boot control. If this handoff can't be performed, the virtual machine (VM) enters a GRUB rescue console. The GRUB rescue console prompt isn't shown in the Azure serial console log, but it can be shown in the [Azure boot diagnostics screenshot](/azure/virtual-machines/boot-diagnostics#boot-diagnostics-view).
 
-## <a id="identify-grub-rescue-issue"></a>Identify GRUB rescue issue
+## Identify GRUB rescue issue
 
 [View a boot diagnostics screenshot](/azure/virtual-machines/boot-diagnostics#boot-diagnostics-view) in the VM **Boot diagnostics** page of the Azure portal. This screenshot helps diagnose the GRUB rescue issue and determine if a boot error causes the issue.
 
@@ -47,7 +47,7 @@ Entering rescue mode...
 grub rescue>
 ```
 
-## <a id="offline-troubleshooting"></a>Troubleshoot GRUB rescue issue offline
+## Troubleshoot GRUB rescue issue offline
 
 1. To troubleshoot a GRUB rescue issue, a rescue/repair VM is required. Use [vm repair commands](repair-linux-vm-using-azure-virtual-machine-repair-commands.md) to create a repair VM that has a copy of the affected VM's OS disk attached. Mount the copy of the OS file systems in the repair VM by using [chroot](chroot-environment-linux.md).
 
@@ -78,7 +78,7 @@ See the following sections for detailed errors, possible causes, and solutions.
 > [!NOTE]
 > In the commands mentioned in the following sections, replace `/dev/sdX` with the corresponding Operating System (OS) disk device.
 
-### <a id="offline-troubleshooting"></a> Reinstall GRUB and regenerate GRUB configuration file using Auto Repair (ALAR)
+### Reinstall GRUB and regenerate GRUB configuration file using Auto Repair (ALAR)
 
 Azure Linux Auto Repair (ALAR) scripts are part of the VM repair extension described in [Use Azure Linux Auto Repair (ALAR) to fix a Linux VM](./repair-linux-vm-using-alar.md). ALAR covers the automation of multiple repair scenarios, including GRUB rescue issues.
 

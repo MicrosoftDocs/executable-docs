@@ -32,7 +32,7 @@ export MY_VM_NAME="myVM89f292"
 
 Make sure the [serial console](serial-console-linux.md) is enabled and functional in the Linux VM.
 
-## <a id="missing-initramfs"></a>Kernel panic - not syncing: VFS: Unable to mount root fs on unknown-block(0,0)
+## Kernel panic - not syncing: VFS: Unable to mount root fs on unknown-block(0,0)
 
 This error occurs because of a recent system update (kernel). It's most commonly seen in RHEL-based distributions.
 You can [identify this issue from the Azure serial console](#identify-kernel-boot-issue). You'll see any of the following error messages:
@@ -64,7 +64,7 @@ You can [identify this issue from the Azure serial console](#identify-kernel-boo
 
 This kind of error indicates that the initramfs file isn't generated, the GRUB configuration file has the initrd entry missing after a patching process, or a GRUB manual misconfiguration.
 
-### <a id="missing-initramfs-alar"></a>Regenerate missing initramfs by using Azure Repair VM ALAR scripts
+### Regenerate missing initramfs by using Azure Repair VM ALAR scripts
 
 1. Create a repair VM by running the following Bash command line with [Azure Cloud Shell](/azure/cloud-shell/overview). For more information, see [Use Azure Linux Auto Repair (ALAR) to fix a Linux VM - initrd option](repair-linux-vm-using-ALAR.md#initrd). This command will regenerate the initrd/initramfs image, regenerate the GRUB configuration file if it has the initrd entry missing, and swap the OS disk
 
