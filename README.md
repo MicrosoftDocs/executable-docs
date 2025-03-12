@@ -100,15 +100,18 @@ Not all documentation is suitable for conversion to Exec Docs. Use these filters
    **Example of supported command:**
    ```markdown
         ```bash
-        az group create --name myResourceGroup --location eastus
+        export RESOURCE_GROUP="myResourceGroup"
+        export LOCATION="eastus"
+        az group create --name $RESOURCE_GROUP --location $LOCATION
         ```
    ```
    
    **Example of unsupported command:**
    ```markdown
         ```bash
+        export APP_NAME="myApp"
         # This requires elevated Graph API permissions and would fail
-        az ad app create --display-name myApp --native-app
+        az ad app create --display-name $APP_NAME --native-app
         ```
    ```
 
