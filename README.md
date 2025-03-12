@@ -25,15 +25,19 @@ I'll update the highlighted section with the clarified information about command
 
 Not all documentation is suitable for conversion to Exec Docs. Use these filters to determine if a document can be effectively converted:
 
-1. **Supported Code Block Types**
-   - The document must contain code blocks using at least one of these types:
-     - `bash`
-     - `azurecli`
-     - `azure-cli-interactive`
-     - `azurecli-interactive`
-     - `terraform`
+1. **Command Execution Limitations**
+   - **Supported:**
+     - Any command that can run in a BASH terminal
+     - Azure CLI commands (e.g. azurecli, azure-cli-interactive, azurecli-interactive)
+     - Terraform commands
+
+   - **Not supported:**
+     - PowerShell scripts
+     - GUI-based instructions
+     - Commands requiring `sudo` privileges
+     - Direct code blocks of languages that aren't bash/shell commands
    
-   **Example:**
+   **Example of supported command:**
    ```markdown
         ```bash
         export REGION="eastus"
@@ -42,39 +46,14 @@ Not all documentation is suitable for conversion to Exec Docs. Use these filters
         ```
    ```
 
-   >**Note:** You can include code blocks of any type in your documentation for human readers, but only the types listed above will be executed by Innovation Engine. Other code block types will be displayed but ignored during execution.
-
-2. **Command Execution Limitations**
-   - **Not supported:**
-     - PowerShell scripts
-     - GUI-based instructions
-     - Commands requiring `sudo` privileges
-     - Direct code blocks of languages that aren't bash/shell commands
-   
-   - **Supported:**
-     - Any command that can run in a BASH terminal
-     - Azure CLI commands
-     - Terraform commands
-     - Python scripts executed via BASH (e.g., `python myApp.py`)
-     - SQL queries executed via database CLI tools
-   
-   **Example of supported command:**
-   ```markdown
-        ```bash
-        export VM_NAME="my-virtual-machine"
-        export RESOURCE_GROUP="my-resource-group"
-        az vm create --name $VM_NAME --resource-group $RESOURCE_GROUP --image UbuntuLTS
-        ```
-   ```
-
-   **Example of unsupported SQL query (won't work):**
+   **Example of unsupported command (SQL query below won't work):**
    ```markdown
         ```sql
         INSERT INTO myTable (name, value) VALUES ('test', 123);
         ```
    ```
 
-   **Example of supported SQL command (will work):**
+   **Example of supported command (SQL query below will work):**
    ```markdown
         ```bash
         export DATABASE_NAME="mydb"
@@ -82,10 +61,11 @@ Not all documentation is suitable for conversion to Exec Docs. Use these filters
         psql -d $DATABASE_NAME -c "INSERT INTO $TABLE_NAME (name, value) VALUES ('test', 123);"
         ```
    ```
+   >**Note:** You can include code blocks of any type in your documentation for human readers, but only the types listed above in the "Supported Code Block Types" section will be executed by Innovation Engine. Other code block types will be displayed but ignored during execution.
 
    >**Note:** The key principle is simple: if you can run it in a BASH terminal as written, it will work with Exec Docs (although at this time `sudo` is not supported). Code blocks in other languages won't be executed directly but can be included for human readers. 
 
-3. **Azure Portal Custom Cloud Shell Constraints**
+2. **Azure Portal Custom Cloud Shell Constraints**
     - **Supported scenarios:**
         - Standard Azure resource operations (create, read, update, delete)
         - Commands running within the user's subscription scope
