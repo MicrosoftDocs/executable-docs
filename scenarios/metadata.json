@@ -949,8 +949,8 @@
     {
         "status": "active",
         "key": "KernelBootIssuesRepairVM/kernel-related-boot-issues-repairvm.md",
-        "title": "Troubleshoot Linux VM boot issues due to fstab errors",
-        "description": "Explains why Linux VM cannot start and how to solve the problem.",
+        "title": "Recover Azure Linux VM from kernel panic due to missing initramfs",
+        "description": "Provides solutions to an issue in which a Linux virtual machine (VM) can't boot after applying kernel changes.",
         "stackDetails": "",
         "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/KernelBootIssuesRepairVM/kernel-related-boot-issues-repairvm.md",
         "documentationUrl": "https://learn.microsoft.com/en-us/troubleshoot/azure/virtual-machines/linux/kernel-related-boot-issues#missing-initramfs-alar",
