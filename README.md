@@ -36,43 +36,56 @@ Not all documentation is suitable for conversion to Exec Docs. Use these filters
    **Example:**
    ```markdown
         ```bash
-        az group create --name myResourceGroup --location eastus
+        export REGION="eastus"
+        export RESOURCE_GROUP="myResourceGroup"
+        az group create --name $RESOURCE_GROUP --location $REGION
         ```
    ```
 
-   >**Note:** This rule does not apply to output code blocks, which are used to display the results of commands, scripts, or other operations. These blocks help in illustrating what the expected output should look like. They include, but are not limited to, the following types: _output, json, yaml, console, text, and log._
-
-   >**Note:** While Innovation Engine can _parse_ a code block of any type, given its current features, it can only _execute_ code blocks of the types above. So, it is important to ensure that the code blocks in your Exec Doc are of the types above. 
+   >**Note:** You can include code blocks of any type in your documentation for human readers, but only the types listed above will be executed by Innovation Engine. Other code block types will be displayed but ignored during execution.
+   
+   >**Note:** There is a special kind of code block called a "result block" that's used to validate command execution. We'll cover result blocks in detail later in section 11.
 
 2. **Command Execution Limitations**
-   - **Not supported for direct execution:**
+   - **Not supported:**
      - PowerShell scripts
      - GUI-based instructions
-     - Direct code blocks containing Python, SQL, or other languages (these should be executed via BASH commands)
+     - Commands requiring `sudo` privileges
+     - Direct code blocks of languages that aren't bash/shell commands
    
-   - **Supported execution context:**
-     - Commands that run in a Linux/bash environment
+   - **Supported:**
+     - Any command that can run in a BASH terminal
      - Azure CLI commands
-     - Terraform commands (works without any special setup)
+     - Terraform commands
      - Python scripts executed via BASH (e.g., `python myApp.py`)
      - SQL queries executed via database CLI tools
    
    **Example of supported command:**
    ```markdown
         ```bash
-        export VM_NAME="myVM"
-        az vm create --name $VM_NAME --resource-group myResourceGroup --image UbuntuLTS
+        export VM_NAME="my-virtual-machine"
+        export RESOURCE_GROUP="my-resource-group"
+        az vm create --name $VM_NAME --resource-group $RESOURCE_GROUP --image UbuntuLTS
         ```
    ```
 
-    **Example of unsupported command:**
-    ```markdown
-          ```sql
-            SELECT * FROM myTable WHERE id = 1;
-          ```
-    ```
+   **Example of unsupported SQL query (won't work):**
+   ```markdown
+        ```sql
+        INSERT INTO myTable (name, value) VALUES ('test', 123);
+        ```
+   ```
 
-    >**Note:** The key principle is that if a code block can be executed in a BASH terminal as written (the way a human would execute it), then it will work with Exec Docs.
+   **Example of supported SQL command (will work):**
+   ```markdown
+        ```bash
+        export DATABASE_NAME="mydb"
+        export TABLE_NAME="myTable"
+        psql -d $DATABASE_NAME -c "INSERT INTO $TABLE_NAME (name, value) VALUES ('test', 123);"
+        ```
+   ```
+
+   >**Note:** The key principle is simple: if you can run it in a BASH terminal as written, it will work with Exec Docs (although at this time `sudo` is not supported). Code blocks in other languages won't be executed directly but can be included for human readers. 
 
 3. **Azure Portal Custom Cloud Shell Constraints**
     - **Supported scenarios:**
