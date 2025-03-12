@@ -43,8 +43,6 @@ Not all documentation is suitable for conversion to Exec Docs. Use these filters
    ```
 
    >**Note:** You can include code blocks of any type in your documentation for human readers, but only the types listed above will be executed by Innovation Engine. Other code block types will be displayed but ignored during execution.
-   
-   >**Note:** There is a special kind of code block called a "result block" that's used to validate command execution. We'll cover result blocks in detail later in section 11.
 
 2. **Command Execution Limitations**
    - **Not supported:**
@@ -102,15 +100,18 @@ Not all documentation is suitable for conversion to Exec Docs. Use these filters
    **Example of supported command:**
    ```markdown
         ```bash
-        az group create --name myResourceGroup --location eastus
+        export RESOURCE_GROUP="myResourceGroup"
+        export LOCATION="eastus"
+        az group create --name $RESOURCE_GROUP --location $LOCATION
         ```
    ```
    
    **Example of unsupported command:**
    ```markdown
         ```bash
+        export APP_NAME="myApp"
         # This requires elevated Graph API permissions and would fail
-        az ad app create --display-name myApp --native-app
+        az ad app create --display-name $APP_NAME --native-app
         ```
    ```
 
