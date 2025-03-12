@@ -1113,8 +1113,8 @@
     {
         "status": "active",
         "key": "azure-compute-docs/articles/virtual-machines/linux/multiple-nics.md",
-        "title": "Deploy container group to Azure virtual network",
-        "description": "Learn how to deploy a container group to a new or existing Azure virtual network via the Azure CLI.",
+        "title": "Create a Linux VM in Azure with multiple NICs",
+        "description": "Learn how to create a Linux VM with multiple NICs attached to it using the Azure CLI or Resource Manager templates.",
         "stackDetails": [
         ],
         "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-compute-docs/articles/virtual-machines/linux/multiple-nics.md",
