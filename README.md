@@ -26,10 +26,17 @@ I'll update the highlighted section with the clarified information about command
 Not all documentation is suitable for conversion to Exec Docs. Use these filters to determine if a document can be effectively converted:
 
 1. **Command Execution Limitations**
+<<<<<<< HEAD
    - **Supported:**
      - Any command that can run in a BASH terminal (e.g. azurecli, azure-cli-interactive, azurecli-interactive commands)
 
    - **Not supported:**
+=======
+   - **Supported scenarios:**
+     - Any command that can run in a BASH terminal (e.g. azurecli, azure-cli-interactive, azurecli-interactive commands)
+
+   - **Not supported currently:**
+>>>>>>> 33a7dbee83edb5d5749d591f55071a48c2be6547
      - PowerShell scripts
      - GUI-based instructions
      - Commands requiring `sudo` privileges
