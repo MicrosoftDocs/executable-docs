@@ -98,7 +98,7 @@ az container create \
   --vnet $MY_VNET_NAME \
   --vnet-address-prefix 10.0.0.0/16 \
   --subnet $MY_SUBNET_NAME \
-  --subnet-address-prefix 10.0.0.0/24
+  --subnet-address-prefix 10.0.0.0/24 \
   --os-type Linux
 ```
 
@@ -287,7 +287,8 @@ Deploy the container group with the [az container create][az-container-create] c
 
 ```azurecli-interactive
 az container create --resource-group $MY_RESOURCE_GROUP_NAME \
-  --file container-instances-vnet.yaml --os-type Linux
+  --file container-instances-vnet.yaml \
+  --os-type Linux
 ```
 
 The following Bash command is for the automated deployment pathway.
@@ -360,7 +361,7 @@ az container create \
   --command-line "wget 10.0.0.4" \
   --restart-policy never \
   --vnet $MY_VNET_NAME \
-  --subnet $MY_SUBNET_NAME
+  --subnet $MY_SUBNET_NAME \
   --os-type Linux
 ```
 
