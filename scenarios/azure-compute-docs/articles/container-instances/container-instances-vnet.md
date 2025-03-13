@@ -40,6 +40,7 @@ export MY_SUBNET_ID="/subscriptions/$(az account show --query id --output tsv)/r
 export MY_APP_CONTAINER_NAME="appcontainer"
 export MY_COMM_CHECKER_NAME="commchecker"
 export MY_YAML_APP_CONTAINER_NAME="appcontaineryaml"
+export MY_REGION="eastus2"
 ```
 
 ### Create a resource group
@@ -47,7 +48,7 @@ export MY_YAML_APP_CONTAINER_NAME="appcontaineryaml"
 You need a resource group to manage all the resources used in the following examples. To create a resource group, use [az group create][az-group-create]:
 
 ```azurecli-interactive
-az group create --name $MY_RESOURCE_GROUP_NAME --location eastus
+az group create --name $MY_RESOURCE_GROUP_NAME --location $MY_REGION
 ```
 
 A successful operation should produce output similar to the following JSON:
@@ -282,7 +283,7 @@ type: Microsoft.ContainerInstance/containerGroups
 The following Bash command is for the automated deployment pathway.
 
 ```bash
-echo -e "apiVersion: '2021-07-01'\nlocation: eastus\nname: $MY_YAML_APP_CONTAINER_NAME\nproperties:\n  containers:\n  - name: $MY_YAML_APP_CONTAINER_NAME\n    properties:\n      image: mcr.microsoft.com/azuredocs/aci-helloworld\n      ports:\n      - port: 80\n        protocol: TCP\n      resources:\n        requests:\n          cpu: 1.0\n          memoryInGB: 1.5\n  ipAddress:\n    type: Private\n    ports:\n    - protocol: tcp\n      port: '80'\n  osType: Linux\n  restartPolicy: Always\n  subnetIds:\n    - id: $MY_SUBNET_ID\n      name: default\ntags: null\ntype: Microsoft.ContainerInstance/containerGroups" > container-instances-vnet.yaml
+echo -e "apiVersion: '2021-07-01'\nlocation: $MY_REGION\nname: $MY_YAML_APP_CONTAINER_NAME\nproperties:\n  containers:\n  - name: $MY_YAML_APP_CONTAINER_NAME\n    properties:\n      image: mcr.microsoft.com/azuredocs/aci-helloworld\n      ports:\n      - port: 80\n        protocol: TCP\n      resources:\n        requests:\n          cpu: 1.0\n          memoryInGB: 1.5\n  ipAddress:\n    type: Private\n    ports:\n    - protocol: tcp\n      port: '80'\n  osType: Linux\n  restartPolicy: Always\n  subnetIds:\n    - id: $MY_SUBNET_ID\n      name: default\ntags: null\ntype: Microsoft.ContainerInstance/containerGroups" > container-instances-vnet.yaml
 ```
 
 Deploy the container group with the [az container create][az-container-create] command, specifying the YAML file name for the `--file` parameter:
@@ -359,7 +360,7 @@ Now, set `CONTAINER_GROUP_IP` to the IP you retrieved with the `az container sho
 az container create \
   --resource-group $MY_RESOURCE_GROUP_NAME \
   --name $MY_COMM_CHECKER_NAME \
-  --image mcr.microsoft.com/azuredocs/aci-helloworld \
+  --image mcr.microsoft.com/devcontainers/base:alpine \
   --command-line "wget 10.0.0.4" \
   --restart-policy never \
   --vnet $MY_VNET_NAME \
