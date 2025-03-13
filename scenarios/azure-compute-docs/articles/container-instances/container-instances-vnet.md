@@ -359,7 +359,7 @@ Now, set `CONTAINER_GROUP_IP` to the IP you retrieved with the `az container sho
 az container create \
   --resource-group $MY_RESOURCE_GROUP_NAME \
   --name $MY_COMM_CHECKER_NAME \
-  --image alpine:3.4 \
+  --image mcr.microsoft.com/azuredocs/aci-helloworld \
   --command-line "wget 10.0.0.4" \
   --restart-policy never \
   --vnet $MY_VNET_NAME \
