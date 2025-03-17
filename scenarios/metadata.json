@@ -1155,7 +1155,7 @@
         }
     },
     {
-        "status": "inactive",
+        "status": "active",
         "key": "AksOpenAiTerraform/README.md",
         "title": "How to deploy and run an Azure OpenAI ChatGPT application on AKS via Terraform",
         "description": "This article shows how to deploy an AKS cluster and Azure OpenAI Service via Terraform and how to deploy a ChatGPT-like application in Python.",

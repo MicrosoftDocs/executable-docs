@@ -12,7 +12,7 @@ ms.custom: innovation-engine, linux-related-content
 Run terraform to provision all the Azure resources required to setup your new OpenAI website.
 ```bash
 # Terraform parses TF_VAR_* as vars (Ex: TF_VAR_name -> name)
-export TF_VAR_location="westus3"  
+export TF_VAR_location=$REGION  
 export TF_VAR_kubernetes_version="1.30.9"
 export TF_VAR_model_name="gpt-4o-mini"
 export TF_VAR_model_version="2024-07-18"
@@ -27,7 +27,8 @@ terraform -chdir=terraform apply -auto-approve
 In order to use the kubectl to run commands on the newly created cluster, you must first login.
 ```bash
 RESOURCE_GROUP=$(terraform -chdir=terraform output -raw resource_group_name)
-az aks get-credentials --admin --name AksCluster --resource-group $RESOURCE_GROUP --subscription $SUBSCRIPTION_ID
+AKS_CLUSTER_NAME=$(terraform -chdir=terraform output -raw aks_cluster_name)
+az aks get-credentials --admin --name $AKS_CLUSTER_NAME --resource-group $RESOURCE_GROUP --subscription $SUBSCRIPTION_ID
 ```
 
 # Install Helm Charts
@@ -55,8 +56,9 @@ helm upgrade --install cert-manager jetstack/cert-manager \
 Apply/Deploy Manifest File 
 ```bash
 export IMAGE="aamini8/magic8ball:latest"
-# Uncomment below to manually build docker image yourself instead of using pre-built image.
+# (Uncomment below to manually build docker image yourself instead of using pre-built image.)
 # docker build -t <YOUR IMAGE NAME> ./magic8ball --push
+
 export HOSTNAME=$(terraform -chdir=terraform output -raw hostname)
 export WORKLOAD_IDENTITY_CLIENT_ID=$(terraform -chdir=terraform output -raw workload_identity_client_id)
 export AZURE_OPENAI_DEPLOYMENT=$(terraform -chdir=terraform output -raw openai_deployment)
@@ -66,6 +68,6 @@ envsubst < quickstart-app.yml | kubectl apply -f -
 
 ## Wait for host to be ready
 ```bash
-kubectl wait --for=condition=Ready certificate/tls-secret
+kubectl wait --for=condition=Ready --timeout=5m certificate/tls-secret
 echo "Visit: https://$HOSTNAME"
 ```
