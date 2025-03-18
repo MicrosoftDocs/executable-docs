@@ -1190,5 +1190,17 @@
         "configurations": {
             "permissions": []
         }
+    },
+    {
+        "status": "active",
+        "key": "upstream/FlatcarOnAzure/flatcar-on-azure.md",
+        "title": "Running Flatcar Container Linux on Microsoft Azure",
+        "description": "Deploy Flatcar Container Linux in Microsoft Azure by creating resource groups and using official marketplace images.",
+        "stackDetails": [
+        ],
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/upstream/FlatcarOnAzure/flatcar-on-azure.md",
+        "documentationUrl": "https://www.flatcar.org/docs/latest/installing/cloud/azure/",
+        "configurations": {
+        }
     }
 ]
