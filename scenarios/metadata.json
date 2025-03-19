@@ -443,6 +443,13 @@
         "stackDetails": "",
         "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-aks-docs/articles/aks/deploy-postgresql-ha.md",
         "documentationUrl": "https://learn.microsoft.com/en-us/azure/aks/deploy-postgresql-ha",
+        "nextSteps": [
+            {
+                "title": "Deploy a highly available PostgreSQL database on AKS with Azure CLI",
+                "url": "https://learn.microsoft.com/en-us/azure/aks/deploy-postgresql-ha?tabs=helm"
+            }
+            
+        ],
         "configurations": {
         }
     },
@@ -487,6 +494,13 @@
         "stackDetails": "",
         "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/DeployHAPGonARO/deploy-ha-pg-aro.md",
         "documentationUrl": "",
+        "nextSteps": [
+            {
+                "title": "Deploy a highly available PostgreSQL database on AKS with Azure CLI",
+                "url": "https://learn.microsoft.com/en-us/azure/aks/deploy-postgresql-ha?tabs=helm"
+            }
+            
+        ],
         "configurations": {
         }
     },
