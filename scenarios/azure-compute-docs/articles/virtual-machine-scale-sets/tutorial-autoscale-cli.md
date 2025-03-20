@@ -37,7 +37,7 @@ export MY_RESOURCE_GROUP_NAME="myResourceGroup$RANDOM_SUFFIX"
 az group create --name $MY_RESOURCE_GROUP_NAME --location $REGION
 ```
 
-Now create a Virtual Machine Scale Set with [az vmss create](/cli/azure/vmss). The following example creates a scale set with an instance count of 2, generates SSH keys if they don't exist, and uses a valid image "Ubuntu2204".
+Now create a Virtual Machine Scale Set with [az vmss create](/cli/azure/vmss). The following example creates a scale set with an instance count of 2, generates SSH keys if they don't exist, and uses a valid image *Ubuntu2204*.
 
 ```azurecli-interactive
 export MY_SCALE_SET_NAME="myScaleSet$RANDOM_SUFFIX"
@@ -92,7 +92,7 @@ az monitor autoscale rule create \
 ```
 
 ## Simulate CPU load on scale set
-To test the autoscale rules, you need to simulate sustained CPU load on the VM instances in the scale set. In this minimalist approach, we avoid installing additional packages by using the built-in "yes" command to generate CPU load. The following command starts 3 background processes that continuously output data to /dev/null for 60 seconds and then terminates them.
+To test the autoscale rules, you need to simulate sustained CPU load on the VM instances in the scale set. In this minimalist approach, we avoid installing additional packages by using the built-in `yes` command to generate CPU load. The following command starts 3 background processes that continuously output data to `/dev/null` for 60 seconds and then terminates them.
 
 ```bash
 for i in {1..3}; do
@@ -105,7 +105,7 @@ pkill yes
 This command simulates CPU load without introducing package installation errors.
 
 ## Monitor the active autoscale rules
-To monitor the number of VM instances in your scale set, use the watch command. It may take up to 5 minutes for the autoscale rules to begin the scale-out process in response to the CPU load. However, once it happens, you can exit watch with Ctrl-c. 
+To monitor the number of VM instances in your scale set, use the `watch` command. It may take up to 5 minutes for the autoscale rules to begin the scale-out process in response to the CPU load. However, once it happens, you can exit watch with *CTRL + C* keys. 
 
 By then, the scale set will automatically increase the number of VM instances to meet the demand. The following command shows the list of VM instances in the scale set:
 

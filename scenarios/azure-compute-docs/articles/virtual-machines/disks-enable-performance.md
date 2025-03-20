@@ -6,7 +6,7 @@ ms.service: azure-disk-storage
 ms.topic: how-to
 ms.date: 12/09/2024
 ms.author: rogarana
-ms.custom: devx-track-azurepowershell, innovation-engine
+ms.custom: devx-track-azurepowershell
 ---
 
 # Preview - Increase IOPS and throughput limits for Azure Premium SSDs and Standard SSD/HDDs
@@ -29,7 +29,7 @@ Either use the Azure Cloud Shell to run your commands or install a version of th
 
 ## Enable performance plus
 
-You need to create a new disk to use performance plus. The following scripts show how to create a disk with performance plus enabled and, if desired, attach it to a VM. The commands have been organized into self-contained steps for reliability.
+You need to create a new disk to use performance plus. The following script creates a disk that has performance plus enabled and attach it to a VM:
 
 # [Azure CLI](#tab/azure-cli)
 
@@ -190,142 +190,52 @@ Results:
 
 # [Azure PowerShell](#tab/azure-powershell)
 
-### Create a resource group
-
-This step creates a resource group with a unique name.
+You need to create a new disk to use performance plus. The following script creates a disk that has performance plus enabled and attach it to a VM:
 
 ```azurepowershell
-$RANDOM_SUFFIX = (New-Guid).Guid.Substring(0,6)
-$myRG = "PerfPlusRG$RANDOM_SUFFIX"
-$region = "WestUS2"
-New-AzResourceGroup -Name $myRG -Location $region
-```
+$myRG=yourResourceGroupName
+$myDisk=yourDiskName
+$myVM=yourVMName
+$region=desiredRegion
+# Valid values are Premium_LRS, Premium_ZRS, StandardSSD_LRS, StandardSSD_ZRS, or Standard_LRS
+$sku=desiredSKU
+#Size must be 513 or larger
+$size=513
+$lun=desiredLun
 
-Results:
+Set-AzContext -SubscriptionName <yourSubscriptionName> 
 
-<!-- expected_similarity=0.3 -->
-```JSON
-{
-  "ResourceGroupName": "PerfPlusRGxxx",
-  "Location": "WestUS2",
-  "ProvisioningState": "Succeeded"
-}
-```
-
-### Create a new disk with performance plus enabled
-
-This step creates a new disk with performance plus enabled using a valid SKU value.
-
-```azurepowershell
-$myDisk = "PerfPlusDisk$RANDOM_SUFFIX"
-$sku = "Premium_LRS"
-$size = 513
 $diskConfig = New-AzDiskConfig -Location $region -CreateOption Empty -DiskSizeGB $size -SkuName $sku -PerformancePlus $true 
+
 $dataDisk = New-AzDisk -ResourceGroupName $myRG -DiskName $myDisk -Disk $diskConfig
+
+Add-AzVMDataDisk -VMName $myVM -ResourceGroupName $myRG -DiskName $myDisk -Lun $lun -CreateOption Empty -ManagedDiskId $dataDisk.Id
 ```
 
-Results:
-
-<!-- expected_similarity=0.3 -->
-```JSON
-{
-  "ResourceGroup": "PerfPlusRGxxx",
-  "Name": "PerfPlusDiskxxx",
-  "Location": "WestUS2",
-  "Sku": "Premium_LRS",
-  "DiskSizeGB": 513,
-  "PerformancePlus": true,
-  "ProvisioningState": "Succeeded"
-}
-```
-
-### Attempt to attach the disk to a VM
-
-This optional step checks whether the specified VM exists before attempting the disk attachment.
+To migrate data from an existing disk or snapshot to a new disk with performance plus enabled, use the following script:
 
 ```azurepowershell
-$myVM = "NonExistentVM"
-if (Get-AzVM -ResourceGroupName $myRG -Name $myVM -ErrorAction SilentlyContinue) {
-    Add-AzVMDataDisk -VMName $myVM -ResourceGroupName $myRG -DiskName $myDisk -Lun 0 -CreateOption Empty -ManagedDiskId $dataDisk.Id
-} else {
-    Write-Output "VM $myVM not found. Skipping disk attachment."
-}
-```
+$myDisk=yourDiskOrSnapshotName
+$myVM=yourVMName
+$region=desiredRegion
+# Valid values are Premium_LRS, Premium_ZRS, StandardSSD_LRS, StandardSSD_ZRS, or Standard_LRS
+$sku=desiredSKU
+#Size must be 513 or larger
+$size=513
+$sourceURI=diskOrSnapshotURI
+$lun=desiredLun
 
-Results:
+Set-AzContext -SubscriptionName <<yourSubscriptionName>> 
 
-<!-- expected_similarity=0.3 -->
-```text
-VM NonExistentVM not found. Skipping disk attachment.
-```
-
-### Create a new disk from an existing disk or snapshot with performance plus enabled
-
-This series of steps creates a separate resource group and then creates a new disk from an existing disk or snapshot. Replace the $sourceURI with a valid source blob URI that belongs to the same region (WestUS2) as the disk.
-
-#### Create a resource group for migration
-
-```azurepowershell
-$RANDOM_SUFFIX = (New-Guid).Guid.Substring(0,6)
-$myMigrRG = "PerfPlusMigrRG$RANDOM_SUFFIX"
-$region = "WestUS2"
-New-AzResourceGroup -Name $myMigrRG -Location $region
-```
-
-Results:
-
-<!-- expected_similarity=0.3 -->
-```JSON
-{
-  "ResourceGroupName": "PerfPlusMigrRGxxx",
-  "Location": "WestUS2",
-  "ProvisioningState": "Succeeded"
-}
-```
-
-#### Create the disk from an existing snapshot or disk
-
-```azurepowershell
-$myDisk = "PerfPlusMigrDisk$RANDOM_SUFFIX"
-$sku = "Premium_LRS"
-$size = 513
-$sourceURI = "https://examplestorageaccount.blob.core.windows.net/snapshots/sample-westus2.vhd"  # Replace with a valid source blob URI in WestUS2
 $diskConfig = New-AzDiskConfig -Location $region -CreateOption Copy -DiskSizeGB $size -SkuName $sku -PerformancePlus $true -SourceResourceID $sourceURI
-$dataDisk = New-AzDisk -ResourceGroupName $myMigrRG -DiskName $myDisk -Disk $diskConfig
+
+$dataDisk = New-AzDisk -ResourceGroupName $myRG  -DiskName $myDisk -Disk $diskconfig
+Add-AzVMDataDisk -VMName $myVM -ResourceGroupName $myRG -DiskName $myDisk -Lun $lun -CreateOption Empty -ManagedDiskId $dataDisk.Id
 ```
+---
 
-Results:
+## Next steps
 
-<!-- expected_similarity=0.3 -->
-```JSON
-{
-  "ResourceGroup": "PerfPlusMigrRGxxx",
-  "Name": "PerfPlusMigrDiskxxx",
-  "Location": "WestUS2",
-  "Sku": "Premium_LRS",
-  "DiskSizeGB": 513,
-  "PerformancePlus": true,
-  "SourceResourceID": "https://examplestorageaccount.blob.core.windows.net/snapshots/sample-westus2.vhd",
-  "ProvisioningState": "Succeeded"
-}
-```
-
-#### Attempt to attach the migrated disk to a VM
-
-This optional step verifies the existence of the specified VM before attempting disk attachment.
-
-```azurepowershell
-$myVM = "NonExistentVM"
-if (Get-AzVM -ResourceGroupName $myMigrRG -Name $myVM -ErrorAction SilentlyContinue) {
-    Add-AzVMDataDisk -VMName $myVM -ResourceGroupName $myMigrRG -DiskName $myDisk -Lun 0 -CreateOption Empty -ManagedDiskId $dataDisk.Id
-} else {
-    Write-Output "VM $myVM not found. Skipping disk attachment."
-}
-```
-
-Results:
-
-<!-- expected_similarity=0.3 -->
-```text
-VM NonExistentVM not found. Skipping disk attachment.
-```
+- [Create an incremental snapshot for managed disks](disks-incremental-snapshots.md)
+- [Expand virtual hard disks on a Linux VM](linux/expand-disks.md)
+- [How to expand virtual hard disks attached to a Windows virtual machine](windows/expand-os-disk.md)

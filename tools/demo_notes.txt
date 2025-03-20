@@ -1,0 +1,71 @@
+# Show AKS cluster:
+
+kubectl get nodes
+
+# Install kubectl plugin:
+
+kubectl krew install gadget
+
+# Verify version and server status:
+
+kubectl gadget version
+# Expected output:
+# Client version: vX.Y.Z
+# Server version: not available
+
+# Deploy Inspektor Gadget:
+
+kubectl gadget deploy --otel-metrics-listen --otel-metrics-listen-address 0.0.0.0:2223
+
+# Verify version and server status:
+
+kubectl gadget version
+# Expected output:
+# Client version: vX.Y.Z
+# Server version: not available
+
+# Run simple example with trace_exec:
+
+# Run gadget
+kubectl gadget run trace_exec:v0.38.0
+
+# Run test pod
+kubectl run -ti 1p-demo-pod --rm --image=ubuntu -# /bin/bash
+
+# Run gadget with JSON
+kubectl gadget run trace_exec:v0.38.0 --output jsonpretty
+
+# Run gadget with filtering
+
+kubectl gadget run trace_exec:v0.38.0 --all-namespaces --filter proc.comm=bash
+
+# Generate a metric based on these events:
+
+vi alert-bad-process.yaml
+
+# Run gadget manifest to export metrics:
+
+kubectl gadget run -f alert-bad-process.yaml --annotate exec:metrics.collect=true,exec:metrics.implicit-counter.name=shell_executions,exec.k8s.namespace:metrics.type=key,exec.k8s.podname:metrics.type=key,exec.k8s.containername:metrics.type=key --detach
+
+# Verify gadget is running in headless mode:
+
+kubectl gadget list
+
+kubectl gadget attach alert-bad-process
+
+# Configure managed Prometheus to collect data from the OTEL listener endpoint we expose on each IG pod?
+# Documentation: https://learn.microsoft.com/en-us/azure/azure-monitor/containers/prometheus-metrics-scrape-configuration?tabs=CRDConfig%2CCRDScrapeConfig%2CConfigFileScrapeConfigBasicAuth%2CConfigFileScrapeConfigTLSAuth#configmaps
+
+kubectl get configmaps -n kube-system ama-metrics-settings-configmap
+
+# It should contain: pod-annotation-based-scraping: podannotationnamespaceregex = "gadget"
+kubectl get configmaps -n kube-system ama-metrics-settings-configmap -o yaml | less
+
+# Show shell_executions_total metric in Grafana dashboard: shell_executions_total
+# Documentation: https://learn.microsoft.com/en-us/azure/managed-grafana/overview
+
+# Create a prometheus group alert with the rule "shell_executions_total > 0"
+# Documentation: https://learn.microsoft.com/en-us/azure/azure-monitor/essentials/prometheus-rule-groups
+
+# Undeploy IG
+kubectl gadget undeploy

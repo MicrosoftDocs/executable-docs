@@ -13,10 +13,10 @@ ms.custom: mimckitt, devx-track-azurecli, linux-related-content, innovation-engi
 # Tutorial: Modify a Virtual Machine Scale Set using Azure CLI
 Throughout the lifecycle of your applications, you may need to modify or update your Virtual Machine Scale Set. These updates may include how to update the configuration of the scale set, or change the application configuration. This article describes how to modify an existing scale set using the Azure CLI.
 
-Below, we declare environment variables that will be used throughout this document. A random suffix is appended to resource names that need to be unique for each deployment. The REGION is set to WestUS2.
+Below, we declare environment variables that will be used throughout this document. A random suffix is appended to resource names that need to be unique for each deployment. The `REGION` is set to *WestUS2*.
 
 ```bash
-export RANDOM_SUFFIX=$(openssl rand -hex 3)
+export RANDOM_SUFFIX=adcc95
 export MY_RESOURCE_GROUP_NAME="myResourceGroup$RANDOM_SUFFIX"
 export SCALE_SET_NAME="myScaleSet$RANDOM_SUFFIX"
 export NEW_INSTANCE_NAME="myNewInstance$RANDOM_SUFFIX"
@@ -46,7 +46,7 @@ az group create --name $MY_RESOURCE_GROUP_NAME --location $REGION
 ```
 
 ## Create the Virtual Machine Scale Set
-To ensure that subsequent update and query commands have a valid resource to work on, create a Virtual Machine Scale Set. In this step, we deploy a basic scale set using a valid image ("Ubuntu2204") and set the instance count to 5 so that instance-specific updates can target an existing instance ID.
+To ensure that subsequent update and query commands have a valid resource to work on, create a Virtual Machine Scale Set. In this step, we deploy a basic scale set using a valid image (*Ubuntu2204*) and set the instance count to 5 so that instance-specific updates can target an existing instance ID.
 
 ```azurecli-interactive
 az vmss create \
@@ -164,7 +164,7 @@ The exact presentation of the output depends on the options you provide to the c
 }
 ```
 
-You can use [az vmss update](/cli/azure/vmss#az-vmss-update) to update various properties of your scale set. For example, updating your license type or a VM's instance protection policy. Note that the allowed license type value is "RHEL_BYOS" rather than "Windows_Server."
+You can use [az vmss update](/cli/azure/vmss#az-vmss-update) to update various properties of your scale set. For example, updating your license type or a VM's instance protection policy. Note that the allowed license type value is *RHEL_BYOS* rather than *Windows_Server*.
 
 ```azurecli-interactive
 az vmss update --name $SCALE_SET_NAME --resource-group $MY_RESOURCE_GROUP_NAME --license-type RHEL_BYOS
@@ -185,7 +185,7 @@ az vmss update \
   --protect-from-scale-in
 ```
 
-Additionally, if you previously deployed the scale set with the az vmss create command, you can run the az vmss create command again to update the scale set. Make sure that all properties in the az vmss create command are the same as before, except for the properties that you wish to modify. For example, below we're increasing the instance count to five.
+Additionally, if you previously deployed the scale set with the `az vmss create` command, you can run the `az vmss create` command again to update the scale set. Make sure that all properties in the `az vmss create` command are the same as before, except for the properties that you wish to modify. For example, below we're increasing the instance count to five.
 
 > [!IMPORTANT]
 >Starting November 2023, VM scale sets created using PowerShell and Azure CLI will default to Flexible Orchestration Mode if no orchestration mode is specified. For more information about this change and what actions you should take, go to [Breaking Change for VMSS PowerShell/CLI Customers - Microsoft Community Hub](https://techcommunity.microsoft.com/t5/azure-compute-blog/breaking-change-for-vmss-powershell-cli-customers/ba-p/3818295)
@@ -199,8 +199,7 @@ az vmss create \
   --admin-username azureuser \
   --generate-ssh-keys \
   --instance-count 5 \
-  --os-disk-size-gb 64 \
-  --admin-username azureuser
+  --os-disk-size-gb 64
 ```
 
 ## Updating individual VM instances in a scale set
@@ -288,8 +287,7 @@ These properties describe the configuration of a VM instance within a scale set,
 You can perform updates to individual VM instances in a scale set just like you would a standalone VM. For example, attaching a new data disk to instance 1:
 
 ```azurecli-interactive
-export DISK_NAME="disk_name$RANDOM_SUFFIX"
-az vm disk attach --resource-group $MY_RESOURCE_GROUP_NAME --vm-name $INSTANCE_NAME --name $DISK_NAME --new
+az vm disk attach --resource-group $MY_RESOURCE_GROUP_NAME --vm-name $INSTANCE_NAME --name disk_name1 --new
 ```
 
 Running [az vm show](/cli/azure/vm#az-vm-show) again, we now will see that the VM instance has the new disk attached.
@@ -305,11 +303,11 @@ Running [az vm show](/cli/azure/vm#az-vm-show) again, we now will see that the V
         "diskSizeGb": 1023,
         "lun": 0,
         "managedDisk": {
-          "id": "/subscriptions/xxxxx/resourceGroups/myResourceGroupxxx/providers/Microsoft.Compute/disks/disk_namexxxx",
+          "id": "/subscriptions/xxxxx/resourceGroups/myResourceGroupxxx/providers/Microsoft.Compute/disks/disk_name1",
           "resourceGroup": "myResourceGroupxxx",
           "storageAccountType": "Premium_LRS"
         },
-        "name": "disk_namexxxx",
+        "name": "disk_name1",
         "toBeDetached": false
       }
     ]
@@ -321,7 +319,7 @@ Running [az vm show](/cli/azure/vm#az-vm-show) again, we now will see that the V
 There are times where you might want to add a new VM to your scale set but want different configuration options than those listed in the scale set model. VMs can be added to a scale set during creation by using the [az vm create](/cli/azure/vmss#az-vmss-create) command and specifying the scale set name you want the instance added to.
 
 ```azurecli-interactive
-az vm create --name $NEW_INSTANCE_NAME --resource-group $MY_RESOURCE_GROUP_NAME --vmss $SCALE_SET_NAME --image RHELRaw8LVMGen2 --admin-username azureuser
+az vm create --name $NEW_INSTANCE_NAME --resource-group $MY_RESOURCE_GROUP_NAME --vmss $SCALE_SET_NAME --image RHELRaw8LVMGen2
 ```
 
 ```output
