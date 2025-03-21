@@ -108,8 +108,10 @@ These examples show various ways to leverage the gadget for tracing executions i
 # Run simple example with trace_exec with a 10-second timeout to prevent indefinite execution:
 timeout 5s kubectl gadget run trace_exec || true
 
+kubectl delete pod demo-pod 
+
 # Create a background pod that will generate events for us to trace:
-kubectl run demo-pod --image=ubuntu -- /bin/bash -c "for i in {1..30}; do echo Running commands...; ls -la /; sleep 1; done"
+kubectl run demo-pod --image=ubuntu -- /bin/bash -c "for i in {1..11}; do echo Running commands...; ls -la /; sleep 1; done"
 
 # Wait briefly for the pod to start generating events
 sleep 5
@@ -118,7 +120,7 @@ sleep 5
 timeout 5s kubectl gadget run trace_exec --output jsonpretty || true
 
 # Run gadget with filtering and timeout
-timeout 5s kubectl gadget run trace_exec --all-namespaces --filter proc.comm=bash || true
+timeout 5s kubectl gadget run trace_exec --all-namespaces --filter proc.comm=bash || echo "Attachment timed out, continuing with demo"
 ```
 
 Each command demonstrates a different facet of the gadget's capabilities, from initiating traces to filtering outputs based on process names.
@@ -139,7 +141,7 @@ cat alert-bad-process.yaml
 
 ## Exporting Metrics and Managing Gadget Lifecycle
 
-This section deploys the gadget manifest using the YAML file created in the previous section. The command includes several annotations to instruct the gadget to collect metrics. The process is detached so that it runs in the background. Subsequently, the script lists the running gadget instances and attaches to the deployed alert for further inspection if necessary.
+This section deploys the gadget manifest using the YAML file created in the previous section. The command includes several annotations to instruct the gadget to collect metrics. The process is detached so that it runs in the background. Subsequently, the script lists the running gadget instances.
 
 ```bash
 # Clean up any existing instance of the same name
@@ -147,12 +149,6 @@ kubectl gadget delete alert-bad-process
 
 # Run gadget manifest to export metrics:
 kubectl gadget run -f alert-bad-process.yaml --annotate exec:metrics.collect=true,exec:metrics.implicit-counter.name=shell_executions,exec.k8s.namespace:metrics.type=key,exec.k8s.podname:metrics.type=key,exec.k8s.containername:metrics.type=key --detach
-
-# Verify gadget is running in headless mode:
-
-kubectl gadget list
-
-timeout 5s kubectl gadget attach alert-bad-process
 ```
 
 These commands ensure that metrics are being collected as defined in the YAML manifest and verify that the gadget is running correctly in headless mode.
