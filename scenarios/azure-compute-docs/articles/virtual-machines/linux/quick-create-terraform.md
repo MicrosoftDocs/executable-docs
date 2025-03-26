@@ -52,8 +52,7 @@ In this article, you learn how to:
 
 1. Create a file named providers.tf and insert the following code:
 
-```bash
-cat <<'EOF' > providers.tf
+```text
 terraform {
   required_version = ">=0.12"
 
@@ -76,13 +75,11 @@ terraform {
 provider "azurerm" {
   features {}
 }
-EOF
 ```
 
 1. Create a file named ssh.tf and insert the following code:
 
-```bash
-cat <<'EOF' > ssh.tf
+```text
 resource "random_pet" "ssh_key_name" {
   prefix    = "ssh"
   separator = ""
@@ -107,13 +104,11 @@ resource "azapi_resource" "ssh_public_key" {
 output "key_data" {
   value = azapi_resource_action.ssh_public_key_gen.output.publicKey
 }
-EOF
 ```
 
 1. Create a file named main.tf and insert the following code:
 
-```bash
-cat <<'EOF' > main.tf
+```text
 resource "random_pet" "rg_name" {
   prefix = var.resource_group_name_prefix
 }
@@ -238,16 +233,14 @@ resource "azurerm_linux_virtual_machine" "my_terraform_vm" {
     storage_account_uri = azurerm_storage_account.my_storage_account.primary_blob_endpoint
   }
 }
-EOF
 ```
 
 1. Create a file named variables.tf and insert the following code:
 
-```bash
-cat <<'EOF' > variables.tf
+```text
 variable "resource_group_location" {
   type        = string
-  default     = "eastus"
+  default     = "eastus2"
   description = "Location of the resource group."
 }
 
@@ -262,13 +255,11 @@ variable "username" {
   description = "The username for the local account that will be created on the new VM."
   default     = "azureadmin"
 }
-EOF
 ```
 
 1. Create a file named outputs.tf and insert the following code:
 
-```bash
-cat <<'EOF' > outputs.tf
+```text
 output "resource_group_name" {
   value = azurerm_resource_group.rg.name
 }
@@ -276,7 +267,6 @@ output "resource_group_name" {
 output "public_ip_address" {
   value = azurerm_linux_virtual_machine.my_terraform_vm.public_ip_address
 }
-EOF
 ```
 
 ## Initialize Terraform
@@ -284,6 +274,8 @@ EOF
 In this section, Terraform is initialized; this command downloads the Azure provider required to manage your Azure resources. Before running the command, ensure you are in the directory where you created the Terraform files. You can set any necessary environment variables here.
 
 ```bash
+# Set your preferred Azure region (defaults to eastus2 if not specified)
+export TF_VAR_resource_group_location="eastus2"
 export TERRAFORM_DIR=$(pwd)
 terraform init -upgrade
 ```
