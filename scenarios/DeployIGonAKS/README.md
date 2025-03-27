@@ -8,6 +8,8 @@ ms.date: 12/06/2023
 ms.custom: innovation-engine
 ---
 
+test 
+
 # Quickstart: Deploy Inspektor Gadget in an Azure Kubernetes Service cluster
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://go.microsoft.com/fwlink/?linkid=2276309)
