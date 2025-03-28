@@ -1,11 +1,11 @@
 [
     {
         "status": "active",
-        "key": "azure-aks-docs/articles/aks/learn/quick-kubernetes-deploy-cli.md",
+        "key": "azure-docs/articles/aks/learn/quick-kubernetes-deploy-cli.md",
         "title": "Deploy an Azure Kubernetes Service (AKS) cluster",
         "description": "Learn how to quickly deploy a Kubernetes cluster and deploy an application in Azure Kubernetes Service (AKS) using Azure CLI",
         "stackDetails": "",
-        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-aks-docs/articles/aks/learn/quick-kubernetes-deploy-cli.md",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-docs/articles/aks/learn/quick-kubernetes-deploy-cli.md",
         "documentationUrl": "https://learn.microsoft.com/en-us/azure/aks/learn/quick-kubernetes-deploy-cli",
         "nextSteps": [
             {
@@ -159,11 +159,11 @@
     },
     {
         "status": "active",
-        "key": "azure-compute-docs/articles/virtual-machine-scale-sets/flexible-virtual-machine-scale-sets-cli.md",
+        "key": "azure-docs/articles/virtual-machine-scale-sets/flexible-virtual-machine-scale-sets-cli.md",
         "title": "Create virtual machines in a Flexible scale set using Azure CLI",
         "description": "Learn how to create a Virtual Machine Scale Set in Flexible orchestration mode using Azure CLI.",
         "stackDetails": "",
-        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-compute-docs/articles/virtual-machine-scale-sets/flexible-virtual-machine-scale-sets-cli.md",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-docs/articles/virtual-machine-scale-sets/flexible-virtual-machine-scale-sets-cli.md",
         "documentationUrl": "https://learn.microsoft.com/en-us/azure/virtual-machine-scale-sets/flexible-virtual-machine-scale-sets-cli",
         "nextSteps": [
             {
@@ -184,7 +184,7 @@
     },
     {
         "status": "active",
-        "key": "azure-compute-docs/articles/virtual-machines/linux/quick-create-cli.md",
+        "key": "azure-docs/articles/virtual-machines/linux/quick-create-cli.md",
         "title": "Deploy a Linux virtual machine",
         "description": "In this quickstart, you learn how to use the Azure CLI to create a Linux virtual machine",
         "stackDetails": [
@@ -193,7 +193,7 @@
             "Network interface with public IP and network security group",
             "Port 22 will be opened"
         ],
-        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-compute-docs/articles/virtual-machines/linux/quick-create-cli.md",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-docs/articles/virtual-machines/linux/quick-create-cli.md",
         "documentationUrl": "https://learn.microsoft.com/en-us/azure/virtual-machines/linux/quick-create-cli",
         "nextSteps": [
             {
@@ -230,11 +230,11 @@
     },
     {
         "status": "active",
-        "key": "azure-compute-docs/articles/virtual-machines/linux/tutorial-lemp-stack.md",
+        "key": "azure-docs/articles/virtual-machines/linux/tutorial-lemp-stack.md",
         "title": "Tutorial - Deploy a LEMP stack using WordPress on a VM",
         "description": "In this tutorial, you learn how to install the LEMP stack, and WordPress, on a Linux virtual machine in Azure.",
         "stackDetails": "",
-        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-compute-docs/articles/virtual-machines/linux/tutorial-lemp-stack.md",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-docs/articles/virtual-machines/linux/tutorial-lemp-stack.md",
         "documentationUrl": "https://learn.microsoft.com/en-us/azure/virtual-machines/linux/tutorial-lemp-stack",
         "nextSteps": [
             {
@@ -484,10 +484,6 @@
     },
     {
         "status": "inactive",
-        "key": "BlobVisionOnAKS/blob-vision-aks.md"
-    },
-    {
-        "status": "inactive",
         "key": "DeployHAPGonARO/deploy-ha-pg-on-aro.md",
         "title": "Create a Highly Available PostgreSQL Cluster on Azure Red Hat OpenShift",
         "description": "This tutorial shows how to create a Highly Available PostgreSQL cluster on Azure Red Hat OpenShift (ARO) using the CloudNativePG operator",
@@ -660,7 +656,7 @@
         "title": "Deploy an AI model on AKS with the AI toolchain operator",
         "description": "Learn how to enable the AI toolchain operator add-on on Azure Kubernetes Service (AKS) to simplify OSS AI model management and deployment",
         "stackDetails": "",
-        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/AKSKaito/aks-kaito.md",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/AksKaito/README.md",
         "documentationUrl": "https://learn.microsoft.com/en-us/azure/aks/ai-toolchain-operator",
         "nextSteps": [
             {
@@ -783,11 +779,11 @@
     },
     {
         "status": "active",
-        "key": "azure-compute-docs/articles/virtual-machine-scale-sets/tutorial-use-custom-image-cli.md",
+        "key": "azure-docs/articles/virtual-machine-scale-sets/tutorial-use-custom-image-cli.md",
         "title": "Tutorial - Use a custom VM image in a scale set with Azure CLI",
         "description": "Learn how to use the Azure CLI to create a custom VM image that you can use to deploy a Virtual Machine Scale Set",
         "stackDetails": [],
-        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-compute-docs/articles/virtual-machine-scale-sets/tutorial-use-custom-image-cli.md",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-docs/articles/virtual-machine-scale-sets/tutorial-use-custom-image-cli.md",
         "documentationUrl": "https://learn.microsoft.com/en-us/azure/virtual-machine-scale-sets/tutorial-use-custom-image-cli",
         "nextSteps": [
             {
@@ -1172,12 +1168,12 @@
     },
     {
         "status": "active",
-        "key": "azure-compute-docs/articles/virtual-machines/linux/quick-create-terraform.md",
+        "key": "azure-compute-docs/articles/virtual-machines/linux/quick-create-terraform/quick-create-terraform.md",
         "title": "Quickstart: Use Terraform to create a Linux VM",
         "description": "In this quickstart, you learn how to use Terraform to create a Linux virtual machine.",
         "stackDetails": [
         ],
-        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-compute-docs/articles/virtual-machines/linux/quick-create-terraform.md",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-compute-docs/articles/virtual-machines/linux/quick-create-terraform/quick-create-terraform.md",
         "documentationUrl": "https://learn.microsoft.com/en-us/azure/virtual-machines/linux/quick-create-terraform?tabs=azure-cli",
         "nextSteps": [
             {
