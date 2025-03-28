@@ -64,8 +64,6 @@ az aks nodepool add \
 To see the status of your node pools, use the `az aks nodepool list` command and specify your resource group and cluster name. The same environment variable values declared earlier are used here.
 
 ```azurecli-interactive
-export CLUSTER_NAME="myAKSClusterabcf37"
-export RESOURCE_GROUP="myAKSResourceGroupabcf37"
 az aks nodepool list --resource-group $RESOURCE_GROUP --cluster-name $CLUSTER_NAME
 ```
 

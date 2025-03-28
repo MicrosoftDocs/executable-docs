@@ -26,15 +26,6 @@ In the next and last tutorial, you'll learn how to upgrade your Azure Linux node
 - If you're connecting an existing AKS cluster to a Log Analytics workspace in another subscription, the Microsoft.ContainerService resource provider must be registered in the subscription with the Log Analytics workspace. For more information, see [Register resource provider](/azure/azure-resource-manager/management/resource-providers-and-types#register-resource-provider).
 - You need the latest version of Azure CLI. Run `az --version` to find the version. If you need to install or upgrade, see [Install Azure CLI](/cli/azure/install-azure-cli).
 
-## Environment Variables
-
-To ensure unique resource names for each deployment, we declare the following environment variables. These variables will be used throughout the tutorial.
-
-```bash
-export RESOURCE_GROUP="myAKSResourceGroupabcf37"
-export CLUSTER_NAME="myAKSClusterabcf37"
-```
-
 ## Enable monitoring
 
 ## Connect to your cluster

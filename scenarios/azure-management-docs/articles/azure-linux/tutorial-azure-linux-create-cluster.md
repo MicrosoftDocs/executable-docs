@@ -38,8 +38,6 @@ When creating a resource group, it is required to specify a location. This locat
 Before running the command, environment variables are declared to ensure unique resource names for each deployment.
 
 ```bash
-export RANDOM_SUFFIX=c97736
-export RESOURCE_GROUP_NAME="testAzureLinuxResourceGroup${RANDOM_SUFFIX}"
 export REGION="EastUS2"
 az group create --name $RESOURCE_GROUP_NAME --location $REGION
 ```
@@ -64,10 +62,9 @@ az group create --name $RESOURCE_GROUP_NAME --location $REGION
 
 ## Create an Azure Linux Container Host cluster
 
-Create an AKS cluster using the `az aks create` command with the `--os-sku` parameter to provision the Azure Linux Container Host with an Azure Linux image. The following example creates an Azure Linux Container Host cluster. A unique cluster name is generated using the same RANDOM_SUFFIX used when creating the resource group.
+Create an AKS cluster using the `az aks create` command with the `--os-sku` parameter to provision the Azure Linux Container Host with an Azure Linux image. The following example creates an Azure Linux Container Host cluster. 
 
 ```bash
-export CLUSTER_NAME="testAzureLinuxCluster${RANDOM_SUFFIX}"
 az aks create --name $CLUSTER_NAME --resource-group $RESOURCE_GROUP_NAME --os-sku AzureLinux
 ```
 

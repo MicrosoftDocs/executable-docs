@@ -1212,5 +1212,446 @@
         "documentationUrl": "https://www.flatcar.org/docs/latest/installing/cloud/azure/",
         "configurations": {
         }
+    },
+    {
+        "status": "active",
+        "key": "azure-management-docs/articles/azure-linux/tutorial-azure-linux-migration.md",
+        "title": "Azure Linux Container Host for AKS tutorial - Migrating to Azure Linux",
+        "description": "In this Azure Linux Container Host for AKS tutorial, you learn how to migrate your nodes to Azure Linux nodes.",
+        "stackDetails": "",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-management-docs/articles/azure-linux/tutorial-azure-linux-migration.md",
+        "documentationUrl": "https://learn.microsoft.com/en-us/azure/azure-linux/tutorial-azure-linux-migration?tabs=azure-cli",
+        "nextSteps": [
+            {
+                "title": "Enable telemetry and monitoring",
+                "url": "https://github.com/MicrosoftDocs/azure-management-docs/blob/main/articles/azure-linux/tutorial-azure-linux-telemetry-monitor.md"
+            }
+        ],
+        "configurations": {
+            "permissions": [],
+            "configurableParams": [
+                {
+                    "inputType": "textInput",
+                    "commandKey": "RESOURCE_GROUP",
+                    "title": "Resource Group Name",
+                    "defaultValue": ""
+                },
+                {
+                    "inputType": "textInput",
+                    "commandKey": "CLUSTER_NAME",
+                    "title": "AKS Cluster Name",
+                    "defaultValue": ""
+                }
+            ]
+        }
+    },
+    {
+        "status": "active",
+        "key": "azure-management-docs/articles/azure-linux/tutorial-azure-linux-create-cluster.md",
+        "title": "Azure Linux Container Host for AKS tutorial - Create a cluster",
+        "description": "In this Azure Linux Container Host for AKS tutorial, you will learn how to create an AKS cluster with Azure Linux.",
+        "stackDetails": "",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-management-docs/articles/azure-linux/tutorial-azure-linux-create-cluster.md",
+        "documentationUrl": "https://learn.microsoft.com/en-us/azure/azure-linux/tutorial-azure-linux-create-cluster",
+        "nextSteps": [
+            {
+                "title": "Add an Azure Linux node pool",
+                "url": "https://learn.microsoft.com/en-us/azure/azure-linux/tutorial-azure-linux-add-nodepool"
+            }
+        ],
+        "configurations": {
+            "permissions": [],
+            "configurableParams": [
+                {
+                    "inputType": "textInput",
+                    "commandKey": "RESOURCE_GROUP_NAME",
+                    "title": "Resource Group Name",
+                    "defaultValue": ""
+                },
+                {
+                    "inputType": "textInput",
+                    "commandKey": "CLUSTER_NAME",
+                    "title": "AKS Cluster Name",
+                    "defaultValue": ""
+                }
+            ]
+        }
+    },
+    {
+        "status": "active",
+        "key": "azure-management-docs/articles/azure-linux/tutorial-azure-linux-add-nodepool.md",
+        "title": "Azure Linux Container Host for AKS tutorial - Add an Azure Linux node pool to your existing AKS cluster",
+        "description": "In this Azure Linux Container Host for AKS tutorial, you learn how to add an Azure Linux node pool to your existing cluster.",
+        "stackDetails": "",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-management-docs/articles/azure-linux/tutorial-azure-linux-add-nodepool.md",
+        "documentationUrl": "https://learn.microsoft.com/en-us/azure/azure-linux/tutorial-azure-linux-add-nodepool",
+        "nextSteps": [
+            {
+                "title": "Migrating to Azure Linux",
+                "url": "https://learn.microsoft.com/en-us/azure/azure-linux/tutorial-azure-linux-migration"
+            }
+        ],
+        "configurations": {
+            "permissions": [],
+            "configurableParams": [
+                {
+                    "inputType": "textInput",
+                    "commandKey": "RESOURCE_GROUP",
+                    "title": "Resource Group Name",
+                    "defaultValue": ""
+                },
+                {
+                    "inputType": "textInput",
+                    "commandKey": "CLUSTER_NAME",
+                    "title": "AKS Cluster Name",
+                    "defaultValue": ""
+                }
+            ]
+        }
+    },
+    {
+        "status": "active",
+        "key": "azure-management-docs/articles/azure-linux/tutorial-azure-linux-upgrade.md",
+        "title": "Azure Linux Container Host for AKS tutorial - Upgrade Azure Linux Container Host nodes",
+        "description": "In this Azure Linux Container Host for AKS tutorial, you learn how to upgrade Azure Linux Container Host nodes.",
+        "stackDetails": "",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-management-docs/articles/azure-linux/tutorial-azure-linux-upgrade.md",
+        "documentationUrl": "https://learn.microsoft.com/en-us/azure/azure-linux/tutorial-azure-linux-upgrade",
+        "nextSteps": [
+            {
+                "title": "Azure Linux Container Host Overview",
+                "url": "https://learn.microsoft.com/en-us/azure/azure-linux/intro-azure-linux"
+            }
+        ],
+        "configurations": {
+            "permissions": [],
+            "configurableParams": [
+                {
+                    "inputType": "textInput",
+                    "commandKey": "AZ_LINUX_RG",
+                    "title": "Resource Group Name",
+                    "defaultValue": ""
+                },
+                {
+                    "inputType": "textInput",
+                    "commandKey": "AZ_LINUX_CLUSTER",
+                    "title": "AKS Cluster Name",
+                    "defaultValue": ""
+                }
+            ]
+        }
+    },
+    {
+        "status": "active",
+        "key": "azure-management-docs/articles/azure-linux/tutorial-azure-linux-telemetry-monitor.md",
+        "title": "Azure Linux Container Host for AKS tutorial - Enable telemetry and monitoring for the Azure Linux Container Host",
+        "description": "In this Azure Linux Container Host for AKS tutorial, you'll learn how to enable telemetry and monitoring for the Azure Linux Container Host.",
+        "stackDetails": "",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-management-docs/articles/azure-linux/tutorial-azure-linux-telemetry-monitor.md",
+        "documentationUrl": "https://learn.microsoft.com/en-us/azure/azure-linux/tutorial-azure-linux-telemetry-monitor",
+        "nextSteps": [
+            {
+                "title": "Upgrade Azure Linux Nodes",
+                "url": "https://github.com/MicrosoftDocs/azure-management-docs/blob/main/articles/azure-linux/tutorial-azure-linux-upgrade.md"
+            }
+        ],
+        "configurations": {
+            "permissions": [],
+            "configurableParams": [
+                {
+                    "inputType": "textInput",
+                    "commandKey": "RESOURCE_GROUP",
+                    "title": "Resource Group Name",
+                    "defaultValue": ""
+                },
+                {
+                    "inputType": "textInput",
+                    "commandKey": "CLUSTER_NAME",
+                    "title": "AKS Cluster Name",
+                    "defaultValue": ""
+                }
+            ]
+        }
+    },
+    {
+        "status": "active",
+        "key": "azure-stack-docs/azure-stack/user/azure-stack-quick-create-vm-linux-cli.md",
+        "title": "Create Linux VM with Azure CLI in Azure Stack Hub",
+        "description": "Create a Linux virtual machine by using the Azure CLI in Azure Stack Hub.",
+        "stackDetails": "",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-stack-docs/azure-stack/user/azure-stack-quick-create-vm-linux-cli.md",
+        "documentationUrl": "https://learn.microsoft.com/en-us/azure-stack/user/azure-stack-quick-create-vm-linux-cli?view=azs-2501",
+        "nextSteps": [
+            {
+                "title": "Considerations for virtual machines in Azure Stack Hub",
+                "url": "https://github.com/MicrosoftDocs/azure-stack-docs/blob/main/azure-stack/user/azure-stack-vm-considerations.md"
+            }
+        ],
+        "configurations": {
+            "permissions": [],
+            "configurableParams": []
+        }
+    },
+    {
+        "status": "active",
+        "key": "azure-aks-docs/articles/aks/azure-cni-powered-by-cilium.md",
+        "title": "Configure Azure CNI Powered by Cilium in Azure Kubernetes Service (AKS)",
+        "description": "Learn how to create an Azure Kubernetes Service (AKS) cluster with Azure CNI Powered by Cilium.",
+        "stackDetails": "",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-aks-docs/articles/aks/azure-cni-powered-by-cilium.md",
+        "documentationUrl": "https://learn.microsoft.com/en-us/azure/aks/azure-cni-powered-by-cilium",
+        "nextSteps": [
+            {
+                "title": "Upgrade Azure CNI IPAM modes and Dataplane Technology.",
+                "url": "https://learn.microsoft.com/en-us/azure/aks/upgrade-azure-cni"
+            },
+            {
+                "title": "Use a static IP address with the Azure Kubernetes Service (AKS) load balancer",
+                "url": "https://learn.microsoft.com/en-us/azure/aks/static-ip"
+            },
+            {
+                "title": "Use an internal load balancer with Azure Container Service (AKS)",
+                "url": "https://learn.microsoft.com/en-us/azure/aks/internal-lb"  
+            },
+            {
+                "title": "Create a basic ingress controller with external network connectivity",
+                "url": "https://learn.microsoft.com/en-us/azure/aks/ingress-basic"
+            }
+        ],
+        "configurations": {
+            "permissions": [],
+            "configurableParams": []
+        }
+    },
+    {
+        "status": "active",
+        "key": "azure-compute-docs/articles/virtual-machines/linux/tutorial-automate-vm-deployment.md",
+        "title": "Tutorial - Customize a Linux VM with cloud-init in Azure",
+        "description": "In this tutorial, you learn how to use cloud-init and Key Vault to customize Linux VMs the first time they boot in Azure",
+        "stackDetails": "",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-compute-docs/articles/virtual-machines/linux/tutorial-automate-vm-deployment.md",
+        "documentationUrl": "https://learn.microsoft.com/en-us/azure/virtual-machines/linux/tutorial-automate-vm-deployment",
+        "nextSteps": [
+            {
+                "title": "Create custom VM images",
+                "url": "https://learn.microsoft.com/en-us/azure/virtual-machines/linux/tutorial-custom-images"
+            }
+        ],
+        "configurations": {
+            "permissions": [],
+            "configurableParams": []
+        }
+    },
+    {
+        "status": "active",
+        "key": "azure-compute-docs/articles/virtual-machines/linux/multiple-nics.md",
+        "title": "Create a Linux VM in Azure with multiple NICs",
+        "description": "Learn how to create a Linux VM with multiple NICs attached to it using the Azure CLI or Resource Manager templates.",
+        "stackDetails": "",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-compute-docs/articles/virtual-machines/linux/multiple-nics.md",
+        "documentationUrl": "https://learn.microsoft.com/en-us/azure/virtual-machines/linux/multiple-nics",
+        "nextSteps": [
+            {
+                "title": "Review Linux VM Sizes",
+                "url": "https://github.com/MicrosoftDocs/azure-compute-docs/blob/main/articles/virtual-machines/sizes.md"
+            },
+            {
+                "title": " Manage virtual machine access using just in time",
+                "url": "https://github.com/MicrosoftDocs/azure-compute-docs/blob/main/azure/security-center/security-center-just-in-time"
+            }
+        ],
+        "configurations": {
+            "permissions": [],
+            "configurableParams": []
+        }
+    },
+    {
+        "status": "active",
+        "key": "azure-compute-docs/articles/virtual-machines/disks-enable-performance.md",
+        "title": "Preview - Increase performance of Premium SSDs and Standard SSD/HDDs",
+        "description": "Increase the performance of Azure Premium SSDs and Standard SSD/HDDs using performance plus.",
+        "stackDetails": "",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-compute-docs/articles/virtual-machines/disks-enable-performance.md",
+        "documentationUrl": "https://learn.microsoft.com/en-us/azure/virtual-machines/disks-enable-performance?tabs=azure-cli",
+        "nextSteps": [
+            {
+                "title": "Create an incremental snapshot for managed disks",
+                "url": "https://github.com/MicrosoftDocs/azure-compute-docs/blob/main/articles/virtual-machines/disks-incremental-snapshots.md"
+            },
+            {
+                "title": "Expand virtual hard disks on a Linux VM",
+                "url": "https://github.com/MicrosoftDocs/azure-compute-docs/blob/main/articles/virtual-machines/linux/expand-disks.md"
+            },
+            {
+                "title": "How to expand virtual hard disks attached to a Windows virtual machine",
+                "url": "https://github.com/MicrosoftDocs/azure-compute-docs/blob/main/articles/virtual-machines/windows/expand-os-disk.md"
+            }
+        ],
+        "configurations": {
+            "permissions": [],
+            "configurableParams": []
+        }
+    },
+    {
+        "status": "active",
+        "key": "azure-compute-docs/articles/virtual-machine-scale-sets/tutorial-modify-scale-sets-cli.md",
+        "title": "Modify an Azure Virtual Machine Scale Set using Azure CLI",
+        "description": "Learn how to modify and update an Azure Virtual Machine Scale Set using Azure CLI.",
+        "stackDetails": "",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-compute-docs/articles/virtual-machine-scale-sets/tutorial-modify-scale-sets-cli.md",
+        "documentationUrl": "https://learn.microsoft.com/en-us/azure/virtual-machine-scale-sets/tutorial-modify-scale-sets-cli",
+        "nextSteps": [
+            {
+                "title": "Use data disks with scale sets",
+                "url": "https://learn.microsoft.com/en-us/azure/virtual-machine-scale-sets/tutorial-use-disks-powershell"
+            }
+        ],
+        "configurations": {
+            "permissions": [],
+            "configurableParams": []
+        }
+    },
+    {
+        "status": "active",
+        "key": "azure-compute-docs/articles/virtual-machine-scale-sets/tutorial-autoscale-cli.md",
+        "title": "Tutorial - Autoscale a scale set with the Azure CLI",
+        "description": "Learn how to use the Azure CLI to automatically scale a Virtual Machine Scale Set as CPU demands increases and decreases",
+        "stackDetails": "",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-compute-docs/articles/virtual-machine-scale-sets/tutorial-autoscale-cli.md",
+        "documentationUrl": "https://learn.microsoft.com/en-us/azure/virtual-machine-scale-sets/tutorial-autoscale-cli",
+        "nextSteps": [
+            {
+                "title": "Learn about scale set instance protection",
+                "url": "https://learn.microsoft.com/en-us/azure/virtual-machine-scale-sets/virtual-machine-scale-sets-instance-protection"
+            }
+        ],
+        "configurations": {
+            "permissions": [],
+            "configurableParams": []
+        }
+    },
+    {
+        "status": "active",
+        "key": "azure-compute-docs/articles/virtual-machines/linux/tutorial-manage-vm.md",
+        "title": "Tutorial - Create and manage Linux VMs with the Azure CLI",
+        "description": "In this tutorial, you learn how to use the Azure CLI to create and manage Linux VMs in Azure",
+        "stackDetails": "",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-compute-docs/articles/virtual-machines/linux/tutorial-manage-vm.md",
+        "documentationUrl": "https://learn.microsoft.com/en-us/azure/virtual-machines/linux/tutorial-manage-vm",
+        "nextSteps": [
+            {
+                "title": "Create and Manage VM Disks",
+                "url": "https://github.com/MicrosoftDocs/azure-compute-docs/blob/main/articles/virtual-machines/linux/tutorial-manage-disks.md"
+            }
+        ],
+        "configurations": {
+            "permissions": [],
+            "configurableParams": []
+        }
+    },
+    {
+        "status": "active",
+        "key": "azure-compute-docs/articles/virtual-machines/linux/tutorial-lamp-stack.md",
+        "title": "Tutorial - Deploy LAMP and WordPress on a VM",
+        "description": "In this tutorial, you learn how to install the LAMP stack, and WordPress, on a Linux virtual machine in Azure.",
+        "stackDetails": "",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-compute-docs/articles/virtual-machines/linux/tutorial-lamp-stack.md",
+        "documentationUrl": "https://learn.microsoft.com/en-us/azure/virtual-machines/linux/tutorial-lamp-stack",
+        "nextSteps": [
+            {
+                "title": "Secure web server with TLS",
+                "url": "https://learn.microsoft.com/en-us/azure/virtual-machines/linux/tutorial-secure-web-server"
+            }
+        ],
+        "configurations": {
+            "permissions": [],
+            "configurableParams": []
+        }
+    },
+    {
+        "status": "active",
+        "key": "azure-docs/articles/batch/quick-create-cli.md",
+        "title": "Quickstart: Use the Azure CLI to create a Batch account and run a job",
+        "description": "Follow this quickstart to use the Azure CLI to create a Batch account, a pool of compute nodes, and a job that runs basic tasks on the pool.",
+        "stackDetails": "",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-docs/articles/batch/quick-create-cli.md",
+        "documentationUrl": "https://learn.microsoft.com/en-us/azure/batch/quick-create-cli",
+        "nextSteps": [
+            {
+                "title": "Tutorial: Run a parallel workload with Azure Batch",
+                "url": "https://learn.microsoft.com/en-us/azure/batch/tutorial-parallel-python"
+            }
+        ],
+        "configurations": {
+            "permissions": [],
+            "configurableParams": []
+        }
+    },
+    {
+        "status": "active",
+        "key": "azure-compute-docs/articles/container-instances/container-instances-quickstart-terraform/container-instances-quickstart-terraform.md",
+        "title": "Quickstart: Create an Azure Container Instance with a public IP address using Terraform",
+        "description": "In this article, you create an Azure Container Instance with a public IP address using Terraform",
+        "stackDetails": "",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-compute-docs/articles/container-instances/container-instances-quickstart-terraform/container-instances-quickstart-terraform.md",
+        "documentationUrl": "https://learn.microsoft.com/en-us/azure/container-instances/container-instances-quickstart-terraform",
+        "nextSteps": [
+            {
+                "title": "Tutorial: Create a container image for deployment to Azure Container Instances",
+                "url": "https://learn.microsoft.com/en-us/azure/container-instances/container-instances-tutorial-prepare-app"
+            }
+        ],
+        "configurations": {
+            "permissions": [],
+            "configurableParams": []
+        }
+    },
+    {
+        "status": "active",
+        "key": "azure-aks-docs/articles/aks/node-image-upgrade.md",
+        "title": "Upgrade Azure Kubernetes Service (AKS) node images",
+        "description": "Learn how to upgrade the images on AKS cluster nodes and node pools.",
+        "stackDetails": "",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-aks-docs/articles/aks/node-image-upgrade.md",
+        "documentationUrl": "https://learn.microsoft.com/en-us/azure/aks/node-image-upgrade",
+        "nextSteps": [
+            {
+                "title": "For information about the latest node images, see the AKS release notes",
+                "url": "https://github.com/Azure/AKS/releases"
+            },
+            {
+                "title": "Learn how to upgrade the Kubernetes version with Upgrade an AKS cluster",
+                "url": "https://learn.microsoft.com/en-us/azure/aks/upgrade-aks-cluster"
+            },
+            {
+                "title": "Automatically apply cluster and node pool upgrades with GitHub Actions",
+                "url": "https://learn.microsoft.com/en-us/azure/aks/node-upgrade-github-actions"
+            },
+            {
+                "title": "Learn more about multiple node pools with Create multiple node pools",
+                "url": "https://learn.microsoft.com/en-us/azure/aks/create-node-pools"
+            },
+            {
+                "title": "Learn about upgrading best practices with AKS patch and upgrade guidance",
+                "url": "https://learn.microsoft.com/en-us/azure/architecture/operator-guides/aks/aks-upgrade-practices"
+            }
+        ],
+        "configurations": {
+            "permissions": [],
+            "configurableParams": [
+                {
+                    "inputType": "textInput",
+                    "commandKey": "AKS_RESOURCE_GROUP",
+                    "title": "Resource Group Name",
+                    "defaultValue": ""
+                },
+                {
+                    "inputType": "textInput",
+                    "commandKey": "AKS_CLUSTER",
+                    "title": "AKS Cluster Name",
+                    "defaultValue": ""
+                }
+            ]
+        }
     }
 ]
