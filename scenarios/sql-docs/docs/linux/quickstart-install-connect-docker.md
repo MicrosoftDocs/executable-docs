@@ -1091,7 +1091,7 @@ The following steps use **sqlcmd** outside of your container to connect to [!INC
 
    ::: zone pivot="cs1-bash"
 
-   ```bash
+   ```text
    sudo sqlcmd -S <ip_address>,1433 -U <userid> -P "<password>"
    ```
 
@@ -1128,7 +1128,7 @@ The following steps use **sqlcmd** outside of your container to connect to [!INC
 
    ::: zone pivot="cs1-bash"
 
-   ```bash
+   ```text
    sudo sqlcmd
    ```
 
@@ -1170,7 +1170,7 @@ If you want to remove the [!INCLUDE [ssnoversion-md](../includes/ssnoversion-md.
 
 ::: zone pivot="cs1-bash"
 
-```bash
+```text
 docker stop sql1
 docker rm sql1
 ```
@@ -1201,7 +1201,7 @@ If you want to remove the [!INCLUDE [ssnoversion-md](../includes/ssnoversion-md.
 
 ::: zone pivot="cs1-bash"
 
-```bash
+```text
 sudo sqlcmd delete --force
 ```
 

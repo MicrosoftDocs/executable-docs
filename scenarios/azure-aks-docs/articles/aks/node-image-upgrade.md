@@ -10,16 +10,6 @@ author: schaffererin
 ms.author: schaffererin
 ---
 
-## Environment Variables
-
-The following environment variables are declared and will be used in subsequent code blocks. They replace the placeholder parameters in the original document with standardized variable names.
-
-```bash
-export AKS_NODEPOOL="nodepool1"
-export AKS_CLUSTER="apache-airflow-aks"
-export AKS_RESOURCE_GROUP="apache-airflow-rg"
-```
-
 # Upgrade Azure Kubernetes Service (AKS) node images
 
 Azure Kubernetes Service (AKS) regularly provides new node images, so it's beneficial to upgrade your node images frequently to use the latest AKS features. Linux node images are updated weekly, and Windows node images are updated monthly. Image upgrade announcements are included in the [AKS release notes](https://github.com/Azure/AKS/releases), and it can take up to a week for these updates to be rolled out across all regions. You can also perform node image upgrades automatically and schedule them using planned maintenance. For more information, see [Automatically upgrade node images][auto-upgrade-node-image].

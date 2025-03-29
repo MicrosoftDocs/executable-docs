@@ -1653,5 +1653,24 @@
                 }
             ]
         }
+    },
+    {
+        "status": "active",
+        "key": "azure-compute-docs/articles/virtual-machines/linux/tutorial-elasticsearch.md",
+        "title": "Deploy ElasticSearch on a development virtual machine in Azure",
+        "description": "Install the Elastic Stack (ELK) onto a development Linux VM in Azure",
+        "stackDetails": "",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-compute-docs/articles/virtual-machines/linux/tutorial-elasticsearch.md",
+        "documentationUrl": "https://learn.microsoft.com/en-us/azure/virtual-machines/linux/tutorial-elasticsearch",
+        "nextSteps": [
+            {
+                "title": "Create a Linux VM with the Azure CLI",
+                "url": "https://learn.microsoft.com/en-us/azure/virtual-machines/linux/quick-create-cli"
+            }
+        ],
+        "configurations": {
+            "permissions": [],
+            "configurableParams": []
+        }
     }
 ]
