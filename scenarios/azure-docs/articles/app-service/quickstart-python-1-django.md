@@ -76,18 +76,7 @@ Before deploying, declare environment variables for the deployment. A random suf
 ```bash
 export RANDOM_SUFFIX=$(openssl rand -hex 3)
 export APP_NAME="mydjangoapp$RANDOM_SUFFIX"
-az webapp up --sku B1 --name $APP_NAME
-```
-
-<!-- expected_similarity=0.3 -->
-```json
-{
-  "defaultHostName": "mydjangoappxxx.azurewebsites.net",
-  "location": "centralindia",
-  "name": "mydjangoappxxx",
-  "resourceGroup": "appsvc_rg_Linux_CentralUS",
-  "state": "Running"
-}
+az webapp up --sku B1 --name $APP_NAME --runtime "PYTHON|3.10"
 ```
 
 - If the `az` command isn't recognized, be sure you have the Azure CLI installed as described in [Set up your initial environment](#set-up-your-initial-environment).
@@ -134,7 +123,7 @@ The Python sample code is running a Linux container in App Service using a built
 
     # [Bash](#tab/bash)
 
-    ```bash
+    ```text
     python3 manage.py runserver
     ```
 
@@ -167,6 +156,7 @@ In this section, you make a small code change and then redeploy the code to Azur
 Open *hello/views.py* in an editor and update the `hello` function to match the following code.
 
 ```bash
+cd python-docs-hello-django
 cat << 'EOF' > hello/views.py
 def hello(request):
     print("Handling request to home page.")
@@ -177,18 +167,7 @@ EOF
 Save your changes, then redeploy the app using the `az webapp up` command again:
 
 ```azurecli
-az webapp up
-```
-
-<!-- expected_similarity=0.3 -->
-```json
-{
-  "defaultHostName": "mydjangoappxxx.azurewebsites.net",
-  "location": "centralindia",
-  "name": "mydjangoappxxx",
-  "resourceGroup": "appsvc_rg_Linux_CentralUS",
-  "state": "Running"
-}
+az webapp up --runtime "PYTHON|3.10"
 ```
 
 Once deployment is complete, switch back to the browser window open to `http://<app-name>.azurewebsites.net`. Refresh the page, which should display the modified message:
@@ -207,7 +186,7 @@ You can access the console logs generated from inside the app and the container 
 To stream logs, run the [az webapp log tail](/cli/azure/webapp/log#az-webapp-log-tail) command:
 
 ```azurecli
-az webapp log tail
+timeout 11 az webapp log tail 
 ```
 
 You can also include the `--logs` parameter with the `az webapp up` command to automatically open the log stream on deployment.

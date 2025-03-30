@@ -136,7 +136,7 @@ In this section, you make a small code change and then redeploy the code to Azur
 Open *app.py* in an editor and update the `hello` function to match the following code. 
 
 ```bash
-cd python-docs-hello-world 
+cd python-docs-hello-world
 cat << 'EOF' > app.py
 from flask import Flask
 app = Flask(__name__)
