@@ -1742,5 +1742,28 @@
             "permissions": [],
             "configurableParams": []
         }
+    },
+    {
+        "status": "active",
+        "key": "azure-aks-docs/articles/aks/learn/quick-windows-container-deploy-cli.md",
+        "title": "Deploy a Windows Server container on an Azure Kubernetes Service (AKS) cluster using Azure CLI",
+        "description": "Learn how to quickly deploy a Kubernetes cluster and deploy an application in a Windows Server container in Azure Kubernetes Service (AKS) using Azure CLI.",
+        "stackDetails": "",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-aks-docs/articles/aks/learn/quick-windows-container-deploy-cli.md",
+        "documentationUrl": "https://learn.microsoft.com/en-us/azure/aks/learn/quick-windows-container-deploy-cli?tabs=add-windows-node-pool",
+        "nextSteps": [
+            {
+                "title": "AKS solution guidance",
+                "url": "https://learn.microsoft.com/en-us/azure/architecture/reference-architectures/containers/aks-start-here?toc=/azure/aks/toc.json&bc=/azure/aks/breadcrumb/toc.json"
+            },
+            {
+                "title": "AKS tutorial",
+                "url": "https://learn.microsoft.com/en-us/azure/aks/tutorial-kubernetes-prepare-app"
+            }
+        ],
+        "configurations": {
+            "permissions": [],
+            "configurableParams": []
+        }
     }
 ]
