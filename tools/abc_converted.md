@@ -206,12 +206,12 @@ Use the Deploy to Azure button or CLI commands to create an IoT Edge device base
 
    ```azurecli-interactive
    az vm create \
-  --resource-group $RESOURCE_GROUP \
-  --name $VM_NAME \
-  --image Ubuntu2204 \
-  --admin-username azureuser \
-  --generate-ssh-keys \
-  --custom-data cloud-init.txt
+    --resource-group $RESOURCE_GROUP \
+    --name $VM_NAME \
+    --image Ubuntu2204 \
+    --admin-username azureuser \
+    --generate-ssh-keys \
+    --custom-data cloud-init.txt
    ```
 
 * For PowerShell users, copy the following command into your PowerShell window, then replace the placeholder text with your own information:
