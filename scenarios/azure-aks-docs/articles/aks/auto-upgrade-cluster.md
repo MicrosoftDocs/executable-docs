@@ -97,8 +97,6 @@ az aks create --resource-group $RESOURCE_GROUP --name $AKS_CLUSTER_NAME --auto-u
 * Set the auto-upgrade channel on an existing cluster using the [`az aks update`][az-aks-update] command with the `auto-upgrade-channel` parameter.
 
 ```azurecli-interactive
-export RESOURCE_GROUP="apache-airflow-rg"
-export AKS_CLUSTER_NAME="apache-airflow-aks"
 az aks update --resource-group $RESOURCE_GROUP --name $AKS_CLUSTER_NAME --auto-upgrade-channel stable
 ```
 
