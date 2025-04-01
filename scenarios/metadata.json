@@ -1893,5 +1893,45 @@
                 }
             ]
         }
+    },
+    {
+        "status": "active",
+        "key": "azure-aks-docs/articles/aks/istio-deploy-addon.md",
+        "title": "Deploy Istio-based service mesh add-on for Azure Kubernetes Service",
+        "description": "Deploy Istio-based service mesh add-on for Azure Kubernetes Service",
+        "stackDetails": "",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-aks-docs/articles/aks/istio-deploy-addon.md",
+        "documentationUrl": "https://learn.microsoft.com/en-us/azure/aks/cost-analysis",
+        "nextSteps": [
+            {
+                "title": "Deploy external or internal ingresses for Istio service mesh add-on",
+                "url": "https://github.com/MicrosoftDocs/azure-aks-docs/blob/main/articles/aks/istio-deploy-ingress.md"
+            },
+            {
+                "title": "Scale istiod and ingress gateway HPA",
+                "url": "https://github.com/MicrosoftDocs/azure-aks-docs/blob/main/articles/aks/istio-scale.md#scaling"
+            },
+            {
+                "title": "Collect metrics for Istio service mesh add-on workloads in Azure Managed Prometheus",
+                "url": "https://github.com/MicrosoftDocs/azure-aks-docs/blob/main/articles/aks/istio-metrics-managed-prometheus.md"
+            }
+        ],
+        "configurations": {
+            "permissions": [],
+            "configurableParams": [
+                {
+                    "inputType": "textInput",
+                    "commandKey": "RESOURCE_GROUP",
+                    "title": "Resource Group Name",
+                    "defaultValue": ""
+                },
+                {
+                    "inputType": "textInput",
+                    "commandKey": "CLUSTER",
+                    "title": "AKS Cluster Name",
+                    "defaultValue": ""
+                }
+            ]
+        }
     }
 ]
