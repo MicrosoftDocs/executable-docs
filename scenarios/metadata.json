@@ -1765,5 +1765,69 @@
             "permissions": [],
             "configurableParams": []
         }
+    },
+    {
+        "status": "active",
+        "key": "azure-aks-docs/articles/aks/spot-node-pool.md",
+        "title": "Add an Azure Spot node pool to an Azure Kubernetes Service (AKS) cluster",
+        "description": "Learn how to add an Azure Spot node pool to an Azure Kubernetes Service (AKS) cluster.",
+        "stackDetails": "",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-aks-docs/articles/aks/spot-node-pool.md",
+        "documentationUrl": "https://learn.microsoft.com/en-us/azure/aks/spot-node-pool",
+        "nextSteps": [
+            {
+                "title": "Best practices for advanced scheduler features in AKS",
+                "url": "https://learn.microsoft.com/en-us/azure/aks/operator-best-practices-advanced-scheduler"
+            }
+        ],
+        "configurations": {
+            "permissions": [],
+            "configurableParams": [
+                {
+                    "inputType": "textInput",
+                    "commandKey": "RESOURCE_GROUP",
+                    "title": "Resource Group Name",
+                    "defaultValue": ""
+                },
+                {
+                    "inputType": "textInput",
+                    "commandKey": "AKS_CLUSTER",
+                    "title": "AKS Cluster Name",
+                    "defaultValue": ""
+                }
+            ]
+        }
+    },
+    {
+        "status": "active",
+        "key": "azure-aks-docs/articles/aks/auto-upgrade-cluster.md",
+        "title": "Automatically upgrade an Azure Kubernetes Service (AKS) cluster",
+        "description": "Learn how to automatically upgrade an Azure Kubernetes Service (AKS) cluster to get the latest features and security updates.",
+        "stackDetails": "",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-aks-docs/articles/aks/auto-upgrade-cluster.md",
+        "documentationUrl": "https://learn.microsoft.com/en-us/azure/aks/auto-upgrade-cluster?tabs=azure-cli",
+        "nextSteps": [
+            {
+                "title": "AKS Patch and Upgrade Guidance",
+                "url": "https://learn.microsoft.com/en-us/azure/architecture/operator-guides/aks/aks-upgrade-practices"
+            }
+        ],
+        "configurations": {
+            "permissions": [],
+            "configurableParams": [
+                {
+                    "inputType": "textInput",
+                    "commandKey": "RESOURCE_GROUP",
+                    "title": "Resource Group Name",
+                    "defaultValue": ""
+                },
+                {
+                    "inputType": "textInput",
+                    "commandKey": "AKS_CLUSTER_NAME",
+                    "title": "AKS Cluster Name",
+                    "defaultValue": ""
+                }
+            ]
+        }
     }
 ]
