@@ -943,5 +943,17 @@
         "configurations": {
             "permissions": []
         }
+    },
+    {
+        "status": "active",
+        "key": "RAGChatApp/rag-chatapp-openai.md",
+        "title": "RAG Chat App with Azure OpenAI and Azure AI Search",
+        "description": "Welcome to this tutorial where we will take you step by step in deploying a Retrieval Augmented Generation (RAG) chat application that integrates Azure OpenAI Service and Azure AI Search to create a ChatGPT-like experience over indexed document data. The application enables you to interact with an AI-powered chatbot that retrieves relevant information from a document corpus before generating responses, improving accuracy and contextual relevance. The solution is built in Python and leverages Azure-managed services for seamless deployment, scalability, and security. The infrastructure is provisioned with resources such as Azure Cognitive Services (OpenAI & Document Intelligence), Azure AI Search, Azure Storage, Log Analytics, Container Apps, and Identity Management. This guide provides step-by-step instructions for setting up the required Azure services and configuring environment variables to deploy the chat application.",
+        "stackDetails": "",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/test_terraform/scenarios/RAGChatApp/rag-chatapp-openai.md",
+        "documentationUrl": "https://github.com/Azure-Samples/azure-search-openai-demo",
+        "nextSteps": [],
+        "configurations": {
+        }
     }
 ]
