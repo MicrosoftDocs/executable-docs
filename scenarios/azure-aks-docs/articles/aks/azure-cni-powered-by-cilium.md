@@ -86,11 +86,11 @@ Use the following command to create a resource group. Environment variables are 
 ```azurecli-interactive
 export RANDOM_SUFFIX=$(openssl rand -hex 3)
 export RESOURCE_GROUP="myResourceGroup$RANDOM_SUFFIX"
-export LOCATION="EastUS2"
+export REGION="EastUS2"
 
 az group create \
     --name $RESOURCE_GROUP \
-    --location $LOCATION
+    --location $REGION
 ```
 
 Result:
@@ -115,7 +115,7 @@ export CLUSTER_NAME="myAKSCluster$RANDOM_SUFFIX"
 az aks create \
     --name $CLUSTER_NAME \
     --resource-group $RESOURCE_GROUP \
-    --location $LOCATION \
+    --location $REGION \
     --network-plugin azure \
     --network-plugin-mode overlay \
     --pod-cidr 192.168.0.0/16 \

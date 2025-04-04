@@ -1650,6 +1650,12 @@
                     "commandKey": "AKS_CLUSTER",
                     "title": "AKS Cluster Name",
                     "defaultValue": ""
+                },
+                {
+                    "inputType": "textInput",
+                    "commandKey": "AKS_NODEPOOL",
+                    "title": "AKS Node Pool Name",
+                    "defaultValue": ""
                 }
             ]
         }
