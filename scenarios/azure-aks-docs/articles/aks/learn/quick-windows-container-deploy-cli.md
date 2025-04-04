@@ -280,17 +280,7 @@ When the application runs, a Kubernetes service exposes the application front en
 1. Check the status of the deployed pods using the [kubectl get pods][kubectl-get] command. Make sure all pods are `Running` before proceeding.
 
 ```bash
-while true; do
-  POD_STATUS=$(kubectl get pods --no-headers | awk '{print $3}' | grep -v "Running" | wc -l)
-  if [ "$POD_STATUS" -eq 0 ]; then
-    echo "All pods are in the Running state."
-    kubectl get pods
-    break
-  else
-    echo "Waiting for all pods to be in the Running state..."
-    sleep 5
-  fi
-done
+kubectl get pods
 ```
 
 2. Monitor progress using the [kubectl get service][kubectl-get] command with the `--watch` argument.
