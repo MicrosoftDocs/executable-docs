@@ -21,6 +21,16 @@ This article shows you how to upgrade AKS cluster node images and how to update 
 >
 > It's not possible to downgrade a node image version (for example *AKSUbuntu-2204 to AKSUbuntu-1804*, or *AKSUbuntu-2204-202308.01.0 to AKSUbuntu-2204-202307.27.0*).
 
+
+## Connect to your AKS cluster
+
+1. Connect to your AKS cluster using the [`az aks get-credentials`][az-aks-get-credentials] command.
+
+    ```azurecli-interactive
+    az aks get-credentials \
+        --resource-group $AKS_RESOURCE_GROUP \
+        --name $AKS_CLUSTER
+    ```
 ## Check for available node image upgrades
 
 1. Check for available node image upgrades using the [`az aks nodepool get-upgrades`][az-aks-nodepool-get-upgrades] command.
