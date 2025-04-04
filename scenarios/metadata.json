@@ -1681,11 +1681,11 @@
     },
     {
         "status": "active",
-        "key": "azure-docs/articles/app-service/quickstart-python-1-flask.md",
+        "key": "azure-docs/articles/app-service/python-docs-hello-world/quickstart-python-1-flask.md",
         "title": "Quickstart: Create a Python app on Linux using Flask",
         "description": "Get started with Azure App Service by deploying a Python app to a Linux container in App Service using Flask.",
         "stackDetails": "",
-        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-docs/articles/app-service/quickstart-python-1-flask.md",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-docs/articles/app-service/python-docs-hello-world/quickstart-python-1-flask.md",
         "documentationUrl": "https://learn.microsoft.com/en-us/azure/app-service/quickstart-python-1?tabs=bash&pivots=python-framework-flask",
         "nextSteps": [
             {
