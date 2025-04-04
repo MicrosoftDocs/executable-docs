@@ -1716,11 +1716,11 @@
     },
     {
         "status": "active",
-        "key": "azure-docs/articles/app-service/quickstart-python-1-django.md",
+        "key": "azure-docs/articles/app-service/python-docs-hello-django/quickstart-python-1-django.md",
         "title": "Quickstart: Create a Python app on Linux using Django",
         "description": "Get started with Azure App Service by deploying a Python app to a Linux container in App Service using Django.",
         "stackDetails": "",
-        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-docs/articles/app-service/quickstart-python-1-django.md",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-docs/articles/app-service/python-docs-hello-django/quickstart-python-1-django.md",
         "documentationUrl": "https://learn.microsoft.com/en-us/azure/app-service/quickstart-python-1?tabs=bash&pivots=python-framework-django",
         "nextSteps": [
             {
