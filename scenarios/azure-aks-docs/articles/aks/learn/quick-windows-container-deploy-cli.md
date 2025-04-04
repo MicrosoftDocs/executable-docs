@@ -35,7 +35,7 @@ An [Azure resource group](/azure/azure-resource-manager/management/overview) is 
 
 ```bash
 export RANDOM_SUFFIX=$(openssl rand -hex 3)
-export REGION="eastus2"
+export REGION="canadacentral"
 export MY_RESOURCE_GROUP_NAME="myAKSResourceGroup$RANDOM_SUFFIX"
 az group create --name $MY_RESOURCE_GROUP_NAME --location $REGION
 ```
@@ -81,10 +81,6 @@ export WINDOWS_PASSWORD="$(openssl rand -base64 32 | tr -d '=+/' | cut -c1-14)"
 ```
 
 3. Create your cluster using the [az aks create][az-aks-create] command and specify the `--windows-admin-username` and `--windows-admin-password` parameters. The following example command creates a cluster using the values from *WINDOWS_USERNAME* and *WINDOWS_PASSWORD* you set in the previous commands. A random suffix is appended to the cluster name for uniqueness.
-
-```bash
-export MY_AKS_CLUSTER="myAKSCluster$RANDOM_SUFFIX"
-```
 
 ```bash
 export MY_AKS_CLUSTER="myAKSCluster$RANDOM_SUFFIX"
@@ -284,7 +280,17 @@ When the application runs, a Kubernetes service exposes the application front en
 1. Check the status of the deployed pods using the [kubectl get pods][kubectl-get] command. Make sure all pods are `Running` before proceeding.
 
 ```bash
-kubectl get pods
+while true; do
+  POD_STATUS=$(kubectl get pods --no-headers | awk '{print $3}' | grep -v "Running" | wc -l)
+  if [ "$POD_STATUS" -eq 0 ]; then
+    echo "All pods are in the Running state."
+    kubectl get pods
+    break
+  else
+    echo "Waiting for all pods to be in the Running state..."
+    sleep 5
+  fi
+done
 ```
 
 2. Monitor progress using the [kubectl get service][kubectl-get] command with the `--watch` argument.
@@ -323,35 +329,7 @@ When the *EXTERNAL-IP* address changes from *pending* to an actual public IP add
 }
 ```
 
-3. See the sample app in action by opening a web browser to the external IP address of your service.
-
-```bash
-curl -s $EXTERNAL_IP | head -n 20
-```
-
-The following sample output shows the HTML content returned by the ASP.NET sample application:
-
-<!-- expected_similarity=0.3 -->
-
-```text
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Home Page - ASP.NET Application</title>
-  <script src="/Scripts/modernizr.js"></script>
-  <link href="/Content/bootstrap.css" rel="stylesheet"/>
-  <link href="/Content/Site.css" rel="stylesheet"/>
-  <link href="favicon.ico" rel="shortcut icon" type="image/x-icon" />
-</head>
-<body>
-  <form method="post" action="./" id="form1">
-    <input type="hidden" name="__VIEWSTATE" id="__VIEWSTATE" value="[VIEWSTATE_REMOVED]" />
-    <script src="/bundles/MsAjaxJs" type="text/javascript"></script>
-    <script type="text/javascript">
-    // Script content here
-```
+See the sample app in action by opening a web browser to the external IP address of your service after a few minutes. 
 
 :::image type="content" source="media/quick-windows-container-deploy-cli/asp-net-sample-app.png" alt-text="Screenshot of browsing to ASP.NET sample application." lightbox="media/quick-windows-container-deploy-cli/asp-net-sample-app.png":::
 
