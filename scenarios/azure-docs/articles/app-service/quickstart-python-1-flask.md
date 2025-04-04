@@ -55,7 +55,7 @@ git clone https://github.com/Azure-Samples/python-docs-hello-world
 
 Then navigate into that folder:
 
-```bash
+```text
 cd python-docs-hello-world
 ```
 
@@ -68,6 +68,8 @@ The sample contains framework-specific code that Azure App Service recognizes wh
 Deploy the code in your local folder (*python-docs-hello-world*) using the following command. The command uses environment variables to ensure uniqueness where necessary.
 
 ```bash
+cd python-docs-hello-world
+
 export RANDOM_SUFFIX=$(openssl rand -hex 3)
 export APP_NAME="myPythonApp$RANDOM_SUFFIX"
 export PYTHON_VERSION=$(python3 --version | cut -d ' ' -f 2 | cut -d '.' -f 1,2)
