@@ -168,7 +168,7 @@ EOF
 Save your changes, then redeploy the app using the `az webapp up` command again:
 
 ```azurecli
-az webapp up --runtime "PYTHON|3.10"
+az webapp up --runtime "PYTHON|$PYTHON_VERSION"
 ```
 
 Once deployment is complete, switch back to the browser window open to `http://<app-name>.azurewebsites.net`. Refresh the page, which should display the modified message:

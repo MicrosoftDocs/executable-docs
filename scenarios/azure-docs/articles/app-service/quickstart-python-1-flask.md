@@ -152,7 +152,7 @@ EOF
 Save your changes, then redeploy the app using the following command:
 
 ```azurecli
-az webapp up --runtime "PYTHON|3.10"
+az webapp up --runtime "PYTHON|$PYTHON_VERSION"
 ```
 
 This command uses values that are cached locally in the *.azure/config* file, including the app name, resource group, and App Service plan.
