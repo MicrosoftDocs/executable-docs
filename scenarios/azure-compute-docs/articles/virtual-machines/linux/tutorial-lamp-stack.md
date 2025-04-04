@@ -118,7 +118,7 @@ Use the `ssh` command to create an SSH session with the virtual machine. Substit
 Run the following command to update Ubuntu package sources and install Apache, MySQL, and PHP. Note the caret (^) at the end of the command, which is part of the `lamp-server^` package name.
 
 ```bash
-ssh -o StrictHostKeyChecking=no azureuser@$PUBLIC_IP "sudo DEBIAN_FRONTEND=noninteractive apt-get -y install lamp-server^"
+ssh -o StrictHostKeyChecking=no azureuser@$PUBLIC_IP "sudo apt-get update && sudo DEBIAN_FRONTEND=noninteractive apt-get -y install lamp-server^"
 ```
 
 You're prompted to install the packages and other dependencies. This process installs the minimum required PHP extensions needed to use PHP with MySQL.
