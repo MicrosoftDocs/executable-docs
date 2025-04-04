@@ -77,7 +77,7 @@ export WINDOWS_USERNAME="winadmin"
 2. Create a password for the administrator username you created in the previous step. The password must be a minimum of 14 characters and meet the [Windows Server password complexity requirements][windows-server-password].
 
 ```bash
-export WINDOWS_PASSWORD="$(openssl rand -base64 32 | tr -d '=+/' | cut -c1-14)"
+export WINDOWS_PASSWORD=$(echo "P@ssw0rd$(openssl rand -base64 10 | tr -dc 'A-Za-z0-9!@#$%^&*()' | cut -c1-6)")
 ```
 
 3. Create your cluster using the [az aks create][az-aks-create] command and specify the `--windows-admin-username` and `--windows-admin-password` parameters. The following example command creates a cluster using the values from *WINDOWS_USERNAME* and *WINDOWS_PASSWORD* you set in the previous commands. A random suffix is appended to the cluster name for uniqueness.
