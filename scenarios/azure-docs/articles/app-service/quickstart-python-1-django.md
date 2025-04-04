@@ -59,7 +59,7 @@ git clone https://github.com/Azure-Samples/python-docs-hello-django
 
 Then navigate into that folder:
 
-```bash
+```text
 cd python-docs-hello-django
 ```
 
@@ -74,6 +74,7 @@ In this section, you deploy the code in your local folder (*python-docs-hello-dj
 Before deploying, declare environment variables for the deployment. A random suffix is appended to your app name to ensure uniqueness.
 
 ```bash
+cd python-docs-hello-django
 export RANDOM_SUFFIX=$(openssl rand -hex 3)
 export APP_NAME="mydjangoapp$RANDOM_SUFFIX"
 export PYTHON_VERSION=$(python3 --version | cut -d ' ' -f 2 | cut -d '.' -f 1,2)
