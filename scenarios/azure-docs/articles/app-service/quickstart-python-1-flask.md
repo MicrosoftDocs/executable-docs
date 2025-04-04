@@ -70,7 +70,8 @@ Deploy the code in your local folder (*python-docs-hello-world*) using the follo
 ```bash
 export RANDOM_SUFFIX=$(openssl rand -hex 3)
 export APP_NAME="myPythonApp$RANDOM_SUFFIX"
-az webapp up --sku B1 --name $APP_NAME --runtime "PYTHON|3.10"
+export PYTHON_VERSION=$(python3 --version | cut -d ' ' -f 2 | cut -d '.' -f 1,2)
+az webapp up --sku B1 --name $APP_NAME --runtime "PYTHON|$PYTHON_VERSION"
 ```
 
 - If the `az` command isn't recognized, be sure you have the Azure CLI installed as described in [Set up your initial environment](#set-up-your-initial-environment).
