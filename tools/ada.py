@@ -110,7 +110,7 @@ Check if all prerequisites below are met before writing the Exec Doc. ***If any 
     - title = the title of the Exec Doc
     - description = the description of the Exec Doc
     - ms.topic = what kind of a doc it is e.g. article, blog, etc. 
-    - ms.date = the date the Exec Doc was last updated by author 
+    - ms.date = the current date in the format MM/DD/YYYY 
     - author = author's GitHub username 
     - ms.author = author's username (e.g. Microsoft Alias)
     - **ms.custom = comma-separated list of tags to identify the Exec Doc (innovation-engine is the one tag that is mandatory in this list)**
