@@ -1167,7 +1167,7 @@
         }
     },
     {
-        "status": "active",
+        "status": "inactive",
         "key": "azure-compute-docs/articles/virtual-machines/linux/quick-create-terraform/quick-create-terraform.md",
         "title": "Quickstart: Use Terraform to create a Linux VM",
         "description": "In this quickstart, you learn how to use Terraform to create a Linux virtual machine.",
@@ -1189,7 +1189,7 @@
         }
     },
     {
-        "status": "active",
+        "status": "inactive",
         "key": "AksOpenAiTerraform/README.md",
         "title": "How to deploy and run an Azure OpenAI ChatGPT application on AKS via Terraform",
         "description": "This article shows how to deploy an AKS cluster and Azure OpenAI Service via Terraform and how to deploy a ChatGPT-like application in Python.",
@@ -1588,7 +1588,7 @@
         }
     },
     {
-        "status": "active",
+        "status": "inactive",
         "key": "azure-compute-docs/articles/container-instances/container-instances-quickstart-terraform/container-instances-quickstart-terraform.md",
         "title": "Quickstart: Create an Azure Container Instance with a public IP address using Terraform",
         "description": "In this article, you create an Azure Container Instance with a public IP address using Terraform",
@@ -1680,7 +1680,7 @@
         }
     },
     {
-        "status": "active",
+        "status": "inactive",
         "key": "azure-docs/articles/app-service/flask/quickstart-python-1-flask.md",
         "title": "Quickstart: Create a Python app on Linux using Flask",
         "description": "Get started with Azure App Service by deploying a Python app to a Linux container in App Service using Flask.",
@@ -1715,7 +1715,7 @@
         }
     },
     {
-        "status": "active",
+        "status": "inactive",
         "key": "azure-docs/articles/app-service/django/quickstart-python-1-django.md",
         "title": "Quickstart: Create a Python app on Linux using Django",
         "description": "Get started with Azure App Service by deploying a Python app to a Linux container in App Service using Django.",
