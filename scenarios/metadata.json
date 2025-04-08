@@ -1907,7 +1907,7 @@
         "description": "Deploy Istio-based service mesh add-on for Azure Kubernetes Service",
         "stackDetails": "",
         "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-aks-docs/articles/aks/istio-deploy-addon.md",
-        "documentationUrl": "https://learn.microsoft.com/en-us/azure/aks/cost-analysis",
+        "documentationUrl": "https://learn.microsoft.com/en-us/azure/aks/istio-deploy-addon",
         "nextSteps": [
             {
                 "title": "Deploy external or internal ingresses for Istio service mesh add-on",
