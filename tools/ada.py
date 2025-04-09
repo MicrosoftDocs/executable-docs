@@ -268,7 +268,7 @@ Check if all prerequisites below are met before writing the Exec Doc. ***If any 
 
 def install_innovation_engine():
     if shutil.which("ie") is not None:
-        print("\nInnovation Engine is already installed.\n")
+        print("\nInnovation Engine is already installed.")
         return
     print("\nInstalling Innovation Engine...\n")
     subprocess.check_call(
@@ -890,7 +890,7 @@ def calculate_success_rate(log_data):
     if not entries:
         return 0
     success_count = sum(1 for entry in entries if entry.get("Result") == "Success")
-    return round(success_count / len(entries) * 100)
+    return round(success_count / len(entries))
 
 def calculate_total_execution_time(log_data):
     """Sum up execution time across all operations."""
@@ -935,7 +935,7 @@ def update_progress_log(log_folder, new_data, input_type, user_intent=None, exis
                     "pii_redaction": 0,
                     "seo_optimization": 0
                 },
-                "Total Execution Time": 0  # No previous data
+                "Total Execution Time (in seconds)": 0  # No previous data
             },
             section_name: []  # Initialize the current section
         }
@@ -962,7 +962,7 @@ def update_progress_log(log_folder, new_data, input_type, user_intent=None, exis
                     "pii_redaction": 0,
                     "seo_optimization": 0
                 },
-                "Total Execution Time": 0
+                "Total Execution Time (in seconds)": 0
             }
     
     # Create section if it doesn't exist
@@ -984,7 +984,7 @@ def update_progress_log(log_folder, new_data, input_type, user_intent=None, exis
         if section in log_data:
             log_data["info"]["Operation Summary"][section] = len(log_data[section])
     
-    log_data["info"]["Total Execution Time"] = calculate_total_execution_time(log_data)
+    log_data["info"]["Total Execution Time (in seconds)"] = calculate_total_execution_time(log_data)
     
     # Write updated log to file with pretty formatting
     with open(log_file, 'w') as f:
@@ -1491,7 +1491,42 @@ def perform_seo_check_with_path(doc_path, checklist_path="seo-checklist.md", out
     except Exception as e:
         print(f"\nError saving optimized document: {e}")
         return None
+
+# Add this function to get user feedback
+def get_user_feedback(document_path):
+    """Get user feedback by allowing direct edits or text input."""
+    print("\n" + "-"*60)
+    print(f"Document is available at: {document_path}")
+    print("\nYou can either:")
+    print("1. Edit the document directly in your preferred editor, then return here")
+    print("2. Type your feedback below")
+    print("\nWhen done, press Enter to continue. If you made no changes, just press Enter.")
     
+    # Save original state to detect changes
+    with open(document_path, "r") as f:
+        original_content = f.read()
+    
+    # Get text feedback if any
+    feedback = input("\nFeedback (optional): ")
+    
+    # Check if file was modified
+    with open(document_path, "r") as f:
+        current_content = f.read()
+    
+    # If the file changed, use that as feedback
+    if current_content != original_content:
+        print("\nDetected changes in the document!")
+        
+        # Restore original for proper AI processing
+        with open(document_path, "w") as f:
+            f.write(original_content)
+        
+        # Return the edited content as feedback
+        return f"I've updated the document. Here is my revised version:\n\n{current_content}"
+    
+    # Return text feedback if provided
+    return feedback if feedback.strip() else None
+
 def main():
     while True:
         print("\nWelcome to ADA - AI Documentation Assistant!")
@@ -1504,7 +1539,9 @@ def main():
         print("  5. Generate a security analysis report for an Exec Doc")
         print("  6. Perform SEO optimization check on an Exec Doc")
         print(" \nEnter 1-6 to select an option or any other key to exit.")
+            
         choice = input("\nEnter the number corresponding to your choice: ")
+        
 
         if choice not in ["1", "2", "3", "4", "5", "6"]:
             print("\nThank you for using ADA! Goodbye!")
@@ -1515,6 +1552,10 @@ def main():
             if not os.path.isfile(user_input) or not user_input.endswith('.md'):
                 print("\nInvalid file path or file type. Please provide a valid markdown file.")
                 continue
+
+            # Add new option for interactive mode
+            interactive_mode = input("\nEnable interactive mode (you will be prompted for feedback after each step)? (y/n, default: n): ").lower() == 'y'
+                
             input_type = 'file'
             with open(user_input, "r") as f:
                 input_content = f.read()
@@ -1527,6 +1568,10 @@ def main():
             if not user_input:
                 print("\nInvalid input. Please provide a workload description.")
                 continue
+
+            # Add new option for interactive mode
+            interactive_mode = input("\nEnable interactive mode (you will be prompted for feedback after each step)? (y/n, default: n): ").lower() == 'y'
+
             input_type = 'workload_description'
             input_content = user_input
             dependency_files = []
@@ -1576,12 +1621,6 @@ def main():
                 True  # Assume success
             )
             all_iterations_data.append(iteration_data)
-            
-            # Update progress log
-            # if log_exists:
-            #     update_progress_log(output_folder, all_iterations_data, user_intent, existing_data)
-            # else:
-            #     update_progress_log(output_folder, all_iterations_data, user_intent)
             
             if log_exists:
                 update_progress_log(output_folder, all_iterations_data, input_type, user_intent, existing_data)
@@ -1635,12 +1674,6 @@ def main():
             )
             all_iterations_data.append(iteration_data)
             
-            # Update progress log
-            # if log_exists:
-            #     update_progress_log(output_folder, all_iterations_data, user_intent, existing_data)
-            # else:
-            #     update_progress_log(output_folder, all_iterations_data, user_intent)
-            
             if log_exists:
                 update_progress_log(output_folder, all_iterations_data, input_type, user_intent, existing_data)
             else:
@@ -1692,12 +1725,6 @@ def main():
                 True  # Assume success
             )
             all_iterations_data.append(iteration_data)
-            
-            # Update progress log
-            # if log_exists:
-            #     update_progress_log(output_folder, all_iterations_data, user_intent, existing_data)
-            # else:
-            #     update_progress_log(output_folder, all_iterations_data, user_intent)
             
             if log_exists:
                 update_progress_log(output_folder, all_iterations_data, input_type, user_intent, existing_data)
@@ -1753,12 +1780,6 @@ def main():
                 True  # Assume success
             )
             all_iterations_data.append(iteration_data)
-            
-            # Update progress log
-            # if log_exists:
-            #     update_progress_log(output_folder, all_iterations_data, user_intent, existing_data)
-            # else:
-            #     update_progress_log(output_folder, all_iterations_data, user_intent)
 
             if log_exists:
                 update_progress_log(output_folder, all_iterations_data, input_type, user_intent, existing_data)
@@ -1860,9 +1881,6 @@ def main():
                         ]
                     )
                     output_file_content = response.choices[0].message.content
-
-                    # with open(output_file, "w") as f:
-                    #     f.write(output_file_content)
 
                     with open(output_file, "w") as f:
                         f.write(output_file_content)
@@ -2005,18 +2023,41 @@ def main():
                 )
                 all_iterations_data.append(iteration_data)
 
+                # Get user feedback if in interactive mode
+                if 'interactive_mode' in locals() and interactive_mode:
+                    feedback = get_user_feedback(iteration_file)
+                    if feedback:
+                        print("\nIncorporating your feedback for the next attempt...")
+                        
+                        # Use AI to incorporate feedback
+                        response = client.chat.completions.create(
+                            model=deployment_name,
+                            messages=[
+                                {"role": "system", "content": system_prompt},
+                                {"role": "user", "content": input_content},
+                                {"role": "assistant", "content": output_file_content},
+                                {"role": "user", "content": f"Please incorporate the following feedback into the document while maintaining all Exec Doc requirements and formatting rules:\n\n{feedback}"}
+                            ]
+                        )
+                        
+                        # Update output content with user feedback incorporated
+                        output_file_content = response.choices[0].message.content
+                        
+                        # Save the updated content back to the file
+                        with open(iteration_file, "w") as f:
+                            f.write(output_file_content)
+                            
+                        print("\nFeedback incorporated. Running tests with your changes...")
+                        
+                        # Track that we received user feedback in this iteration
+                        iteration_feedback = feedback
+                else:
+                    iteration_feedback = ""
+
                 # Only increment attempt if we didn't make a dependency change
                 if not made_dependency_change:
                     attempt += 1
                 success = False
-
-        
-        # After the while loop (when all iterations are complete)
-        # Write all collected iterations data to log.json with the new structure
-        # if log_exists:
-        #     update_progress_log(output_folder, all_iterations_data, user_intent, existing_data)
-        # else:
-        #     update_progress_log(output_folder, all_iterations_data, user_intent)
 
         if log_exists:
             update_progress_log(output_folder, all_iterations_data, input_type, user_intent, existing_data)
