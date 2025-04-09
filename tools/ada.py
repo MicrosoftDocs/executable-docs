@@ -1041,7 +1041,7 @@ def perform_seo_check(doc_path, checklist_path="seo-checklist.md"):
     - Make sure the document flows naturally and reads well
     - Only change what needs to be changed for SEO purposes
     
-    Provide your output as the fully optimized document, followed by a summary of changes made.
+    Provide your output as the fully optimized document. Return ONLY the updated document, nothing else.
     
     SEO Checklist:
     
