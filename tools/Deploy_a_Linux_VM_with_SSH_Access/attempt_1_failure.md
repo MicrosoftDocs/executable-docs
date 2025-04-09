@@ -47,7 +47,7 @@ Results:
 
 ## Step 2: Create the Linux Virtual Machine
 
-Now that the resource group is ready, we create a Linux VM. In this example, the VM is created with an Ubuntu 22.04 image, which is a valid image name. A default administrator username is provided and SSH keys are generated automatically if they do not exist in your environment.
+Now that the resource group is ready, we create a Linux VM. The VM is created with an Ubuntu 22.04 image, a default administrator username, and SSH keys are generated automatically if they do not exist in your environment.
 
 ```bash
 export VM_NAME="LinuxVm$RANDOM_SUFFIX"
@@ -73,7 +73,7 @@ Results:
 
 ## Step 3: Retrieve the VM's Public IP Address
 
-After the VM is created, we need its public IP address to connect via SSH. The following command queries the public IP address from the VM's network settings and stores it in an environment variable.
+After the VM is created, we need its public IP address in order to connect via SSH. The following command queries the public IP address from the VM's network settings and stores it in an environment variable.
 
 ```bash
 export PUBLIC_IP=$(az vm list-ip-addresses --resource-group $RESOURCE_GROUP --name $VM_NAME --query "[].virtualMachine.network.publicIpAddresses[0].ipAddress" -o tsv)
@@ -89,10 +89,12 @@ The public IP of the VM is: xx.xx.xx.xx
 
 ## Step 4: SSH into the Linux VM
 
-Now that you have the public IP, the following SSH command is provided for informational purposes. When executed, it will open an interactive SSH session into the Linux VM.
+Now that you have the public IP, you can SSH into the Linux VM. Use the following command to establish an SSH session. Note that this command is provided for informational purposes; executing it will open an interactive SSH session.
 
 ```bash
 ssh azureuser@$PUBLIC_IP
 ```
+
+After running the SSH command, you will be connected to your Linux VM. Use this connection to manage and run commands on the VM.
 
 This completes the Exec Doc for deploying a Linux VM and connecting to it via SSH using the Azure CLI.
