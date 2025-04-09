@@ -85,7 +85,7 @@ export AKS_CLUSTER_NAME="myAKSCluster$RANDOM_SUFFIX"
 export GPU_VM_SIZE="Standard_NC6"
 export NODE_COUNT=1
 
-az aks create -g $RESOURCE_GROUP -n $AKS_CLUSTER_NAME --node-vm-size $GPU_VM_SIZE --node-count $NODE_COUNT
+az aks create -g $RESOURCE_GROUP -n $AKS_CLUSTER_NAME --node-vm-size $GPU_VM_SIZE --node-count $NODE_COUNT --generate-ssh-keys 
 ```
 
 Results:
