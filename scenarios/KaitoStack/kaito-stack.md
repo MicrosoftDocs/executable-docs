@@ -66,7 +66,8 @@ This table integrates research findings, ensuring each tool's benefits are backe
 Follow these steps to set up the stack on your AKS cluster with KAITO, with persona-specific notes for configuration and usage.
 
 ### Step 1: Create a Resource Group and AKS Cluster
-1. Create a resource group and AKS cluster with GPU support. In this step, we create a resource group.
+
+Create a resource group and AKS cluster with GPU support. In this step, we create a resource group.
 
 ```bash
 export RANDOM_SUFFIX=$(openssl rand -hex 3)
@@ -78,7 +79,7 @@ az group create --name $RESOURCE_GROUP --location $REGION
 
 ### Step 2: Set Up Your AKS Cluster
 
-1. Create an AKS cluster with GPU support. In this step, we declare environment variables for the resource group and AKS cluster names along with a random suffix to ensure uniqueness.
+Create an AKS cluster with GPU support. In this step, we declare environment variables for the resource group and AKS cluster names along with a random suffix to ensure uniqueness.
 
 ```bash
 export AKS_CLUSTER_NAME="myAKSCluster$RANDOM_SUFFIX"
@@ -89,7 +90,6 @@ az aks create -g $RESOURCE_GROUP -n $AKS_CLUSTER_NAME --node-vm-size $GPU_VM_SIZ
 ```
 
 Results:
-
 
 ```JSON
 {
@@ -113,7 +113,7 @@ az aks get-credentials -g $RESOURCE_GROUP -n $AKS_CLUSTER_NAME
 
 ### Step 3: Install KAITO
 
-1. Add the KAITO Helm repository and update it. Then, install KAITO in its namespace (the namespace is "kaito-workspace"):
+Add the KAITO Helm repository and update it. Then, install KAITO in its namespace (the namespace is "kaito-workspace"):
 
 ```bash
 export KAITO_WORKSPACE_VERSION="0.4.4"
@@ -125,14 +125,14 @@ helm install kaito-workspace  --set clusterName=$AKS_CLUSTER_NAME https://github
 
 ### Step 4: Configure Networking with Cilium
 
-1. Install Cilium via Helm:
+Install Cilium via Helm:
 
 ```bash
 helm repo add cilium https://helm.cilium.io/
 helm install cilium cilium/cilium --namespace kube-system
 ```
 
-2. Verify installation:
+Verify installation:
 
 ```bash
 kubectl get pods -n kube-system -l k8s-app=cilium
@@ -142,14 +142,14 @@ kubectl get pods -n kube-system -l k8s-app=cilium
 
 ### Step 5: Add Storage with OpenEBS
 
-1. Install OpenEBS:
+Install OpenEBS:
 
 ```bash
 helm repo add openebs https://openebs.github.io/charts
 helm install openebs openebs/openebs --namespace openebs --create-namespace
 ```
 
-2. Set OpenEBS as the default storage class:
+Set OpenEBS as the default storage class:
 
 ```bash
 kubectl patch storageclass openebs-hostpath -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"true"}}}'
@@ -159,14 +159,14 @@ kubectl patch storageclass openebs-hostpath -p '{"metadata": {"annotations":{"st
 
 ### Step 6: Deploy Model Serving with Seldon Core
 
-1. Install Seldon Core:
+Install Seldon Core:
 
 ```bash
 helm repo add seldon-charts https://storage.googleapis.com/seldon-charts
 helm install seldon-core seldon-charts/seldon-core-operator --namespace seldon-system --create-namespace
 ```
 
-2. Deploy a sample model with KAITO and Seldon by applying a custom resource definition:
+Deploy a sample model with KAITO and Seldon by applying a custom resource definition:
 
 ```bash
 cat <<EOF > iris-sdep.yaml
@@ -202,14 +202,14 @@ kubectl apply -f iris-sdep.yaml
 
 ### Step 7: Set Up Observability with Prometheus and Grafana
 
-1. Install Prometheus:
+Install Prometheus:
 
 ```bash
 helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
 helm install prometheus prometheus-community/prometheus --namespace monitoring --create-namespace
 ```
 
-2. Install Grafana:
+Install Grafana:
 
 ```bash
 helm repo add grafana https://grafana.github.io/helm-charts
@@ -222,7 +222,7 @@ helm install grafana grafana/grafana --namespace monitoring
 
 ### Step 8: Add Logging with Loki
 
-1. Install Loki:
+Install Loki:
 
 ```bash
 helm repo add grafana https://grafana.github.io/helm-charts
@@ -233,7 +233,7 @@ helm install loki grafana/loki-stack --namespace monitoring
 
 ### Step 9: Orchestrate Workflows with Argo Workflows
 
-1. Install Argo Workflows by creating its namespace and applying the manifest:
+Install Argo Workflows by creating its namespace and applying the manifest:
 
 ```bash
 kubectl create ns argo
