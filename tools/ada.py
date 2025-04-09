@@ -863,28 +863,24 @@ def setup_output_folder(input_type, input_name, title=None):
     
     return folder_name
 
-def update_progress_log(log_folder, log_data):
-    """Update the JSON progress log with information about the current run."""
+def update_progress_log(log_folder, runs_data, user_intent):
+    """Update the JSON progress log with the new structure."""
     log_file = os.path.join(log_folder, "progress_log.json")
     
-    # Load existing log data if it exists
-    if os.path.exists(log_file):
-        with open(log_file, 'r') as f:
-            try:
-                log_entries = json.load(f)
-            except json.JSONDecodeError:
-                log_entries = []
-    else:
-        log_entries = []
+    # Create the new structure with info and runs sections
+    log_data = {
+        "info": {
+            "User Intent": user_intent,
+            "Total Attempts": len(runs_data)
+        },
+        "runs": runs_data
+    }
     
-    # Add new entry
-    log_entries.append(log_data)
-    
-    # Write updated log back to file
+    # Write updated log to file
     with open(log_file, 'w') as f:
-        json.dump(log_entries, f, indent=4)
+        json.dump(log_data, f, indent=4)
 
-def collect_iteration_data(input_type, user_input, output_file, attempt, errors, start_time, success, user_intent):
+def collect_iteration_data(input_type, user_input, output_file, attempt, errors, start_time, success):
     """Collect data for a single iteration."""
     return {
         'Timestamp': datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
@@ -894,8 +890,7 @@ def collect_iteration_data(input_type, user_input, output_file, attempt, errors,
         'Attempt Number': attempt,
         'Errors Encountered': errors,
         'Execution Time (in seconds)': round(time.time() - start_time),  # Rounded to nearest second
-        'Result': "Success" if success else "Failure",
-        'User Intent': user_intent
+        'Success/Failure': "Success" if success else "Failure"
     }
 
 def generate_title_from_description(description):
@@ -1007,6 +1002,81 @@ def perform_security_check(doc_path):
         print(f"\nError saving security report: {e}")
         return None
 
+def perform_seo_check(doc_path, checklist_path="seo-checklist.md"):
+    """Perform an SEO optimization check on an Exec Doc using the SEO checklist."""
+    if not os.path.isfile(doc_path):
+        print(f"\nError: The file {doc_path} does not exist.")
+        return None
+        
+    if not os.path.isfile(checklist_path):
+        print(f"\nError: The SEO checklist file {checklist_path} does not exist.")
+        return None
+
+    try:
+        with open(doc_path, "r") as f:
+            doc_content = f.read()
+            
+        with open(checklist_path, "r") as f:
+            checklist_content = f.read()
+    except Exception as e:
+        print(f"\nError reading files: {e}")
+        return None
+
+    # Create output filename
+    doc_name = os.path.splitext(os.path.basename(doc_path))[0]
+    output_file = f"{doc_name}_seo_optimized.md"
+
+    print("\nPerforming SEO optimization check...")
+    
+    # Use the LLM to analyze and optimize the document for SEO
+    seo_prompt = """You are an SEO optimization expert. Analyze and optimize the provided document according to the SEO checklist.
+    
+    For each item in the checklist:
+    1. Check if the document meets the criteria
+    2. If not, optimize the document to meet the criteria
+    3. Comment on the changes you made
+    
+    When optimizing:
+    - Preserve the document's original meaning and technical accuracy
+    - Make sure the document flows naturally and reads well
+    - Only change what needs to be changed for SEO purposes
+    
+    Provide your output as the fully optimized document, followed by a summary of changes made.
+    
+    SEO Checklist:
+    
+    {checklist_content}
+    
+    Document to optimize:
+    
+    {doc_content}
+    """
+    
+    seo_prompt = seo_prompt.format(
+        checklist_content=checklist_content,
+        doc_content=doc_content
+    )
+
+    response = client.chat.completions.create(
+        model=deployment_name,
+        messages=[
+            {"role": "system", "content": "You are an AI specialized in SEO optimization for technical documentation."},
+            {"role": "user", "content": seo_prompt}
+        ]
+    )
+    
+    optimized_content = response.choices[0].message.content
+    
+    # Save the optimized document
+    try:
+        with open(output_file, "w") as f:
+            f.write(optimized_content)
+        print(f"\nSEO optimized document saved to: {output_file}")
+        return output_file
+    except Exception as e:
+        print(f"\nError saving optimized document: {e}")
+        return None
+    
 def analyze_user_intent(user_input, input_type):
     """Analyze the user's intent based on their input."""
     if input_type == 'file':
@@ -1048,6 +1118,7 @@ def main():
     print("  3. Add descriptions to a shell script as an Exec Doc")
     print("  4. Redact PII from an existing Exec Doc")
     print("  5. Generate a security analysis report for an Exec Doc")
+    print("  6. Perform SEO optimization check on an Exec Doc")
     choice = input("\nEnter the number corresponding to your choice: ")
 
     if choice == "1":
@@ -1099,6 +1170,19 @@ def main():
         output_file = perform_security_check(user_input)
         if output_file:
             print(f"\nSecurity analysis complete. Report saved to: {output_file}")
+        sys.exit(0)
+    elif choice == "6":
+        user_input = input("\nEnter the path to your Exec Doc for SEO optimization: ")
+        checklist_path = input("\nEnter the path to the SEO checklist (default: seo-checklist.md): ") or "seo-checklist.md"
+        
+        if not os.path.isfile(user_input) or not user_input.endswith('.md'):
+            print(f"\nError: {user_input} is not a valid markdown file.")
+            sys.exit(1)
+            
+        input_type = 'seo_optimization'
+        output_file = perform_seo_check(user_input, checklist_path)
+        if output_file:
+            remove_backticks_from_file(output_file)
         sys.exit(0)
     else:
         print("\nInvalid choice. Exiting.")
@@ -1236,8 +1320,7 @@ def main():
                 attempt, 
                 "", # No errors in successful run
                 iteration_start_time, 
-                True,
-                user_intent  # Add user intent
+                True
             )
             all_iterations_data.append(iteration_data)
 
@@ -1373,8 +1456,7 @@ def main():
                 attempt, 
                 iteration_errors_text,  # Only errors from this iteration
                 iteration_start_time, 
-                False,
-                user_intent  # Add user intent
+                False
             )
             all_iterations_data.append(iteration_data)
 
@@ -1382,6 +1464,9 @@ def main():
             if not made_dependency_change:
                 attempt += 1
             success = False
+
+    
+    update_progress_log(output_folder, all_iterations_data, user_intent)
 
     # After the while loop (when a successful run is found or max attempts are reached):
     final_status = "success" if success else "failure_final"
