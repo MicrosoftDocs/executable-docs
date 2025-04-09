@@ -13,6 +13,7 @@ from collections import defaultdict
 import re
 import json
 import yaml  # Add this import at the top of your file
+import json
 
 client = AzureOpenAI(
     api_key=os.getenv("AZURE_OPENAI_API_KEY"),
@@ -827,11 +828,75 @@ def remove_backticks_from_file(file_path):
 def log_data_to_csv(data):
     file_exists = os.path.isfile('execution_log.csv')
     with open('execution_log.csv', 'a', newline='') as csvfile:
-        fieldnames = ['Timestamp', 'Type', 'Input', 'Output', 'Number of Attempts', 'Errors Encountered', 'Execution Time (in seconds)', 'Success/Failure']
+        fieldnames = ['Timestamp', 'Type', 'Input', 'Output', 'Number of Attempts', 'Errors Encountered', 'Execution Time (in seconds)', 'Result']
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
         if not file_exists:
             writer.writeheader()
         writer.writerow(data)
+
+def setup_output_folder(input_type, input_name, title=None):
+    """Create a folder to store all iterations of the document."""
+    if title:
+        # Use the title if provided (cleaner folder name)
+        base_name = title.replace(' ', '_').replace(':', '').replace(';', '').replace('/', '_')
+        base_name = re.sub(r'[^\w\-_]', '', base_name)  # Remove special chars
+    else:
+        # Fallback to old naming scheme if title not available
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        if input_type == 'file':
+            base_name = os.path.splitext(os.path.basename(input_name))[0]
+        elif input_type == 'workload_description':
+            base_name = "_".join(input_name.split()[:3])
+        else:
+            base_name = "exec_doc"
+        base_name = f"{timestamp}_{input_type}_{base_name}"
+    
+    # Handle duplicate folder names
+    folder_name = base_name
+    counter = 1
+    while os.path.exists(folder_name):
+        folder_name = f"{base_name}_{counter}"
+        counter += 1
+    
+    # Create the folder at the script's location
+    os.makedirs(folder_name, exist_ok=True)
+    
+    return folder_name
+
+def update_progress_log(log_folder, log_data):
+    """Update the JSON progress log with information about the current run."""
+    log_file = os.path.join(log_folder, "progress_log.json")
+    
+    # Load existing log data if it exists
+    if os.path.exists(log_file):
+        with open(log_file, 'r') as f:
+            try:
+                log_entries = json.load(f)
+            except json.JSONDecodeError:
+                log_entries = []
+    else:
+        log_entries = []
+    
+    # Add new entry
+    log_entries.append(log_data)
+    
+    # Write updated log back to file
+    with open(log_file, 'w') as f:
+        json.dump(log_entries, f, indent=4)
+
+def collect_iteration_data(input_type, user_input, output_file, attempt, errors, start_time, success, user_intent):
+    """Collect data for a single iteration."""
+    return {
+        'Timestamp': datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+        'Type': input_type,
+        'Input': user_input,
+        'Output': output_file,
+        'Attempt Number': attempt,
+        'Errors Encountered': errors,
+        'Execution Time (in seconds)': round(time.time() - start_time),  # Rounded to nearest second
+        'Result': "Success" if success else "Failure",
+        'User Intent': user_intent
+    }
 
 def generate_title_from_description(description):
     """Generate a title for the Exec Doc based on the workload description."""
@@ -941,7 +1006,39 @@ def perform_security_check(doc_path):
     except Exception as e:
         print(f"\nError saving security report: {e}")
         return None
+
+def analyze_user_intent(user_input, input_type):
+    """Analyze the user's intent based on their input."""
+    if input_type == 'file':
+        # For file input, we'll analyze the file content
+        try:
+            with open(user_input, "r") as f:
+                file_content = f.read()[:1000]  # Read first 1000 chars for analysis
+            prompt = f"Analyze this document beginning and summarize what the user is trying to do in one concise sentence:\n\n{file_content}"
+        except:
+            return "Convert an existing document to an executable format"
+    else:
+        # For workload descriptions, analyze the description
+        prompt = f"Analyze the following user request and summarize their core intent in one concise sentence:\n\n\"{user_input}\""
     
+    try:
+        response = client.chat.completions.create(
+            model=deployment_name,
+            messages=[
+                {"role": "system", "content": "You analyze user requests and extract the core intent."},
+                {"role": "user", "content": prompt + "\n\nStart with 'User intends to...' and keep it under 15 words."}
+            ]
+        )
+        
+        intent = response.choices[0].message.content.strip()
+        # Remove any quotes or formatting
+        intent = intent.strip('"\'`')
+        print(f"\nDetected user intent: {intent}")
+        return intent
+    except Exception as e:
+        print(f"\nError analyzing user intent: {e}")
+        return "Execute commands related to Azure resources"  # Default fallback
+     
 def main():
     print("\nWelcome to ADA - AI Documentation Assistant!")
     print("\nThis tool helps you write and troubleshoot Executable Documents efficiently!")
@@ -1007,6 +1104,23 @@ def main():
         print("\nInvalid choice. Exiting.")
         sys.exit(1)
 
+
+    # Generate title first if it's a workload description
+    if input_type == 'workload_description':
+        doc_title = generate_title_from_description(user_input)
+    else:
+        doc_title = os.path.splitext(os.path.basename(user_input))[0]
+    
+    # Analyze user intent
+    user_intent = analyze_user_intent(user_input, input_type)
+    
+    # Now create the output folder with the title
+    output_folder = setup_output_folder(input_type, user_input, doc_title)
+    print(f"\nAll files will be saved to: {output_folder}")
+    
+    # After creating the output folder
+    all_iterations_data = []
+
     install_innovation_engine()
 
     max_attempts = 11
@@ -1024,6 +1138,8 @@ def main():
     additional_instruction = ""
 
     while attempt <= max_attempts:
+        iteration_start_time = time.time()
+        iteration_errors = []
         made_dependency_change = False
         if attempt == 1:
             print(f"\n{'='*40}\nAttempt {attempt}: Generating Exec Doc...\n{'='*40}")
@@ -1035,15 +1151,15 @@ def main():
                 ]
             )
             output_file_content = response.choices[0].message.content
+            
+            
+            # with open(output_file, "w") as f:
+            #     f.write(output_file_content)
+
             with open(output_file, "w") as f:
                 f.write(output_file_content)
                 
             # Generate dependency files after first creation
-            if generate_deps and not dependency_files_generated:
-                _, dependency_files = generate_dependency_files(output_file)
-                dependency_files_generated = True
-
-                 # Generate dependency files after first creation
             if generate_deps and not dependency_files_generated:
                 _, dependency_files = generate_dependency_files(output_file)
                 dependency_files_generated = True
@@ -1078,6 +1194,10 @@ def main():
                     ]
                 )
                 output_file_content = response.choices[0].message.content
+
+                # with open(output_file, "w") as f:
+                #     f.write(output_file_content)
+
                 with open(output_file, "w") as f:
                     f.write(output_file_content)
                     
@@ -1102,6 +1222,44 @@ def main():
         if result.returncode == 0:
             print(f"\n{'*'*40}\nAll tests passed successfully.\n{'*'*40}")
             success = True
+
+            # Update the iteration file
+            iteration_file = os.path.join(output_folder, f"attempt_{attempt}_success.md")
+            with open(iteration_file, "w") as f:
+                f.write(output_file_content)
+                
+            # Collect iteration data
+            iteration_data = collect_iteration_data(
+                input_type, 
+                user_input, 
+                iteration_file, 
+                attempt, 
+                "", # No errors in successful run
+                iteration_start_time, 
+                True,
+                user_intent  # Add user intent
+            )
+            all_iterations_data.append(iteration_data)
+
+            # Update the iteration file with success status
+            # iteration_file = os.path.join(output_folder, f"attempt_{attempt}_success.md")
+            # with open(iteration_file, "w") as f:
+            #     f.write(output_file_content)
+                
+            # # Update the progress log with success status
+            # current_log_data = {
+            #     'Timestamp': datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            #     'Type': input_type,
+            #     'Input': user_input,
+            #     'Output': iteration_file,
+            #     'Attempt Number': attempt,
+            #     'Errors Encountered': errors_text,
+            #     'Execution Time (in seconds)': time.time() - start_time,
+            #     'Result': "Success"
+            # }
+            # update_progress_log(output_folder, current_log_data)
+
+
             print(f"\n{'='*40}\nProducing Exec Doc...\n{'='*40}")
             if input_type == 'file':
                 response = client.chat.completions.create(
@@ -1114,6 +1272,10 @@ def main():
                     ]
                 )
                 output_file_content = response.choices[0].message.content
+                
+                iteration_file = os.path.join(output_folder, f"attempt_{attempt}_{'success' if success else 'failure'}.md")
+                with open(iteration_file, "w") as f:
+                    f.write(output_file_content)
                 with open(output_file, "w") as f:
                     f.write(output_file_content)
                     
@@ -1127,8 +1289,10 @@ def main():
         else:
             print(f"\n{'!'*40}\nTests failed. Analyzing errors...\n{'!'*40}")
             error_log = get_last_error_log()
-            errors_encountered.append(error_log.strip())
+            errors_encountered.append(error_log.strip())  # Keep for overall tracking
+            iteration_errors.append(error_log.strip())    # For this iteration only
             errors_text = "\n\n ".join(errors_encountered)
+            iteration_errors_text = "\n\n ".join(iteration_errors)
             
             # Process and categorize error messages
             error_counts = defaultdict(int)
@@ -1178,10 +1342,58 @@ def main():
             print(f"\nError: {error_log.strip()}")
             print(f"\n{'!'*40}\nApplying an error troubleshooting strategy...\n{'!'*40}")
             
+            # # Update the iteration file with failure status
+            # iteration_file = os.path.join(output_folder, f"attempt_{attempt}_failure.md")
+            # with open(iteration_file, "w") as f:
+            #     f.write(output_file_content)
+
+            # # Update the progress log with failure status
+            # current_log_data = {
+            #     'Timestamp': datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            #     'Type': input_type,
+            #     'Input': user_input,
+            #     'Output': iteration_file,
+            #     'Attempt Number': attempt,
+            #     'Errors Encountered': errors_text,
+            #     'Execution Time (in seconds)': time.time() - start_time,
+            #     'Result': "Failure"
+            # }
+            # update_progress_log(output_folder, current_log_data)
+
+                        # Update the iteration file
+            iteration_file = os.path.join(output_folder, f"attempt_{attempt}_failure.md")
+            with open(iteration_file, "w") as f:
+                f.write(output_file_content)
+            
+            # Collect iteration data
+            iteration_data = collect_iteration_data(
+                input_type, 
+                user_input, 
+                iteration_file, 
+                attempt, 
+                iteration_errors_text,  # Only errors from this iteration
+                iteration_start_time, 
+                False,
+                user_intent  # Add user intent
+            )
+            all_iterations_data.append(iteration_data)
+
             # Only increment attempt if we didn't make a dependency change
             if not made_dependency_change:
                 attempt += 1
             success = False
+
+    # After the while loop (when a successful run is found or max attempts are reached):
+    final_status = "success" if success else "failure_final"
+    final_file = os.path.join(output_folder, f"FINAL_OUTPUT_{final_status}.md")
+    with open(final_file, "w") as f:
+        f.write(output_file_content)
+
+    # Update output_file variable to point to the final file
+    output_file = final_file
+
+    with open(os.path.join(output_folder, "progress_log.json"), 'w') as f:
+        json.dump(all_iterations_data, f, indent=4)
 
     if attempt > max_attempts:
         print(f"\n{'#'*40}\nMaximum attempts reached without passing all tests.\n{'#'*40}")
@@ -1193,11 +1405,11 @@ def main():
         'Timestamp': datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
         'Type': input_type,
         'Input': user_input,
-        'Output': output_file,
+        'Output': output_folder,  # Log the folder rather than just the final file
         'Number of Attempts': attempt-1,
         'Errors Encountered': "\n\n ".join(errors_encountered),
         'Execution Time (in seconds)': execution_time,
-        'Success/Failure': "Success" if success else "Failure"
+        'Result': "Success" if success else "Failure"
     }
 
     log_data_to_csv(log_data)
