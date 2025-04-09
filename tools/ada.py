@@ -1045,7 +1045,8 @@ def generate_title_from_description(description):
         title = response.choices[0].message.content.strip()
         # Remove any quotes, backticks or other formatting that might be included
         title = title.strip('"\'`')
-        print_message(f"\nGenerated title: {title}")
+        print_header(f"Title: {title}", "=")
+        
         return title
     except Exception as e:
         print_message(f"\nError generating title: {e}")
@@ -1226,7 +1227,7 @@ def analyze_user_intent(user_input, input_type):
         intent = response.choices[0].message.content.strip()
         # Remove any quotes or formatting
         intent = intent.strip('"\'`')
-        print_message(f"\nDetected user intent: {intent}")
+        print_message(f"User intent: {intent}", "-")
         return intent
     except Exception as e:
         print_message(f"\nError analyzing user intent: {e}")
@@ -1916,7 +1917,7 @@ def main():
             remove_backticks_from_file(output_file)
 
             print_header(f"Running Innovation Engine tests...", "-")
-            
+
             try:
                 result = subprocess.run(["ie", "test", output_file], capture_output=True, text=True, timeout=660)
             except subprocess.TimeoutExpired:
