@@ -1,0 +1,30 @@
+{
+    "info": {
+        "User Intent": "User intends to create a Linux virtual machine and SSH into it.",
+        "Total Attempts": 6
+    },
+    "doc_creation": [
+        {
+            "Timestamp": "2025-04-08 22:58:14",
+            "Type": "workload_description",
+            "Input": "create a resource group on azure",
+            "Output": "Create_Azure_Resource_Group/attempt_1_success.md",
+            "Attempt Number": 1,
+            "Errors Encountered": "",
+            "Execution Time (in seconds)": 19,
+            "Success/Failure": "Success"
+        }
+    ],
+    "security_analysis": [
+        {
+            "Timestamp": "2025-04-08 22:59:27",
+            "Type": "security_check",
+            "Input": "Create_Azure_Resource_Group/FINAL_OUTPUT_success.md",
+            "Output": "Create_Azure_Resource_Group/FINAL_OUTPUT_success_security_report.md",
+            "Attempt Number": 1,
+            "Errors Encountered": "",
+            "Execution Time (in seconds)": 21,
+            "Success/Failure": "Success"
+        }
+    ]
+}
