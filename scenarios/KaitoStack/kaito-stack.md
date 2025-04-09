@@ -83,10 +83,9 @@ Create an AKS cluster with GPU support. In this step, we declare environment var
 
 ```bash
 export AKS_CLUSTER_NAME="myAKSCluster$RANDOM_SUFFIX"
-export GPU_VM_SIZE="standard_nc6s_v3"
 export NODE_COUNT=1
 
-az aks create -g $RESOURCE_GROUP -n $AKS_CLUSTER_NAME --node-vm-size $GPU_VM_SIZE --node-count $NODE_COUNT --generate-ssh-keys 
+az aks create -g $RESOURCE_GROUP -n $AKS_CLUSTER_NAME --node-count $NODE_COUNT --generate-ssh-keys 
 ```
 
 Results:
