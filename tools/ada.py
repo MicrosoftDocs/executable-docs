@@ -266,17 +266,31 @@ Check if all prerequisites below are met before writing the Exec Doc. ***If any 
 
 ## WRITE AND ONLY GIVE THE EXEC DOC USING THE ABOVE RULES FOR THE FOLLOWING WORKLOAD: """
 
+# Add this after imports
+def print_header(text, style="="):
+    """Print formatted header text."""
+    width = 70
+    print(f"\n{style * width}")
+    print(f"{text:^{width}}")
+    print(f"{style * width}\n")
+    
+def print_message(text, prefix="", indent=0, color=None):
+    """Print formatted message with optional prefix."""
+    indent_str = " " * indent
+    for line in text.split("\n"):
+        print(f"{indent_str}{prefix}{line}")
+
 def install_innovation_engine():
     if shutil.which("ie") is not None:
-        print("\nInnovation Engine is already installed.")
+        print_message("\nInnovation Engine is already installed.")
         return
-    print("\nInstalling Innovation Engine...\n")
+    print_message("Installing Innovation Engine...", prefix="🔧 ")
     subprocess.check_call(
         ["curl", "-Lks", "https://raw.githubusercontent.com/Azure/InnovationEngine/v0.2.3/scripts/install_from_release.sh", "|", "/bin/bash", "-s", "--", "v0.2.3"],
         stdout=subprocess.DEVNULL,
         stderr=subprocess.DEVNULL
     )
-    print("\nInnovation Engine installed successfully.\n")
+    print_message("\nInnovation Engine installed successfully.\n")
 
 def get_last_error_log():
     log_file = "ie.log"
@@ -295,21 +309,21 @@ def get_last_error_log():
 def generate_script_description(script_path, context=""):
     """Generate descriptions around a shell script without modifying the code."""
     if not os.path.isfile(script_path):
-        print(f"\nError: The file {script_path} does not exist.")
+        print_message(f"\nError: The file {script_path} does not exist.")
         return None
 
     try:
         with open(script_path, "r") as f:
             script_content = f.read()
     except Exception as e:
-        print(f"\nError reading script: {e}")
+        print_message(f"\nError reading script: {e}")
         return None
 
     # Create output filename
     script_name = os.path.splitext(os.path.basename(script_path))[0]
     output_file = f"{script_name}_documented.md"
 
-    print("\nGenerating documentation for shell script...")
+    print_message("\nGenerating documentation for shell script...")
     
     # Prepare prompt for the LLM
     script_prompt = f"""Create an Exec Doc that explains this shell script in detail.
@@ -341,30 +355,30 @@ def generate_script_description(script_path, context=""):
     try:
         with open(output_file, "w") as f:
             f.write(doc_content)
-        print(f"\nScript documentation saved to: {output_file}")
+        print_message(f"\nScript documentation saved to: {output_file}")
         return output_file
     except Exception as e:
-        print(f"\nError saving documentation: {e}")
+        print_message(f"\nError saving documentation: {e}")
         return None
 
 def redact_pii_from_doc(doc_path):
     """Redact PII from result blocks in an Exec Doc."""
     if not os.path.isfile(doc_path):
-        print(f"\nError: The file {doc_path} does not exist.")
+        print_message(f"\nError: The file {doc_path} does not exist.")
         return None
 
     try:
         with open(doc_path, "r") as f:
             doc_content = f.read()
     except Exception as e:
-        print(f"\nError reading document: {e}")
+        print_message(f"\nError reading document: {e}")
         return None
 
     # Create output filename
     doc_name = os.path.splitext(os.path.basename(doc_path))[0]
     output_file = f"{doc_name}_redacted.md"
 
-    print("\nRedacting PII from document...")
+    print_message("\nRedacting PII from document...")
     
     # Use the LLM to identify and redact PII
     redaction_prompt = """Redacting PII from the output helps protect sensitive information from being inadvertently shared or exposed. This is crucial for maintaining privacy, complying with data protection regulations, and furthering the company's security posture. 
@@ -414,29 +428,29 @@ def redact_pii_from_doc(doc_path):
     try:
         with open(output_file, "w") as f:
             f.write(redacted_content)
-        print(f"\nRedacted document saved to: {output_file}")
+        print_message(f"\nRedacted document saved to: {output_file}")
         return output_file
     except Exception as e:
-        print(f"\nError saving redacted document: {e}")
+        print_message(f"\nError saving redacted document: {e}")
         return None
 
 def generate_dependency_files(doc_path):
     """Extract and generate dependency files referenced in an Exec Doc."""
     if not os.path.isfile(doc_path):
-        print(f"\nError: The file {doc_path} does not exist.")
+        print_message(f"\nError: The file {doc_path} does not exist.")
         return False, []
 
     try:
         with open(doc_path, "r") as f:
             doc_content = f.read()
     except Exception as e:
-        print(f"\nError reading document: {e}")
+        print_message(f"\nError reading document: {e}")
         return False, []
 
     # Directory where the doc is located
     doc_dir = os.path.dirname(doc_path) or "."
     
-    print("\nAnalyzing document for dependencies...")
+    print_message("\nAnalyzing document for dependencies...")
     
     # First, detect file creation patterns in the document to avoid conflicts
     file_creation_patterns = [
@@ -459,9 +473,9 @@ def generate_dependency_files(doc_path):
             doc_created_files.append(filename)
     
     if doc_created_files:
-        print("\nDetected file creation commands in document:")
+        print_message("\nDetected file creation commands in document:")
         for file in doc_created_files:
-            print(f"  - {file}")
+            print_message(f"  - {file}")
     
     # Enhanced prompt for better dependency file identification
     dependency_prompt = """Analyze this Exec Doc and identify ANY files that the user is instructed to create.
@@ -529,7 +543,7 @@ def generate_dependency_files(doc_path):
                     raise ValueError("Response did not contain valid JSON")
         
         if not dependency_list:
-            print("\nNo dependency files identified.")
+            print_message("\nNo dependency files identified.")
             return True, []
         
         # Filter out dependency files that have inline creation commands in the document
@@ -540,8 +554,8 @@ def generate_dependency_files(doc_path):
                 continue
                 
             if filename in doc_created_files:
-                print(f"\nWARNING: File '{filename}' is both created in document and identified as a dependency.")
-                print(f"  - Skipping dependency management for this file to avoid conflicts.")
+                print_message(f"\nWARNING: File '{filename}' is both created in document and identified as a dependency.")
+                print_message(f"  - Skipping dependency management for this file to avoid conflicts.")
                 continue
             
             filtered_deps.append(dep)
@@ -560,7 +574,7 @@ def generate_dependency_files(doc_path):
             
             # Check if file already exists
             if os.path.exists(file_path):
-                print(f"\nFile already exists: {filename} - Skipping")
+                print_message(f"\nFile already exists: {filename} - Skipping")
                 # Load content from existing file
                 try:
                     with open(file_path, "r") as f:
@@ -572,7 +586,7 @@ def generate_dependency_files(doc_path):
                         "content": existing_content  # Include content
                     })
                 except Exception as e:
-                    print(f"\nWarning: Could not read content from {filename}: {e}")
+                    print_message(f"\nWarning: Could not read content from {filename}: {e}")
                     created_dep_files.append({
                         "filename": filename,
                         "path": file_path,
@@ -586,17 +600,17 @@ def generate_dependency_files(doc_path):
                     # Validate JSON
                     try:
                         parsed = json.loads(content)
-                        content = json.dumps(parsed, indent=2)  # Pretty-print JSON
+                        content = json.dumps(parsed, indent=2)  # Pretty-print_message JSON
                     except json.JSONDecodeError:
-                        print(f"\nWarning: Content for {filename} is not valid JSON. Saving as plain text.")
+                        print_message(f"\nWarning: Content for {filename} is not valid JSON. Saving as plain text.")
                 
                 elif filename.endswith('.yaml') or filename.endswith('.yml') or file_type == 'yaml':
                     # Validate YAML
                     try:
                         parsed = yaml.safe_load(content)
-                        content = yaml.dump(parsed, default_flow_style=False)  # Pretty-print YAML
+                        content = yaml.dump(parsed, default_flow_style=False)  # Pretty-print_message YAML
                     except yaml.YAMLError:
-                        print(f"\nWarning: Content for {filename} is not valid YAML. Saving as plain text.")
+                        print_message(f"\nWarning: Content for {filename} is not valid YAML. Saving as plain text.")
                 
                 elif filename.endswith('.tf') or filename.endswith('.tfvars') or file_type == 'terraform':
                     # Just store terraform files as-is
@@ -622,17 +636,17 @@ def generate_dependency_files(doc_path):
                     "content": content
                 })
             except Exception as e:
-                print(f"\nError creating {filename}: {e}")
+                print_message(f"\nError creating {filename}: {e}")
         
         if created_files:
-            print(f"\nCreated {len(created_files)} dependency files: {', '.join(created_files)}")
+            print_message(f"\nCreated {len(created_files)} dependency files: {', '.join(created_files)}")
         else:
-            print("\nNo new dependency files were created.")
+            print_message("\nNo new dependency files were created.")
         
         return True, created_dep_files
     except Exception as e:
-        print(f"\nError generating dependency files: {e}")
-        print("\nResponse from model was not valid JSON. Raw response:")
+        print_message(f"\nError generating dependency files: {e}")
+        print_message("\nResponse from model was not valid JSON. Raw response:")
         return False, []
 
 # Add this function after generate_dependency_files function (approximately line 609)
@@ -665,7 +679,7 @@ def transform_document_for_dependencies(doc_path, dependency_files):
                 replacement = f"```bash\n# Using external file: {filename}\n```\n\n"
                 doc_content = cat_pattern.sub(replacement, doc_content)
                 modified = True
-                print(f"\nTransformed document to use external {filename} instead of inline creation")
+                print_message(f"\nTransformed document to use external {filename} instead of inline creation")
                 
             # Handle other file creation patterns (echo, tee)
             echo_pattern = re.compile(
@@ -682,11 +696,11 @@ def transform_document_for_dependencies(doc_path, dependency_files):
         if modified:
             with open(doc_path, "w") as f:
                 f.write(doc_content)
-            print("\nDocument transformed to use external dependency files")
+            print_message("\nDocument transformed to use external dependency files")
             return True
         return False
     except Exception as e:
-        print(f"\nError transforming document: {e}")
+        print_message(f"\nError transforming document: {e}")
         return False
     
 def update_dependency_file(file_info, error_message, main_doc_path):
@@ -695,7 +709,7 @@ def update_dependency_file(file_info, error_message, main_doc_path):
     file_path = file_info["path"]
     file_type = file_info["type"]
     
-    print(f"\nUpdating dependency file: {filename} based on error...")
+    print_message(f"\nUpdating dependency file: {filename} based on error...")
     
     try:
         with open(file_path, "r") as f:
@@ -741,25 +755,25 @@ def update_dependency_file(file_info, error_message, main_doc_path):
         if filename.endswith('.json') or file_type == 'json':
             try:
                 parsed = json.loads(updated_content)
-                updated_content = json.dumps(parsed, indent=2)  # Pretty-print JSON
+                updated_content = json.dumps(parsed, indent=2)  # Pretty-print_message JSON
             except json.JSONDecodeError:
-                print(f"\nWarning: Updated content for {filename} is not valid JSON.")
+                print_message(f"\nWarning: Updated content for {filename} is not valid JSON.")
         
         elif filename.endswith('.yaml') or filename.endswith('.yml') or file_type == 'yaml':
             try:
                 parsed = yaml.safe_load(updated_content)
-                updated_content = yaml.dump(parsed, default_flow_style=False)  # Pretty-print YAML
+                updated_content = yaml.dump(parsed, default_flow_style=False)  # Pretty-print_message YAML
             except yaml.YAMLError:
-                print(f"\nWarning: Updated content for {filename} is not valid YAML.")
+                print_message(f"\nWarning: Updated content for {filename} is not valid YAML.")
         
         # Write the updated content to the file
         with open(file_path, "w") as f:
             f.write(updated_content)
         
-        print(f"\nUpdated dependency file: {filename}")
+        print_message(f"\nUpdated dependency file: {filename}")
         return True
     except Exception as e:
-        print(f"\nError updating dependency file {filename}: {e}")
+        print_message(f"\nError updating dependency file {filename}: {e}")
         return False
 
 def analyze_error(error_log, dependency_files=[]):
@@ -880,7 +894,7 @@ def check_existing_log(input_path):
                 existing_data = json.load(f)
                 return True, input_dir, existing_data
         except Exception as e:
-            print(f"\nWarning: Found log.json but couldn't read it: {e}")
+            print_message(f"\nWarning: Found log.json but couldn't read it: {e}")
     
     return False, None, None
 
@@ -890,7 +904,7 @@ def calculate_success_rate(log_data):
     if not entries:
         return 0
     success_count = sum(1 for entry in entries if entry.get("Result") == "Success")
-    return round(success_count / len(entries))
+    return round(success_count / len(entries), 2)
 
 def calculate_total_execution_time(log_data):
     """Sum up execution time across all operations."""
@@ -922,7 +936,7 @@ def update_progress_log(log_folder, new_data, input_type, user_intent=None, exis
         log_data = {
             "info": {
                 "User Intent": user_intent,
-                "Creation Date": datetime.now().strftime("%Y-%m-%d"),
+                "Creation Date": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
                 "Last Modified Date": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
                 "Project Name": os.path.basename(log_folder),
                 "Total Operations": 1,  # Starting with this operation
@@ -949,7 +963,7 @@ def update_progress_log(log_folder, new_data, input_type, user_intent=None, exis
         if "info" not in log_data:
             log_data["info"] = {
                 "User Intent": user_intent,
-                "Creation Date": datetime.now().strftime("%Y-%m-%d"),
+                "Creation Date": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
                 "Last Modified Date": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
                 "Project Name": os.path.basename(log_folder),
                 "Total Operations": 0,
@@ -1005,7 +1019,6 @@ def collect_iteration_data(input_type, user_input, output_file, attempt, errors,
 
 def generate_title_from_description(description):
     """Generate a title for the Exec Doc based on the workload description."""
-    print("\nGenerating title for your Exec Doc...")
     
     title_prompt = """Create a concise, descriptive title for an Executable Document (Exec Doc) based on the following workload description. 
     The title should:
@@ -1032,30 +1045,30 @@ def generate_title_from_description(description):
         title = response.choices[0].message.content.strip()
         # Remove any quotes, backticks or other formatting that might be included
         title = title.strip('"\'`')
-        print(f"\nGenerated title: {title}")
+        print_message(f"\nGenerated title: {title}")
         return title
     except Exception as e:
-        print(f"\nError generating title: {e}")
+        print_message(f"\nError generating title: {e}")
         return "Azure Executable Documentation Guide"  # Default fallback title
 
 def perform_security_check(doc_path):
     """Perform a comprehensive security vulnerability check on an Exec Doc."""
     if not os.path.isfile(doc_path):
-        print(f"\nError: The file {doc_path} does not exist.")
+        print_message(f"\nError: The file {doc_path} does not exist.")
         return None
 
     try:
         with open(doc_path, "r") as f:
             doc_content = f.read()
     except Exception as e:
-        print(f"\nError reading document: {e}")
+        print_message(f"\nError reading document: {e}")
         return None
 
     # Create output filename
     doc_name = os.path.splitext(os.path.basename(doc_path))[0]
     output_file = f"{doc_name}_security_report.md"
 
-    print("\nPerforming comprehensive security vulnerability analysis...")
+    print_message("\nPerforming comprehensive security vulnerability analysis...")
     
     # Use the LLM to analyze security vulnerabilities
     security_prompt = """Conduct a thorough, state-of-the-art security vulnerability analysis of this Exec Doc. Analyze both static aspects (code review) and dynamic aspects (runtime behavior).
@@ -1106,20 +1119,20 @@ def perform_security_check(doc_path):
     try:
         with open(output_file, "w") as f:
             f.write(report_content)
-        print(f"\nSecurity analysis report saved to: {output_file}")
+        print_message(f"\nSecurity analysis report saved to: {output_file}")
         return output_file
     except Exception as e:
-        print(f"\nError saving security report: {e}")
+        print_message(f"\nError saving security report: {e}")
         return None
 
 def perform_seo_check(doc_path, checklist_path="seo-checklist.md"):
     """Perform an SEO optimization check on an Exec Doc using the SEO checklist."""
     if not os.path.isfile(doc_path):
-        print(f"\nError: The file {doc_path} does not exist.")
+        print_message(f"\nError: The file {doc_path} does not exist.")
         return None
         
     if not os.path.isfile(checklist_path):
-        print(f"\nError: The SEO checklist file {checklist_path} does not exist.")
+        print_message(f"\nError: The SEO checklist file {checklist_path} does not exist.")
         return None
 
     try:
@@ -1129,14 +1142,14 @@ def perform_seo_check(doc_path, checklist_path="seo-checklist.md"):
         with open(checklist_path, "r") as f:
             checklist_content = f.read()
     except Exception as e:
-        print(f"\nError reading files: {e}")
+        print_message(f"\nError reading files: {e}")
         return None
 
     # Create output filename
     doc_name = os.path.splitext(os.path.basename(doc_path))[0]
     output_file = f"{doc_name}_seo_optimized.md"
 
-    print("\nPerforming SEO optimization check...")
+    print_message("\nPerforming SEO optimization check...")
     
     # Use the LLM to analyze and optimize the document for SEO
     seo_prompt = """You are an SEO optimization expert. Analyze and optimize the provided document according to the SEO checklist.
@@ -1181,10 +1194,10 @@ def perform_seo_check(doc_path, checklist_path="seo-checklist.md"):
     try:
         with open(output_file, "w") as f:
             f.write(optimized_content)
-        print(f"\nSEO optimized document saved to: {output_file}")
+        print_message(f"\nSEO optimized document saved to: {output_file}")
         return output_file
     except Exception as e:
-        print(f"\nError saving optimized document: {e}")
+        print_message(f"\nError saving optimized document: {e}")
         return None
     
 def analyze_user_intent(user_input, input_type):
@@ -1206,30 +1219,30 @@ def analyze_user_intent(user_input, input_type):
             model=deployment_name,
             messages=[
                 {"role": "system", "content": "You analyze user requests and extract the core intent."},
-                {"role": "user", "content": prompt + "\n\nStart with 'User intends to...' and keep it under 15 words."}
+                {"role": "user", "content": prompt + "\n\nStart with 'User intends to...' and keep it short."}
             ]
         )
         
         intent = response.choices[0].message.content.strip()
         # Remove any quotes or formatting
         intent = intent.strip('"\'`')
-        print(f"\nDetected user intent: {intent}")
+        print_message(f"\nDetected user intent: {intent}")
         return intent
     except Exception as e:
-        print(f"\nError analyzing user intent: {e}")
+        print_message(f"\nError analyzing user intent: {e}")
         return "Execute commands related to Azure resources"  # Default fallback
 
 def generate_script_description_with_content(script_path, context="", output_file_path=None):
     """Generate descriptions around a shell script without modifying the code with custom output path."""
     if not os.path.isfile(script_path):
-        print(f"\nError: The file {script_path} does not exist.")
+        print_message(f"\nError: The file {script_path} does not exist.")
         return None
 
     try:
         with open(script_path, "r") as f:
             script_content = f.read()
     except Exception as e:
-        print(f"\nError reading script: {e}")
+        print_message(f"\nError reading script: {e}")
         return None
 
     # Create default output filename if not provided
@@ -1270,20 +1283,20 @@ def generate_script_description_with_content(script_path, context="", output_fil
         remove_backticks_from_file(output_file_path)
         return doc_content
     except Exception as e:
-        print(f"\nError saving documentation: {e}")
+        print_message(f"\nError saving documentation: {e}")
         return None
 
 def redact_pii_from_doc_with_path(doc_path, output_file_path=None):
     """Redact PII from result blocks in an Exec Doc with custom output path."""
     if not os.path.isfile(doc_path):
-        print(f"\nError: The file {doc_path} does not exist.")
+        print_message(f"\nError: The file {doc_path} does not exist.")
         return None
 
     try:
         with open(doc_path, "r") as f:
             doc_content = f.read()
     except Exception as e:
-        print(f"\nError reading document: {e}")
+        print_message(f"\nError reading document: {e}")
         return None
 
     # Create default output filename if not provided
@@ -1342,20 +1355,20 @@ def redact_pii_from_doc_with_path(doc_path, output_file_path=None):
         remove_backticks_from_file(output_file_path)
         return redacted_content
     except Exception as e:
-        print(f"\nError saving redacted document: {e}")
+        print_message(f"\nError saving redacted document: {e}")
         return None
 
 def perform_security_check_with_path(doc_path, output_file_path=None):
     """Perform a comprehensive security vulnerability check on an Exec Doc with custom output path."""
     if not os.path.isfile(doc_path):
-        print(f"\nError: The file {doc_path} does not exist.")
+        print_message(f"\nError: The file {doc_path} does not exist.")
         return None
 
     try:
         with open(doc_path, "r") as f:
             doc_content = f.read()
     except Exception as e:
-        print(f"\nError reading document: {e}")
+        print_message(f"\nError reading document: {e}")
         return None
 
     # Create default output filename if not provided
@@ -1415,17 +1428,17 @@ def perform_security_check_with_path(doc_path, output_file_path=None):
         remove_backticks_from_file(output_file_path)
         return report_content
     except Exception as e:
-        print(f"\nError saving security report: {e}")
+        print_message(f"\nError saving security report: {e}")
         return None
 
 def perform_seo_check_with_path(doc_path, checklist_path="seo-checklist.md", output_file_path=None):
     """Perform an SEO optimization check on an Exec Doc using the SEO checklist with custom output path."""
     if not os.path.isfile(doc_path):
-        print(f"\nError: The file {doc_path} does not exist.")
+        print_message(f"\nError: The file {doc_path} does not exist.")
         return None
         
     if not os.path.isfile(checklist_path):
-        print(f"\nError: The SEO checklist file {checklist_path} does not exist.")
+        print_message(f"\nError: The SEO checklist file {checklist_path} does not exist.")
         return None
 
     try:
@@ -1435,7 +1448,7 @@ def perform_seo_check_with_path(doc_path, checklist_path="seo-checklist.md", out
         with open(checklist_path, "r") as f:
             checklist_content = f.read()
     except Exception as e:
-        print(f"\nError reading files: {e}")
+        print_message(f"\nError reading files: {e}")
         return None
 
     # Create default output filename if not provided
@@ -1489,25 +1502,31 @@ def perform_seo_check_with_path(doc_path, checklist_path="seo-checklist.md", out
         remove_backticks_from_file(output_file_path)
         return optimized_content
     except Exception as e:
-        print(f"\nError saving optimized document: {e}")
+        print_message(f"\nError saving optimized document: {e}")
         return None
 
 # Add this function to get user feedback
 def get_user_feedback(document_path):
     """Get user feedback by allowing direct edits or text input."""
-    print("\n" + "-"*60)
-    print(f"Document is available at: {document_path}")
-    print("\nYou can either:")
-    print("1. Edit the document directly in your preferred editor, then return here")
-    print("2. Type your feedback below")
-    print("\nWhen done, press Enter to continue. If you made no changes, just press Enter.")
+    # Extract attempt number from filename for better messaging
+    attempt_info = ""
+    if "attempt_" in document_path:
+        attempt_num = document_path.split("attempt_")[1].split("_")[0]
+        result = "successful" if "success" in document_path else "failed"
+        attempt_info = f"Attempt #{attempt_num} ({result})"
+    
+    print_header(f"FEEDBACK REQUESTED FOR {attempt_info}", "-")
+    print_message(f"Document location: {document_path}")
+    print_message("\nYou can provide feedback in two ways:")
+    print_message("1. Edit the document directly in your editor, then return here", prefix="  ✏️  ")
+    print_message("2. Type your suggestions below", prefix="  💬 ")
     
     # Save original state to detect changes
     with open(document_path, "r") as f:
         original_content = f.read()
     
     # Get text feedback if any
-    feedback = input("\nFeedback (optional): ")
+    feedback = input("\n>> Your feedback (or press Enter if no changes): ")
     
     # Check if file was modified
     with open(document_path, "r") as f:
@@ -1515,7 +1534,7 @@ def get_user_feedback(document_path):
     
     # If the file changed, use that as feedback
     if current_content != original_content:
-        print("\nDetected changes in the document!")
+        print_message("\n✅ Document changes detected and will be incorporated!")
         
         # Restore original for proper AI processing
         with open(document_path, "w") as f:
@@ -1527,30 +1546,32 @@ def get_user_feedback(document_path):
     # Return text feedback if provided
     return feedback if feedback.strip() else None
 
+# Replace the menu display in main() function
 def main():
     while True:
-        print("\nWelcome to ADA - AI Documentation Assistant!")
-        print("\nThis tool helps you write and troubleshoot Executable Documents efficiently!")
-        print("\nPlease select one of the following options:")
-        print("  1. Enter path to markdown file for conversion to Exec Doc")
-        print("  2. Describe workload to generate a new Exec Doc")
-        print("  3. Add descriptions to a shell script as an Exec Doc")
-        print("  4. Redact PII from an existing Exec Doc")
-        print("  5. Generate a security analysis report for an Exec Doc")
-        print("  6. Perform SEO optimization check on an Exec Doc")
-        print(" \nEnter 1-6 to select an option or any other key to exit.")
-            
-        choice = input("\nEnter the number corresponding to your choice: ")
+        print_header("WELCOME TO ADA - AI DOCUMENTATION ASSISTANT", "=")
+        print_message("This tool helps you write and troubleshoot Executable Documents efficiently!\n")
+        
+        print_header("MENU OPTIONS", "-")
+        print_message("1. Convert file to Exec Doc", prefix="  📄 ")
+        print_message("2. Generate new Exec Doc from scratch", prefix="  🔍 ")
+        print_message("3. Create descriptions for your shell script", prefix="  📝 ")
+        print_message("4. Redact PII from your Doc", prefix="  🔒 ")
+        print_message("5. Give security analysis report on your Doc", prefix="  🛡️  ")
+        print_message("6. Perform SEO optimization check on your Doc", prefix="  📊 ")
+        print_message("\nEnter 1-6 to select an option or any other key to exit.")
+        
+        choice = input("\n>> Your choice: ")
         
 
         if choice not in ["1", "2", "3", "4", "5", "6"]:
-            print("\nThank you for using ADA! Goodbye!")
+            print_message("\nThank you for using ADA! Goodbye!")
             break
 
         if choice == "1":
             user_input = input("\nEnter the path to your markdown file: ")
             if not os.path.isfile(user_input) or not user_input.endswith('.md'):
-                print("\nInvalid file path or file type. Please provide a valid markdown file.")
+                print_message("\nInvalid file path or file type. Please provide a valid markdown file.")
                 continue
 
             # Add new option for interactive mode
@@ -1566,7 +1587,7 @@ def main():
         elif choice == "2":
             user_input = input("\nDescribe your workload for the new Exec Doc: ")
             if not user_input:
-                print("\nInvalid input. Please provide a workload description.")
+                print_message("\nInvalid input. Please provide a workload description.")
                 continue
 
             # Add new option for interactive mode
@@ -1580,7 +1601,7 @@ def main():
             user_input = input("\nEnter the path to your shell script: ")
             context = input("\nProvide additional context for the script (optional): ")
             if not os.path.isfile(user_input):
-                print("\nInvalid file path. Please provide a valid shell script.")
+                print_message("\nInvalid file path. Please provide a valid shell script.")
                 continue
             input_type = 'shell_script'
             
@@ -1592,19 +1613,19 @@ def main():
             
             if log_exists:
                 output_folder = existing_folder
-                print(f"\nFound existing progress log. Will append results to: {output_folder}")
+                print_message(f"\nFound existing progress log. Will append results to: {output_folder}")
             else:
                 # Create output folder
                 doc_title = f"Documentation_for_{os.path.basename(user_input)}"
                 output_folder = setup_output_folder(input_type, user_input, doc_title)
-                print(f"\nAll files will be saved to: {output_folder}")
+                print_message(f"\nAll files will be saved to: {output_folder}")
             
             # Initialize tracking
             all_iterations_data = []
             start_time = time.time()
             
             # Generate documentation
-            print("\nGenerating documentation for shell script...")
+            print_message("\nGenerating documentation for shell script...")
             output_file_name = os.path.join(output_folder, f"{os.path.splitext(os.path.basename(user_input))[0]}_documented.md")
             
             # Call the function with modified path
@@ -1627,12 +1648,12 @@ def main():
             else:
                 update_progress_log(output_folder, all_iterations_data, input_type, user_intent)
             
-            print(f"\nScript documentation saved to: {output_file_name}")
+            print_message(f"\nScript documentation saved to: {output_file_name}")
             continue
         elif choice == "4":
             user_input = input("\nEnter the path to your Exec Doc for PII redaction: ")
             if not os.path.isfile(user_input) or not user_input.endswith('.md'):
-                print("\nInvalid file path or file type. Please provide a valid markdown file.")
+                print_message("\nInvalid file path or file type. Please provide a valid markdown file.")
                 continue
             input_type = 'pii_redaction'
             
@@ -1644,19 +1665,19 @@ def main():
             
             if log_exists:
                 output_folder = existing_folder
-                print(f"\nFound existing progress log. Will append results to: {output_folder}")
+                print_message(f"\nFound existing progress log. Will append results to: {output_folder}")
             else:
                 # Create output folder
                 doc_title = f"Documentation_for_{os.path.basename(user_input)}"
                 output_folder = setup_output_folder(input_type, user_input, doc_title)
-                print(f"\nAll files will be saved to: {output_folder}")
+                print_message(f"\nAll files will be saved to: {output_folder}")
             
             # Initialize tracking
             all_iterations_data = []
             start_time = time.time()
             
             # Perform redaction
-            print("\nRedacting PII from document...")
+            print_message("\nRedacting PII from document...")
             output_file_name = os.path.join(output_folder, f"{os.path.splitext(os.path.basename(user_input))[0]}_redacted.md")
             
             # Call with modified path
@@ -1679,12 +1700,12 @@ def main():
             else:
                 update_progress_log(output_folder, all_iterations_data, input_type, user_intent)
             
-            print(f"\nRedacted document saved to: {output_file_name}")
+            print_message(f"\nRedacted document saved to: {output_file_name}")
             continue
         elif choice == "5":
             user_input = input("\nEnter the path to your Exec Doc for security analysis: ")
             if not os.path.isfile(user_input) or not user_input.endswith('.md'):
-                print("\nInvalid file path or file type. Please provide a valid markdown file.")
+                print_message("\nInvalid file path or file type. Please provide a valid markdown file.")
                 continue
             input_type = 'security_check'
             
@@ -1696,19 +1717,19 @@ def main():
             
             if log_exists:
                 output_folder = existing_folder
-                print(f"\nFound existing progress log. Will append results to: {output_folder}")
+                print_message(f"\nFound existing progress log. Will append results to: {output_folder}")
             else:
                 # Create output folder
                 doc_title = f"Documentation_for_{os.path.basename(user_input)}"
                 output_folder = setup_output_folder(input_type, user_input, doc_title)
-                print(f"\nAll files will be saved to: {output_folder}")
+                print_message(f"\nAll files will be saved to: {output_folder}")
             
             # Initialize tracking
             all_iterations_data = []
             start_time = time.time()
             
             # Perform security check
-            print("\nPerforming comprehensive security vulnerability analysis...")
+            print_message("\nPerforming comprehensive security vulnerability analysis...")
             output_file_name = os.path.join(output_folder, f"{os.path.splitext(os.path.basename(user_input))[0]}_security_report.md")
             
             # Call with modified path
@@ -1731,14 +1752,14 @@ def main():
             else:
                 update_progress_log(output_folder, all_iterations_data, input_type, user_intent)
                 
-            print(f"\nSecurity analysis complete. Report saved to: {output_file_name}")
+            print_message(f"\nSecurity analysis complete. Report saved to: {output_file_name}")
             continue
         elif choice == "6":
             user_input = input("\nEnter the path to your Exec Doc for SEO optimization: ")
             checklist_path = input("\nEnter the path to the SEO checklist (default: seo-checklist.md): ") or "seo-checklist.md"
             
             if not os.path.isfile(user_input) or not user_input.endswith('.md'):
-                print(f"\nError: {user_input} is not a valid markdown file.")
+                print_message(f"\nError: {user_input} is not a valid markdown file.")
                 continue
                 
             input_type = 'seo_optimization'
@@ -1751,19 +1772,19 @@ def main():
             
             if log_exists:
                 output_folder = existing_folder
-                print(f"\nFound existing progress log. Will append results to: {output_folder}")
+                print_message(f"\nFound existing progress log. Will append results to: {output_folder}")
             else:
                 # Create output folder
                 doc_title = f"Documentation_for_{os.path.basename(user_input)}"
                 output_folder = setup_output_folder(input_type, user_input, doc_title)
-                print(f"\nAll files will be saved to: {output_folder}")
+                print_message(f"\nAll files will be saved to: {output_folder}")
             
             # Initialize tracking
             all_iterations_data = []
             start_time = time.time()
             
             # Perform SEO check
-            print("\nPerforming SEO optimization check...")
+            print_message("\nPerforming SEO optimization check...")
             output_file_name = os.path.join(output_folder, f"{os.path.splitext(os.path.basename(user_input))[0]}_seo_optimized.md")
             
             # Call with modified path
@@ -1786,10 +1807,10 @@ def main():
             else:
                 update_progress_log(output_folder, all_iterations_data, input_type, user_intent)
             
-            print(f"\nSEO optimized document saved to: {output_file_name}")
+            print_message(f"\nSEO optimized document saved to: {output_file_name}")
             continue
         else:
-            print("\nInvalid choice. Exiting.")
+            print_message("\nInvalid choice. Exiting.")
             continue
 
         # Generate title first if it's a workload description
@@ -1806,11 +1827,11 @@ def main():
         
         if log_exists:
             output_folder = existing_folder
-            print(f"\nFound existing progress log. Will append results to: {output_folder}")
+            print_message(f"\nFound existing progress log. Will append results to: {output_folder}")
         else:
             # Create a new folder
             output_folder = setup_output_folder(input_type, user_input, doc_title)
-            print(f"\nAll files will be saved to: {output_folder}")
+            print_message(f"\nAll files will be saved to: {output_folder}")
         
         # Initialize tracking
         all_iterations_data = []
@@ -1836,7 +1857,7 @@ def main():
             iteration_errors = []
             made_dependency_change = False
             if attempt == 1:
-                print(f"\n{'='*40}\nAttempt {attempt}: Generating Exec Doc...\n{'='*40}")
+                print_header(f"Attempt {attempt}: Generating Exec Doc...", "-")
                 response = client.chat.completions.create(
                     model=deployment_name,
                     messages=[
@@ -1858,7 +1879,7 @@ def main():
                     if dependency_files:
                         transform_document_for_dependencies(output_file, dependency_files)
             else:
-                print(f"\n{'='*40}\nAttempt {attempt}: Generating corrections based on error...\n{'='*40}")
+                print_header(f"Attempt {attempt}: Generating corrections based on error...", "-")
                 
                 # Analyze if the error is in the main doc or in dependency files
                 error_analysis = analyze_error(errors_text, dependency_files)
@@ -1866,7 +1887,7 @@ def main():
                 if error_analysis["type"] == "dependency_file" and error_analysis["file"]:
                     # If error is in a dependency file, try to fix it
                     dep_file = error_analysis["file"]
-                    print(f"\nDetected issue in dependency file: {dep_file['filename']}")
+                    print_message(f"\nDetected issue in dependency file: {dep_file['filename']}")
                     update_dependency_file(dep_file, error_analysis["message"], output_file)
                     made_dependency_change = True  # Set the flag
                 else:
@@ -1894,17 +1915,18 @@ def main():
 
             remove_backticks_from_file(output_file)
 
-            print(f"\n{'-'*40}\nRunning Innovation Engine tests...\n{'-'*40}")
+            print_header(f"Running Innovation Engine tests...", "-")
+            
             try:
                 result = subprocess.run(["ie", "test", output_file], capture_output=True, text=True, timeout=660)
             except subprocess.TimeoutExpired:
-                print("\nThe 'ie test' command timed out after 11 minutes.")
+                print_message("\nThe 'ie test' command timed out after 11 minutes.")
                 errors_encountered.append("The 'ie test' command timed out after 11 minutes.")
                 attempt += 1
                 continue  # Proceed to the next attempt
                 
             if result.returncode == 0:
-                print(f"\n{'*'*40}\nAll tests passed successfully.\n{'*'*40}")
+                print_message("All tests passed successfully!", prefix="✅ ")
                 success = True
 
                 # Update the iteration file
@@ -1924,7 +1946,8 @@ def main():
                 )
                 all_iterations_data.append(iteration_data)
 
-                print(f"\n{'='*40}\nProducing Exec Doc...\n{'='*40}")
+                print_header(f"Producing Exec Doc...", "-")
+                
                 if input_type == 'file':
                     response = client.chat.completions.create(
                         model=deployment_name,
@@ -1945,13 +1968,13 @@ def main():
                         
                 # Generate dependency files for successful docs if not already done
                 if (input_type == 'file' or input_type == 'workload_description') and not dependency_files_generated and generate_deps:
-                    print("\nGenerating dependency files for the successful document...")
+                    print_message("\nGenerating dependency files for the successful document...")
                     _, dependency_files = generate_dependency_files(output_file)
                     
                 remove_backticks_from_file(output_file)
                 break
             else:
-                print(f"\n{'!'*40}\nTests failed. Analyzing errors...\n{'!'*40}")
+                print_message(f"\n{'!'*40}\nTests failed. Analyzing errors...\n{'!'*40}")
                 error_log = get_last_error_log()
                 errors_encountered.append(error_log.strip())  # Keep for overall tracking
                 iteration_errors.append(error_log.strip())    # For this iteration only
@@ -2003,8 +2026,8 @@ def main():
                 else:
                     additional_instruction = ""
                 
-                print(f"\nError: {error_log.strip()}")
-                print(f"\n{'!'*40}\nApplying an error troubleshooting strategy...\n{'!'*40}")
+                print_message(f"\nError: {error_log.strip()}")
+                print_message(f"\n{'!'*40}\nApplying an error troubleshooting strategy...\n{'!'*40}")
 
                 # Update the iteration file
                 iteration_file = os.path.join(output_folder, f"attempt_{attempt}_failure.md")
@@ -2027,7 +2050,7 @@ def main():
                 if 'interactive_mode' in locals() and interactive_mode:
                     feedback = get_user_feedback(iteration_file)
                     if feedback:
-                        print("\nIncorporating your feedback for the next attempt...")
+                        print_message("\nIncorporating your feedback for the next attempt...")
                         
                         # Use AI to incorporate feedback
                         response = client.chat.completions.create(
@@ -2047,7 +2070,7 @@ def main():
                         with open(iteration_file, "w") as f:
                             f.write(output_file_content)
                             
-                        print("\nFeedback incorporated. Running tests with your changes...")
+                        print_message("\nFeedback incorporated. Running tests with your changes...")
                         
                         # Track that we received user feedback in this iteration
                         iteration_feedback = feedback
@@ -2064,22 +2087,32 @@ def main():
         else:
             update_progress_log(output_folder, all_iterations_data, input_type, user_intent)
 
-        # After the while loop (when a successful run is found or max attempts are reached):
-        final_status = "success" if success else "failure_final"
-        final_file = os.path.join(output_folder, f"FINAL_OUTPUT_{final_status}.md")
-        with open(final_file, "w") as f:
-            f.write(output_file_content)
+        # Replace this section after the while loop
+        if success:
+            # Don't create a duplicate file if attempt was successful - just copy/rename the last one
+            last_success_file = os.path.join(output_folder, f"attempt_{attempt}_success.md")
+            final_file = os.path.join(output_folder, f"FINAL_OUTPUT_success.md")
+            shutil.copy2(last_success_file, final_file)
+            # Update output_file to point to final file
+            output_file = final_file
+        else:
+            # For failures, create a new final file
+            final_file = os.path.join(output_folder, f"FINAL_OUTPUT_failure_final.md")
+            with open(final_file, "w") as f:
+                f.write(output_file_content)
+            # Update output_file to point to final file
+            output_file = final_file
 
         # Update output_file variable to point to the final file
         output_file = final_file
 
         if attempt > max_attempts:
-            print(f"\n{'#'*40}\nMaximum attempts reached without passing all tests.\n{'#'*40}")
+            print_message(f"\n{'#'*40}\nMaximum attempts reached without passing all tests.\n{'#'*40}")
 
         end_time = time.time()
         execution_time = end_time - start_time
 
-        print(f"\nThe updated file is stored at: {output_file}\n")
+        print_message(f"\nThe updated file is stored at: {output_file}\n")
 
 if __name__ == "__main__":
     main()

@@ -99,4 +99,3 @@ Results:
 ```text
 You can now SSH into your VM using:
 ssh azureuser@xx.xx.xx.xx
-```
