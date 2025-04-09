@@ -943,5 +943,18 @@
         "configurations": {
             "permissions": []
         }
+    },
+    {
+        "status": "active",
+        "key": "KaitoStack/kaito-stack.md",
+        "title": "Quickstart: Deploy KAITO on AKS with a Cloud-Native Tool Stack",
+        "description": "Learn how to deploy KAITO on Azure Kubernetes Service (AKS) using an opinionated, open source, cloud-native tool stack.",
+        "stackDetails": [],
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/test_terraform/scenarios/KaitoStack/kaito-stack.md",
+        "documentationUrl": "",
+        "nextSteps": [],
+        "configurations": {
+            "permissions": []
+        }
     }
 ]
