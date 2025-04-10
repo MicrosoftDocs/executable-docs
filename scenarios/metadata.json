@@ -1588,25 +1588,6 @@
         }
     },
     {
-        "status": "inactive",
-        "key": "azure-compute-docs/articles/container-instances/container-instances-quickstart-terraform/container-instances-quickstart-terraform.md",
-        "title": "Quickstart: Create an Azure Container Instance with a public IP address using Terraform",
-        "description": "In this article, you create an Azure Container Instance with a public IP address using Terraform",
-        "stackDetails": "",
-        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-compute-docs/articles/container-instances/container-instances-quickstart-terraform/container-instances-quickstart-terraform.md",
-        "documentationUrl": "https://learn.microsoft.com/en-us/azure/container-instances/container-instances-quickstart-terraform",
-        "nextSteps": [
-            {
-                "title": "Tutorial: Create a container image for deployment to Azure Container Instances",
-                "url": "https://learn.microsoft.com/en-us/azure/container-instances/container-instances-tutorial-prepare-app"
-            }
-        ],
-        "configurations": {
-            "permissions": [],
-            "configurableParams": []
-        }
-    },
-    {
         "status": "active",
         "key": "azure-aks-docs/articles/aks/node-image-upgrade.md",
         "title": "Upgrade Azure Kubernetes Service (AKS) node images",
@@ -1672,76 +1653,6 @@
             {
                 "title": "Create a Linux VM with the Azure CLI",
                 "url": "https://learn.microsoft.com/en-us/azure/virtual-machines/linux/quick-create-cli"
-            }
-        ],
-        "configurations": {
-            "permissions": [],
-            "configurableParams": []
-        }
-    },
-    {
-        "status": "inactive",
-        "key": "azure-docs/articles/app-service/flask/quickstart-python-1-flask.md",
-        "title": "Quickstart: Create a Python app on Linux using Flask",
-        "description": "Get started with Azure App Service by deploying a Python app to a Linux container in App Service using Flask.",
-        "stackDetails": "",
-        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-docs/articles/app-service/flask/quickstart-python-1-flask.md",
-        "documentationUrl": "https://learn.microsoft.com/en-us/azure/app-service/quickstart-python-1?tabs=bash&pivots=python-framework-flask",
-        "nextSteps": [
-            {
-                "title": "Tutorial: Python (Django) web app with PostgreSQL",
-                "url": "https://learn.microsoft.com/en-us/azure/app-service/tutorial-python-postgresql-app-django"
-            },
-            {
-                "title": "Configure Python app",
-                "url": "https://learn.microsoft.com/en-us/azure/app-service/configure-language-python"
-            },
-            {
-                "title": "Add user sign-in to a Python web app",
-                "url": "https://learn.microsoft.com/en-us/azure/active-directory/develop/quickstart-v2-python-webapp"
-            },
-            {
-                "title": "Tutorial: Run Python app in custom container",
-                "url": "https://learn.microsoft.com/en-us/azure/app-service/tutorial-custom-container"
-            },
-            {
-                "title": "Secure with custom domain and certificate",
-                "url": "https://learn.microsoft.com/en-us/azure/app-service/tutorial-secure-domain-certificate"
-            }
-        ],
-        "configurations": {
-            "permissions": [],
-            "configurableParams": []
-        }
-    },
-    {
-        "status": "inactive",
-        "key": "azure-docs/articles/app-service/django/quickstart-python-1-django.md",
-        "title": "Quickstart: Create a Python app on Linux using Django",
-        "description": "Get started with Azure App Service by deploying a Python app to a Linux container in App Service using Django.",
-        "stackDetails": "",
-        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-docs/articles/app-service/django/quickstart-python-1-django.md",
-        "documentationUrl": "https://learn.microsoft.com/en-us/azure/app-service/quickstart-python-1?tabs=bash&pivots=python-framework-django",
-        "nextSteps": [
-            {
-                "title": "Tutorial: Python (Django) web app with PostgreSQL",
-                "url": "https://learn.microsoft.com/en-us/azure/app-service/tutorial-python-postgresql-app-django"
-            },
-            {
-                "title": "Configure Python app",
-                "url": "https://learn.microsoft.com/en-us/azure/app-service/configure-language-python"
-            },
-            {
-                "title": "Add user sign-in to a Python web app",
-                "url": "https://learn.microsoft.com/en-us/azure/active-directory/develop/quickstart-v2-python-webapp"
-            },
-            {
-                "title": "Tutorial: Run Python app in custom container",
-                "url": "https://learn.microsoft.com/en-us/azure/app-service/tutorial-custom-container"
-            },
-            {
-                "title": "Secure with custom domain and certificate",
-                "url": "https://learn.microsoft.com/en-us/azure/app-service/tutorial-secure-domain-certificate"
             }
         ],
         "configurations": {
