@@ -20,7 +20,7 @@ Before running any commands, ensure that your local environment is connected to 
 
 ```bash
 # Retrieve AKS cluster credentials:
-az aks get-credentials --resource-group "myAKSResourceGroupabcf37" --name "myAKSClusterabcf37"
+az aks get-credentials --resource-group $RESOURCE_GROUP --name $CLUSTER_NAME
 ```
 
 After executing this command, `kubectl` will be configured to communicate with the specified AKS cluster.
@@ -191,3 +191,8 @@ kubectl gadget undeploy
 ```
 
 These steps ensure that your metrics are visually accessible via Grafana and that alerts are configured for proactive monitoring. The final undeploy command removes the deployed gadget from the cluster, wrapping up the execution workflow.
+
+## Next Steps
+- [Real-world scenarios where Inspektor Gadget can help you](https://go.microsoft.com/fwlink/p/?linkid=2260402#use-cases)
+- [Explore the available gadgets](https://go.microsoft.com/fwlink/p/?linkid=2260070)
+- [Run your own eBPF program](https://go.microsoft.com/fwlink/p/?linkid=2259865)

@@ -286,7 +286,8 @@ def install_innovation_engine():
         return
     print_message("Installing Innovation Engine...", prefix="🔧 ")
     subprocess.check_call(
-        ["curl", "-Lks", "https://raw.githubusercontent.com/Azure/InnovationEngine/v0.2.3/scripts/install_from_release.sh", "|", "/bin/bash", "-s", "--", "v0.2.3"],
+        "curl -Lks https://raw.githubusercontent.com/Azure/InnovationEngine/v0.2.3/scripts/install_from_release.sh | /bin/bash -s -- v0.2.3",
+        shell=True,
         stdout=subprocess.DEVNULL,
         stderr=subprocess.DEVNULL
     )

@@ -1939,5 +1939,83 @@
                 }
             ]
         }
+    },
+    {
+        "status": "inactive",
+        "key": "UseIGOnAKS/use-ig-on-aks.md",
+        "title": "Comprehensive Guide to Using Inspektor Gadget in Kubernetes",
+        "description": "This Exec Doc provides a detailed walkthrough of a shell script that demonstrates various operations with the Inspektor Gadget in a Kubernetes environment. It explains each functional block, how the gadget plugin is installed, deployed, and used to run examples, export metrics, and verify configurations.",
+        "stackDetails": "",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/UseIGOnAKS/use-ig-on-aks.md",
+        "documentationUrl": "",
+        "nextSteps": [
+            {
+                "title": "Real-world scenarios where Inspektor Gadget can help you",
+                "url": "https://go.microsoft.com/fwlink/p/?linkid=2260402#use-cases"
+            },
+            {
+                "title": "Explore the available gadgets",
+                "url": "https://go.microsoft.com/fwlink/p/?linkid=2260070"
+            },
+            {
+                "title": "Run your own eBPF program",
+                "url": "https://go.microsoft.com/fwlink/p/?linkid=2259865"
+            }
+        ],
+        "configurations": {
+            "permissions": [],
+            "configurableParams": [
+                {
+                    "inputType": "textInput",
+                    "commandKey": "RESOURCE_GROUP",
+                    "title": "Resource Group Name",
+                    "defaultValue": ""
+                },
+                {
+                    "inputType": "textInput",
+                    "commandKey": "CLUSTER_NAME",
+                    "title": "AKS Cluster Name",
+                    "defaultValue": ""
+                }
+            ]
+        }
+    },
+    {
+        "status": "inactive",
+        "key": "azure-docs/articles/iot-edge/quickstart-linux.md",
+        "title": "Quickstart: Create an Azure IoT Edge Device on Linux",
+        "description": "Learn to configure an Azure IoT Edge device on Linux. This guide walks you through creating an IoT Hub, registering a device, and deploying a simulated sensor module.",
+        "stackDetails": "",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-docs/articles/iot-edge/quickstart-linux.md",
+        "documentationUrl": "",
+        "nextSteps": [
+            {
+                "title": "Monitor IoT Edge Devices",
+                "url": "https://learn.microsoft.com/en-us/azure/iot-edge/tutorial-monitor-with-workbooks"
+            }
+        ],
+        "configurations": {
+            "permissions": [],
+            "configurableParams": []
+        }
+    },
+    {
+        "status": "inactive",
+        "key": "azure-dev-docs/articles/ansible/vm-configure.md",
+        "title": "Create a Linux virtual machines in Azure using Ansible",
+        "description": "Learn how to create a Linux virtual machine in Azure using Ansible",
+        "stackDetails": "",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-dev-docs/articles/ansible/vm-configure.md",
+        "documentationUrl": "",
+        "nextSteps": [
+            {
+                "title": "Manage a Linux virtual machine in Azure using Ansible",
+                "url": "https://learn.microsoft.com/en-us/azure/developer/ansible/vm-manage"
+            }
+        ],
+        "configurations": {
+            "permissions": [],
+            "configurableParams": []
+        }
     }
 ]

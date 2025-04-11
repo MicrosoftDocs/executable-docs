@@ -1,0 +1,4 @@
+openai>=1.65.0
+azure-identity>=1.17.0
+requests>=2.31.0
+pyyaml>=5.4.1
