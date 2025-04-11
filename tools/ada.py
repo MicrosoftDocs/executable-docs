@@ -868,36 +868,32 @@ def setup_output_folder(input_type, input_name, title=None):
     
     return folder_name
 
-def check_existing_log(input_path):
-    """Check if log.json exists in the same directory as the input file.
+def check_existing_log(input_path=None):
+    """Check if global log.json exists at the script level.
     
     Args:
-        input_path: Path to the input file
+        input_path: Optional path (no longer needed for centralized logging)
     
     Returns:
-        Tuple of (exists, folder_path, existing_data)
+        Tuple of (exists, log_path, existing_data)
         exists: Boolean indicating if log.json exists
-        folder_path: Path to the folder containing log.json
+        log_path: Path to the log file
         existing_data: Dictionary containing the existing log data
     """
-    # Check if input is a file path or just a description
-    if not os.path.isfile(input_path):
-        return False, None, None
-        
-    # Get the directory of the input file
-    input_dir = os.path.dirname(input_path) or "."
-    log_file_path = os.path.join(input_dir, "log.json")
+    # Get the directory where the script is located
+    script_dir = os.path.dirname(os.path.realpath(__file__))
+    log_file_path = os.path.join(script_dir, "log.json")
     
-    # Check if log.json exists in the input directory
+    # Check if log.json exists in the script directory
     if os.path.isfile(log_file_path):
         try:
             with open(log_file_path, 'r') as f:
                 existing_data = json.load(f)
-                return True, input_dir, existing_data
+                return True, log_file_path, existing_data
         except Exception as e:
             print_message(f"\nWarning: Found log.json but couldn't read it: {e}")
     
-    return False, None, None
+    return False, log_file_path, None
 
 def calculate_success_rate(log_data):
     """Calculate success rate for doc creation/conversion attempts."""
@@ -915,9 +911,11 @@ def calculate_total_execution_time(log_data):
             total += sum(entry.get("Execution Time (in seconds)", 0) for entry in log_data[section])
     return total
 
-def update_progress_log(log_folder, new_data, input_type, user_intent=None, existing_data=None):
-    """Update the JSON progress log with the new structure."""
-    log_file = os.path.join(log_folder, "log.json")
+def update_progress_log(output_folder, new_data, input_type, user_intent=None, existing_data=None):
+    """Update the centralized JSON progress log with the new structure."""
+    # Get the directory where the script is located
+    script_dir = os.path.dirname(os.path.realpath(__file__))
+    log_file = os.path.join(script_dir, "log.json")
     
     # Map input_type to appropriate section name
     section_map = {
@@ -936,10 +934,8 @@ def update_progress_log(log_folder, new_data, input_type, user_intent=None, exis
         # Initialize brand new log structure
         log_data = {
             "info": {
-                "User Intent": user_intent,
                 "Creation Date": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
                 "Last Modified Date": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-                "Project Name": os.path.basename(log_folder),
                 "Total Operations": 1,  # Starting with this operation
                 "Success Rate": 0,      # No previous data
                 "Operation Summary": {
@@ -963,10 +959,8 @@ def update_progress_log(log_folder, new_data, input_type, user_intent=None, exis
         # Ensure info section exists with proper structure
         if "info" not in log_data:
             log_data["info"] = {
-                "User Intent": user_intent,
                 "Creation Date": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
                 "Last Modified Date": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-                "Project Name": os.path.basename(log_folder),
                 "Total Operations": 0,
                 "Success Rate": 0,
                 "Operation Summary": {
@@ -979,6 +973,13 @@ def update_progress_log(log_folder, new_data, input_type, user_intent=None, exis
                 },
                 "Total Execution Time (in seconds)": 0
             }
+    
+    # Add project folder information to each entry
+    for entry in new_data:
+        entry["Project Folder"] = output_folder
+        # Add user intent if provided
+        if user_intent:
+            entry["User Intent"] = user_intent
     
     # Create section if it doesn't exist
     if section_name not in log_data:
@@ -1018,7 +1019,7 @@ def collect_iteration_data(input_type, user_input, output_file, attempt, errors,
         'Result': "Success" if success else "Failure"
     }
 
-def generate_title_from_description(description):
+def generate_title_from_description(description, display=False):
     """Generate a title for the Exec Doc based on the workload description."""
     
     title_prompt = """Create a concise, descriptive title for an Executable Document (Exec Doc) based on the following workload description. 
@@ -1046,13 +1047,16 @@ def generate_title_from_description(description):
         title = response.choices[0].message.content.strip()
         # Remove any quotes, backticks or other formatting that might be included
         title = title.strip('"\'`')
-        print_header(f"Title: {title}", "=")
+        
+        # Only print the header if display is True
+        if display:
+            print_header(f"Title: {title}", "=")
         
         return title
     except Exception as e:
         print_message(f"\nError generating title: {e}")
         return "Azure Executable Documentation Guide"  # Default fallback title
-
+    
 def perform_security_check(doc_path):
     """Perform a comprehensive security vulnerability check on an Exec Doc."""
     if not os.path.isfile(doc_path):
@@ -1228,7 +1232,7 @@ def analyze_user_intent(user_input, input_type):
         intent = response.choices[0].message.content.strip()
         # Remove any quotes or formatting
         intent = intent.strip('"\'`')
-        print_message(f"User intent: {intent}", "-")
+        print_message(f"\nUser intent: {intent}")
         return intent
     except Exception as e:
         print_message(f"\nError analyzing user intent: {e}")
@@ -1528,7 +1532,7 @@ def get_user_feedback(document_path):
         original_content = f.read()
     
     # Get text feedback if any
-    feedback = input("\n>> Your feedback (or press Enter if no changes): ")
+    feedback = input("\n>> Your feedback (or press Enter to keep going): ")
     
     # Check if file was modified
     with open(document_path, "r") as f:
@@ -1611,16 +1615,16 @@ def main():
             user_intent = analyze_user_intent(user_input, input_type)
 
             # Check for existing log.json
-            log_exists, existing_folder, existing_data = check_existing_log(user_input)
-            
+            log_exists, log_path, existing_data = check_existing_log()
+                    
             if log_exists:
-                output_folder = existing_folder
-                print_message(f"\nFound existing progress log. Will append results to: {output_folder}")
+                print_message(f"\nFound existing centralized progress log. Will append results.")
             else:
-                # Create output folder
-                doc_title = f"Documentation_for_{os.path.basename(user_input)}"
-                output_folder = setup_output_folder(input_type, user_input, doc_title)
-                print_message(f"\nAll files will be saved to: {output_folder}")
+                print_message(f"\nCreating new centralized progress log.")
+                
+            # Create a new folder for outputs
+            output_folder = os.path.dirname(user_input) or "."
+            print_message(f"\nAll files will be saved to: {output_folder}")
             
             # Initialize tracking
             all_iterations_data = []
@@ -1629,6 +1633,9 @@ def main():
             # Generate documentation
             print_message("\nGenerating documentation for shell script...")
             output_file_name = os.path.join(output_folder, f"{os.path.splitext(os.path.basename(user_input))[0]}_documented.md")
+            
+            # Store output in the same directory as the source script
+            output_file_name = f"{os.path.splitext(user_input)[0]}_documented.md"
             
             # Call the function with modified path
             output_content = generate_script_description_with_content(user_input, context, output_file_name)
@@ -1663,16 +1670,16 @@ def main():
             user_intent = analyze_user_intent(user_input, input_type)
 
             # Check for existing log.json
-            log_exists, existing_folder, existing_data = check_existing_log(user_input)
+            log_exists, log_path, existing_data = check_existing_log()
             
             if log_exists:
-                output_folder = existing_folder
-                print_message(f"\nFound existing progress log. Will append results to: {output_folder}")
+                print_message(f"\nFound existing centralized progress log. Will append results.")
             else:
-                # Create output folder
-                doc_title = f"Documentation_for_{os.path.basename(user_input)}"
-                output_folder = setup_output_folder(input_type, user_input, doc_title)
-                print_message(f"\nAll files will be saved to: {output_folder}")
+                print_message(f"\nCreating new centralized progress log.")
+            
+            # Create output folder
+            doc_title = f"Documentation_for_{os.path.basename(user_input)}"
+            output_folder = os.path.dirname(user_input) or "."
             
             # Initialize tracking
             all_iterations_data = []
@@ -1680,7 +1687,9 @@ def main():
             
             # Perform redaction
             print_message("\nRedacting PII from document...")
-            output_file_name = os.path.join(output_folder, f"{os.path.splitext(os.path.basename(user_input))[0]}_redacted.md")
+
+            # Store output in the same directory as the source doc
+            output_file_name = f"{os.path.splitext(user_input)[0]}_redacted.md"
             
             # Call with modified path
             output_content = redact_pii_from_doc_with_path(user_input, output_file_name)
@@ -1715,16 +1724,16 @@ def main():
             user_intent = analyze_user_intent(user_input, input_type)
 
             # Check for existing log.json
-            log_exists, existing_folder, existing_data = check_existing_log(user_input)
-            
+            log_exists, log_path, existing_data = check_existing_log()
+                    
             if log_exists:
-                output_folder = existing_folder
-                print_message(f"\nFound existing progress log. Will append results to: {output_folder}")
+                print_message(f"\nFound existing centralized progress log. Will append results.")
             else:
-                # Create output folder
-                doc_title = f"Documentation_for_{os.path.basename(user_input)}"
-                output_folder = setup_output_folder(input_type, user_input, doc_title)
-                print_message(f"\nAll files will be saved to: {output_folder}")
+                print_message(f"\nCreating new centralized progress log.")
+                
+            # Create a new folder for outputs
+            output_folder = os.path.dirname(user_input) or "."
+            print_message(f"\nAll files will be saved to: {output_folder}")
             
             # Initialize tracking
             all_iterations_data = []
@@ -1732,7 +1741,9 @@ def main():
             
             # Perform security check
             print_message("\nPerforming comprehensive security vulnerability analysis...")
-            output_file_name = os.path.join(output_folder, f"{os.path.splitext(os.path.basename(user_input))[0]}_security_report.md")
+
+            # Store output in the same directory as the source doc
+            output_file_name = f"{os.path.splitext(user_input)[0]}_security_report.md"
             
             # Call with modified path
             output_content = perform_security_check_with_path(user_input, output_file_name)
@@ -1770,16 +1781,16 @@ def main():
             user_intent = analyze_user_intent(user_input, input_type)
 
             # Check for existing log.json
-            log_exists, existing_folder, existing_data = check_existing_log(user_input)
-            
+            log_exists, log_path, existing_data = check_existing_log()
+                    
             if log_exists:
-                output_folder = existing_folder
-                print_message(f"\nFound existing progress log. Will append results to: {output_folder}")
+                print_message(f"\nFound existing centralized progress log. Will append results.")
             else:
-                # Create output folder
-                doc_title = f"Documentation_for_{os.path.basename(user_input)}"
-                output_folder = setup_output_folder(input_type, user_input, doc_title)
-                print_message(f"\nAll files will be saved to: {output_folder}")
+                print_message(f"\nCreating new centralized progress log.")
+                
+            # Create a new folder for outputs
+            output_folder = os.path.dirname(user_input) or "."
+            print_message(f"\nAll files will be saved to: {output_folder}")
             
             # Initialize tracking
             all_iterations_data = []
@@ -1787,7 +1798,9 @@ def main():
             
             # Perform SEO check
             print_message("\nPerforming SEO optimization check...")
-            output_file_name = os.path.join(output_folder, f"{os.path.splitext(os.path.basename(user_input))[0]}_seo_optimized.md")
+            
+            # Store output in the same directory as the source doc
+            output_file_name = f"{os.path.splitext(user_input)[0]}_seo_optimized.md"
             
             # Call with modified path
             output_content = perform_seo_check_with_path(user_input, checklist_path, output_file_name)
@@ -1817,7 +1830,7 @@ def main():
 
         # Generate title first if it's a workload description
         if input_type == 'workload_description':
-            doc_title = generate_title_from_description(user_input)
+            doc_title = generate_title_from_description(user_input, display=True)
         else:
             doc_title = os.path.splitext(os.path.basename(user_input))[0]
         
@@ -1825,15 +1838,20 @@ def main():
         user_intent = analyze_user_intent(user_input, input_type)
         
         # Check for existing log.json
-        log_exists, existing_folder, existing_data = check_existing_log(user_input)
-        
+        log_exists, log_path, existing_data = check_existing_log()
+                
         if log_exists:
-            output_folder = existing_folder
-            print_message(f"\nFound existing progress log. Will append results to: {output_folder}")
+            print_message(f"\nFound existing centralized progress log. Will append results.")
         else:
-            # Create a new folder
+            print_message(f"\nCreating new centralized progress log.")
+            
+        # Create a new folder only for option 2 (workload description)
+        if input_type == 'workload_description':
             output_folder = setup_output_folder(input_type, user_input, doc_title)
             print_message(f"\nAll files will be saved to: {output_folder}")
+        else:
+            # For other options, use the source file's directory
+            output_folder = os.path.dirname(user_input) or "."
         
         # Initialize tracking
         all_iterations_data = []
@@ -1843,7 +1861,7 @@ def main():
         max_attempts = 11
         attempt = 1
         if input_type == 'file':
-            output_file = f"{os.path.splitext(os.path.basename(user_input))[0]}_converted.md"
+            output_file = f"{os.path.splitext(user_input)[0]}_converted.md"
         else:
             output_file = f"{generate_title_from_description(user_input)}_ai_generated.md"
 
