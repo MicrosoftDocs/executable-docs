@@ -12,7 +12,9 @@ from openai import AzureOpenAI
 from collections import defaultdict
 import re
 import json
-import yaml  
+import yaml 
+import requests
+from bs4 import BeautifulSoup 
 
 client = AzureOpenAI(
     api_key=os.getenv("AZURE_OPENAI_API_KEY"),
@@ -267,12 +269,45 @@ Check if all prerequisites below are met before writing the Exec Doc. ***If any 
 ## WRITE AND ONLY GIVE THE EXEC DOC USING THE ABOVE RULES FOR THE FOLLOWING WORKLOAD: """
 
 # Add this after imports
-def print_header(text, style="="):
-    """Print formatted header text."""
-    width = 70
-    print(f"\n{style * width}")
-    print(f"{text:^{width}}")
-    print(f"{style * width}\n")
+def print_header(text, style=None):
+    """Print a header with customized boundary symbols based on content importance.
+    
+    Args:
+        text: The header text to display
+        style: Symbol style or None for automatic selection
+    """
+    # Auto-select symbol based on text content if style is None
+    # if style is None:
+    if "WELCOME" in text or "TITLE" in text.upper():
+        style = "="  # Most important - main titles
+    elif "ERROR" in text.upper() or "FAILED" in text.upper():
+        style = "!"  # Errors and failures
+    elif "SUCCESS" in text.upper() or "COMPLETED" in text.upper():
+        style = "+"  # Success messages
+    elif "MENU" in text.upper() or "OPTIONS" in text.upper():
+        style = "-"  # Menu sections
+    elif "STEPS" in text.upper() or "PROCEDURE" in text.upper():
+        style = "~"  # Procedural sections
+    elif "NOTE" in text.upper() or "TIP" in text.upper():
+        style = "*"  # Notes and tips
+    else:
+        style = "·"  # Default for other sections
+    
+    width = min(os.get_terminal_size().columns, 70)
+    border = style * width
+    print(f"\n{border}")
+    
+    # Center the text if it's shorter than the width
+    if len(text) < width - 4:
+        padding = (width - len(text)) // 2
+        print(" " * padding + text)
+    else:
+        # If text is too long, wrap it
+        import textwrap
+        for line in textwrap.wrap(text, width=width-4):
+            print(f"  {line}")
+    
+    print(f"{border}\n")
     
 def print_message(text, prefix="", indent=0, color=None):
     """Print formatted message with optional prefix."""
@@ -872,7 +907,7 @@ def check_existing_log(input_path=None):
     """Check if global log.json exists at the script level.
     
     Args:
-        input_path: Optional path (no longer needed for centralized logging)
+        input_path: Optional path (no longer needed for logging)
     
     Returns:
         Tuple of (exists, log_path, existing_data)
@@ -912,7 +947,7 @@ def calculate_total_execution_time(log_data):
     return total
 
 def update_progress_log(output_folder, new_data, input_type, user_intent=None, existing_data=None):
-    """Update the centralized JSON progress log with the new structure."""
+    """Update the JSON progress log with the new structure."""
     # Get the directory where the script is located
     script_dir = os.path.dirname(os.path.realpath(__file__))
     log_file = os.path.join(script_dir, "log.json")
@@ -1552,6 +1587,78 @@ def get_user_feedback(document_path):
     # Return text feedback if provided
     return feedback if feedback.strip() else None
 
+def get_content_from_url(url):
+    """Extract content from a URL."""
+    try:
+        response = requests.get(url, timeout=10)
+        response.raise_for_status()
+        
+        # Parse HTML content
+        soup = BeautifulSoup(response.text, 'html.parser')
+        
+        # Remove script and style elements
+        for script in soup(["script", "style"]):
+            script.extract()
+            
+        # Get text content
+        text = soup.get_text(separator='\n', strip=True)
+        
+        # Clean up text
+        lines = (line.strip() for line in text.splitlines())
+        chunks = (phrase.strip() for line in lines for phrase in line.split("  "))
+        text = '\n'.join(chunk for chunk in chunks if chunk)
+        
+        return text
+    except Exception as e:
+        print_message(f"Error fetching content from URL {url}: {e}", color="red")
+        return f"[Failed to fetch content from {url}]"
+
+def get_content_from_file(file_path):
+    """Extract content from a local file."""
+    try:
+        with open(file_path, 'r', encoding='utf-8') as file:
+            return file.read()
+    except Exception as e:
+        print_message(f"Error reading file {file_path}: {e}", color="red")
+        return f"[Failed to read file {file_path}]"
+
+def collect_data_sources():
+    """Collect data sources from the user."""
+    print_message("\nWould you like to add reference data sources for documentation generation? (y/n): ")
+    choice = input().lower().strip()
+    
+    if choice != 'y':
+        return ""
+    
+    sources = []
+    print_message("\nEnter data sources (URLs or local file paths) one per line.")
+    print_message("When finished, enter a blank line:")
+    
+    while True:
+        source = input().strip()
+        if not source:
+            break
+            
+        # Detect if it's a URL or file path
+        if source.startswith(('http://', 'https://')):
+            print_message(f"\nFetching content from URL: {source}...\n", prefix="🔗 ")
+            content = get_content_from_url(source)
+            sources.append(f"--- Content from URL: {source} ---\n{content}\n")
+        else:
+            if os.path.exists(source):
+                print_message(f"\nReading file: {source}...\n", prefix="📄 ")
+                content = get_content_from_file(source)
+                sources.append(f"\n--- Content from file: {source} ---\n{content}\n")
+            else:
+                print_message(f"File not found: {source}", color="red")
+    
+    if sources:
+        print_message(f"\nCollected content from {len(sources)} source(s).", prefix="✓ ")
+        return "\n\n".join(sources)
+    else:
+        print_message("\nNo valid sources provided.", color="yellow")
+        return ""
+    
 # Replace the menu display in main() function
 def main():
     while True:
@@ -1595,7 +1702,19 @@ def main():
             if not user_input:
                 print_message("\nInvalid input. Please provide a workload description.")
                 continue
-
+            
+            workload_description = user_input.strip()
+            
+            # Ask for additional data sources
+            reference_data = collect_data_sources()
+            
+            # Add reference data to the workload description if available
+            if reference_data:
+                print_message("\nReference data will be incorporated into document generation.", prefix="📚 ")
+                user_input = f"{workload_description}\n\nREFERENCE DATA:\n{reference_data}"
+            else:
+                user_input = workload_description
+                
             # Add new option for interactive mode
             interactive_mode = input("\nEnable interactive mode (you will be prompted for feedback after each step)? (y/n, default: n): ").lower() == 'y'
 
@@ -1618,9 +1737,9 @@ def main():
             log_exists, log_path, existing_data = check_existing_log()
                     
             if log_exists:
-                print_message(f"\nFound existing centralized progress log. Will append results.")
+                print_message(f"\nFound existing progress log. Will append results.")
             else:
-                print_message(f"\nCreating new centralized progress log.")
+                print_message(f"\nCreating new progress log.")
                 
             # Create a new folder for outputs
             output_folder = os.path.dirname(user_input) or "."
@@ -1673,9 +1792,9 @@ def main():
             log_exists, log_path, existing_data = check_existing_log()
             
             if log_exists:
-                print_message(f"\nFound existing centralized progress log. Will append results.")
+                print_message(f"\nFound existing progress log. Will append results.")
             else:
-                print_message(f"\nCreating new centralized progress log.")
+                print_message(f"\nCreating new progress log.")
             
             # Create output folder
             doc_title = f"Documentation_for_{os.path.basename(user_input)}"
@@ -1727,9 +1846,9 @@ def main():
             log_exists, log_path, existing_data = check_existing_log()
                     
             if log_exists:
-                print_message(f"\nFound existing centralized progress log. Will append results.")
+                print_message(f"\nFound existing progress log. Will append results.")
             else:
-                print_message(f"\nCreating new centralized progress log.")
+                print_message(f"\nCreating new progress log.")
                 
             # Create a new folder for outputs
             output_folder = os.path.dirname(user_input) or "."
@@ -1784,9 +1903,9 @@ def main():
             log_exists, log_path, existing_data = check_existing_log()
                     
             if log_exists:
-                print_message(f"\nFound existing centralized progress log. Will append results.")
+                print_message(f"\nFound existing progress log. Will append results.")
             else:
-                print_message(f"\nCreating new centralized progress log.")
+                print_message(f"\nCreating new progress log.")
                 
             # Create a new folder for outputs
             output_folder = os.path.dirname(user_input) or "."
@@ -1841,9 +1960,9 @@ def main():
         log_exists, log_path, existing_data = check_existing_log()
                 
         if log_exists:
-            print_message(f"\nFound existing centralized progress log. Will append results.")
+            print_message(f"\nFound existing progress log. Will append results.")
         else:
-            print_message(f"\nCreating new centralized progress log.")
+            print_message(f"\nCreating new progress log.")
             
         # Create a new folder only for option 2 (workload description)
         if input_type == 'workload_description':
