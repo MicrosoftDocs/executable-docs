@@ -1996,7 +1996,7 @@ def main():
             iteration_errors = []
             made_dependency_change = False
             if attempt == 1:
-                print_header(f"Attempt {attempt}: Generating Exec Doc...", "-")
+                print_header(f"Attempt {attempt}: Generating Exec Doc", "-")
                 response = client.chat.completions.create(
                     model=deployment_name,
                     messages=[
@@ -2018,7 +2018,7 @@ def main():
                     if dependency_files:
                         transform_document_for_dependencies(output_file, dependency_files)
             else:
-                print_header(f"Attempt {attempt}: Generating corrections based on error...", "-")
+                print_header(f"Attempt {attempt}: Fixing Exec Doc", "-")
                 
                 # Analyze if the error is in the main doc or in dependency files
                 error_analysis = analyze_error(errors_text, dependency_files)
@@ -2054,7 +2054,7 @@ def main():
 
             remove_backticks_from_file(output_file)
 
-            print_header(f"Running Innovation Engine tests...", "-")
+            print_header(f"Running Innovation Engine tests", "-")
 
             try:
                 result = subprocess.run(["ie", "test", output_file], capture_output=True, text=True, timeout=660)
@@ -2166,8 +2166,7 @@ def main():
                     additional_instruction = ""
                 
                 print_message(f"\nError: {error_log.strip()}")
-                print_message(f"\n{'!'*40}\nApplying an error troubleshooting strategy...\n{'!'*40}")
-
+                
                 # Update the iteration file
                 iteration_file = os.path.join(output_folder, f"attempt_{attempt}_failure.md")
                 with open(iteration_file, "w") as f:
