@@ -1624,33 +1624,36 @@ def get_content_from_file(file_path):
 
 def collect_data_sources():
     """Collect data sources from the user."""
-    print_message("\nWould you like to add reference data sources for documentation generation? (y/n): ")
-    choice = input().lower().strip()
+    
+    choice = input("\nWould you like to add data sources the AI should use to generate the doc? (y/n): ").lower().strip()
     
     if choice != 'y':
         return ""
     
     sources = []
-    print_message("\nEnter data sources (URLs or local file paths) one per line.")
-    print_message("When finished, enter a blank line:")
-    
+    print_message("\nEnter data sources (URLs or local file paths) one per line. When finished, enter a blank line:")
+
+    line_num = 1
     while True:
-        source = input().strip()
+        source = input(f"\n{line_num}. ").strip()        
         if not source:
             break
             
         # Detect if it's a URL or file path
         if source.startswith(('http://', 'https://')):
-            print_message(f"\nFetching content from URL: {source}...\n", prefix="🔗 ")
+            print_message("")
+            print_message(f"Fetching content from URL: {source}...", prefix="🔗 ")
             content = get_content_from_url(source)
             sources.append(f"--- Content from URL: {source} ---\n{content}\n")
         else:
             if os.path.exists(source):
-                print_message(f"\nReading file: {source}...\n", prefix="📄 ")
+                print_message(f"Reading file: {source}...", prefix="📄 ")
                 content = get_content_from_file(source)
                 sources.append(f"\n--- Content from file: {source} ---\n{content}\n")
             else:
                 print_message(f"File not found: {source}", color="red")
+        
+        line_num += 1
     
     if sources:
         print_message(f"\nCollected content from {len(sources)} source(s).", prefix="✓ ")
@@ -1688,7 +1691,7 @@ def main():
                 continue
 
             # Add new option for interactive mode
-            interactive_mode = input("\nEnable interactive mode (you will be prompted for feedback after each step)? (y/n, default: n): ").lower() == 'y'
+            interactive_mode = input("\nEnable interactive mode (you will be prompted for feedback after each step)? (y/n): ").lower() == 'y'
                 
             input_type = 'file'
             with open(user_input, "r") as f:
@@ -1716,7 +1719,7 @@ def main():
                 user_input = workload_description
                 
             # Add new option for interactive mode
-            interactive_mode = input("\nEnable interactive mode (you will be prompted for feedback after each step)? (y/n, default: n): ").lower() == 'y'
+            interactive_mode = input("\nEnable interactive mode (you will be prompted for feedback after each step)? (y/n): ").lower() == 'y'
 
             input_type = 'workload_description'
             input_content = user_input
