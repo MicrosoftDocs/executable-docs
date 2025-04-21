@@ -16,6 +16,10 @@ RUN apt-get update && apt-get install -y \
     apt-transport-https \
     gnupg \
     lsb-release \
+    krb5-user \
+    libkrb5-dev \
+    gcc \
+    python3-dev \
     && rm -rf /var/lib/apt/lists/*
 
 # Install Azure CLI directly using Microsoft script (more reliable)

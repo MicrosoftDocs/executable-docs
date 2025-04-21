@@ -15,6 +15,7 @@ import json
 import yaml 
 import requests
 from bs4 import BeautifulSoup 
+import difflib
 
 client = AzureOpenAI(
     api_key=os.getenv("AZURE_OPENAI_API_KEY"),
@@ -22,7 +23,7 @@ client = AzureOpenAI(
     azure_endpoint=os.getenv("AZURE_OPENAI_ENDPOINT")
 )
 
-deployment_name = 'o3-mini'
+deployment_name = 'gpt-4.1'
 
 REQUIRED_PACKAGES = [
     'openai',
@@ -131,7 +132,7 @@ Check if all prerequisites below are met before writing the Exec Doc. ***If any 
     ---
     ```
 
-9. Ensure the environment variable names are not placeholders i.e. <> but have a certain generic, useful name. For the location/region parameter, default to "WestUS2" or "centralindia". Additionally, appropriately add descriptions below every section explaining what is happening in that section in crisp but necessary detail so that the user can learn as they go.
+9. Ensure the environment variable names are not placeholders i.e. <> but have a certain generic, useful name. For the location/region parameter, default to "eastus2" or "canadacentral" or "centralindia". Additionally, appropriately add descriptions below every section explaining what is happening in that section in crisp but necessary detail so that the user can learn as they go.
 
 10. Don't start and end your answer with ``` backticks!!! Don't add backticks to the metadata at the top!!!. 
 
@@ -148,27 +149,28 @@ Check if all prerequisites below are met before writing the Exec Doc. ***If any 
     We are at the start of the Exec Doc and are declaring environment variables that will be used throughout the doc. 
 
     ```bash
-    export REGION="eastus"
+    export REGION="canadacentral"
     ```
     
     **Test Section**
 
-    We are now in the middle of the Exec Doc and we will create a resource group.
+    We are now in the middle of the Exec Doc and we will create an AKS cluster.
 
     ```bash
-    az group create --name "MyResourceGroup" --location $REGION
+    az aks create --resource-group MyResourceGroup --name MyAKSCluster --location $REGION
     ```
     
     ### Example Exec Doc 2 - Environment Variables declared as used** 
     
     **Test Section**
 
-    We are in the middle of the Exec Doc and we will create a resource group. 
+    We are in the middle of the Exec Doc and we will create an AKS cluster.
 
     ```bash  
-    export REGION="eastus"
-    export MY_RESOURCE_GROUP_NAME="MyResourceGroup"
-    az group create --name $MY_RESOURCE_GROUP_NAME --location $REGION
+    export REGION="candacentral"
+    export RESOURCE_GROUP_NAME="MyResourceGroup"
+    export AKS_CLUSTER_NAME="MyAKSCluster"
+    az aks create --resource-group $RESOURCE_GROUP_NAME --name $AKS_CLUSTER_NAME --location $REGION
     ``` 
     
     >**Note:** If you are converting an existing Azure Doc to an Exec Doc and the Azure Doc does not environment variables at all, it is an Exec Doc writing best practice to add them. Additionally, if the Azure Doc has environment variables but they are not declared as they are being used, it is recommended to update them to follow this best practice. 
@@ -210,7 +212,7 @@ Check if all prerequisites below are met before writing the Exec Doc. ***If any 
 
             <!-- expected_similarity=0.3 --> 
 
-            ```JSON 
+            ```output 
             {{
                 "id": "/subscriptions/abcabc-defdef-ghighi-jkljkl/resourceGroups/MyResourceGroup123",
                 "location": "eastus",
@@ -243,7 +245,7 @@ Check if all prerequisites below are met before writing the Exec Doc. ***If any 
 
         <!-- expected_similarity=0.3 --> 
 
-        ```JSON 
+        ```output 
         {{ 
             "id": "/subscriptions/xxxxx-xxxxx-xxxxx-xxxxx/resourceGroups/MyResourceGroupxxx",
                 "location": "eastus",
@@ -265,6 +267,14 @@ Check if all prerequisites below are met before writing the Exec Doc. ***If any 
 16. If you are converting an existing Azure Doc to an Exec Doc and if the existing doc contains a "Delete Resources" (or equivalent section) comprising resource/other deletion command(s), remove the code blocks in that section or remove that section entirely 
 
     >**Note:** We remove commands from this section ***only*** in Exec Docs. This is because Innovation Engine executes all relevant command(s) that it encounters, inlcuding deleting the resources. That would be counterproductive to automated deployment of cloud infrastructure
+
+17. If the original document lists a prerequisite resource (such as an AKS cluster, VM, storage account, etc.), you MUST NOT add any new commands to create that resource in the Exec Doc.
+
+    - **Example:** If the doc says "This article assumes you have an existing AKS cluster," do NOT add `az aks create` or any equivalent cluster creation commands. Only include steps for interacting with or managing the existing resource.
+    - This rule applies to any resource type, not just AKS. Always respect explicit prerequisites and never override them by adding creation steps.
+    - If the prerequisite is stated in any form (e.g., "Before you begin, create a resource group"), treat that resource as pre-existing and do not add creation commands for it.
+    - If you are unsure whether a resource should be created, always preserve the prerequisite as stated and avoid introducing creation commands for that resource.
+
 
 ## WRITE AND ONLY GIVE THE EXEC DOC USING THE ABOVE RULES FOR THE FOLLOWING WORKLOAD: """
 
@@ -428,7 +438,7 @@ def redact_pii_from_doc(doc_path):
 
         <!-- expected_similarity=0.3 --> 
 
-        ```JSON 
+        ```output 
         {{ 
             "id": "/subscriptions/xxxxx-xxxxx-xxxxx-xxxxx/resourceGroups/MyResourceGroupxxx",
                 "location": "eastus",
@@ -1357,7 +1367,7 @@ def redact_pii_from_doc_with_path(doc_path, output_file_path=None):
 
         <!-- expected_similarity=0.3 --> 
 
-        ```JSON 
+        ```output 
         {{ 
             "id": "/subscriptions/xxxxx-xxxxx-xxxxx-xxxxx/resourceGroups/MyResourceGroupxxx",
                 "location": "eastus",
@@ -1573,18 +1583,15 @@ def get_user_feedback(document_path):
     with open(document_path, "r") as f:
         current_content = f.read()
     
-    # If the file changed, use that as feedback
     if current_content != original_content:
         print_message("\n✅ Document changes detected and will be incorporated!")
-        
         # Restore original for proper AI processing
         with open(document_path, "w") as f:
             f.write(original_content)
-        
         # Return the edited content as feedback
         return f"I've updated the document. Here is my revised version:\n\n{current_content}"
-    
-    # Return text feedback if provided
+
+    # Always return CLI feedback, even if only text
     return feedback if feedback.strip() else None
 
 def get_content_from_url(url):
@@ -1661,7 +1668,95 @@ def collect_data_sources():
     else:
         print_message("\nNo valid sources provided.", color="yellow")
         return ""
-    
+
+def requires_aks_cluster(doc_path):
+    """
+    Determine if the Exec Doc requires an existing AKS cluster as a prerequisite.
+    If 'az aks create' is present, ask the LLM for clarification.
+    If not present, assume AKS cluster is a prerequisite.
+    """
+    try:
+        with open(doc_path, "r") as f:
+            doc_content = f.read()
+        # Simple string match for 'az aks create' (case-insensitive)
+        if "az aks create" not in doc_content.lower():
+            aks_prompt = f"""
+You are an expert in Azure and Kubernetes documentation. Given the following markdown document, answer with ONLY 'yes' or 'no' (no punctuation, no explanation): Does this document require an existing Azure Kubernetes Service (AKS) cluster as a prerequisite (i.e., does it assume the cluster is already created and available for use, rather than creating it as part of the steps)? Only answer 'yes' or 'no'.
+
+Document:
+---
+{doc_content}
+---
+"""
+            response = client.chat.completions.create(
+                model=deployment_name,
+                messages=[
+                    {"role": "system", "content": "You are an expert in Azure and Kubernetes documentation."},
+                    {"role": "user", "content": aks_prompt}
+                ]
+            )
+            answer = response.choices[0].message.content.strip().lower()
+            print(answer)
+            return answer.startswith("y")
+        else:
+            # If 'az aks create' is present, assume AKS cluster is not a prerequisite
+            return False
+    except Exception:
+        return False
+
+def extract_aks_env_vars(doc_path):
+    """Use LLM to extract AKS-related environment variable names from the Exec Doc."""
+    var_map = {
+        "resource_group": "RESOURCE_GROUP_NAME",
+        "cluster_name": "AKS_CLUSTER_NAME",
+        "region": "REGION"
+    }
+    try:
+        with open(doc_path, "r") as f:
+            doc_content = f.read()
+        aks_var_prompt = """
+You are an expert in Azure and Kubernetes documentation. Given the following markdown document, extract the actual environment variable names used for:
+1. Resource group name
+2. AKS cluster name
+3. Region
+
+Return your answer as a JSON object with the following keys:
+- resource_group
+- cluster_name
+- region
+
+If any variable is not found, use the default values:
+- resource_group: RESOURCE_GROUP_NAME
+- cluster_name: AKS_CLUSTER_NAME
+- region: REGION
+
+ONLY return the JSON object, nothing else.
+
+Document:
+---
+{doc}
+---
+""".format(doc=doc_content[:6000])  # Limit to first 6000 chars for prompt size
+
+        response = client.chat.completions.create(
+            model=deployment_name,
+            messages=[
+                {"role": "system", "content": "You are an expert in Azure and Kubernetes documentation."},
+                {"role": "user", "content": aks_var_prompt}
+            ]
+        )
+        import json
+        answer = response.choices[0].message.content.strip()
+        # Try to parse the JSON from the LLM response
+        var_map_llm = json.loads(answer)
+        # Fallback to defaults if any key is missing
+        for k in var_map:
+            if not var_map_llm.get(k):
+                var_map_llm[k] = var_map[k]
+        return var_map_llm
+    except Exception:
+        return var_map
+
 # Replace the menu display in main() function
 def main():
     while True:
@@ -1982,10 +2077,10 @@ def main():
 
         max_attempts = 11
         attempt = 1
-        if input_type == 'file':
-            output_file = f"{os.path.splitext(user_input)[0]}_converted.md"
-        else:
-            output_file = f"{generate_title_from_description(user_input)}_ai_generated.md"
+        # if input_type == 'file':
+        #     output_file = f"{os.path.splitext(user_input)[0]}_converted.md"
+        # else:
+        #     output_file = f"{generate_title_from_description(user_input)}_ai_generated.md"
 
         start_time = time.time()
         errors_encountered = []
@@ -1998,6 +2093,7 @@ def main():
             iteration_start_time = time.time()
             iteration_errors = []
             made_dependency_change = False
+            output_file = os.path.join(output_folder, f"attempt_{attempt}.md")
             if attempt == 1:
                 print_header(f"Attempt {attempt}: Generating Exec Doc", "-")
                 response = client.chat.completions.create(
@@ -2057,10 +2153,21 @@ def main():
 
             remove_backticks_from_file(output_file)
 
-            print_header(f"Running Innovation Engine tests", "-")
-
+            aks_prereq = requires_aks_cluster(output_file)
+            if aks_prereq:
+                print_header(f"Running Innovation Engine using an existing AKS cluster since its a prerequisite to run this doc", "-")
+                var_names = extract_aks_env_vars(output_file)
+                ie_cmd = [
+                    "ie", "execute", output_file,
+                    "--var", f"{var_names['resource_group']}=myAKSResourceGroup0de552",
+                    "--var", f"{var_names['cluster_name']}=myAKSCluster0de552",
+                    "--var", f"{var_names['region']}=canadacentral"
+                ]
+            else:
+                print_header(f"Running Innovation Engine tests", "-")
+                ie_cmd = ["ie", "test", output_file]
             try:
-                result = subprocess.run(["ie", "test", output_file], capture_output=True, text=True, timeout=660)
+                result = subprocess.run(ie_cmd, capture_output=True, text=True, timeout=660)
             except subprocess.TimeoutExpired:
                 print_message("\nThe 'ie test' command timed out after 11 minutes.")
                 errors_encountered.append("The 'ie test' command timed out after 11 minutes.")
@@ -2073,6 +2180,8 @@ def main():
 
                 # Update the iteration file
                 iteration_file = os.path.join(output_folder, f"attempt_{attempt}_success.md")
+                os.rename(output_file, iteration_file)          # ⬅️ move, don't duplicate
+                output_file = iteration_file   
                 with open(iteration_file, "w") as f:
                     f.write(output_file_content)
                     
@@ -2116,7 +2225,6 @@ def main():
                 remove_backticks_from_file(output_file)
                 break
             else:
-                print_message(f"\n{'!'*40}\nTests failed. Analyzing errors...\n{'!'*40}")
                 error_log = get_last_error_log()
                 errors_encountered.append(error_log.strip())  # Keep for overall tracking
                 iteration_errors.append(error_log.strip())    # For this iteration only
@@ -2172,6 +2280,8 @@ def main():
                 
                 # Update the iteration file
                 iteration_file = os.path.join(output_folder, f"attempt_{attempt}_failure.md")
+                os.rename(output_file, iteration_file)          # ⬅️ move, don't duplicate
+                output_file = iteration_file
                 with open(iteration_file, "w") as f:
                     f.write(output_file_content)
                 
@@ -2187,34 +2297,58 @@ def main():
                 )
                 all_iterations_data.append(iteration_data)
 
-                # Get user feedback if in interactive mode
                 if 'interactive_mode' in locals() and interactive_mode:
                     feedback = get_user_feedback(iteration_file)
                     if feedback:
                         print_message("\nIncorporating your feedback for the next attempt...")
-                        
-                        # Use AI to incorporate feedback
+
+                        # If the user edited the doc, feedback will start with "I've updated the document..."
+                        if feedback.startswith("I've updated the document. Here is my revised version:"):
+                            # Extract the revised content
+                            revised_content = feedback.split("Here is my revised version:", 1)[1].strip()
+                            # Compute the diff between previous and revised content
+                            diff = '\n'.join(difflib.unified_diff(
+                                output_file_content.splitlines(),
+                                revised_content.splitlines(),
+                                fromfile='before.md',
+                                tofile='after.md',
+                                lineterm=''
+                            ))
+                            # Use the diff as context for the LLM
+                            feedback_prompt = (
+                                "The user has directly edited the document. "
+                                "Here is the unified diff between the previous and revised version:\n\n"
+                                f"{diff}\n\n"
+                                "Update the document to incorporate these changes, ensuring all Exec Doc requirements and formatting rules are still met. "
+                                "ONLY GIVE THE UPDATED DOC, NOTHING ELSE."
+                            )
+                            # Use the revised content as the new output_file_content for next run
+                            output_file_content = revised_content
+                        else:
+                            # CLI feedback: pass as explicit instruction
+                            feedback_prompt = (
+                                "Please incorporate the following feedback into the document while maintaining all Exec Doc requirements and formatting rules:\n\n"
+                                f"{feedback}\n\n"
+                                "ONLY GIVE THE UPDATED DOC, NOTHING ELSE."
+                            )
+
+                        # Call the LLM with feedback context
                         response = client.chat.completions.create(
                             model=deployment_name,
                             messages=[
                                 {"role": "system", "content": system_prompt},
                                 {"role": "user", "content": input_content},
                                 {"role": "assistant", "content": output_file_content},
-                                {"role": "user", "content": f"Please incorporate the following feedback into the document while maintaining all Exec Doc requirements and formatting rules:\n\n{feedback}"}
+                                {"role": "user", "content": feedback_prompt}
                             ]
                         )
-                        
-                        # Update output content with user feedback incorporated
                         output_file_content = response.choices[0].message.content
-                        
+
                         # Save the updated content back to the file
                         with open(iteration_file, "w") as f:
                             f.write(output_file_content)
-                            
+
                         print_message("\nFeedback incorporated. Running tests with your changes...")
-                        
-                        # Track that we received user feedback in this iteration
-                        iteration_feedback = feedback
                 else:
                     iteration_feedback = ""
 
@@ -2232,10 +2366,10 @@ def main():
         if success:
             # Don't create a duplicate file if attempt was successful - just copy/rename the last one
             last_success_file = os.path.join(output_folder, f"attempt_{attempt}_success.md")
-            final_file = os.path.join(output_folder, f"FINAL_OUTPUT_success.md")
-            shutil.copy2(last_success_file, final_file)
+            # final_file = os.path.join(output_folder, f"FINAL_OUTPUT_success.md")
+            # shutil.copy2(last_success_file, final_file)
             # Update output_file to point to final file
-            output_file = final_file
+            output_file = last_success_file
         else:
             # For failures, create a new final file
             final_file = os.path.join(output_folder, f"FINAL_OUTPUT_failure_final.md")
@@ -2244,8 +2378,8 @@ def main():
             # Update output_file to point to final file
             output_file = final_file
 
-        # Update output_file variable to point to the final file
-        output_file = final_file
+        # # Update output_file variable to point to the final file
+        # output_file = final_file
 
         if attempt > max_attempts:
             print_message(f"\n{'#'*40}\nMaximum attempts reached without passing all tests.\n{'#'*40}")

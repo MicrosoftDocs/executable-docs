@@ -62,7 +62,7 @@ ADA (AI Documentation Assistant) helps you create, convert, and manage Executabl
     - After creating your Azure OpenAI resource, navigate to the **Overview** page of your resource.
     - Click on "Go to Azure AI Studio" to open the Azure AI Studio interface.
     - In Azure AI Studio, select "Deployments" from the left-hand menu.
-    - Click "Deploy model" and choose `gpt-4o` from the Azure OpenAI collection.
+    - Click "Deploy model" and choose `o4-mini` from the Azure OpenAI collection.
     - Provide a deployment name and configure any additional settings as needed.
     - Click "Deploy" to deploy the model.
 
@@ -98,6 +98,11 @@ ADA (AI Documentation Assistant) helps you create, convert, and manage Executabl
 
     For a visual walkthrough of creating an Azure OpenAI resource and deploying a model, you might find the following video helpful:
 
+4. Run ADA:
+   ```bash
+   python ada.py
+   ```
+
 ### Option 2: Docker Installation
 
 1. Build the Docker image:
@@ -116,18 +121,13 @@ ADA (AI Documentation Assistant) helps you create, convert, and manage Executabl
      ada-tool
    ```
 
-## Usage
-
-1. Run ADA:
+3. Run ADA:
    ```bash
-   # Local installation
-   python ada.py
-   
-   # Docker
    ./run-ada.sh
    ```
+## Usage
 
-2. Select from the available options:
+1. Select from the available options:
    - Option 1: Convert an existing markdown file to an Exec Doc
    - Option 2: Generate a new Exec Doc from a workload description
    - Option 3: Create descriptions for your shell script
@@ -135,7 +135,7 @@ ADA (AI Documentation Assistant) helps you create, convert, and manage Executabl
    - Option 5: Perform security analysis on your Doc
    - Option 6: Perform SEO optimization on your Doc
 
-3. Follow the prompts for each option:
+2. Follow the prompts for each option:
    - For file conversion: provide the path to your source file
    - For generating new docs: describe the workload and optionally add reference data
    - For script documentation: provide the path to your script and context
@@ -156,43 +156,6 @@ When generating a new Exec Doc, you can incorporate content from:
 - Local files (content will be read directly)
 
 These sources provide additional context for more comprehensive document generation.
-
-## Docker Usage
-
-The included Dockerfile provides a complete environment with all dependencies:
-- Python 3.13
-- Azure CLI
-- Innovation Engine
-- All required Python packages
-
-To use ADA with Docker:
-
-1. Create a run-ada.sh script containing:
-   ```bash
-   #!/bin/bash
-   
-   # Build the Docker image
-   docker build -t ada-tool .
-   
-   # Run the container with Azure OpenAI credentials and Azure auth
-   docker run -it --rm \
-     -e AZURE_OPENAI_API_KEY="${AZURE_OPENAI_API_KEY}" \
-     -e AZURE_OPENAI_ENDPOINT="${AZURE_OPENAI_ENDPOINT}" \
-     -v "$(pwd):/app/workspace" \
-     -v "$HOME/.azure:/root/.azure" \
-     -w /app/workspace \
-     ada-tool
-   ```
-
-2. Make it executable:
-   ```bash
-   chmod +x run-ada.sh
-   ```
-
-3. Run ADA:
-   ```bash
-   ./run-ada.sh
-   ```
 
 ## Advanced Features
 
