@@ -5,4 +5,8 @@ requests>=2.31.0
 requests-kerberos>=0.12.0
 requests-ntlm>=1.1.0
 requests-toolbelt>=1.0.0
+<<<<<<< HEAD
 PyYAML>=5.4.1
+=======
+PyYAML>=5.4.1
+>>>>>>> 3c6f8812b0e40832d0a2fca45ce1d0a66d03e41a

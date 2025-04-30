@@ -62,7 +62,11 @@ ADA (AI Documentation Assistant) helps you create, convert, and manage Executabl
     - After creating your Azure OpenAI resource, navigate to the **Overview** page of your resource.
     - Click on "Go to Azure AI Studio" to open the Azure AI Studio interface.
     - In Azure AI Studio, select "Deployments" from the left-hand menu.
+<<<<<<< HEAD
     - Click "Deploy model" and choose `o4-mini` from the Azure OpenAI collection.
+=======
+    - Click "Deploy model" and choose `gpt-4.1` from the Azure OpenAI collection.
+>>>>>>> 3c6f8812b0e40832d0a2fca45ce1d0a66d03e41a
     - Provide a deployment name and configure any additional settings as needed.
     - Click "Deploy" to deploy the model.
 
@@ -192,4 +196,8 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 ## Contributing
 
+<<<<<<< HEAD
 Please read CONTRIBUTING.md for details on our code of conduct and the process for submitting pull requests.
+=======
+Please read CONTRIBUTING.md for details on our code of conduct and the process for submitting pull requests.
+>>>>>>> 3c6f8812b0e40832d0a2fca45ce1d0a66d03e41a
