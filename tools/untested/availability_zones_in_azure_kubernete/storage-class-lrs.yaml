@@ -1,0 +1,6 @@
+kind: StorageClass
+metadata:
+  name: azuredisk-csi-standard-lrs
+parameters:
+  skuname: StandardSSD_LRS
+provisioner: disk.csi.azure.com

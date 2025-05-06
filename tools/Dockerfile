@@ -44,8 +44,4 @@ ENV AZURE_OPENAI_ENDPOINT="your_endpoint_here"
 ENV PATH="/root/.local/bin:/usr/local/bin:/usr/bin:/bin:${PATH}"
 
 # Set the entrypoint
-<<<<<<< HEAD
 ENTRYPOINT ["python", "ada.py"]
-=======
-ENTRYPOINT ["python", "ada.py"]
->>>>>>> 3c6f8812b0e40832d0a2fca45ce1d0a66d03e41a

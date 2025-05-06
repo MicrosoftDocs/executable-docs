@@ -1577,22 +1577,28 @@ def get_user_feedback(document_path):
         original_content = f.read()
     
     # Get text feedback if any
-    feedback = input("\n>> Your feedback (or press Enter to keep going): ")
+    cli_feedback = input("\n>> Your feedback (or press Enter to keep going): ")
     
     # Check if file was modified
     with open(document_path, "r") as f:
         current_content = f.read()
+    
+    # Return a dictionary with both types of feedback
+    result = {"cli_feedback": cli_feedback.strip() if cli_feedback.strip() else None}
     
     if current_content != original_content:
         print_message("\n✅ Document changes detected and will be incorporated!")
         # Restore original for proper AI processing
         with open(document_path, "w") as f:
             f.write(original_content)
-        # Return the edited content as feedback
-        return f"I've updated the document. Here is my revised version:\n\n{current_content}"
-
-    # Always return CLI feedback, even if only text
-    return feedback if feedback.strip() else None
+        # Include the edited content in the result
+        result["doc_edit"] = current_content
+    
+    # Return both types of feedback or None if neither provided
+    if result["cli_feedback"] or "doc_edit" in result:
+        return result
+    else:
+        return None
 
 def get_content_from_url(url):
     """Extract content from a URL."""
@@ -1696,7 +1702,6 @@ Document:
                 ]
             )
             answer = response.choices[0].message.content.strip().lower()
-            print(answer)
             return answer.startswith("y")
         else:
             # If 'az aks create' is present, assume AKS cluster is not a prerequisite
@@ -2296,17 +2301,34 @@ def main():
                     False
                 )
                 all_iterations_data.append(iteration_data)
-
+                
                 if 'interactive_mode' in locals() and interactive_mode:
                     feedback = get_user_feedback(iteration_file)
                     if feedback:
                         print_message("\nIncorporating your feedback for the next attempt...")
+                        
+                        doc_edited = "doc_edit" in feedback
+                        cli_feedback_provided = feedback.get("cli_feedback")
+                        
+                        # Build the feedback prompt based on what the user provided
+                        if doc_edited and cli_feedback_provided:
+                            # User provided both types of feedback
+                            revised_content = feedback["doc_edit"]
+                            cli_text = feedback["cli_feedback"]
+                            
+                            # Special handling for code block type changes
+                            original_blocks = re.findall(r'```(\w+)', output_file_content)
+                            revised_blocks = re.findall(r'```(\w+)', revised_content)
+                            
+                            # If user changed code block types, make this very explicit in the prompt
+                            block_changes = ""
+                            if original_blocks != revised_blocks:
+                                block_changes = "\n\nIMPORTANT: The user has changed code block types which MUST be preserved exactly as edited:\n"
+                                for i in range(min(len(original_blocks), len(revised_blocks))):
+                                    if original_blocks[i] != revised_blocks[i]:
+                                        block_changes += f"- Changed '```{original_blocks[i]}' to '```{revised_blocks[i]}'\n"
 
-                        # If the user edited the doc, feedback will start with "I've updated the document..."
-                        if feedback.startswith("I've updated the document. Here is my revised version:"):
-                            # Extract the revised content
-                            revised_content = feedback.split("Here is my revised version:", 1)[1].strip()
-                            # Compute the diff between previous and revised content
+                            # Compute the diff for context
                             diff = '\n'.join(difflib.unified_diff(
                                 output_file_content.splitlines(),
                                 revised_content.splitlines(),
@@ -2314,24 +2336,72 @@ def main():
                                 tofile='after.md',
                                 lineterm=''
                             ))
-                            # Use the diff as context for the LLM
+                            
+                            # Combine both types of feedback in the prompt
+                            feedback_prompt = (
+                                "The user has provided two types of feedback:\n\n"
+                                "1. DOCUMENT EDITS: They've directly edited the document. Here is the unified diff between the previous and revised version:\n\n"
+                                f"{diff}\n\n"
+                                f"{block_changes}"
+                                "2. ADDITIONAL COMMENTS: They've also provided these additional instructions:"
+                                f"\n\n{cli_text}\n\n"
+                                "Incorporate BOTH the document edits AND the additional instructions into the document "
+                                "STRICTLY follow these user edits - preserve ALL formatting changes EXACTLY as made by the user, "
+                                "especially changes to code block types (like bash→shell). "
+                                "DO NOT revert any user edits when creating the updated document. "
+                                "Ensure all Exec Doc requirements and formatting rules are still met while maintaining the user's exact changes. "
+                                "ONLY GIVE THE UPDATED DOC, NOTHING ELSE."
+                            )
+                            
+                            # Start with the user's edited version as a base
+                            output_file_content = revised_content
+                            
+                        elif doc_edited:
+                            # Only document edits
+                            revised_content = feedback["doc_edit"]
+
+                            # Special handling for code block type changes
+                            original_blocks = re.findall(r'```(\w+)', output_file_content)
+                            revised_blocks = re.findall(r'```(\w+)', revised_content)
+                            
+                            # If user changed code block types, make this very explicit in the prompt
+                            block_changes = ""
+                            if original_blocks != revised_blocks:
+                                block_changes = "\n\nIMPORTANT: The user has changed code block types which MUST be preserved exactly as edited:\n"
+                                for i in range(min(len(original_blocks), len(revised_blocks))):
+                                    if original_blocks[i] != revised_blocks[i]:
+                                        block_changes += f"- Changed '```{original_blocks[i]}' to '```{revised_blocks[i]}'\n"
+                            
+                            
+                            diff = '\n'.join(difflib.unified_diff(
+                                output_file_content.splitlines(),
+                                revised_content.splitlines(),
+                                fromfile='before.md',
+                                tofile='after.md',
+                                lineterm=''
+                            ))
                             feedback_prompt = (
                                 "The user has directly edited the document. "
                                 "Here is the unified diff between the previous and revised version:\n\n"
                                 f"{diff}\n\n"
-                                "Update the document to incorporate these changes, ensuring all Exec Doc requirements and formatting rules are still met. "
+                                f"{block_changes}"
+                                "STRICTLY follow these user edits - preserve ALL formatting changes EXACTLY as made by the user, "
+                                "especially changes to code block types (like bash→shell). "
+                                "DO NOT revert any user edits when creating the updated document. "
+                                "Ensure all Exec Doc requirements and formatting rules are still met while maintaining the user's exact changes. "
                                 "ONLY GIVE THE UPDATED DOC, NOTHING ELSE."
                             )
-                            # Use the revised content as the new output_file_content for next run
                             output_file_content = revised_content
-                        else:
-                            # CLI feedback: pass as explicit instruction
+                            
+                        elif cli_feedback_provided:
+                            # Only CLI feedback
+                            cli_text = feedback["cli_feedback"]
                             feedback_prompt = (
                                 "Please incorporate the following feedback into the document while maintaining all Exec Doc requirements and formatting rules:\n\n"
-                                f"{feedback}\n\n"
+                                f"{cli_text}\n\n"
                                 "ONLY GIVE THE UPDATED DOC, NOTHING ELSE."
                             )
-
+                        
                         # Call the LLM with feedback context
                         response = client.chat.completions.create(
                             model=deployment_name,
