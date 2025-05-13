@@ -521,11 +521,10 @@ For the first PR, if either the original doc author or someone from skilling is 
 ## Contact Information for Exec Docs
 
 - PM for Exec Docs E2E Experience: [Naman Parikh](mailto:namanparikh@microsoft.com)
-- PM for Exec Docs Portal Experience: [Varun Desai](mailto:varun.desai@microsoft.com)
-- PM for Innovation Engine: [Mitchell Bifeld](mailto:mbifeld@microsoft.com)
-- Skilling & Content Developer for Exec Docs: [Carol Smith](mailto:carols@microsoft.com)
-- Devs for Exec Docs: [PJ Singh](mailto:pjsingh@microsoft.com), [Aria Amini](mailto:ariaamini@microsoft.com), [Abhishek Bhombore](mailto:abhishek.bhombore@microsoft.com)
-- Devs for Innovation Engine: [Vincenzo Marcella](mailto:vmarcella@microsoft.com), [Rahul Gupta](mailto:guptar@microsoft.com)
+- PM for Exec Docs Portal Experience: [Matt DePietro](mattdepietro@microsoft.com)
+- PM for Innovation Engine: [Ross Gardler](mailto:rogardle@microsoft.com)
+- MS Learn Point Person: [Carol Smith](mailto:carols@microsoft.com), [Rayo Flores](mailto:rayoflores@microsoft.com), [Chase Dovey](mailto:doveychase@microsoft.com),  
+- Devs for Exec Docs: [PJ Singh](mailto:pjsingh@microsoft.com), [Aria Amini](mailto:ariaamini@microsoft.com)
 
 ## Trademarks
 This project may contain trademarks or logos for projects, products, or 
