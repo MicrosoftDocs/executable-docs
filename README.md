@@ -26,17 +26,10 @@ I'll update the highlighted section with the clarified information about command
 Not all documentation is suitable for conversion to Exec Docs. Use these filters to determine if a document can be effectively converted:
 
 1. **Command Execution Limitations**
-<<<<<<< HEAD
-   - **Supported:**
-     - Any command that can run in a BASH terminal (e.g. azurecli, azure-cli-interactive, azurecli-interactive commands)
-
-   - **Not supported:**
-=======
    - **Supported scenarios:**
      - Any command that can run in a BASH terminal (e.g. azurecli, azure-cli-interactive, azurecli-interactive commands)
 
    - **Not supported currently:**
->>>>>>> 33a7dbee83edb5d5749d591f55071a48c2be6547
      - PowerShell scripts
      - GUI-based instructions
      - Commands requiring `sudo` privileges
@@ -364,15 +357,22 @@ Check if all prerequisites below are met before writing the Exec Doc. ***If any 
 
         **Example:**
 
-        **Title:** _Making your Azure Doc executable!_
+        **Title:** Making your Azure Doc executable!
 
-        _**Details:** Hello [author_name], \
-        \
-        I am submitting this PR to make the doc you have authored executable! Essentially, without any major content changes, this will make your doc accesssible, accurate, and actionable! And what is "this": Exec Docs (short for Executable Documentation) \
-        \
-        Exec Docs are documents that automate the deployment/maintenace of Azure resources using Azure CLI commands. This is a new initiative undertaken by the Azure Core Linux, Skilling, and Portal teams to simplify the evaluation and adoption of services for Linux on Azure customers. [Learn More Here!](https://github.com/MicrosoftDocs/executable-docs/blob/main/README.md)\
-        \
-        Once you get acquainted with Exec Docs, I would love to get your review on this doc. If you have any questions feel free to contact me or [Naman Parikh](mailto:namanparikh@microsoft.com)._
+        **Details:**
+      
+      Hello [author_name],
+      
+      This PR will increase the value of the doc to customers, it turns the doc into an Executable Document! An Executable Document improves the customer experience by making the content actionable in portal as well as ensuring that it works, as documented, using automated testing. 
+
+      Exec Docs are:
+      - Fully integrated into Portal where the user can leverage them in hands on learning experiences OR low effort "click to deploy" scenarios
+      - Increased reusability through adoption of consistent best practices and exportable scripts
+      - Higher quality as a result of automated testing 
+      
+      We have conducted many experiments and have consistent results that show higher CSAT from customers working with Exec Docs. This in turn results in a higher conversion rate from experimentation to paid customer. [Learn More Here!](https://microsoft-my.sharepoint.com/:p:/p/namanparikh/EdxlQiyhGDhFmGcAUE9fejYB3r6ZzgLqWO3jZPK7fcnKgQ?e=CDWOet) 
+      
+      Once you get acquainted with Exec Docs, I would love to get your review on this doc. If you have any questions feel free to contact me or [Naman Parikh](mailto:namanparikh@microsoft.com).
 
     - Assign the original Exec Doc author (if it is not you) as a reviewer to the PR. In most cases, this assignment should happen automatically and should include a reviewer from the Skilling team.
     - Add the comment ***#sign-off***  in the PR comments section once the Exec Doc is successfully reviewed. This will trigger the automated pipeline to merge the PR into the public repo.
