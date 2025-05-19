@@ -4,10 +4,8 @@ description: Learn how to view troubleshooting information in the kubelet logs f
 ms.topic: how-to
 ms.subservice: aks-monitoring
 ms.date: 05/09/2023
-author: nickomang
+author: nickoman
 ms.author: nickoman
-
-
 #Customer intent: As a cluster operator, I want to view the logs for the kubelet that runs on each node in an AKS cluster to troubleshoot problems.
 ---
 
@@ -25,10 +23,10 @@ This article assumes you have an existing AKS cluster. If you need an AKS cluste
 ## Using kubectl raw
 
 You can quickly view any node kubelet logs by using the following command:
+
 ```bash
 kubectl get --raw "/api/v1/nodes/nodename/proxy/logs/messages"|grep kubelet
 ```
-
 
 ## Create an SSH connection
 

@@ -1589,8 +1589,8 @@ def get_user_feedback(document_path):
     if current_content != original_content:
         print_message("\n✅ Document changes detected and will be incorporated!")
         # Restore original for proper AI processing
-        with open(document_path, "w") as f:
-            f.write(original_content)
+        # with open(document_path, "w") as f:
+        #     f.write(original_content)
         # Include the edited content in the result
         result["doc_edit"] = current_content
     
@@ -2317,21 +2317,20 @@ def main():
                             cli_text = feedback["cli_feedback"]
                             
                             # Special handling for code block type changes
-                            original_blocks = re.findall(r'```(\w+)', output_file_content)
-                            revised_blocks = re.findall(r'```(\w+)', revised_content)
+                            original_blocks = re.findall(r'```(\w+)', output_file_content) # output_file_content is LLM's previous output
+                            revised_blocks = re.findall(r'```(\w+)', revised_content) # revised_content is user's direct edit
                             
-                            # If user changed code block types, make this very explicit in the prompt
                             block_changes = ""
                             if original_blocks != revised_blocks:
-                                block_changes = "\n\nIMPORTANT: The user has changed code block types which MUST be preserved exactly as edited:\n"
+                                block_changes = "\n\nIMPORTANT: The user has changed code block types which MUST be preserved exactly as edited when you update your previous response:\n"
                                 for i in range(min(len(original_blocks), len(revised_blocks))):
                                     if original_blocks[i] != revised_blocks[i]:
                                         block_changes += f"- Changed '```{original_blocks[i]}' to '```{revised_blocks[i]}'\n"
 
                             # Compute the diff for context
                             diff = '\n'.join(difflib.unified_diff(
-                                output_file_content.splitlines(),
-                                revised_content.splitlines(),
+                                output_file_content.splitlines(), # LLM's previous output
+                                revised_content.splitlines(),    # User's direct edit
                                 fromfile='before.md',
                                 tofile='after.md',
                                 lineterm=''
@@ -2339,13 +2338,13 @@ def main():
                             
                             # Combine both types of feedback in the prompt
                             feedback_prompt = (
-                                "The user has provided two types of feedback:\n\n"
-                                "1. DOCUMENT EDITS: They've directly edited the document. Here is the unified diff between the previous and revised version:\n\n"
+                                "The user has provided two types of feedback on your previous output:\n\n"
+                                "1. DOCUMENT EDITS: They've directly edited your previous output. Here is the unified diff showing their changes:\n\n"
                                 f"{diff}\n\n"
                                 f"{block_changes}"
                                 "2. ADDITIONAL COMMENTS: They've also provided these additional instructions:"
                                 f"\n\n{cli_text}\n\n"
-                                "Incorporate BOTH the document edits AND the additional instructions into the document "
+                                "Incorporate BOTH the document edits (apply them to your previous output as shown in the diff) AND the additional instructions into an updated document. "
                                 "STRICTLY follow these user edits - preserve ALL formatting changes EXACTLY as made by the user, "
                                 "especially changes to code block types (like bash→shell). "
                                 "DO NOT revert any user edits when creating the updated document. "
@@ -2353,46 +2352,47 @@ def main():
                                 "ONLY GIVE THE UPDATED DOC, NOTHING ELSE."
                             )
                             
-                            # Start with the user's edited version as a base
                             output_file_content = revised_content
+                            # REMOVED: output_file_content = revised_content
                             
                         elif doc_edited:
                             # Only document edits
-                            revised_content = feedback["doc_edit"]
+                            revised_content = feedback["doc_edit"] # User's direct edit
 
                             # Special handling for code block type changes
-                            original_blocks = re.findall(r'```(\w+)', output_file_content)
-                            revised_blocks = re.findall(r'```(\w+)', revised_content)
+                            original_blocks = re.findall(r'```(\w+)', output_file_content) # output_file_content is LLM's previous output
+                            revised_blocks = re.findall(r'```(\w+)', revised_content) # revised_content is user's direct edit
                             
-                            # If user changed code block types, make this very explicit in the prompt
                             block_changes = ""
                             if original_blocks != revised_blocks:
-                                block_changes = "\n\nIMPORTANT: The user has changed code block types which MUST be preserved exactly as edited:\n"
+                                block_changes = "\n\nIMPORTANT: The user has changed code block types which MUST be preserved exactly as edited when you update your previous response:\n"
                                 for i in range(min(len(original_blocks), len(revised_blocks))):
                                     if original_blocks[i] != revised_blocks[i]:
                                         block_changes += f"- Changed '```{original_blocks[i]}' to '```{revised_blocks[i]}'\n"
                             
                             
                             diff = '\n'.join(difflib.unified_diff(
-                                output_file_content.splitlines(),
-                                revised_content.splitlines(),
+                                output_file_content.splitlines(), # LLM's previous output
+                                revised_content.splitlines(),    # User's direct edit
                                 fromfile='before.md',
                                 tofile='after.md',
                                 lineterm=''
                             ))
                             feedback_prompt = (
-                                "The user has directly edited the document. "
-                                "Here is the unified diff between the previous and revised version:\n\n"
+                                "The user has directly edited your previous output. "
+                                "Here is the unified diff showing their changes:\n\n"
                                 f"{diff}\n\n"
                                 f"{block_changes}"
-                                "STRICTLY follow these user edits - preserve ALL formatting changes EXACTLY as made by the user, "
+                                "STRICTLY follow these user edits - preserve ALL formatting changes EXACTLY as made by the user "
+                                "when updating your previous output (as shown in the diff). "
                                 "especially changes to code block types (like bash→shell). "
                                 "DO NOT revert any user edits when creating the updated document. "
                                 "Ensure all Exec Doc requirements and formatting rules are still met while maintaining the user's exact changes. "
                                 "ONLY GIVE THE UPDATED DOC, NOTHING ELSE."
                             )
+                            # REMOVED: output_file_content = revised_content
                             output_file_content = revised_content
-                            
+    
                         elif cli_feedback_provided:
                             # Only CLI feedback
                             cli_text = feedback["cli_feedback"]

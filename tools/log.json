@@ -1,18 +1,18 @@
 {
     "info": {
         "Creation Date": "2025-05-06 13:27:28",
-        "Last Modified Date": "2025-05-06 14:24:38",
-        "Total Operations": 4,
-        "Success Rate": 0.5,
+        "Last Modified Date": "2025-05-13 21:23:55",
+        "Total Operations": 15,
+        "Success Rate": 0.13,
         "Operation Summary": {
             "doc_creation": 0,
-            "doc_conversion": 4,
+            "doc_conversion": 15,
             "script_documentation": 0,
             "security_analysis": 0,
             "pii_redaction": 0,
             "seo_optimization": 0
         },
-        "Total Execution Time (in seconds)": 274
+        "Total Execution Time (in seconds)": 23618
     },
     "doc_conversion": [
         {
@@ -62,6 +62,138 @@
             "Result": "Success",
             "Project Folder": "untested/aks_preview_api_life_cycle_azure_kube",
             "User Intent": "User intends to learn about the lifecycle, usage, and deprecation schedule of AKS preview APIs."
+        },
+        {
+            "Timestamp": "2025-05-13 14:58:26",
+            "Type": "file",
+            "Input": "untested/azure_kubernetes_service_aks_external/azure_kubernetes_service_aks_external.md",
+            "Output": "untested/azure_kubernetes_service_aks_external/attempt_1_failure.md",
+            "Attempt Number": 1,
+            "Errors Encountered": "time=2025-05-13T14:58:26-07:00 level=error msg=Error executing scenario: command exited with 'exit status 1' and the message 'Error from server (NotFound): namespaces \"aks-istio-ingress\" not found\n'",
+            "Execution Time (in seconds)": 215,
+            "Result": "Failure",
+            "Project Folder": "untested/azure_kubernetes_service_aks_external",
+            "User Intent": "User intends to deploy external or internal ingress gateways for the Istio service mesh add-on in an Azure Kubernetes Service (AKS) cluster."
+        },
+        {
+            "Timestamp": "2025-05-13 15:02:02",
+            "Type": "file",
+            "Input": "untested/azure_kubernetes_service_aks_external/azure_kubernetes_service_aks_external.md",
+            "Output": "untested/azure_kubernetes_service_aks_external/attempt_2_failure.md",
+            "Attempt Number": 2,
+            "Errors Encountered": "time=2025-05-13T15:02:02-07:00 level=error msg=Error executing scenario: command exited with 'exit status 1' and the message 'Error from server (NotFound): services \"aks-istio-ingressgateway-external\" not found\n'",
+            "Execution Time (in seconds)": 216,
+            "Result": "Failure",
+            "Project Folder": "untested/azure_kubernetes_service_aks_external",
+            "User Intent": "User intends to deploy external or internal ingress gateways for the Istio service mesh add-on in an Azure Kubernetes Service (AKS) cluster."
+        },
+        {
+            "Timestamp": "2025-05-13 15:10:56",
+            "Type": "file",
+            "Input": "untested/azure_kubernetes_service_aks_external/azure_kubernetes_service_aks_external.md",
+            "Output": "untested/azure_kubernetes_service_aks_external/attempt_3_failure.md",
+            "Attempt Number": 3,
+            "Errors Encountered": "time=2025-05-13T15:10:56-07:00 level=error msg=Error executing scenario: Expected output does not match actual output.\nGot:                                         \n                                           \nExpected:                                    \nNAME                                TYPE           CLUSTER-IP     EXTERNAL-IP     PORT(S)                                      AGE\naks-istio-ingressgateway-external   LoadBalancer   10.xx.xx.xxx   xx.xx.xx.xxx    15021:xxxxx/TCP,80:xxxxx/TCP,443:xxxxx/TCP   xxm\n                                                                                                                                                                             \nExpected Score:0.300000                            \nActual Score:0.000000",
+            "Execution Time (in seconds)": 534,
+            "Result": "Failure",
+            "Project Folder": "untested/azure_kubernetes_service_aks_external",
+            "User Intent": "User intends to deploy external or internal ingress gateways for the Istio service mesh add-on in an Azure Kubernetes Service (AKS) cluster."
+        },
+        {
+            "Timestamp": "2025-05-13 15:19:48",
+            "Type": "file",
+            "Input": "untested/azure_kubernetes_service_aks_external/azure_kubernetes_service_aks_external.md",
+            "Output": "untested/azure_kubernetes_service_aks_external/attempt_4_failure.md",
+            "Attempt Number": 4,
+            "Errors Encountered": "time=2025-05-13T15:19:48-07:00 level=error msg=Error executing scenario: command exited with 'exit status 1' and the message 'Error from server (NotFound): services \"aks-istio-ingressgateway-external\" not found\nError from server (NotFound): services \"aks-istio-ingressgateway-external\" not found\nError from server (NotFound): services \"aks-istio-ingressgateway-external\" not found\nError from server (NotFound): services \"aks-istio-ingressgateway-external\" not found\nError from server (NotFound): services \"aks-istio-ingressgateway-external\" not found\nError from server (NotFound): services \"aks-istio-ingressgateway-external\" not found\nError from server (NotFound): services \"aks-istio-ingressgateway-external\" not found\nError from server (NotFound): services \"aks-istio-ingressgateway-external\" not found\nError from server (NotFound): services \"aks-istio-ingressgateway-external\" not found\nError from server (NotFound): services \"aks-istio-ingressgateway-external\" not found\nError from server (NotFound): services \"aks-istio-ingressgateway-external\" not found\nError from server (NotFound): services \"aks-istio-ingressgateway-external\" not found\nError from server (NotFound): services \"aks-istio-ingressgateway-external\" not found\nError from server (NotFound): services \"aks-istio-ingressgateway-external\" not found\nError from server (NotFound): services \"aks-istio-ingressgateway-external\" not found\nError from server (NotFound): services \"aks-istio-ingressgateway-external\" not found\nError from server (NotFound): services \"aks-istio-ingressgateway-external\" not found\nError from server (NotFound): services \"aks-istio-ingressgateway-external\" not found\nError from server (NotFound): services \"aks-istio-ingressgateway-external\" not found\nError from server (NotFound): services \"aks-istio-ingressgateway-external\" not found\nError from server (NotFound): services \"aks-istio-ingressgateway-external\" not found\nError from server (NotFound): services \"aks-istio-ingressgateway-external\" not found\nError from server (NotFound): services \"aks-istio-ingressgateway-external\" not found\nError from server (NotFound): services \"aks-istio-ingressgateway-external\" not found\nError from server (NotFound): services \"aks-istio-ingressgateway-external\" not found\nError from server (NotFound): services \"aks-istio-ingressgateway-external\" not found\nError from server (NotFound): services \"aks-istio-ingressgateway-external\" not found\nError from server (NotFound): services \"aks-istio-ingressgateway-external\" not found\nError from server (NotFound): services \"aks-istio-ingressgateway-external\" not found\nError from server (NotFound): services \"aks-istio-ingressgateway-external\" not found\nError from server (NotFound): services \"aks-istio-ingressgateway-external\" not found\n'",
+            "Execution Time (in seconds)": 532,
+            "Result": "Failure",
+            "Project Folder": "untested/azure_kubernetes_service_aks_external",
+            "User Intent": "User intends to deploy external or internal ingress gateways for the Istio service mesh add-on in an Azure Kubernetes Service (AKS) cluster."
+        },
+        {
+            "Timestamp": "2025-05-13 15:28:45",
+            "Type": "file",
+            "Input": "untested/azure_kubernetes_service_aks_external/azure_kubernetes_service_aks_external.md",
+            "Output": "untested/azure_kubernetes_service_aks_external/attempt_5_failure.md",
+            "Attempt Number": 5,
+            "Errors Encountered": "time=2025-05-13T15:28:45-07:00 level=error msg=Error executing scenario: command exited with 'exit status 1' and the message 'Error from server (NotFound): namespaces \"istio-system\" not found\nError from server (NotFound): namespaces \"istio-system\" not found\nError from server (NotFound): namespaces \"istio-system\" not found\nError from server (NotFound): namespaces \"istio-system\" not found\nError from server (NotFound): namespaces \"istio-system\" not found\nError from server (NotFound): namespaces \"istio-system\" not found\nError from server (NotFound): namespaces \"istio-system\" not found\nError from server (NotFound): namespaces \"istio-system\" not found\nError from server (NotFound): namespaces \"istio-system\" not found\nError from server (NotFound): namespaces \"istio-system\" not found\nError from server (NotFound): namespaces \"istio-system\" not found\nError from server (NotFound): namespaces \"istio-system\" not found\nError from server (NotFound): namespaces \"istio-system\" not found\nError from server (NotFound): namespaces \"istio-system\" not found\nError from server (NotFound): namespaces \"istio-system\" not found\nError from server (NotFound): namespaces \"istio-system\" not found\nError from server (NotFound): namespaces \"istio-system\" not found\nError from server (NotFound): namespaces \"istio-system\" not found\nError from server (NotFound): namespaces \"istio-system\" not found\nError from server (NotFound): namespaces \"istio-system\" not found\nError from server (NotFound): namespaces \"istio-system\" not found\nError from server (NotFound): namespaces \"istio-system\" not found\nError from server (NotFound): namespaces \"istio-system\" not found\nError from server (NotFound): namespaces \"istio-system\" not found\nError from server (NotFound): namespaces \"istio-system\" not found\nError from server (NotFound): namespaces \"istio-system\" not found\nError from server (NotFound): namespaces \"istio-system\" not found\nError from server (NotFound): namespaces \"istio-system\" not found\nError from server (NotFound): namespaces \"istio-system\" not found\nError from server (NotFound): namespaces \"istio-system\" not found\nError from server (NotFound): namespaces \"istio-system\" not found\n'",
+            "Execution Time (in seconds)": 538,
+            "Result": "Failure",
+            "Project Folder": "untested/azure_kubernetes_service_aks_external",
+            "User Intent": "User intends to deploy external or internal ingress gateways for the Istio service mesh add-on in an Azure Kubernetes Service (AKS) cluster."
+        },
+        {
+            "Timestamp": "2025-05-13 15:29:10",
+            "Type": "file",
+            "Input": "untested/azure_kubernetes_service_aks_external/azure_kubernetes_service_aks_external.md",
+            "Output": "untested/azure_kubernetes_service_aks_external/attempt_6_failure.md",
+            "Attempt Number": 6,
+            "Errors Encountered": "time=2025-05-13T15:29:10-07:00 level=error msg=Error executing scenario: command exited with 'exit status 3' and the message 'WARNING: The behavior of this command has been altered by the following extension: aks-preview\nERROR: (ResourceGroupNotFound) Resource group 'myaks-istio-rg-e565bc' could not be found.\nCode: ResourceGroupNotFound\nMessage: Resource group 'myaks-istio-rg-e565bc' could not be found.\n'",
+            "Execution Time (in seconds)": 25,
+            "Result": "Failure",
+            "Project Folder": "untested/azure_kubernetes_service_aks_external",
+            "User Intent": "User intends to deploy external or internal ingress gateways for the Istio service mesh add-on in an Azure Kubernetes Service (AKS) cluster."
+        },
+        {
+            "Timestamp": "2025-05-13 15:29:36",
+            "Type": "file",
+            "Input": "untested/azure_kubernetes_service_aks_external/azure_kubernetes_service_aks_external.md",
+            "Output": "untested/azure_kubernetes_service_aks_external/attempt_7_failure.md",
+            "Attempt Number": 7,
+            "Errors Encountered": "time=2025-05-13T15:29:36-07:00 level=error msg=Error executing scenario: command exited with 'exit status 3' and the message 'WARNING: The behavior of this command has been altered by the following extension: aks-preview\nERROR: (ResourceGroupNotFound) Resource group 'myaks-istio-rg-57358e' could not be found.\nCode: ResourceGroupNotFound\nMessage: Resource group 'myaks-istio-rg-57358e' could not be found.\n'",
+            "Execution Time (in seconds)": 26,
+            "Result": "Failure",
+            "Project Folder": "untested/azure_kubernetes_service_aks_external",
+            "User Intent": "User intends to deploy external or internal ingress gateways for the Istio service mesh add-on in an Azure Kubernetes Service (AKS) cluster."
+        },
+        {
+            "Timestamp": "2025-05-13 15:38:58",
+            "Type": "file",
+            "Input": "untested/azure_kubernetes_service_aks_external/azure_kubernetes_service_aks_external.md",
+            "Output": "untested/azure_kubernetes_service_aks_external/attempt_8_failure.md",
+            "Attempt Number": 8,
+            "Errors Encountered": "time=2025-05-13T15:38:58-07:00 level=error msg=Error executing scenario: command exited with 'exit status 1' and the message 'Error from server (NotFound): services \"aks-istio-ingressgateway-external\" not found\nError from server (NotFound): services \"aks-istio-ingressgateway-external\" not found\nError from server (NotFound): services \"aks-istio-ingressgateway-external\" not found\nError from server (NotFound): services \"aks-istio-ingressgateway-external\" not found\nError from server (NotFound): services \"aks-istio-ingressgateway-external\" not found\nError from server (NotFound): services \"aks-istio-ingressgateway-external\" not found\nError from server (NotFound): services \"aks-istio-ingressgateway-external\" not found\nError from server (NotFound): services \"aks-istio-ingressgateway-external\" not found\nError from server (NotFound): services \"aks-istio-ingressgateway-external\" not found\nError from server (NotFound): services \"aks-istio-ingressgateway-external\" not found\nError from server (NotFound): services \"aks-istio-ingressgateway-external\" not found\nError from server (NotFound): services \"aks-istio-ingressgateway-external\" not found\nError from server (NotFound): services \"aks-istio-ingressgateway-external\" not found\nError from server (NotFound): services \"aks-istio-ingressgateway-external\" not found\nError from server (NotFound): services \"aks-istio-ingressgateway-external\" not found\nError from server (NotFound): services \"aks-istio-ingressgateway-external\" not found\nError from server (NotFound): services \"aks-istio-ingressgateway-external\" not found\nError from server (NotFound): services \"aks-istio-ingressgateway-external\" not found\nError from server (NotFound): services \"aks-istio-ingressgateway-external\" not found\nError from server (NotFound): services \"aks-istio-ingressgateway-external\" not found\nError from server (NotFound): services \"aks-istio-ingressgateway-external\" not found\nError from server (NotFound): services \"aks-istio-ingressgateway-external\" not found\nError from server (NotFound): services \"aks-istio-ingressgateway-external\" not found\nError from server (NotFound): services \"aks-istio-ingressgateway-external\" not found\nError from server (NotFound): services \"aks-istio-ingressgateway-external\" not found\nError from server (NotFound): services \"aks-istio-ingressgateway-external\" not found\nError from server (NotFound): services \"aks-istio-ingressgateway-external\" not found\nError from server (NotFound): services \"aks-istio-ingressgateway-external\" not found\nError from server (NotFound): services \"aks-istio-ingressgateway-external\" not found\nError from server (NotFound): services \"aks-istio-ingressgateway-external\" not found\nError from server (NotFound): services \"aks-istio-ingressgateway-external\" not found\n'",
+            "Execution Time (in seconds)": 561,
+            "Result": "Failure",
+            "Project Folder": "untested/azure_kubernetes_service_aks_external",
+            "User Intent": "User intends to deploy external or internal ingress gateways for the Istio service mesh add-on in an Azure Kubernetes Service (AKS) cluster."
+        },
+        {
+            "Timestamp": "2025-05-13 15:47:51",
+            "Type": "file",
+            "Input": "untested/azure_kubernetes_service_aks_external/azure_kubernetes_service_aks_external.md",
+            "Output": "untested/azure_kubernetes_service_aks_external/attempt_9_failure.md",
+            "Attempt Number": 9,
+            "Errors Encountered": "time=2025-05-13T15:47:51-07:00 level=error msg=Error executing scenario: command exited with 'exit status 1' and the message 'resource mapping not found for name: \"bookinfo-gateway-external\" namespace: \"\" from \"STDIN\": no matches for kind \"Gateway\" in version \"networking.istio.io/v1beta1\"\nensure CRDs are installed first\nresource mapping not found for name: \"bookinfo-vs-external\" namespace: \"\" from \"STDIN\": no matches for kind \"VirtualService\" in version \"networking.istio.io/v1beta1\"\nensure CRDs are installed first\n'",
+            "Execution Time (in seconds)": 534,
+            "Result": "Failure",
+            "Project Folder": "untested/azure_kubernetes_service_aks_external",
+            "User Intent": "User intends to deploy external or internal ingress gateways for the Istio service mesh add-on in an Azure Kubernetes Service (AKS) cluster."
+        },
+        {
+            "Timestamp": "2025-05-13 15:57:53",
+            "Type": "file",
+            "Input": "untested/azure_kubernetes_service_aks_external/azure_kubernetes_service_aks_external.md",
+            "Output": "untested/azure_kubernetes_service_aks_external/attempt_10_failure.md",
+            "Attempt Number": 10,
+            "Errors Encountered": "time=2025-05-13T15:57:53-07:00 level=error msg=Error executing scenario: Expected output does not match actual output.\nGot:                                         \n                                           \nExpected:                                    \nNAME                              TYPE           CLUSTER-IP     EXTERNAL-IP     PORT(S)                                      AGE\naks-istio-ingressgateway-external LoadBalancer   10.xxx.x.x     xx.xx.xx.xx     15021:xxxxx/TCP,80:xxxxx/TCP,443:xxxxx/TCP   xxm\n                                                                                                                                                                           \nExpected Score:0.300000                            \nActual Score:0.000000",
+            "Execution Time (in seconds)": 601,
+            "Result": "Failure",
+            "Project Folder": "untested/azure_kubernetes_service_aks_external",
+            "User Intent": "User intends to deploy external or internal ingress gateways for the Istio service mesh add-on in an Azure Kubernetes Service (AKS) cluster."
+        },
+        {
+            "Timestamp": "2025-05-13 21:23:55",
+            "Type": "file",
+            "Input": "untested/azure_kubernetes_service_aks_external/azure_kubernetes_service_aks_external.md",
+            "Output": "untested/azure_kubernetes_service_aks_external/attempt_11_failure.md",
+            "Attempt Number": 11,
+            "Errors Encountered": "time=2025-05-13T21:23:55-07:00 level=error msg=Error executing scenario: command exited with 'exit status 1' and the message 'Error from server (NotFound): customresourcedefinitions.apiextensions.k8s.io \"gateways.networking.istio.io\" not found\nError from server (NotFound): customresourcedefinitions.apiextensions.k8s.io \"virtualservices.networking.istio.io\" not found\n'",
+            "Execution Time (in seconds)": 19562,
+            "Result": "Failure",
+            "Project Folder": "untested/azure_kubernetes_service_aks_external",
+            "User Intent": "User intends to deploy external or internal ingress gateways for the Istio service mesh add-on in an Azure Kubernetes Service (AKS) cluster."
         }
     ]
 }

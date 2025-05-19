@@ -78,11 +78,10 @@ You can't enable the Cost Analysis add-on on AKS clusters that are on the free p
 
 ### Solution: Update the cluster to use the Standard or Premium pricing tier
 
-Upgrade the AKS cluster to the Standard or Premium pricing tier. To do this, run one of the following [az aks update][aks-update] commands that specify the `--tier` parameter:
+Upgrade the AKS cluster to the Standard or Premium pricing tier. To do this, run the below [az aks update][aks-update] command that specify the `--tier` parameter. The `--tier` parameter can be set to either `standard` or `premium` (example below shows `standard`): 
 
 ```azurecli
 az aks update --resource-group <my-resource-group> --name <my-aks-cluster> --tier standard
-az aks update --resource-group <my-resource-group> --name <my-aks-cluster> --tier premium
 ```
 
 For more information, see [Free and Standard pricing tiers for AKS cluster management](/azure/aks/free-standard-pricing-tiers).
