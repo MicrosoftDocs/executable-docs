@@ -10,7 +10,7 @@ permissions:
     contents: write
     id-token: write
     issues: write
-    
+
 jobs:
   cleanup:
     runs-on: ubuntu-latest
@@ -34,15 +34,25 @@ jobs:
             "myStaticWebAppResourceGroup" "contoso" "ignite" "SpringBoot"
             "SpeechAppGroup" "MC_"
           )
-          # fetch once
           rgs=$(az group list --output json)
+
+          # don’t exit on errors in this block
+          set +e
 
           for sub in "${substrings[@]}"; do
             echo "Looking for RGs containing '$sub'…"
             echo "$rgs" |
               jq -r --arg s "$sub" '.[] | select(.name | contains($s)) | .name' |
               while read -r rg; do
-                echo "Deleting $rg"
-                az group delete --name "$rg" --yes --no-wait
+                echo -n "Deleting $rg… "
+                az group delete \
+                  --name "$rg" \
+                  --yes \
+                  --no-wait \
+                  && echo "OK" \
+                  || echo "⚠️ Skipped (deny-assignment or other error)"
               done
           done
+
+          # restore “exit on error” if you need it later
+          set -e
