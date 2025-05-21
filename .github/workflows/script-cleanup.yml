@@ -27,32 +27,28 @@ jobs:
 
       - name: Cleanup Resource Groups
         run: |
-          substrings=(
-            "myVMResourceGroup" "myLEMPResourceGroup" "myAKSResourceGroup"
-            "myResourceGroup" "dasha" "rg-" "myVMSSResourceGroup" "LinuxRG"
-            "LLMResourceGroup" "MC_" "myPostgresResourceGroup" "MyResourceGroup"
-            "myStaticWebAppResourceGroup" "contoso" "ignite" "SpringBoot"
-            "SpeechAppGroup" "MC_"
-          )
-          rgs=$(az group list --output json)
+          echo "Fetching all resource groups in the subscription..."
+          rgs_json=$(az group list --output json)
 
           # don’t exit on errors in this block
           set +e
 
-          for sub in "${substrings[@]}"; do
-            echo "Looking for RGs containing '$sub'…"
-            echo "$rgs" |
-              jq -r --arg s "$sub" '.[] | select(.name | contains($s)) | .name' |
-              while read -r rg; do
-                echo -n "Deleting $rg… "
-                az group delete \
-                  --name "$rg" \
-                  --yes \
-                  --no-wait \
-                  && echo "OK" \
-                  || echo "⚠️ Skipped (deny-assignment or other error)"
-              done
-          done
+          echo "Attempting to delete all resource groups..."
+          echo "$rgs_json" |
+            jq -r '.[] | .name' |
+            while read -r rg_name; do
+              if [[ -z "$rg_name" ]]; then
+                echo "Skipping empty resource group name."
+                continue
+              fi
+              echo -n "Deleting $rg_name… "
+              az group delete \
+                --name "$rg_name" \
+                --yes \
+                --no-wait \
+                && echo "OK" \
+                || echo "⚠️ Skipped (deny-assignment or other error)"
+            done
 
           # restore “exit on error” if you need it later
           set -e
