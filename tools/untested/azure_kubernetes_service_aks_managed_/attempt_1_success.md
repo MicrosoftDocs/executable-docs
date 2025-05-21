@@ -2,10 +2,10 @@
 title: Azure Kubernetes Service (AKS) managed NGINX ingress with the application routing add-on
 description: Use the application routing add-on to securely access applications deployed on Azure Kubernetes Service (AKS).
 ms.subservice: aks-networking
-ms.custom: devx-track-azurecli
+ms.custom: devx-track-azurecli, innovation-engine
 author: asudbring
 ms.topic: how-to
-ms.date: 11/21/2023
+ms.date: 06/14/2024
 ms.author: allensu
 ---
 
@@ -45,28 +45,52 @@ With the retirement of [Open Service Mesh][open-service-mesh-docs] (OSM) by the 
 - Editing the ingress-nginx `ConfigMap` in the `app-routing-system` namespace isn't supported.
 - The following snippet annotations are blocked and will prevent an Ingress from being configured: `load_module`, `lua_package`, `_by_lua`, `location`, `root`, `proxy_pass`, `serviceaccount`, `{`, `}`, `'`.
 
-
 ## Enable application routing using Azure CLI
 
 ### Enable on a new cluster
 
 To enable application routing on a new cluster, use the [`az aks create`][az-aks-create] command, specifying the `--enable-app-routing` flag.
 
+The example below sets reusable environment variables (with a random suffix for uniqueness), creates a resource group, and then creates a new AKS cluster with the application routing add-on enabled:
+
 ```shell
+export RANDOM_SUFFIX=$(openssl rand -hex 3)
+export RESOURCE_GROUP_NAME="MyAksAppRoutGroup$RANDOM_SUFFIX"
+export AKS_CLUSTER_NAME="MyAksAppRoutCluster$RANDOM_SUFFIX"
+export REGION="eastus2"
+
+az group create --name $RESOURCE_GROUP_NAME --location $REGION
 az aks create \
-    --resource-group <ResourceGroupName> \
-    --name <ClusterName> \
-    --location <Location> \
+    --resource-group $RESOURCE_GROUP_NAME \
+    --name $AKS_CLUSTER_NAME \
+    --location $REGION \
     --enable-app-routing \
     --generate-ssh-keys
+```
+Results:
+
+<!-- expected_similarity=0.3 -->
+
+```output
+{
+  "id": "/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/MyAksAppRoutGroupxxx",
+  "location": "eastus2",
+  "managedBy": null,
+  "name": "MyAksAppRoutGroupxxx",
+  "properties": {
+    "provisioningState": "Succeeded"
+  },
+  "tags": null,
+  "type": "Microsoft.Resources/resourceGroups"
+}
 ```
 
 ### Enable on an existing cluster
 
-To enable application routing on an existing cluster, use the [`az aks approuting enable`][az-aks-approuting-enable] command.
+To enable application routing on an existing cluster, use the [`az aks approuting enable`][az-aks-approuting-enable] command as shown:
 
 ```azurecli-interactive
-az aks approuting enable --resource-group <ResourceGroupName> --name <ClusterName>
+az aks approuting enable --resource-group $RESOURCE_GROUP_NAME --name $AKS_CLUSTER_NAME
 ```
 
 ---
@@ -75,35 +99,51 @@ az aks approuting enable --resource-group <ResourceGroupName> --name <ClusterNam
 
 To connect to the Kubernetes cluster from your local computer, you use [kubectl][kubectl], the Kubernetes command-line client. You can install it locally using the [`az aks install-cli`][az-aks-install-cli] command. If you use the Azure Cloud Shell, `kubectl` is already installed.
 
-Configure `kubectl` to connect to your Kubernetes cluster using the [az aks get-credentials][az-aks-get-credentials] command.
+Configure `kubectl` to connect to your Kubernetes cluster using the [az aks get-credentials][az-aks-get-credentials] command:
 
 ```azurecli-interactive
-az aks get-credentials --resource-group <ResourceGroupName> --name <ClusterName>
+az aks get-credentials --resource-group $RESOURCE_GROUP_NAME --name $AKS_CLUSTER_NAME
 ```
 
 ## Deploy an application
 
 The application routing add-on uses annotations on Kubernetes Ingress objects to create the appropriate resources.
 
-1. Create the application namespace called `aks-store` to run the example pods using the `kubectl create namespace` command.
+1. **Create the application namespace** called `aks-store` to run the example pods using the `kubectl create namespace` command.
 
-    ```bash
+    ```shell
     kubectl create namespace aks-store
     ```
+    Results:
 
-2. Deploy the AKS store application using the following YAML manifest file:
+    <!-- expected_similarity=0.3 -->
 
-    ```yaml
-    kubectl apply -f https://raw.githubusercontent.com/Azure-Samples/aks-store-demo/main/sample-manifests/docs/app-routing/aks-store-deployments-and-services.yaml -n aks-store
+    ```output
+    namespace/aks-store created
     ```
 
-  This manifest will create the necessary deployments and services for the AKS store application.
+2. **Deploy the AKS store application** using the following YAML manifest file. This manifest will create the necessary deployments and services for the AKS store application:
+
+    ```shell
+    kubectl apply -f https://raw.githubusercontent.com/Azure-Samples/aks-store-demo/main/sample-manifests/docs/app-routing/aks-store-deployments-and-services.yaml -n aks-store
+    ```
+    Results:
+
+    <!-- expected_similarity=0.3 -->
+
+    ```output
+    deployment.apps/queue-worker created
+    service/store-backend created
+    deployment.apps/store-backend created
+    deployment.apps/store-front created
+    service/store-front created
+    ```
 
 ### Create the Ingress object
 
 The application routing add-on creates an Ingress class on the cluster named *webapprouting.kubernetes.azure.com*. When you create an Ingress object with this class, it activates the add-on.
 
-1. Copy the following YAML manifest into a new file named **ingress.yaml** and save the file to your local computer.
+1. Copy the following YAML manifest into a new file named **ingress.yaml** and save the file to your local computer:
 
     ```yaml
     apiVersion: networking.k8s.io/v1
@@ -125,11 +165,17 @@ The application routing add-on creates an Ingress class on the cluster named *we
             pathType: Prefix
     ```
 
-2. Create the ingress resource using the [`kubectl apply`][kubectl-apply] command.
+2. **Create the ingress resource** using the [`kubectl apply`][kubectl-apply] command:
 
-
-    ```bash
+    ```shell
     kubectl apply -f ingress.yaml -n aks-store
+    ```
+    Results:
+
+    <!-- expected_similarity=0.3 -->
+
+    ```output
+    ingress.networking.k8s.io/store-front created
     ```
 
     The following example output shows the created resource:
@@ -140,38 +186,53 @@ The application routing add-on creates an Ingress class on the cluster named *we
 
 ## Verify the managed Ingress was created
 
-You can verify the managed Ingress was created using the `kubectl get ingress` command.
+You can verify the managed Ingress was created using the `kubectl get ingress` command:
 
-```bash
+```shell
 kubectl get ingress -n aks-store
 ```
+Results:
 
-The following example output shows the created managed Ingress:
+<!-- expected_similarity=0.3 -->
 
 ```output
 NAME          CLASS                                HOSTS   ADDRESS       PORTS   AGE
-store-front   webapprouting.kubernetes.azure.com   *       51.8.10.109   80      110s
+store-front   webapprouting.kubernetes.azure.com   *       x.x.x.x       80      xx
 ```
 
-You can verify that the AKS store works pointing your browser to the public IP address of the Ingress controller.
+You can verify that the AKS store works by pointing your browser to the public IP address of the Ingress controller.  
 Find the IP address with kubectl:
 
-```bash
+```shell
 kubectl get service -n app-routing-system nginx -o jsonpath="{.status.loadBalancer.ingress[0].ip}"
+```
+Results:
+
+<!-- expected_similarity=0.3 -->
+
+```output
+x.x.x.x
 ```
 
 ## Remove the application routing add-on
 
 To remove the associated namespace, use the `kubectl delete namespace` command.
 
-```bash
+```shell
 kubectl delete namespace aks-store
+```
+Results:
+
+<!-- expected_similarity=0.3 -->
+
+```output
+namespace "aks-store" deleted
 ```
 
 To remove the application routing add-on from your cluster, use the [`az aks approuting disable`][az-aks-approuting-disable] command.
 
 ```azurecli-interactive
-az aks approuting disable --name <ClusterName> --resource-group <ResourceGroupName>
+az aks approuting disable --name $AKS_CLUSTER_NAME --resource-group $RESOURCE_GROUP_NAME
 ```
 
 >[!NOTE]

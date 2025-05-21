@@ -114,7 +114,7 @@ The following steps show how to prepare these resources:
 
 ### Step 1: Create the virtual network and subnets
 
-```azurecli-interactive
+```shell
 az group create --name ${RESOURCE_GROUP} --location ${LOCATION}
 
 az network vnet create  --resource-group ${RESOURCE_GROUP} --name ${VNET_NAME} --address-prefixes 192.168.0.0/16
@@ -134,7 +134,7 @@ There are multiple ways to [disable the virtual network outbound connectivity][v
 
 1. Create the ACR with the private link.
 
-    ```azurecli-interactive
+    ```shell
     az acr create --resource-group ${RESOURCE_GROUP} --name ${REGISTRY_NAME} --sku Premium --public-network-enabled false
 
     REGISTRY_ID=$(az acr show --name ${REGISTRY_NAME} -g ${RESOURCE_GROUP}  --query 'id' --output tsv)
@@ -142,7 +142,7 @@ There are multiple ways to [disable the virtual network outbound connectivity][v
 
 2. Create an ACR cache rule following the below command to allow users to cache MAR container images and binaries in the new ACR, note the cache rule name and repo names must be strictly aligned with the guidance below.
 
-    ```azurecli-interactive
+    ```shell
     az acr cache create -n aks-managed-mcr -r ${REGISTRY_NAME} -g ${RESOURCE_GROUP} --source-repo "mcr.microsoft.com/*" --target-repo "aks-managed-repository/*"
     ```
 > [!NOTE]
@@ -151,7 +151,7 @@ There are multiple ways to [disable the virtual network outbound connectivity][v
 
 ### Step 4: Create a private endpoint for the ACR
 
-```azurecli-interactive
+```shell
 az network private-endpoint create --name myPrivateEndpoint --resource-group ${RESOURCE_GROUP} --vnet-name ${VNET_NAME} --subnet ${ACR_SUBNET_NAME} --private-connection-resource-id ${REGISTRY_ID} --group-id registry --connection-name myConnection
 
 NETWORK_INTERFACE_ID=$(az network private-endpoint show --name myPrivateEndpoint --resource-group ${RESOURCE_GROUP} --query 'networkInterfaces[0].id' --output tsv)
@@ -165,7 +165,7 @@ DATA_ENDPOINT_PRIVATE_IP=$(az network nic show --ids ${NETWORK_INTERFACE_ID} --q
 
 Create a private DNS zone named `privatelink.azurecr.io`. Add the records for the registry REST endpoint `{REGISTRY_NAME}.azurecr.io`, and the registry data endpoint `{REGISTRY_NAME}.{REGISTRY_LOCATION}.data.azurecr.io`.
 
-```azurecli-interactive
+```shell
 az network private-dns zone create --resource-group ${RESOURCE_GROUP} --name "privatelink.azurecr.io"
 
 az network private-dns link vnet create --resource-group ${RESOURCE_GROUP} --zone-name "privatelink.azurecr.io" --name MyDNSLink --virtual-network ${VNET_NAME} --registration-enabled false
@@ -183,7 +183,7 @@ az network private-dns record-set a add-record --record-set-name ${REGISTRY_NAME
 
 #### Control plane identity
 
-```azurecli-interactive
+```shell
 az identity create --name ${CLUSTER_IDENTITY_NAME} --resource-group ${RESOURCE_GROUP}
 
 CLUSTER_IDENTITY_RESOURCE_ID=$(az identity show --name ${CLUSTER_IDENTITY_NAME} --resource-group ${RESOURCE_GROUP} --query 'id' -o tsv)
@@ -193,7 +193,7 @@ CLUSTER_IDENTITY_PRINCIPAL_ID=$(az identity show --name ${CLUSTER_IDENTITY_NAME}
 
 #### Kubelet identity
 
-```azurecli-interactive
+```shell
 az identity create --name ${KUBELET_IDENTITY_NAME} --resource-group ${RESOURCE_GROUP}
 
 KUBELET_IDENTITY_RESOURCE_ID=$(az identity show --name ${KUBELET_IDENTITY_NAME} --resource-group ${RESOURCE_GROUP} --query 'id' -o tsv)
@@ -203,7 +203,7 @@ KUBELET_IDENTITY_PRINCIPAL_ID=$(az identity show --name ${KUBELET_IDENTITY_NAME}
 
 #### Grant AcrPull permissions for the Kubelet identity
 
-```azurecli-interactive
+```shell
 az role assignment create --role AcrPull --scope ${REGISTRY_ID} --assignee-object-id ${KUBELET_IDENTITY_PRINCIPAL_ID} --assignee-principal-type ServicePrincipal
 ```
 
@@ -223,7 +223,7 @@ The `--outbound-type parameter` can be set to either `none` or `block` (preview)
 
 Create a private link-based network isolated cluster that accesses your ACR by running the [az aks create][az-aks-create] command with the required parameters.
 
-```azurecli-interactive
+```shell
 az aks create --resource-group ${RESOURCE_GROUP} --name ${AKS_NAME} --kubernetes-version 1.30.3 --vnet-subnet-id ${SUBNET_ID} --assign-identity ${CLUSTER_IDENTITY_RESOURCE_ID} --assign-kubelet-identity ${KUBELET_IDENTITY_RESOURCE_ID} --bootstrap-artifact-source Cache --bootstrap-container-registry-resource-id ${REGISTRY_ID} --outbound-type none --network-plugin azure --enable-private-cluster
 ```
 
@@ -231,19 +231,19 @@ az aks create --resource-group ${RESOURCE_GROUP} --name ${AKS_NAME} --kubernetes
 
 For a network isolated cluster configured with API server VNet integration, first create a subnet and assign the correct role with the following commands:
 
-```azurecli-interactive
+```shell
 az network vnet subnet create --name ${APISERVER_SUBNET_NAME} --vnet-name ${VNET_NAME} --resource-group ${RESOURCE_GROUP} --address-prefixes 192.168.3.0/24
 
 export APISERVER_SUBNET_ID=$(az network vnet subnet show --resource-group ${RESOURCE_GROUP} --vnet-name ${VNET_NAME} --name ${APISERVER_SUBNET_NAME} --query id -o tsv)
 ```
 
-```azurecli-interactive
+```shell
 az role assignment create --scope ${APISERVER_SUBNET_ID} --role "Network Contributor" --assignee-object-id ${CLUSTER_IDENTITY_PRINCIPAL_ID} --assignee-principal-type ServicePrincipal
 ```
 
 Create a network isolated cluster configured with API Server VNet Integration and access your ACR by running the [az aks create][az-aks-create] command with the required parameters.
 
-```azurecli-interactive
+```shell
 az aks create --resource-group ${RESOURCE_GROUP} --name ${AKS_NAME} --kubernetes-version 1.30.3 --vnet-subnet-id ${SUBNET_ID} --assign-identity ${CLUSTER_IDENTITY_RESOURCE_ID} --assign-kubelet-identity ${KUBELET_IDENTITY_RESOURCE_ID} --bootstrap-artifact-source Cache --bootstrap-container-registry-resource-id ${REGISTRY_ID} --outbound-type none --network-plugin azure --enable-apiserver-vnet-integration --apiserver-subnet-id ${APISERVER_SUBNET_ID}
 ```
 
@@ -255,13 +255,13 @@ When creating the private endpoint and private DNS zone for the BYO ACR, use the
 
 To enable the network isolated feature on an existing AKS cluster, use the following command:
 
-```azurecli-interactive
+```shell
 az aks update --resource-group ${RESOURCE_GROUP} --name ${AKS_NAME} --bootstrap-artifact-source Cache --bootstrap-container-registry-resource-id ${REGISTRY_ID} --outbound-type none
 ```
 
 After the network isolated cluster feature is enabled, nodes in the newly added node pool can bootstrap successfully without egress. You must reimage existing node pools so that newly scaled node can bootstrap successfully. When you enable the feature on an existing cluster, you need to manually reimage all existing node pools.
 
-```azurecli-interactive
+```shell
 az aks upgrade --resource-group ${RESOURCE_GROUP} --name ${AKS_NAME} --node-image-only
 ```
 
@@ -273,19 +273,19 @@ az aks upgrade --resource-group ${RESOURCE_GROUP} --name ${AKS_NAME} --node-imag
 
 It's possible to update the private ACR used with a network isolated cluster. To identify the ACR resource ID, use the `az aks show` command.
 
-```azurecli-interactive
+```shell
 az aks show --resource-group ${RESOURCE_GROUP} --name ${AKS_NAME}
 ```
 
 Updating the ACR ID is performed by running the `az aks update` command with the `--bootstrap-artifact-source` and `--bootstrap-container-registry-resource-id` parameters.
 
-```azurecli-interactive
+```shell
 az aks update --resource-group ${RESOURCE_GROUP} --name ${AKS_NAME} --bootstrap-artifact-source Cache --bootstrap-container-registry-resource-id <New BYO ACR resource ID>
 ```
 
 When you update the ACR ID on an existing cluster, you need to manually reimage all existing nodes.
 
-```azurecli-interactive
+```shell
 az aks upgrade --resource-group ${RESOURCE_GROUP} --name ${AKS_NAME} --node-image-only
 ```
 

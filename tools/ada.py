@@ -108,6 +108,8 @@ Check if all prerequisites below are met before writing the Exec Doc. ***If any 
 
 7. Ensure that the Exec Doc does not require any user interaction during its execution. The document should not include any commands or scripts that prompt the user for input or expect interaction with the terminal. All inputs must be predefined and handled automatically within the script.
 
+8. IMPORTANT: NEVER change the language type of code blocks. If a code block is specified as 'shell', do not change it to 'bash' or any other type. Preserve the exact code block language type from the original document. The language type specified after the opening triple backticks must remain exactly as it was in the source document.
+
 8. Appropriately add metadata at the start of the Exec Doc. Here are some mandatory fields:
 
     - title = the title of the Exec Doc
@@ -1762,6 +1764,37 @@ Document:
     except Exception:
         return var_map
 
+def get_user_defined_variables():
+    """Prompt the user to define environment variables and their values."""
+    print_message("\nDo you want to define specific environment variables and their values for this run?")
+    print_message("If yes, these will be used to guide document generation and for 'ie test/execute'.")
+    print_message("Example: RESOURCE_GROUP_NAME=my-test-rg")
+    choice = input("Define variables? (y/n, default n): ").lower().strip()
+    
+    if choice != 'y':
+        return {}
+        
+    variables = {}
+    print_message("Enter variables one per line (e.g., VAR_NAME=var_value). Press Enter on an empty line to finish.")
+    while True:
+        entry = input(">> ").strip()
+        if not entry:
+            break
+        if '=' not in entry:
+            print_message("Invalid format. Please use NAME=value. Skipping this entry.")
+            continue
+        name, value = entry.split('=', 1)
+        name = name.strip()
+        value = value.strip()
+        if not name:
+            print_message("Variable name cannot be empty. Skipping this entry.")
+            continue
+        variables[name] = value
+        
+    if variables:
+        print_message(f"\nUser-defined variables: {variables}", prefix="🔧 ")
+    return variables
+
 # Replace the menu display in main() function
 def main():
     while True:
@@ -1789,14 +1822,16 @@ def main():
             if not os.path.isfile(user_input) or not user_input.endswith('.md'):
                 print_message("\nInvalid file path or file type. Please provide a valid markdown file.")
                 continue
-
+            
+            user_defined_vars = get_user_defined_variables() # Get user variables
+            
             # Add new option for interactive mode
             interactive_mode = input("\nEnable interactive mode (you will be prompted for feedback after each step)? (y/n): ").lower() == 'y'
                 
             input_type = 'file'
             with open(user_input, "r") as f:
                 input_content = f.read()
-                input_content = f"CONVERT THE FOLLOWING EXISTING DOCUMENT INTO AN EXEC DOC. THIS IS A CONVERSION TASK, NOT CREATION FROM SCRATCH. DON'T EXPLAIN WHAT YOU ARE DOING BEHIND THE SCENES INSIDE THE DOC. PRESERVE ALL ORIGINAL CONTENT, STRUCTURE, AND NARRATIVE OUTSIDE OF CODE BLOCKS:\n\n{input_content}"
+                input_content = f"CONVERT THE FOLLOWING EXISTING DOCUMENT INTO AN EXEC DOC. THIS IS A CONVERSION TASK, NOT CREATION FROM SCRATCH. DON'T EXPLAIN WHAT YOU ARE DOING BEHIND THE SCENES INSIDE THE DOC. PRESERVE ALL ORIGINAL CONTENT, STRUCTURE, AND NARRATIVE OUTSIDE OF CODE BLOCKS. CRITICALLY IMPORTANT: NEVER CHANGE THE LANGUAGE TYPE OF CODE BLOCKS (e.g., from 'shell' to 'bash'). KEEP THE EXACT SAME LANGUAGE IDENTIFIER AFTER TRIPLE BACKTICKS AS IN THE ORIGINAL DOCUMENT:\n\n{input_content}"
             # We'll generate dependency files later in the process
             dependency_files = []
             generate_deps = input("\nMake new files referenced in the doc for its execution? (y/n): ").lower() == 'y'
@@ -1805,6 +1840,8 @@ def main():
             if not user_input:
                 print_message("\nInvalid input. Please provide a workload description.")
                 continue
+            
+            user_defined_vars = get_user_defined_variables() # Get user variables
             
             workload_description = user_input.strip()
             
@@ -2099,13 +2136,31 @@ def main():
             iteration_errors = []
             made_dependency_change = False
             output_file = os.path.join(output_folder, f"attempt_{attempt}.md")
+            
+            llm_variable_instruction = ""
+            if user_defined_vars:
+                var_names_list = ", ".join(f"'{k}'" for k in user_defined_vars.keys())
+                llm_variable_instruction = (
+                    f"\n\nUSER-DEFINED VARIABLE NAMES: The user has specified the following environment variable "
+                    f"NAMES that you MUST prioritize using in the document where appropriate: {var_names_list}. "
+                    f"When you need to define an environment variable for a concept (e.g., resource group name, location), "
+                    f"if a user-provided name seems relevant for that concept, use the user's variable name. "
+                    f"For example, if the user provides 'MY_RG' and the document needs a resource group name, use 'MY_RG' "
+                    f"instead of a default like 'RESOURCE_GROUP_NAME'. You are still responsible for generating the "
+                    f"'export' statements and appropriate values (e.g., export MY_RG=\\\"my-resource-group$RANDOM_SUFFIX\\\" "
+                    f"or export MY_LOCATION=\\\"eastus2\\\"). The primary goal is to use the user's *names*."
+                )
+            
             if attempt == 1:
                 print_header(f"Attempt {attempt}: Generating Exec Doc", "-")
+
+                current_input_content = input_content + llm_variable_instruction
+                
                 response = client.chat.completions.create(
                     model=deployment_name,
                     messages=[
                         {"role": "system", "content": system_prompt},
-                        {"role": "user", "content": input_content}
+                        {"role": "user", "content": current_input_content}
                     ]
                 )
                 output_file_content = response.choices[0].message.content
@@ -2135,13 +2190,24 @@ def main():
                     made_dependency_change = True  # Set the flag
                 else:
                     # If error is in main doc or unknown, update the main doc
+                    user_prompt_for_fix = (
+                        f"The following error(s) have occurred during testing:\n{errors_text}\n{additional_instruction}\n\n"
+                        f"Please carefully analyze these errors and make necessary corrections to the document to prevent them "
+                        f"from happening again. Try to find different solutions if the same errors keep occurring. \n"
+                        f"IMPORTANT: NEVER change the code block language types (e.g., do not change 'shell' to 'bash'). "
+                        f"Keep the exact same language identifier after triple backticks as in the current document."
+                        f"{llm_variable_instruction}" # Add variable instruction here as well
+                        f"\nGiven that context, please think hard and don't hurry. I want you to correct the converted document "
+                        f"in ALL instances where this error has been or can be found. Then, correct ALL other errors apart "
+                        f"from this that you see in the doc. ONLY GIVE THE UPDATED DOC, NOTHING ELSE"
+                    )
                     response = client.chat.completions.create(
                         model=deployment_name,
                         messages=[
                             {"role": "system", "content": system_prompt},
                             {"role": "user", "content": input_content},
                             {"role": "assistant", "content": output_file_content},
-                            {"role": "user", "content": f"The following error(s) have occurred during testing:\n{errors_text}\n{additional_instruction}\n\nPlease carefully analyze these errors and make necessary corrections to the document to prevent them from happening again. Try to find different solutions if the same errors keep occurring. \nGiven that context, please think hard and don't hurry. I want you to correct the converted document in ALL instances where this error has been or can be found. Then, correct ALL other errors apart from this that you see in the doc. ONLY GIVE THE UPDATED DOC, NOTHING ELSE"}
+                            {"role": "user", "content": user_prompt_for_fix}
                         ]
                     )
                     output_file_content = response.choices[0].message.content
@@ -2159,13 +2225,19 @@ def main():
             remove_backticks_from_file(output_file)
 
             aks_prereq = requires_aks_cluster(output_file)
-            if aks_prereq:
+            if user_defined_vars:
+                print_header(f"Running Innovation Engine with user-defined variables", "-")
+                base_command = "execute" if aks_prereq else "test"
+                ie_cmd = ["ie", base_command, output_file]
+                for var_name, var_value in user_defined_vars.items():
+                    ie_cmd.extend(["--var", f"{var_name}={var_value}"])
+            elif aks_prereq:
                 print_header(f"Running Innovation Engine using an existing AKS cluster since its a prerequisite to run this doc", "-")
                 var_names = extract_aks_env_vars(output_file)
                 ie_cmd = [
                     "ie", "execute", output_file,
-                    "--var", f"{var_names['resource_group']}=myAKSResourceGroup0de552",
-                    "--var", f"{var_names['cluster_name']}=myAKSCluster0de552",
+                    "--var", f"{var_names['resource_group']}=aks-tc-rged8996",
+                    "--var", f"{var_names['cluster_name']}=aks-tc-clustered8996",
                     "--var", f"{var_names['region']}=canadacentral"
                 ]
             else:
@@ -2317,8 +2389,8 @@ def main():
                             cli_text = feedback["cli_feedback"]
                             
                             # Special handling for code block type changes
-                            original_blocks = re.findall(r'```(\w+)', output_file_content) # output_file_content is LLM's previous output
-                            revised_blocks = re.findall(r'```(\w+)', revised_content) # revised_content is user's direct edit
+                            original_blocks = re.findall(r'```(\w+)', output_file_content) 
+                            revised_blocks = re.findall(r'```(\w+)', revised_content) 
                             
                             block_changes = ""
                             if original_blocks != revised_blocks:
@@ -2329,14 +2401,17 @@ def main():
 
                             # Compute the diff for context
                             diff = '\n'.join(difflib.unified_diff(
-                                output_file_content.splitlines(), # LLM's previous output
-                                revised_content.splitlines(),    # User's direct edit
+                                output_file_content.splitlines(),
+                                revised_content.splitlines(),
                                 fromfile='before.md',
                                 tofile='after.md',
                                 lineterm=''
                             ))
                             
-                            # Combine both types of feedback in the prompt
+                            # Save user's direct edits first
+                            output_file_content = revised_content
+                            
+                            # Then call LLM only to incorporate the CLI text feedback while preserving edits
                             feedback_prompt = (
                                 "The user has provided two types of feedback on your previous output:\n\n"
                                 "1. DOCUMENT EDITS: They've directly edited your previous output. Here is the unified diff showing their changes:\n\n"
@@ -2352,67 +2427,47 @@ def main():
                                 "ONLY GIVE THE UPDATED DOC, NOTHING ELSE."
                             )
                             
-                            output_file_content = revised_content
-                            # REMOVED: output_file_content = revised_content
-                            
-                        elif doc_edited:
-                            # Only document edits
-                            revised_content = feedback["doc_edit"] # User's direct edit
-
-                            # Special handling for code block type changes
-                            original_blocks = re.findall(r'```(\w+)', output_file_content) # output_file_content is LLM's previous output
-                            revised_blocks = re.findall(r'```(\w+)', revised_content) # revised_content is user's direct edit
-                            
-                            block_changes = ""
-                            if original_blocks != revised_blocks:
-                                block_changes = "\n\nIMPORTANT: The user has changed code block types which MUST be preserved exactly as edited when you update your previous response:\n"
-                                for i in range(min(len(original_blocks), len(revised_blocks))):
-                                    if original_blocks[i] != revised_blocks[i]:
-                                        block_changes += f"- Changed '```{original_blocks[i]}' to '```{revised_blocks[i]}'\n"
-                            
-                            
-                            diff = '\n'.join(difflib.unified_diff(
-                                output_file_content.splitlines(), # LLM's previous output
-                                revised_content.splitlines(),    # User's direct edit
-                                fromfile='before.md',
-                                tofile='after.md',
-                                lineterm=''
-                            ))
-                            feedback_prompt = (
-                                "The user has directly edited your previous output. "
-                                "Here is the unified diff showing their changes:\n\n"
-                                f"{diff}\n\n"
-                                f"{block_changes}"
-                                "STRICTLY follow these user edits - preserve ALL formatting changes EXACTLY as made by the user "
-                                "when updating your previous output (as shown in the diff). "
-                                "especially changes to code block types (like bash→shell). "
-                                "DO NOT revert any user edits when creating the updated document. "
-                                "Ensure all Exec Doc requirements and formatting rules are still met while maintaining the user's exact changes. "
-                                "ONLY GIVE THE UPDATED DOC, NOTHING ELSE."
+                            # LLM call to incorporate CLI feedback while respecting document edits
+                            response = client.chat.completions.create(
+                                model=deployment_name,
+                                messages=[
+                                    {"role": "system", "content": system_prompt},
+                                    {"role": "user", "content": input_content},
+                                    {"role": "assistant", "content": output_file_content},
+                                    {"role": "user", "content": feedback_prompt}
+                                ]
                             )
-                            # REMOVED: output_file_content = revised_content
+                            output_file_content = response.choices[0].message.content
+                                        
+                        elif doc_edited:
+                            # Only document edits - no need to call LLM again
+                            revised_content = feedback["doc_edit"]
+                            
+                            # Just use the user's edited version directly
                             output_file_content = revised_content
-    
+                            
+                            print_message("\nUsing your directly edited version for the next attempt...")
+
                         elif cli_feedback_provided:
-                            # Only CLI feedback
+                            # Only CLI feedback - need LLM call to incorporate feedback
                             cli_text = feedback["cli_feedback"]
                             feedback_prompt = (
                                 "Please incorporate the following feedback into the document while maintaining all Exec Doc requirements and formatting rules:\n\n"
                                 f"{cli_text}\n\n"
                                 "ONLY GIVE THE UPDATED DOC, NOTHING ELSE."
                             )
-                        
-                        # Call the LLM with feedback context
-                        response = client.chat.completions.create(
-                            model=deployment_name,
-                            messages=[
-                                {"role": "system", "content": system_prompt},
-                                {"role": "user", "content": input_content},
-                                {"role": "assistant", "content": output_file_content},
-                                {"role": "user", "content": feedback_prompt}
-                            ]
-                        )
-                        output_file_content = response.choices[0].message.content
+                            
+                            # Call LLM to incorporate CLI feedback
+                            response = client.chat.completions.create(
+                                model=deployment_name,
+                                messages=[
+                                    {"role": "system", "content": system_prompt},
+                                    {"role": "user", "content": input_content},
+                                    {"role": "assistant", "content": output_file_content},
+                                    {"role": "user", "content": feedback_prompt}
+                                ]
+                            )
+                            output_file_content = response.choices[0].message.content
 
                         # Save the updated content back to the file
                         with open(iteration_file, "w") as f:

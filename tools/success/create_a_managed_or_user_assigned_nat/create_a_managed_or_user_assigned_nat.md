@@ -57,14 +57,14 @@ This configuration requires bring-your-own networking (via [Kubenet][byo-vnet-ku
 
 1. Create a resource group using the [`az group create`][az-group-create] command.
 
-    ```azurecli-interactive
+    ```shell
     az group create --name myResourceGroup \
         --location southcentralus
     ```
 
 2. Create a managed identity for network permissions and store the ID to `$IDENTITY_ID` for later use.
 
-    ```azurecli-interactive
+    ```shell
     IDENTITY_ID=$(az identity create \
         --resource-group myResourceGroup \
         --name myNatClusterId \
@@ -75,7 +75,7 @@ This configuration requires bring-your-own networking (via [Kubenet][byo-vnet-ku
 
 3. Create a public IP for the NAT gateway using the [`az network public-ip create`][az-network-public-ip-create] command.
 
-    ```azurecli-interactive
+    ```shell
     az network public-ip create \
         --resource-group myResourceGroup \
         --name myNatGatewayPip \
@@ -85,7 +85,7 @@ This configuration requires bring-your-own networking (via [Kubenet][byo-vnet-ku
 
 4. Create the NAT gateway using the [`az network nat gateway create`][az-network-nat-gateway-create] command.
 
-    ```azurecli-interactive
+    ```shell
     az network nat gateway create \
         --resource-group myResourceGroup \
         --name myNatGateway \
@@ -98,7 +98,7 @@ This configuration requires bring-your-own networking (via [Kubenet][byo-vnet-ku
 
 5. Create a virtual network using the [`az network vnet create`][az-network-vnet-create] command.
 
-    ```azurecli-interactive
+    ```shell
     az network vnet create \
         --resource-group myResourceGroup \
         --name myVnet \
@@ -108,7 +108,7 @@ This configuration requires bring-your-own networking (via [Kubenet][byo-vnet-ku
 
 6. Create a subnet in the virtual network using the NAT gateway and store the ID to `$SUBNET_ID` for later use.
 
-    ```azurecli-interactive
+    ```shell
     SUBNET_ID=$(az network vnet subnet create \
         --resource-group myResourceGroup \
         --vnet-name myVnet \
@@ -121,7 +121,7 @@ This configuration requires bring-your-own networking (via [Kubenet][byo-vnet-ku
 
 7. Create an AKS cluster using the subnet with the NAT gateway and the managed identity using the [`az aks create`][az-aks-create] command.
 
-    ```azurecli-interactive
+    ```shell
     az aks create \
         --resource-group myResourceGroup \
         --name myNatCluster \
