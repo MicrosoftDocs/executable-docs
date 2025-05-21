@@ -1,9 +1,9 @@
 name: Daily RG Cleanup
 
 on:
-#   schedule:
-#     # runs every day at 02:00 UTC
-#     - cron: '0 2 * * *'
+  schedule:
+    # runs every day at 11:11 UTC
+    - cron: '11 11 * * *'
   workflow_dispatch:
 
 permissions:
