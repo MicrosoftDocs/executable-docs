@@ -1,43 +1,47 @@
 # ADA - AI Documentation Assistant
 
-Welcome to ADA! This tool helps you convert documents and troubleshoot errors efficiently using Azure OpenAI's Large Language Models and the Azure Innovation Engine.
+ADA (AI Documentation Assistant) helps you create, convert, and manage Executable Documents efficiently using Azure OpenAI and Innovation Engine.
 
 ## Features
 
-- Converts source markdown files to Exec Docs with proper formatting.
-- Generates new Exec Docs from workload descriptions with auto-generated titles.
-- Creates documentation for shell scripts while preserving the original code.
-- Redacts Personally Identifiable Information (PII) from Exec Doc result blocks.
-- Automatically identifies and generates dependency files referenced in documents.
-- Performs comprehensive security vulnerability analysis on Exec Docs.
-- Logs execution data to a CSV file for analytics.
+- **Convert to Exec Docs**: Transform existing markdown files to executable documents
+- **Generate New Exec Docs**: Create new executable documents from a workload description
+- **Reference Integration**: Include content from URLs and local files when generating documents
+- **Script Documentation**: Create comprehensive explanations for shell scripts
+- **PII Redaction**: Automatically redact sensitive information from result blocks
+- **Security Analysis**: Perform comprehensive security vulnerability assessments
+- **SEO Optimization**: Enhance document visibility and searchability
+- **Centralized Logging**: Track operations across sessions in a global log
+- **Docker Support**: Run ADA in an isolated container environment
 
 ## Prerequisites
 
 - Python 3.6 or higher
-- An Azure OpenAI API key
-- Required Python packages: `openai`, `azure-identity`, `requests`, `pyyaml`
+- Azure OpenAI API key and endpoint
+- Docker (optional, for containerized usage)
 
 ## Installation
 
+### Option 1: Local Installation
+
 1. Clone the repository:
-    ```bash
-    git clone <repository-url>
-    cd <repository-directory>
-    ```
+   ```bash
+   git clone <repository-url>
+   cd <repository-directory>/tools
+   ```
 
 2. Install the required Python packages:
-    ```bash
-    pip install openai azure-identity requests pyyaml
-    ```
+   ```bash
+   pip install -r requirements.txt
+   ```
 
-3. Ensure you have the Azure OpenAI API key and endpoint set as environment variables:
-    ```bash
-    export AZURE_OPENAI_API_KEY=<your-azure-openai-api-key>
-    export AZURE_OPENAI_ENDPOINT=<your-azure-openai-endpoint>
-    ```
+3. Set Azure OpenAI API credentials as environment variables:
+   ```bash
+   export AZURE_OPENAI_API_KEY=<your-azure-openai-api-key>
+   export AZURE_OPENAI_ENDPOINT=<your-azure-openai-endpoint>
+   ```
 
-    To obtain an Azure OpenAI API key and endpoint, follow these steps:
+   To obtain an Azure OpenAI API key and endpoint, follow these steps:
 
     1. **Sign in to the Azure Portal**:
     - Navigate to [https://portal.azure.com](https://portal.azure.com) and log in with your Azure credentials.
@@ -58,7 +62,7 @@ Welcome to ADA! This tool helps you convert documents and troubleshoot errors ef
     - After creating your Azure OpenAI resource, navigate to the **Overview** page of your resource.
     - Click on "Go to Azure AI Studio" to open the Azure AI Studio interface.
     - In Azure AI Studio, select "Deployments" from the left-hand menu.
-    - Click "Deploy model" and choose `gpt-4o` from the Azure OpenAI collection.
+    - Click "Deploy model" and choose `gpt-4.1` from the Azure OpenAI collection.
     - Provide a deployment name and configure any additional settings as needed.
     - Click "Deploy" to deploy the model.
 
@@ -93,101 +97,94 @@ Welcome to ADA! This tool helps you convert documents and troubleshoot errors ef
     By following these steps, you'll have your Azure OpenAI API key and endpoint configured, a model deployed, and your environment variables set up in a Linux environment, ready for integration into your applications.
 
     For a visual walkthrough of creating an Azure OpenAI resource and deploying a model, you might find the following video helpful:
- 
+
+4. Run ADA:
+   ```bash
+   python ada.py
+   ```
+
+### Option 2: Docker Installation
+
+1. Build the Docker image:
+   ```bash
+   docker build -t ada-tool .
+   ```
+
+2. Run ADA in a Docker container:
+   ```bash
+   docker run -it --rm \
+     -e AZURE_OPENAI_API_KEY="your_api_key_here" \
+     -e AZURE_OPENAI_ENDPOINT="your_endpoint_here" \
+     -v "$(pwd):/app/workspace" \
+     -v "$HOME/.azure:/root/.azure" \
+     -w /app/workspace \
+     ada-tool
+   ```
+
+3. Run ADA:
+   ```bash
+   ./run-ada.sh
+   ```
 ## Usage
 
-1. Run the script:
-    ```bash
-    python ada.py
-    ```
-
-2. Choose from the available options:
+1. Select from the available options:
    - Option 1: Convert an existing markdown file to an Exec Doc
-   - Option 2: Describe a workload to generate a new Exec Doc
-   - Option 3: Add descriptions to a shell script as an Exec Doc
-   - Option 4: Redact PII from an existing Exec Doc
-   - Option 5: Perform security vulnerability check on an Exec Doc
+   - Option 2: Generate a new Exec Doc from a workload description
+   - Option 3: Create descriptions for your shell script
+   - Option 4: Redact PII from your Doc
+   - Option 5: Perform security analysis on your Doc
+   - Option 6: Perform SEO optimization on your Doc
 
-3. Follow the prompts to provide the required information:
-   - For file conversion, provide the path to your input file
-   - For workload descriptions, describe your intended workload in detail
-   - For shell script documentation, provide the path to your script and optional context
-   - For PII redaction, provide the path to your Exec Doc
-   - For security checks, provide the path to your Exec Doc
+2. Follow the prompts for each option:
+   - For file conversion: provide the path to your source file
+   - For generating new docs: describe the workload and optionally add reference data
+   - For script documentation: provide the path to your script and context
+   - For PII redaction: provide the path to your source document
+   - For security analysis: provide the path to the document to analyze
+   - For SEO optimization: provide the path to the document to optimize
 
-4. The tool will process your request based on the selected option:
-   - For options 1 and 2, it will convert or create an Exec Doc and run tests using Innovation Engine
-   - For options 3, 4, and 5, it will generate the requested output and save it to a file
+## Output Location
 
-5. For document conversion or creation, if the tests pass successfully, the final document will be saved with proper formatting.
+- When generating a new Exec Doc (option 2), ADA creates a dedicated folder for the output
+- For all other operations, ADA saves output files in the same directory as the source file
+- Execution logs are saved in a centralized log.json file in the script directory
 
-## Script Workflow
+## Data Sources Integration
 
-1. **Initialization**: The script initializes the Azure OpenAI client and checks for required packages.
+When generating a new Exec Doc, you can incorporate content from:
+- Web URLs (HTML content will be extracted)
+- Local files (content will be read directly)
 
-2. **Option Selection**: Prompts the user to select from available options for document processing.
-
-3. **Input Collection**: Collects necessary inputs based on the selected option.
-
-4. **Processing Based on Option**:
-   - **Convert Markdown**: Converts an existing markdown file to an Exec Doc
-   - **Generate New Doc**: Creates an Exec Doc from a workload description
-   - **Document Script**: Adds detailed explanations to a shell script
-   - **Redact PII**: Removes personally identifiable information from result blocks
-   - **Security Check**: Performs comprehensive security analysis
-
-5. **For Document Conversion and Generation**:
-   - Install Innovation Engine if needed
-   - Process the document using Azure OpenAI's model
-   - Run tests on the document using Innovation Engine
-   - If tests fail, generate troubleshooting steps and attempt corrections
-   - If tests pass, finalize the document
-
-6. **Final Output**: Saves the processed document and provides the file path.
-
-7. **Dependency Generation**: Optionally identifies and creates dependency files referenced in the document.
-
-8. **Logging**: Logs execution data to `execution_log.csv`.
+These sources provide additional context for more comprehensive document generation.
 
 ## Advanced Features
 
-### Dependency File Management
-ADA can identify, generate, and manage auxiliary files referenced in your Exec Docs:
-- Automatically detects files referenced in the document
-- Creates dependency files with proper formatting based on file type
-- Tracks existing files to prevent overwriting user modifications
-- Intelligently updates dependency files when errors are detected
-- Regenerates dependencies when major document changes occur
+### Centralized Logging
+ADA maintains a comprehensive log of all operations in a centralized log.json file, tracking:
+- Document creation and conversion
+- Script documentation
+- PII redaction
+- Security analysis
+- SEO optimization
+- Success rates and execution times
 
 ### Error Resolution System
 When errors occur during testing, ADA employs a sophisticated resolution system:
-- Analyzes errors to determine if they originate in main document or dependency files
-- Uses progressive troubleshooting strategies for persistent errors
-- Only counts attempts against the maximum when fixing the main document
-- Provides specific strategies for different error patterns
+- Analyzes error messages to determine their source
+- Uses progressive troubleshooting strategies
+- Provides specific fixes for different error patterns
 - Remembers previous errors to avoid repetitive solutions
 
-### Progressive Error Strategies
-ADA uses increasingly more aggressive strategies when encountering repeated errors:
-1. Target specific issues identified in error messages
-2. Simplify complex code blocks into smaller, manageable steps
-3. Remove problematic result blocks that may be causing validation issues
-4. Try alternative commands or approaches to achieve the same result
-5. Completely redesign problematic sections with simpler implementations
-6. Remove and rebuild problematic sections from scratch
+## Requirements
 
-## Logging
-
-The script logs the following data to `execution_log.csv`:
-
-- Timestamp: The date and time when the script was run.
-- Type: The type of processing performed (file conversion, workload description, etc.).
-- Input: The path to the input file or the workload description.
-- Output: The path to the output file.
-- Number of Attempts: The number of attempts made to generate a successful document.
-- Errors Encountered: A summary of errors encountered during the process.
-- Execution Time (in seconds): The total time taken to run the script.
-- Success/Failure: Whether the script successfully generated a document without errors.
+ADA depends on the following Python packages:
+- azure-identity>=1.17.1
+- beautifulsoup4>=4.12.2
+- openai>=1.65.1
+- requests>=2.31.0
+- requests-kerberos>=0.12.0
+- requests-ntlm>=1.1.0
+- requests-toolbelt>=1.0.0
 
 ## License
 
@@ -196,8 +193,3 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 ## Contributing
 
 Please read CONTRIBUTING.md for details on our code of conduct and the process for submitting pull requests.
-
-## Acknowledgments
-
-- [OpenAI](https://openai.com/)
-- [Azure](https://azure.microsoft.com/)
