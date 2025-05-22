@@ -838,7 +838,6 @@ def analyze_error(error_log, dependency_files=[]):
                 "file": dep_file,
                 "message": error_log
             }
-    
     # If no specific dependency file is mentioned, check for patterns
     error_patterns = [
         r"Error: open (.*?): no such file or directory",
@@ -1360,7 +1359,7 @@ def redact_pii_from_doc_with_path(doc_path, output_file_path=None):
     # Use the LLM to identify and redact PII
     redaction_prompt = """Redacting PII from the output helps protect sensitive information from being inadvertently shared or exposed. This is crucial for maintaining privacy, complying with data protection regulations, and furthering the company's security posture. 
 
-    Ensure result block(s) have all the PII (Personally Identifiable Information) stricken out from them and replaced with x's. 
+    Ensure result block(s) have all the PII (Personally Identifiable Information) stricken out from them and replaced with x’s. 
 
     **Example:** 
 
@@ -2144,8 +2143,8 @@ def main():
                     f"\n\nUSER-DEFINED VARIABLE NAMES: The user has specified the following environment variable "
                     f"NAMES that you MUST prioritize using in the document where appropriate: {var_names_list}. "
                     f"When you need to define an environment variable for a concept (e.g., resource group name, location), "
-                    f"if a user-provided name seems relevant for that concept, use the user's variable name. "
-                    f"For example, if the user provides 'MY_RG' and the document needs a resource group name, use 'MY_RG' "
+                    f"if a user-provided name seems relevant for that concept, use the user's variable name. For example, "
+                    f"if the user provides 'MY_RG' and the document needs a resource group name, use 'MY_RG' "
                     f"instead of a default like 'RESOURCE_GROUP_NAME'. You are still responsible for generating the "
                     f"'export' statements and appropriate values (e.g., export MY_RG=\\\"my-resource-group$RANDOM_SUFFIX\\\" "
                     f"or export MY_LOCATION=\\\"eastus2\\\"). The primary goal is to use the user's *names*."
@@ -2493,14 +2492,14 @@ def main():
             last_success_file = os.path.join(output_folder, f"attempt_{attempt}_success.md")
             # final_file = os.path.join(output_folder, f"FINAL_OUTPUT_success.md")
             # shutil.copy2(last_success_file, final_file)
-            # Update output_file to point to final file
+            # Update output_file variable to point to final file
             output_file = last_success_file
         else:
             # For failures, create a new final file
             final_file = os.path.join(output_folder, f"FINAL_OUTPUT_failure_final.md")
             with open(final_file, "w") as f:
                 f.write(output_file_content)
-            # Update output_file to point to final file
+            # Update output_file variable to point to final file
             output_file = final_file
 
         # # Update output_file variable to point to the final file
@@ -2514,5 +2513,5 @@ def main():
 
         print_message(f"\nThe updated file is stored at: {output_file}\n")
 
-if __name__ == "__main__":
-    main()
+# if __name__ == "__main__":
+#     main()
