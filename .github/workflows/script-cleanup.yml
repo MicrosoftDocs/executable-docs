@@ -1,0 +1,54 @@
+name: Daily RG Cleanup
+
+on:
+  schedule:
+    # runs every day at 11:11 UTC
+    - cron: '11 11 * * *'
+  workflow_dispatch:
+
+permissions:
+    contents: write
+    id-token: write
+    issues: write
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 'Az CLI login'
+        uses: azure/login@v1
+        with:
+            client-id: ${{ secrets.AZURE_CLIENT_ID }}
+            tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+            subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Install jq
+        run: sudo apt-get update && sudo apt-get install -y jq
+
+      - name: Cleanup Resource Groups
+        run: |
+          echo "Fetching all resource groups in the subscription..."
+          rgs_json=$(az group list --output json)
+
+          # don’t exit on errors in this block
+          set +e
+
+          echo "Attempting to delete all resource groups..."
+          echo "$rgs_json" |
+            jq -r '.[] | .name' |
+            while read -r rg_name; do
+              if [[ -z "$rg_name" ]]; then
+                echo "Skipping empty resource group name."
+                continue
+              fi
+              echo -n "Deleting $rg_name… "
+              az group delete \
+                --name "$rg_name" \
+                --yes \
+                --no-wait \
+                && echo "OK" \
+                || echo "⚠️ Skipped (deny-assignment or other error)"
+            done
+
+          # restore “exit on error” if you need it later
+          set -e
