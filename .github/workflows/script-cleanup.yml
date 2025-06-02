@@ -29,13 +29,13 @@ jobs:
         run: |
           echo "Fetching all resource groups in the subscription..."
           rgs_json=$(az group list --output json)
-
-          # don’t exit on errors in this block
+          
+          # don't exit on errors in this block
           set +e
-
-          echo "Attempting to delete all resource groups..."
+          
+          echo "Attempting to delete all resource groups except 'exec-docs-ai'..."
           echo "$rgs_json" |
-            jq -r '.[] | .name' |
+            jq -r '.[] | select(.name != "exec-docs-ai") | .name' |
             while read -r rg_name; do
               if [[ -z "$rg_name" ]]; then
                 echo "Skipping empty resource group name."
@@ -49,6 +49,6 @@ jobs:
                 && echo "OK" \
                 || echo "⚠️ Skipped (deny-assignment or other error)"
             done
-
-          # restore “exit on error” if you need it later
+          
+          # restore "exit on error" if you need it later
           set -e
