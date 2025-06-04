@@ -1,18 +1,18 @@
 {
     "info": {
         "Creation Date": "2025-05-06 13:27:28",
-        "Last Modified Date": "2025-05-20 22:53:58",
-        "Total Operations": 22,
-        "Success Rate": 0.32,
+        "Last Modified Date": "2025-06-04 10:07:36",
+        "Total Operations": 42,
+        "Success Rate": 0.43,
         "Operation Summary": {
             "doc_creation": 0,
-            "doc_conversion": 22,
+            "doc_conversion": 42,
             "script_documentation": 0,
             "security_analysis": 0,
             "pii_redaction": 0,
             "seo_optimization": 0
         },
-        "Total Execution Time (in seconds)": 23751
+        "Total Execution Time (in seconds)": 27107
     },
     "doc_conversion": [
         {
@@ -278,6 +278,246 @@
             "Result": "Success",
             "Project Folder": "untested/azure_kubernetes_service_aks_managed_",
             "User Intent": "User intends to deploy and configure a managed NGINX ingress controller on Azure Kubernetes Service (AKS) using the application routing add-on."
+        },
+        {
+            "Timestamp": "2025-06-01 19:09:09",
+            "Type": "file",
+            "Input": "untested/view_kubelet_logs_in_azure_kubernetes/view_kubelet_logs_in_azure_kubernetes.md",
+            "Output": "untested/view_kubelet_logs_in_azure_kubernetes/attempt_1_success.md",
+            "Attempt Number": 1,
+            "Errors Encountered": "",
+            "Execution Time (in seconds)": 10,
+            "Result": "Success",
+            "Project Folder": "untested/view_kubelet_logs_in_azure_kubernetes",
+            "User Intent": "User intends to view and troubleshoot kubelet logs on AKS cluster nodes."
+        },
+        {
+            "Timestamp": "2025-06-01 22:46:36",
+            "Type": "file",
+            "Input": "untested/cluster_autoscaler_fails_to_scale_wit/cluster_autoscaler_fails_to_scale_wit.md",
+            "Output": "untested/cluster_autoscaler_fails_to_scale_wit/attempt_1_failure.md",
+            "Attempt Number": 1,
+            "Errors Encountered": "time=2025-06-01T22:46:36-07:00 level=error msg=Error executing scenario: command exited with 'exit status 1' and the message 'WARNING: The behavior of this command has been altered by the following extension: aks-preview\nERROR: The command failed with an unexpected error. Here is the traceback:\nERROR: \nTraceback (most recent call last):\n  File \"/opt/az/lib/python3.11/site-packages/knack/cli.py\", line 233, in invoke\n    cmd_result = self.invocation.execute(args)\n                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/az/lib/python3.11/site-packages/azure/cli/core/commands/__init__.py\", line 666, in execute\n    raise ex\n  File \"/opt/az/lib/python3.11/site-packages/azure/cli/core/commands/__init__.py\", line 733, in _run_jobs_serially\n    results.append(self._run_job(expanded_arg, cmd_copy))\n                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/az/lib/python3.11/site-packages/azure/cli/core/commands/__init__.py\", line 703, in _run_job\n    result = cmd_copy(params)\n             ^^^^^^^^^^^^^^^^\n  File \"/opt/az/lib/python3.11/site-packages/azure/cli/core/commands/__init__.py\", line 336, in __call__\n    return self.handler(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/az/lib/python3.11/site-packages/azure/cli/core/commands/command_operation.py\", line 121, in handler\n    return op(**command_args)\n           ^^^^^^^^^^^^^^^^^^\n  File \"/root/.azure/cliextensions/aks-preview/azext_aks_preview/custom.py\", line 945, in aks_update\n    mc = aks_update_decorator.update_mc_profile_preview()\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/root/.azure/cliextensions/aks-preview/azext_aks_preview/managed_cluster_decorator.py\", line 5334, in update_mc_profile_preview\n    mc = self.update_mc_profile_default()\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/az/lib/python3.11/site-packages/azure/cli/command_modules/acs/managed_cluster_decorator.py\", line 8439, in update_mc_profile_default\n    self.check_raw_parameters()\n  File \"/root/.azure/cliextensions/aks-preview/azext_aks_preview/managed_cluster_decorator.py\", line 3997, in check_raw_parameters\n    if prompt_y_n(reconcile_prompt, default=\"n\"):\n       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/az/lib/python3.11/site-packages/knack/prompting.py\", line 71, in prompt_y_n\n    return _prompt_bool(msg, 'y', 'n', default=default, help_string=help_string)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/az/lib/python3.11/site-packages/knack/prompting.py\", line 79, in _prompt_bool\n    verify_is_a_tty()\n  File \"/opt/az/lib/python3.11/site-packages/knack/prompting.py\", line 28, in verify_is_a_tty\n    raise NoTTYException()\nknack.prompting.NoTTYException\nTo check existing issues, please visit: https://github.com/Azure/azure-cli/issues\n'",
+            "Execution Time (in seconds)": 8,
+            "Result": "Failure",
+            "Project Folder": "untested/cluster_autoscaler_fails_to_scale_wit",
+            "User Intent": "User intends to troubleshoot and resolve the \"cannot scale cluster autoscaler enabled node pool\" error when the autoscaler fails to scale node pools in Azure Kubernetes Service."
+        },
+        {
+            "Timestamp": "2025-06-01 22:47:16",
+            "Type": "file",
+            "Input": "untested/cluster_autoscaler_fails_to_scale_wit/cluster_autoscaler_fails_to_scale_wit.md",
+            "Output": "untested/cluster_autoscaler_fails_to_scale_wit/attempt_2_failure.md",
+            "Attempt Number": 2,
+            "Errors Encountered": "time=2025-06-01T22:47:15-07:00 level=error msg=Error executing scenario: command exited with 'exit status 3' and the message 'WARNING: The behavior of this command has been altered by the following extension: aks-preview\nERROR: (ResourceGroupNotFound) Resource group 'MyAksResourceGroup' could not be found.\nCode: ResourceGroupNotFound\nMessage: Resource group 'MyAksResourceGroup' could not be found.\n'",
+            "Execution Time (in seconds)": 47,
+            "Result": "Failure",
+            "Project Folder": "untested/cluster_autoscaler_fails_to_scale_wit",
+            "User Intent": "User intends to troubleshoot and resolve the \"cannot scale cluster autoscaler enabled node pool\" error when the autoscaler fails to scale node pools in Azure Kubernetes Service."
+        },
+        {
+            "Timestamp": "2025-06-01 22:53:53",
+            "Type": "file",
+            "Input": "untested/cluster_autoscaler_fails_to_scale_wit/cluster_autoscaler_fails_to_scale_wit.md",
+            "Output": "untested/cluster_autoscaler_fails_to_scale_wit/attempt_3_success.md",
+            "Attempt Number": 3,
+            "Errors Encountered": "",
+            "Execution Time (in seconds)": 445,
+            "Result": "Success",
+            "Project Folder": "untested/cluster_autoscaler_fails_to_scale_wit",
+            "User Intent": "User intends to troubleshoot and resolve the \"cannot scale cluster autoscaler enabled node pool\" error when the autoscaler fails to scale node pools in Azure Kubernetes Service."
+        },
+        {
+            "Timestamp": "2025-06-01 22:58:19",
+            "Type": "file",
+            "Input": "untested/troubleshoot_the_health_probe_mode_fo/troubleshoot_the_health_probe_mode_fo.md",
+            "Output": "untested/troubleshoot_the_health_probe_mode_fo/attempt_1_success.md",
+            "Attempt Number": 1,
+            "Errors Encountered": "",
+            "Execution Time (in seconds)": 15,
+            "Result": "Success",
+            "Project Folder": "untested/troubleshoot_the_health_probe_mode_fo",
+            "User Intent": "User intends to diagnose and resolve issues with the health probe mode feature in Azure Kubernetes Service (AKS) cluster service load balancers."
+        },
+        {
+            "Timestamp": "2025-06-01 23:00:42",
+            "Type": "file",
+            "Input": "untested/troubleshoot_the_health_probe_mode_fo/troubleshoot_the_health_probe_mode_fo.md",
+            "Output": "untested/troubleshoot_the_health_probe_mode_fo/attempt_1_failure.md",
+            "Attempt Number": 1,
+            "Errors Encountered": "time=2025-06-01T23:00:42-07:00 level=error msg=Error executing scenario: command exited with 'exit status 3' and the message 'WARNING: Once the feature 'AKS-ClusterServiceLoadBalancerHealthProbeMode' is registered, invoking 'az provider register -n Microsoft.ContainerService' is required to get the change propagated\nERROR: (FeatureNotFound) The feature 'AKS-ClusterServiceLoadBalancerHealthProbeMode' could not be found.\nCode: FeatureNotFound\nMessage: The feature 'AKS-ClusterServiceLoadBalancerHealthProbeMode' could not be found.\n'",
+            "Execution Time (in seconds)": 12,
+            "Result": "Failure",
+            "Project Folder": "untested/troubleshoot_the_health_probe_mode_fo",
+            "User Intent": "User intends to diagnose and resolve issues related to configuring the health probe mode for load balancers in an Azure Kubernetes Service (AKS) cluster."
+        },
+        {
+            "Timestamp": "2025-06-01 23:02:04",
+            "Type": "file",
+            "Input": "untested/troubleshoot_the_health_probe_mode_fo/troubleshoot_the_health_probe_mode_fo.md",
+            "Output": "untested/troubleshoot_the_health_probe_mode_fo/attempt_2_failure.md",
+            "Attempt Number": 2,
+            "Errors Encountered": "time=2025-06-01T23:02:04-07:00 level=error msg=Error executing scenario: command exited with 'exit status 3' and the message 'WARNING: Once the feature 'AKS-ClusterServiceLoadBalancerHealthProbeMode' is registered, invoking 'az provider register -n Microsoft.ContainerService' is required to get the change propagated\nERROR: (FeatureNotFound) The feature 'AKS-ClusterServiceLoadBalancerHealthProbeMode' could not be found.\nCode: FeatureNotFound\nMessage: The feature 'AKS-ClusterServiceLoadBalancerHealthProbeMode' could not be found.\n'",
+            "Execution Time (in seconds)": 94,
+            "Result": "Failure",
+            "Project Folder": "untested/troubleshoot_the_health_probe_mode_fo",
+            "User Intent": "User intends to diagnose and resolve issues related to configuring the health probe mode for load balancers in an Azure Kubernetes Service (AKS) cluster."
+        },
+        {
+            "Timestamp": "2025-06-01 23:05:19",
+            "Type": "file",
+            "Input": "untested/troubleshoot_the_health_probe_mode_fo/troubleshoot_the_health_probe_mode_fo.md",
+            "Output": "untested/troubleshoot_the_health_probe_mode_fo/attempt_3_success.md",
+            "Attempt Number": 3,
+            "Errors Encountered": "",
+            "Execution Time (in seconds)": 290,
+            "Result": "Success",
+            "Project Folder": "untested/troubleshoot_the_health_probe_mode_fo",
+            "User Intent": "User intends to diagnose and resolve issues related to configuring the health probe mode for load balancers in an Azure Kubernetes Service (AKS) cluster."
+        },
+        {
+            "Timestamp": "2025-06-03 18:59:30",
+            "Type": "file",
+            "Input": "untested/tcp_10250_io_timeout_errors_when_conn/tcp_10250_io_timeout_errors_when_conn.md",
+            "Output": "untested/tcp_10250_io_timeout_errors_when_conn/attempt_1_failure.md",
+            "Attempt Number": 1,
+            "Errors Encountered": "time=2025-06-03T18:59:30-07:00 level=error msg=Error executing scenario: command exited with 'exit status 2' and the message 'bash: -c: line 2: syntax error near unexpected token `newline'\n'",
+            "Execution Time (in seconds)": 4,
+            "Result": "Failure",
+            "Project Folder": "untested/tcp_10250_io_timeout_errors_when_conn",
+            "User Intent": "User intends to troubleshoot and resolve TCP 10250 I/O timeout errors when retrieving pod logs in an Azure Kubernetes Service (AKS) cluster."
+        },
+        {
+            "Timestamp": "2025-06-03 19:00:30",
+            "Type": "file",
+            "Input": "untested/tcp_10250_io_timeout_errors_when_conn/tcp_10250_io_timeout_errors_when_conn.md",
+            "Output": "untested/tcp_10250_io_timeout_errors_when_conn/attempt_2_success.md",
+            "Attempt Number": 2,
+            "Errors Encountered": "",
+            "Execution Time (in seconds)": 63,
+            "Result": "Success",
+            "Project Folder": "untested/tcp_10250_io_timeout_errors_when_conn",
+            "User Intent": "User intends to troubleshoot and resolve TCP 10250 I/O timeout errors when retrieving pod logs in an Azure Kubernetes Service (AKS) cluster."
+        },
+        {
+            "Timestamp": "2025-06-03 19:56:19",
+            "Type": "file",
+            "Input": "untested/resize_azure_kubernetes_service_aks_c/resize_azure_kubernetes_service_aks_c.md",
+            "Output": "untested/resize_azure_kubernetes_service_aks_c/attempt_1_success.md",
+            "Attempt Number": 1,
+            "Errors Encountered": "",
+            "Execution Time (in seconds)": 237,
+            "Result": "Success",
+            "Project Folder": "untested/resize_azure_kubernetes_service_aks_c",
+            "User Intent": "User intends to resize their Azure Kubernetes Service (AKS) cluster to better match workload demands and optimize resources."
+        },
+        {
+            "Timestamp": "2025-06-03 20:01:42",
+            "Type": "file",
+            "Input": "untested/troubleshoot_the_k8sapiserverdnslooku/troubleshoot_the_k8sapiserverdnslooku.md",
+            "Output": "untested/troubleshoot_the_k8sapiserverdnslooku/attempt_1_success.md",
+            "Attempt Number": 1,
+            "Errors Encountered": "",
+            "Execution Time (in seconds)": 140,
+            "Result": "Success",
+            "Project Folder": "untested/troubleshoot_the_k8sapiserverdnslooku",
+            "User Intent": "User intends to troubleshoot and resolve the K8SAPIServerDNSLookupFailVMExtensionError (error code 52) when starting or deploying an Azure Kubernetes Service (AKS) cluster."
+        },
+        {
+            "Timestamp": "2025-06-04 09:38:59",
+            "Type": "file",
+            "Input": "untested/troubleshoot_cluster_upgrading_and_sc/troubleshoot_cluster_upgrading_and_sc.md",
+            "Output": "untested/troubleshoot_cluster_upgrading_and_sc/attempt_1_success.md",
+            "Attempt Number": 1,
+            "Errors Encountered": "",
+            "Execution Time (in seconds)": 13,
+            "Result": "Success",
+            "Project Folder": "untested/troubleshoot_cluster_upgrading_and_sc",
+            "User Intent": "User intends to troubleshoot and resolve errors that occur during the upgrading or scaling of an Azure Kubernetes Service (AKS) cluster."
+        },
+        {
+            "Timestamp": "2025-06-04 09:43:54",
+            "Type": "file",
+            "Input": "untested/tcp_time_outs_when_kubectl_other_3rd_/tcp_time_outs_when_kubectl_other_3rd_.md",
+            "Output": "untested/tcp_time_outs_when_kubectl_other_3rd_/attempt_1_failure.md",
+            "Attempt Number": 1,
+            "Errors Encountered": "time=2025-06-04T09:43:54-07:00 level=error msg=Error executing scenario: command exited with 'exit status 1' and the message 'E0604 09:43:54.667340  706541 memcache.go:265] \"Unhandled Error\" err=\"couldn't get current server API group list: Get \\\"https://aks-cluste-aks-rg-325e7c-oaibau6r.hcp.eastus2.azmk8s.io:443/api?timeout=32s\\\": dial tcp: lookup aks-cluste-aks-rg-325e7c-oaibau6r.hcp.eastus2.azmk8s.io on 10.255.255.254:53: no such host\"\nE0604 09:43:54.681305  706541 memcache.go:265] \"Unhandled Error\" err=\"couldn't get current server API group list: Get \\\"https://aks-cluste-aks-rg-325e7c-oaibau6r.hcp.eastus2.azmk8s.io:443/api?timeout=32s\\\": dial tcp: lookup aks-cluste-aks-rg-325e7c-oaibau6r.hcp.eastus2.azmk8s.io on 10.255.255.254:53: no such host\"\nE0604 09:43:54.694416  706541 memcache.go:265] \"Unhandled Error\" err=\"couldn't get current server API group list: Get \\\"https://aks-cluste-aks-rg-325e7c-oaibau6r.hcp.eastus2.azmk8s.io:443/api?timeout=32s\\\": dial tcp: lookup aks-cluste-aks-rg-325e7c-oaibau6r.hcp.eastus2.azmk8s.io on 10.255.255.254:53: no such host\"\nE0604 09:43:54.710527  706541 memcache.go:265] \"Unhandled Error\" err=\"couldn't get current server API group list: Get \\\"https://aks-cluste-aks-rg-325e7c-oaibau6r.hcp.eastus2.azmk8s.io:443/api?timeout=32s\\\": dial tcp: lookup aks-cluste-aks-rg-325e7c-oaibau6r.hcp.eastus2.azmk8s.io on 10.255.255.254:53: no such host\"\nE0604 09:43:54.728505  706541 memcache.go:265] \"Unhandled Error\" err=\"couldn't get current server API group list: Get \\\"https://aks-cluste-aks-rg-325e7c-oaibau6r.hcp.eastus2.azmk8s.io:443/api?timeout=32s\\\": dial tcp: lookup aks-cluste-aks-rg-325e7c-oaibau6r.hcp.eastus2.azmk8s.io on 10.255.255.254:53: no such host\"\nUnable to connect to the server: dial tcp: lookup aks-cluste-aks-rg-325e7c-oaibau6r.hcp.eastus2.azmk8s.io on 10.255.255.254:53: no such host\n'",
+            "Execution Time (in seconds)": 12,
+            "Result": "Failure",
+            "Project Folder": "untested/tcp_time_outs_when_kubectl_other_3rd_",
+            "User Intent": "User intends to troubleshoot TCP connection time-outs when kubectl or third-party tools connect to the Azure Kubernetes Service (AKS) API server."
+        },
+        {
+            "Timestamp": "2025-06-04 09:56:00",
+            "Type": "file",
+            "Input": "untested/tcp_time_outs_when_kubectl_other_3rd_/tcp_time_outs_when_kubectl_other_3rd_.md",
+            "Output": "untested/tcp_time_outs_when_kubectl_other_3rd_/attempt_2_failure.md",
+            "Attempt Number": 2,
+            "Errors Encountered": "time=2025-06-04T09:56:00-07:00 level=error msg=Error executing scenario: command exited with 'exit status 1' and the message 'WARNING: The behavior of this command has been altered by the following extension: aks-preview\nERROR: A different object named aks-cluster already exists in clusters in your kubeconfig file.\n'",
+            "Execution Time (in seconds)": 738,
+            "Result": "Failure",
+            "Project Folder": "untested/tcp_time_outs_when_kubectl_other_3rd_",
+            "User Intent": "User intends to troubleshoot TCP connection time-outs when kubectl or third-party tools connect to the Azure Kubernetes Service (AKS) API server."
+        },
+        {
+            "Timestamp": "2025-06-04 10:00:06",
+            "Type": "file",
+            "Input": "untested/tcp_time_outs_when_kubectl_other_3rd_/tcp_time_outs_when_kubectl_other_3rd_.md",
+            "Output": "untested/tcp_time_outs_when_kubectl_other_3rd_/attempt_3_success.md",
+            "Attempt Number": 3,
+            "Errors Encountered": "",
+            "Execution Time (in seconds)": 984,
+            "Result": "Success",
+            "Project Folder": "untested/tcp_time_outs_when_kubectl_other_3rd_",
+            "User Intent": "User intends to troubleshoot TCP connection time-outs when kubectl or third-party tools connect to the Azure Kubernetes Service (AKS) API server."
+        },
+        {
+            "Timestamp": "2025-06-04 10:03:49",
+            "Type": "file",
+            "Input": "untested/control_cluster_access_using_conditio/control_cluster_access_using_conditio.md",
+            "Output": "untested/control_cluster_access_using_conditio/attempt_1_failure.md",
+            "Attempt Number": 1,
+            "Errors Encountered": "time=2025-06-04T10:03:49-07:00 level=error msg=Error executing scenario: Expected output does not match actual output.\nGot:                                         \n                                           \nExpected:                                    \nMerged \"$AKS_CLUSTER\" as current context in /home/xxxxx/.kube/config\n                                                                                                               \nExpected Score:0.300000                            \nActual Score:0.000000",
+            "Execution Time (in seconds)": 12,
+            "Result": "Failure",
+            "Project Folder": "untested/control_cluster_access_using_conditio",
+            "User Intent": "User intends to enable and manage Conditional Access for AKS clusters integrated with Microsoft Entra ID."
+        },
+        {
+            "Timestamp": "2025-06-04 10:05:12",
+            "Type": "file",
+            "Input": "untested/control_cluster_access_using_conditio/control_cluster_access_using_conditio.md",
+            "Output": "untested/control_cluster_access_using_conditio/attempt_2_failure.md",
+            "Attempt Number": 2,
+            "Errors Encountered": "time=2025-06-04T10:05:12-07:00 level=error msg=Error executing scenario: Expected output does not match actual output.\nGot:                                         \n                                           \nExpected:                                    \nMerged \"$AKS_CLUSTER\" as current context in /home/xxxxx/.kube/config\n                                                                                                               \nExpected Score:0.300000                            \nActual Score:0.000000",
+            "Execution Time (in seconds)": 95,
+            "Result": "Failure",
+            "Project Folder": "untested/control_cluster_access_using_conditio",
+            "User Intent": "User intends to enable and manage Conditional Access for AKS clusters integrated with Microsoft Entra ID."
+        },
+        {
+            "Timestamp": "2025-06-04 10:05:40",
+            "Type": "file",
+            "Input": "untested/control_cluster_access_using_conditio/control_cluster_access_using_conditio.md",
+            "Output": "untested/control_cluster_access_using_conditio/attempt_3_success.md",
+            "Attempt Number": 3,
+            "Errors Encountered": "",
+            "Execution Time (in seconds)": 124,
+            "Result": "Success",
+            "Project Folder": "untested/control_cluster_access_using_conditio",
+            "User Intent": "User intends to enable and manage Conditional Access for AKS clusters integrated with Microsoft Entra ID."
+        },
+        {
+            "Timestamp": "2025-06-04 10:07:27",
+            "Type": "file",
+            "Input": "untested/enable_host_based_encryption_on_azure/enable_host_based_encryption_on_azure.md",
+            "Output": "untested/enable_host_based_encryption_on_azure/attempt_1_success.md",
+            "Attempt Number": 1,
+            "Errors Encountered": "",
+            "Execution Time (in seconds)": 13,
+            "Result": "Success",
+            "Project Folder": "untested/enable_host_based_encryption_on_azure",
+            "User Intent": "User intends to configure host-based encryption for data at rest on Azure Kubernetes Service (AKS) clusters."
         }
     ]
 }

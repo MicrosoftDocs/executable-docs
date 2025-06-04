@@ -4,8 +4,9 @@ description: Diagnoses and fixes common issues with the health probe mode featur
 ms.date: 06/03/2024
 ms.reviewer: niqi, cssakscic, v-weizhu
 ms.service: azure-kubernetes-service
-ms.custom: sap:Node/node pool availability and performance, devx-track-azurecli
+ms.custom: sap:Node/node pool availability and performance, devx-track-azurecli, innovation-engine
 ---
+
 # Troubleshoot issues when enabling the AKS cluster service health probe mode
 
 The health probe mode feature allows you to configure how Azure Load Balancer probes the health of the nodes in your Azure Kubernetes Service (AKS) cluster. You can choose between two modes: Shared and ServiceNodePort. The Shared mode uses a single health probe for all external traffic policy cluster services that use the same load balancer. In contrast, the ServiceNodePort mode uses a separate health probe for each service. The Shared mode can reduce the number of health probes and improve the performance of the load balancer, but it requires some additional components to work properly. To enable this feature, see [How to enable the health probe mode feature using the Azure CLI](#how-to-enable-the-health-probe-mode-feature-using-the-azure-cli).
@@ -74,6 +75,30 @@ The health probe mode feature requires you to register the feature on your subsc
 
 Make sure you register the feature for your subscription before creating or updating your cluster. You can use the `az feature register` command to register the feature. 
 
+Below is an example of registering a feature for your Azure subscription. 
+
+```azurecli
+export FEATURE_NAME="AKS-ClusterServiceLoadBalancerHealthProbeMode"
+export PROVIDER_NAMESPACE="Microsoft.ContainerService"
+az feature register --name $FEATURE_NAME --namespace $PROVIDER_NAMESPACE
+```
+
+Results:
+
+<!-- expected_similarity=0.3 -->
+
+```output
+{
+  "id": "/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/providers/Microsoft.Features/providers/Microsoft.ContainerService/features/AKS-ClusterServiceLoadBalancerHealthProbeMode",
+  "name": "Microsoft.ContainerService/AKS-ClusterServiceLoadBalancerHealthProbeMode",
+  "properties": {
+    "state": "Registering",
+    "serviceId": null
+  },
+  "type": "Microsoft.Features/providers/features"
+}
+```
+
 ## Cause 5: The Kubernetes version is earlier than v1.28.0
 
 The health probe mode feature requires a minimum Kubernetes version of v1.28.0. If you use an older version, the feature won't work. 
@@ -88,10 +113,22 @@ For Windows, the kube-proxy component doesn't start until you create the first n
 
 ## How to enable the health probe mode feature using the Azure CLI
 
-To enable the health probe mode feature, run one of the following commands:
+To enable the health probe mode feature, run one of the following commands.
 
-- `az aks create/update --cluster-service-load-balancer-health-probe-mode Shared`
+Enable `ServiceNodePort` health probe mode (default) for a cluster:
 
-- `az aks create/update --cluster-service-load-balancer-health-probe-mode ServiceNodePort (default)`
+```azurecli
+export RESOURCE_GROUP="aks-rg"
+export AKS_CLUSTER_NAME="aks-cluster"
+az aks update --resource-group $RESOURCE_GROUP --name $AKS_CLUSTER_NAME --cluster-service-load-balancer-health-probe-mode ServiceNodePort 
+```
+
+Enable `Shared` health probe mode for a cluster:
+
+```shell
+export RESOURCE_GROUP="MyAksResourceGroup"
+export AKS_CLUSTER_NAME="MyAksCluster"
+az aks update --resource-group $RESOURCE_GROUP --name $AKS_CLUSTER_NAME --cluster-service-load-balancer-health-probe-mode Shared
+```
 
 [!INCLUDE [Azure Help Support](../../../includes/azure-help-support.md)] 

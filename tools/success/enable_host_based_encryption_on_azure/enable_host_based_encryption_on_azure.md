@@ -37,7 +37,7 @@ Before you begin, review the following prerequisites and limitations.
 
 - Create a new cluster and configure the cluster agent nodes to use host-based encryption using the [`az aks create`][az-aks-create] command with the `--enable-encryption-at-host` flag.
 
-    ```azurecli-interactive
+    ```shell
     az aks create \
         --name myAKSCluster \
         --resource-group myResourceGroup \

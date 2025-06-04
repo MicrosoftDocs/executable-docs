@@ -186,14 +186,14 @@ Check if all prerequisites below are met before writing the Exec Doc. ***If any 
     **Example:** 
 
     ```bash  
-    export RANDOM_SUFFIX=$(openssl rand -hex 3)
+    export RANDOM_SUFFIX=$(head -c 3 /dev/urandom | xxd -p)
     export REGION="eastus"
     az group create --name "MyResourceGroup$RANDOM_SUFFIX" --location $REGION
     ```
 
     >**Note:** Add a random suffix to relevant variables that are likely to be unique for each deployment, such as resource group names, VM names, and other resources that need to be uniquely identifiable. However, do not add a random suffix to variables that are constant or environment-specific, such as region, username, or configuration settings that do not change between deployments. 
     
-    >**Note:** You can generate your own random suffix or use the one provided in the example above. The `openssl rand -hex 3` command generates a random 3-character hexadecimal string. This string is then appended to the resource group name to ensure that the resource group name is unique for each deployment.
+    >**Note:** You can generate your own random suffix or use the one provided in the example above. The `head -c 3 /dev/urandom | xxd -p` command generates a random 3-character hexadecimal string. This string is then appended to the resource group name to ensure that the resource group name is unique for each deployment.
 
 14. In Exec Docs, result blocks are distinguished by a custom expected_similarity comment tag followed by a code block. These result blocks indicate to Innovation Engine what the minimum degree of similarity should be between the actual and the expected output of a code block (one which returns something in the terminal that is relevant to benchmark against). Learn More: [Result Blocks](https://github.com/Azure/InnovationEngine/blob/main/README.md#result-blocks). 
 
@@ -227,7 +227,6 @@ Check if all prerequisites below are met before writing the Exec Doc. ***If any 
                 "type": "Microsoft.Resources/resourceGroups"
             }}
             ```
-        ```
     - If you run into an error while executing a code block or the code block is running in an infinite loop, update the Exec Doc based on the error stack trace, restart/clear Cloudshell, and rerun the command block(s) from the start until you reach that command block. This is done to override any potential issues that may have occurred during the initial run. More guidance is given in the [FAQ section](#frequently-asked-questions-faqs) below.
     
     >**Note:** The expected similarity value is a percentage of similarity between 0 and 1 which specifies how closely the true output needs to match the template output given in the results block - 0 being no similarity, 1 being an exact match. If you are uncertain about the value, it is recommended to set the expected similarity to 0.3 i.e. 30% expected similarity to account for small variations. Once you have run the command multiple times and are confident that the output is consistent, you can adjust the expected similarity value accordingly.
@@ -273,7 +272,7 @@ Check if all prerequisites below are met before writing the Exec Doc. ***If any 
 17. If the original document lists a prerequisite resource (such as an AKS cluster, VM, storage account, etc.), you MUST NOT add any new commands to create that resource in the Exec Doc.
 
     - **Example:** If the doc says "This article assumes you have an existing AKS cluster," do NOT add `az aks create` or any equivalent cluster creation commands. Only include steps for interacting with or managing the existing resource.
-    - This rule applies to any resource type, not just AKS. Always respect explicit prerequisites and never override them by adding creation steps.
+    - This rule applies to any resource type, not just AKS. Always respect explicit prerequisites and never override them by adding creation steps for that resource.
     - If the prerequisite is stated in any form (e.g., "Before you begin, create a resource group"), treat that resource as pre-existing and do not add creation commands for it.
     - If you are unsure whether a resource should be created, always preserve the prerequisite as stated and avoid introducing creation commands for that resource.
 
@@ -1830,7 +1829,7 @@ def main():
             input_type = 'file'
             with open(user_input, "r") as f:
                 input_content = f.read()
-                input_content = f"CONVERT THE FOLLOWING EXISTING DOCUMENT INTO AN EXEC DOC. THIS IS A CONVERSION TASK, NOT CREATION FROM SCRATCH. DON'T EXPLAIN WHAT YOU ARE DOING BEHIND THE SCENES INSIDE THE DOC. PRESERVE ALL ORIGINAL CONTENT, STRUCTURE, AND NARRATIVE OUTSIDE OF CODE BLOCKS. CRITICALLY IMPORTANT: NEVER CHANGE THE LANGUAGE TYPE OF CODE BLOCKS (e.g., from 'shell' to 'bash'). KEEP THE EXACT SAME LANGUAGE IDENTIFIER AFTER TRIPLE BACKTICKS AS IN THE ORIGINAL DOCUMENT:\n\n{input_content}"
+                input_content = f"CONVERT THE FOLLOWING EXISTING DOCUMENT INTO AN EXEC DOC. THIS IS A CONVERSION TASK, NOT CREATION FROM SCRATCH. DON'T EXPLAIN WHAT YOU ARE DOING BEHIND THE SCENES INSIDE THE DOC. PRESERVE ALL ORIGINAL CONTENT, STRUCTURE, AND NARRATIVE OUTSIDE OF CODE BLOCKS. CRITICALLY IMPORTANT: NEVER CHANGE THE LANGUAGE TYPE OF CODE BLOCKS. KEEP THE EXACT SAME LANGUAGE IDENTIFIER AFTER TRIPLE BACKTICKS AS IN THE ORIGINAL DOCUMENT:\n\n{input_content}"
             # We'll generate dependency files later in the process
             dependency_files = []
             generate_deps = input("\nMake new files referenced in the doc for its execution? (y/n): ").lower() == 'y'
@@ -2129,6 +2128,7 @@ def main():
         success = False
         dependency_files_generated = False
         additional_instruction = ""
+        user_edited_content = None  # Add this line to initialize the flag
 
         while attempt <= max_attempts:
             iteration_start_time = time.time()
@@ -2150,6 +2150,7 @@ def main():
                     f"or export MY_LOCATION=\\\"eastus2\\\"). The primary goal is to use the user's *names*."
                 )
             
+
             if attempt == 1:
                 print_header(f"Attempt {attempt}: Generating Exec Doc", "-")
 
@@ -2178,42 +2179,50 @@ def main():
             else:
                 print_header(f"Attempt {attempt}: Fixing Exec Doc", "-")
                 
-                # Analyze if the error is in the main doc or in dependency files
-                error_analysis = analyze_error(errors_text, dependency_files)
-                
-                if error_analysis["type"] == "dependency_file" and error_analysis["file"]:
-                    # If error is in a dependency file, try to fix it
-                    dep_file = error_analysis["file"]
-                    print_message(f"\nDetected issue in dependency file: {dep_file['filename']}")
-                    update_dependency_file(dep_file, error_analysis["message"], output_file)
-                    made_dependency_change = True  # Set the flag
-                else:
-                    # If error is in main doc or unknown, update the main doc
-                    user_prompt_for_fix = (
-                        f"The following error(s) have occurred during testing:\n{errors_text}\n{additional_instruction}\n\n"
-                        f"Please carefully analyze these errors and make necessary corrections to the document to prevent them "
-                        f"from happening again. Try to find different solutions if the same errors keep occurring. \n"
-                        f"IMPORTANT: NEVER change the code block language types (e.g., do not change 'shell' to 'bash'). "
-                        f"Keep the exact same language identifier after triple backticks as in the current document."
-                        f"{llm_variable_instruction}" # Add variable instruction here as well
-                        f"\nGiven that context, please think hard and don't hurry. I want you to correct the converted document "
-                        f"in ALL instances where this error has been or can be found. Then, correct ALL other errors apart "
-                        f"from this that you see in the doc. ONLY GIVE THE UPDATED DOC, NOTHING ELSE"
-                    )
-                    response = client.chat.completions.create(
-                        model=deployment_name,
-                        messages=[
-                            {"role": "system", "content": system_prompt},
-                            {"role": "user", "content": input_content},
-                            {"role": "assistant", "content": output_file_content},
-                            {"role": "user", "content": user_prompt_for_fix}
-                        ]
-                    )
-                    output_file_content = response.choices[0].message.content
-
+                # Check if this is a retry after user feedback with document edits only
+                if attempt > 1 and 'user_edited_content' in locals() and user_edited_content:
+                    print_message("\nUsing your directly edited version without AI modifications...")
+                    output_file_content = user_edited_content
                     with open(output_file, "w") as f:
                         f.write(output_file_content)
-                        
+                    # Clear the flag
+                    user_edited_content = None
+                else:
+                    # Analyze if the error is in the main doc or in dependency files
+                    error_analysis = analyze_error(errors_text, dependency_files)
+                    
+                    if error_analysis["type"] == "dependency_file" and error_analysis["file"]:
+                        # If error is in a dependency file, try to fix it
+                        dep_file = error_analysis["file"]
+                        print_message(f"\nDetected issue in dependency file: {dep_file['filename']}")
+                        update_dependency_file(dep_file, error_analysis["message"], output_file)
+                        made_dependency_change = True  # Set the flag
+                    else:
+                        # If error is in main doc or unknown, update the main doc
+                        user_prompt_for_fix = (
+                            f"The following error(s) have occurred during testing:\n{errors_text}\n{additional_instruction}\n\n"
+                            f"Please carefully analyze these errors and make necessary corrections to the document to prevent them "
+                            f"from happening again. Try to find different solutions if the same errors keep occurring. \n"
+                            f"IMPORTANT: NEVER change the code block language types "
+                            f"Keep the exact same language identifier after triple backticks as in the current document."
+                            f"{llm_variable_instruction}" # Add variable instruction here as well
+                            f"\nGiven that context, please think hard and don't hurry. I want you to correct the converted document "
+                            f"in ALL instances where this error has been or can be found. Then, correct ALL other errors apart "
+                            f"from this that you see in the doc. ONLY GIVE THE UPDATED DOC, NOTHING ELSE"
+                        )
+                        response = client.chat.completions.create(
+                            model=deployment_name,
+                            messages=[
+                                {"role": "system", "content": system_prompt},
+                                {"role": "user", "content": input_content},
+                                {"role": "assistant", "content": output_file_content},
+                                {"role": "user", "content": user_prompt_for_fix}
+                            ]
+                        )
+                        output_file_content = response.choices[0].message.content
+
+                        with open(output_file, "w") as f:
+                            f.write(output_file_content)    
                     # Check if we need to regenerate dependency files after updating main doc
                     if generate_deps and dependency_files_generated:
                         # Regenerate dependency files if major changes were made to the main doc
@@ -2235,9 +2244,9 @@ def main():
                 var_names = extract_aks_env_vars(output_file)
                 ie_cmd = [
                     "ie", "execute", output_file,
-                    "--var", f"{var_names['resource_group']}=aks-tc-rged8996",
-                    "--var", f"{var_names['cluster_name']}=aks-tc-clustered8996",
-                    "--var", f"{var_names['region']}=canadacentral"
+                    "--var", f"{var_names['resource_group']}=aks-rg",
+                    "--var", f"{var_names['cluster_name']}=aks-cluster",
+                    "--var", f"{var_names['region']}=eastus2"
                 ]
             else:
                 print_header(f"Running Innovation Engine tests", "-")
@@ -2268,8 +2277,8 @@ def main():
                     iteration_file, 
                     attempt, 
                     "", # No errors in successful run
-                    iteration_start_time, 
-                    True
+                    start_time,
+                    True  # Assume success
                 )
                 all_iterations_data.append(iteration_data)
 
@@ -2368,7 +2377,7 @@ def main():
                     iteration_file, 
                     attempt, 
                     iteration_errors_text,  # Only errors from this iteration
-                    iteration_start_time, 
+                    start_time, 
                     False
                 )
                 all_iterations_data.append(iteration_data)
@@ -2442,6 +2451,9 @@ def main():
                             # Only document edits - no need to call LLM again
                             revised_content = feedback["doc_edit"]
                             
+                            # Set a flag for the next iteration to use this content directly
+                            user_edited_content = revised_content
+                            
                             # Just use the user's edited version directly
                             output_file_content = revised_content
                             
@@ -2513,5 +2525,5 @@ def main():
 
         print_message(f"\nThe updated file is stored at: {output_file}\n")
 
-# if __name__ == "__main__":
-#     main()
+if __name__ == "__main__":
+    main()
