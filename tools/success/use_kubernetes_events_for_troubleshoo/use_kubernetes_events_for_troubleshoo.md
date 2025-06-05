@@ -67,10 +67,10 @@ For more information, see the official [Kubernetes documentation][k8s-events].
 
 You might have various namespaces and services running in your AKS cluster. Filtering events based on object type, namespace, or reason can help narrow down the results to the most relevant information.
 
-For example, you can use the following command to filter events within a specific namespace:
+For example, you can use the following command to filter events within the default namespace:
 
 ```bash
-kubectl get events --namespace <namespace-name>
+kubectl get events --namespace default
 ```
 
 ### Automating event notifications

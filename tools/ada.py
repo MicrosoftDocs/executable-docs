@@ -342,15 +342,35 @@ def install_innovation_engine():
 def get_last_error_log():
     log_file = "ie.log"
     if os.path.exists(log_file):
-        with open(log_file, "r") as f:
-            lines = f.readlines()
+        try:
+            with open(log_file, "rb") as f:  # Open in binary mode
+                content = f.read()
+                
+            # Try to decode as UTF-8, replacing errors
+            try:
+                text_content = content.decode('utf-8', errors='replace')
+            except:
+                # If that fails, try other encodings
+                for encoding in ['latin-1', 'cp1252', 'iso-8859-1']:
+                    try:
+                        text_content = content.decode(encoding, errors='replace')
+                        break
+                    except:
+                        continue
+                else:
+                    # If all encodings fail, convert to string representation
+                    text_content = str(content)
+            
+            lines = text_content.splitlines()
             error_index = None
             for i in range(len(lines) - 1, -1, -1):
                 if "level=error" in lines[i]:
                     error_index = i
                     break
             if error_index is not None:
-                return "".join(lines[error_index:])
+                return "\n".join(lines[error_index:])
+        except Exception as e:
+            return f"Error reading log file: {e}"
     return "No error log found."
 
 def generate_script_description(script_path, context=""):
@@ -2252,7 +2272,22 @@ def main():
                 print_header(f"Running Innovation Engine tests", "-")
                 ie_cmd = ["ie", "test", output_file]
             try:
-                result = subprocess.run(ie_cmd, capture_output=True, text=True, timeout=660)
+                result = subprocess.run(ie_cmd, capture_output=True, text=False, timeout=660)
+                try:
+                    stdout = result.stdout.decode('utf-8', errors='replace') if result.stdout else ""
+                    stderr = result.stderr.decode('utf-8', errors='replace') if result.stderr else ""
+                except UnicodeDecodeError:
+                    stdout = str(result.stdout) if result.stdout else ""
+                    stderr = str(result.stderr) if result.stderr else ""
+                
+                # Create a result-like object with decoded text
+                class DecodedResult:
+                    def __init__(self, returncode, stdout, stderr):
+                        self.returncode = returncode
+                        self.stdout = stdout
+                        self.stderr = stderr
+                
+                result = DecodedResult(result.returncode, stdout, stderr)
             except subprocess.TimeoutExpired:
                 print_message("\nThe 'ie test' command timed out after 11 minutes.")
                 errors_encountered.append("The 'ie test' command timed out after 11 minutes.")

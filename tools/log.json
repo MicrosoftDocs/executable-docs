@@ -1,18 +1,18 @@
 {
     "info": {
         "Creation Date": "2025-05-06 13:27:28",
-        "Last Modified Date": "2025-06-04 10:07:36",
-        "Total Operations": 42,
-        "Success Rate": 0.43,
+        "Last Modified Date": "2025-06-05 12:54:23",
+        "Total Operations": 48,
+        "Success Rate": 0.42,
         "Operation Summary": {
             "doc_creation": 0,
-            "doc_conversion": 42,
+            "doc_conversion": 48,
             "script_documentation": 0,
             "security_analysis": 0,
             "pii_redaction": 0,
             "seo_optimization": 0
         },
-        "Total Execution Time (in seconds)": 27107
+        "Total Execution Time (in seconds)": 28288
     },
     "doc_conversion": [
         {
@@ -518,6 +518,78 @@
             "Result": "Success",
             "Project Folder": "untested/enable_host_based_encryption_on_azure",
             "User Intent": "User intends to configure host-based encryption for data at rest on Azure Kubernetes Service (AKS) clusters."
+        },
+        {
+            "Timestamp": "2025-06-05 12:06:13",
+            "Type": "file",
+            "Input": "untested/use_kubernetes_events_for_troubleshoo/use_kubernetes_events_for_troubleshoo.md",
+            "Output": "untested/use_kubernetes_events_for_troubleshoo/attempt_1_failure.md",
+            "Attempt Number": 1,
+            "Errors Encountered": "time=2025-06-05T12:06:13-07:00 level=error msg=Error executing scenario: command exited with 'exit status 1' and the message 'E0605 12:06:13.659134  732776 memcache.go:265] \"Unhandled Error\" err=\"couldn't get current server API group list: Get \\\"https://aks-cluste-aks-rg-325e7c-rwj577vi.hcp.eastus2.azmk8s.io:443/api?timeout=32s\\\": dial tcp: lookup aks-cluste-aks-rg-325e7c-rwj577vi.hcp.eastus2.azmk8s.io on 10.255.255.254:53: no such host\"\nE0605 12:06:13.694905  732776 memcache.go:265] \"Unhandled Error\" err=\"couldn't get current server API group list: Get \\\"https://aks-cluste-aks-rg-325e7c-rwj577vi.hcp.eastus2.azmk8s.io:443/api?timeout=32s\\\": dial tcp: lookup aks-cluste-aks-rg-325e7c-rwj577vi.hcp.eastus2.azmk8s.io on 10.255.255.254:53: no such host\"\nE0605 12:06:13.706493  732776 memcache.go:265] \"Unhandled Error\" err=\"couldn't get current server API group list: Get \\\"https://aks-cluste-aks-rg-325e7c-rwj577vi.hcp.eastus2.azmk8s.io:443/api?timeout=32s\\\": dial tcp: lookup aks-cluste-aks-rg-325e7c-rwj577vi.hcp.eastus2.azmk8s.io on 10.255.255.254:53: no such host\"\nE0605 12:06:13.730742  732776 memcache.go:265] \"Unhandled Error\" err=\"couldn't get current server API group list: Get \\\"https://aks-cluste-aks-rg-325e7c-rwj577vi.hcp.eastus2.azmk8s.io:443/api?timeout=32s\\\": dial tcp: lookup aks-cluste-aks-rg-325e7c-rwj577vi.hcp.eastus2.azmk8s.io on 10.255.255.254:53: no such host\"\nE0605 12:06:13.755990  732776 memcache.go:265] \"Unhandled Error\" err=\"couldn't get current server API group list: Get \\\"https://aks-cluste-aks-rg-325e7c-rwj577vi.hcp.eastus2.azmk8s.io:443/api?timeout=32s\\\": dial tcp: lookup aks-cluste-aks-rg-325e7c-rwj577vi.hcp.eastus2.azmk8s.io on 10.255.255.254:53: no such host\"\nUnable to connect to the server: dial tcp: lookup aks-cluste-aks-rg-325e7c-rwj577vi.hcp.eastus2.azmk8s.io on 10.255.255.254:53: no such host\n'",
+            "Execution Time (in seconds)": 12,
+            "Result": "Failure",
+            "Project Folder": "untested/use_kubernetes_events_for_troubleshoo",
+            "User Intent": "User intends to learn how to use Kubernetes events to monitor and troubleshoot issues in Azure Kubernetes Service (AKS) clusters."
+        },
+        {
+            "Timestamp": "2025-06-05 12:10:05",
+            "Type": "file",
+            "Input": "untested/use_kubernetes_events_for_troubleshoo/use_kubernetes_events_for_troubleshoo.md",
+            "Output": "untested/use_kubernetes_events_for_troubleshoo/attempt_2_failure.md",
+            "Attempt Number": 2,
+            "Errors Encountered": "time=2025-06-05T12:10:05-07:00 level=error msg=Error executing scenario: command exited with 'exit status 2' and the message 'bash: -c: line 2: syntax error near unexpected token `newline'\n'",
+            "Execution Time (in seconds)": 243,
+            "Result": "Failure",
+            "Project Folder": "untested/use_kubernetes_events_for_troubleshoo",
+            "User Intent": "User intends to learn how to use Kubernetes events to monitor and troubleshoot issues in Azure Kubernetes Service (AKS) clusters."
+        },
+        {
+            "Timestamp": "2025-06-05 12:10:55",
+            "Type": "file",
+            "Input": "untested/use_kubernetes_events_for_troubleshoo/use_kubernetes_events_for_troubleshoo.md",
+            "Output": "untested/use_kubernetes_events_for_troubleshoo/attempt_3_failure.md",
+            "Attempt Number": 3,
+            "Errors Encountered": "time=2025-06-05T12:10:55-07:00 level=error msg=Error executing scenario: command exited with 'exit status 1' and the message 'WARNING: The behavior of this command has been altered by the following extension: aks-preview\nERROR: A different object named aks-cluster already exists in clusters in your kubeconfig file.\n'",
+            "Execution Time (in seconds)": 294,
+            "Result": "Failure",
+            "Project Folder": "untested/use_kubernetes_events_for_troubleshoo",
+            "User Intent": "User intends to learn how to use Kubernetes events to monitor and troubleshoot issues in Azure Kubernetes Service (AKS) clusters."
+        },
+        {
+            "Timestamp": "2025-06-05 12:11:25",
+            "Type": "file",
+            "Input": "untested/use_kubernetes_events_for_troubleshoo/use_kubernetes_events_for_troubleshoo.md",
+            "Output": "untested/use_kubernetes_events_for_troubleshoo/attempt_4_success.md",
+            "Attempt Number": 4,
+            "Errors Encountered": "",
+            "Execution Time (in seconds)": 324,
+            "Result": "Success",
+            "Project Folder": "untested/use_kubernetes_events_for_troubleshoo",
+            "User Intent": "User intends to learn how to use Kubernetes events to monitor and troubleshoot issues in Azure Kubernetes Service (AKS) clusters."
+        },
+        {
+            "Timestamp": "2025-06-05 12:49:28",
+            "Type": "file",
+            "Input": "untested/troubleshoot_container_network_interf/troubleshoot_container_network_interf.md",
+            "Output": "untested/troubleshoot_container_network_interf/attempt_1_failure.md",
+            "Attempt Number": 1,
+            "Errors Encountered": "time=2025-06-05T12:49:26-07:00 level=error msg=Error testing scenario: failed to execute code block 1 on step 0.\nError: command exited with 'exit status 23' and the message '  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current\n                                 Dload  Upload   Total   Spent    Left  Speed\n\n  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0\n  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0Warning: Failed to create the file \nWarning: /opt/cni/downloads/azure-vnet-cni-linux-amd64-v1.0.25.tgz: No such \nWarning: file or directory\n\n  0 6495k    0 16375    0     0  98503      0  0:01:07 --:--:--  0:01:07 98644\ncurl: (23) Failure writing output to destination\n'\nStdErr:   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current\n                                 Dload  Upload   Total   Spent    Left  Speed\n\n  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0\n  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0Warning: Failed to create the file \nWarning: /opt/cni/downloads/azure-vnet-cni-linux-amd64-v1.0.25.tgz: No such \nWarning: file or directory\n\n  0 6495k    0 16375    0     0  98503      0  0:01:07 --:--:--  0:01:07 98644\ncurl: (23) Failure writing output to destination",
+            "Execution Time (in seconds)": 9,
+            "Result": "Failure",
+            "Project Folder": "untested/troubleshoot_container_network_interf",
+            "User Intent": "User intends to troubleshoot and resolve Container Network Interface (CNI) download failures when creating or deploying an Azure Kubernetes Service (AKS) cluster."
+        },
+        {
+            "Timestamp": "2025-06-05 12:54:18",
+            "Type": "file",
+            "Input": "untested/troubleshoot_container_network_interf/troubleshoot_container_network_interf.md",
+            "Output": "untested/troubleshoot_container_network_interf/attempt_2_success.md",
+            "Attempt Number": 2,
+            "Errors Encountered": "",
+            "Execution Time (in seconds)": 299,
+            "Result": "Success",
+            "Project Folder": "untested/troubleshoot_container_network_interf",
+            "User Intent": "User intends to troubleshoot and resolve Container Network Interface (CNI) download failures when creating or deploying an Azure Kubernetes Service (AKS) cluster."
         }
     ]
 }

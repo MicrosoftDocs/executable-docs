@@ -5,8 +5,9 @@ ms.date: 08/27/2024
 ms.reviewer: rissing, chiragpa, momajed, v-leedennis
 ms.service: azure-kubernetes-service
 #Customer intent: As an Azure Kubernetes user, I want to prevent an Azure Kubernetes Service (AKS) cluster node from regressing to a Not Ready status so that I can continue to use the cluster node successfully.
-ms.custom: sap:Node/node pool availability and performance
+ms.custom: sap:Node/node pool availability and performance, innovation-engine
 ---
+
 # Troubleshoot a change in a healthy node to Not Ready status
 
 This article discusses a scenario in which the status of an Azure Kubernetes Service (AKS) cluster node changes to **Not Ready** after the node is in a healthy state for some time. This article outlines the particular cause and provides a possible solution.
@@ -23,6 +24,17 @@ This article discusses a scenario in which the status of an Azure Kubernetes Ser
   - [ps](https://man7.org/linux/man-pages/man1/ps.1.html)
   - [sort](https://man7.org/linux/man-pages/man1/sort.1.html)
   - [watch](https://man7.org/linux/man-pages/man1/watch.1.html)
+
+## Connect to the AKS cluster
+
+Before you can troubleshoot the issue, you must connect to the AKS cluster. To do so, run the following commands:
+
+```bash
+export RANDOM_SUFFIX=$(head -c 3 /dev/urandom | xxd -p)
+export RESOURCE_GROUP="my-resource-group$RANDOM_SUFFIX"
+export AKS_CLUSTER="my-aks-cluster$RANDOM_SUFFIX"
+az aks get-credentials --resource-group $RESOURCE_GROUP --name $AKS_CLUSTER --overwrite-existing
+```
 
 ## Symptoms
 
