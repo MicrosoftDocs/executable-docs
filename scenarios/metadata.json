@@ -1952,24 +1952,6 @@
                     "commandKey": "AKS_CLUSTER_NAME",
                     "title": "AKS Cluster Name",
                     "defaultValue": ""
-                },
-                {
-                    "inputType": "textInput",
-                    "commandKey": "ISTIO_REVISION",
-                    "title": "Istio Revision",
-                    "defaultValue": ""
-                },
-                {
-                    "inputType": "textInput",
-                    "commandKey": "NODE_SKU",
-                    "title": "Node SKU",
-                    "defaultValue": ""
-                },
-                {
-                    "inputType": "textInput",
-                    "commandKey": "KUBERNETES_VERSION",
-                    "title": "Kubernetes Version",
-                    "defaultValue": ""
                 }
             ]
         }
@@ -1986,12 +1968,6 @@
         "configurations": {
             "permissions": [],
             "configurableParams": [
-                {
-                    "inputType": "textInput",
-                    "commandKey": "RANDOM_SUFFIX",
-                    "title": "Random Suffix",
-                    "defaultValue": ""
-                },
                 {
                     "inputType": "textInput",
                     "commandKey": "RG_NAME",
@@ -2116,12 +2092,6 @@
             "configurableParams": [
                 {
                     "inputType": "textInput",
-                    "commandKey": "RANDOM_SUFFIX",
-                    "title": "Random Suffix",
-                    "defaultValue": ""
-                },
-                {
-                    "inputType": "textInput",
                     "commandKey": "AKS_CLUSTER_NAME",
                     "title": "AKS Cluster Name",
                     "defaultValue": ""
@@ -2221,12 +2191,6 @@
                     "commandKey": "AKS_CLUSTER_NAME",
                     "title": "AKS Cluster Name",
                     "defaultValue": ""
-                },
-                {
-                    "inputType": "textInput",
-                    "commandKey": "KUBERNETES_VERSION",
-                    "title": "Kubernetes Version",
-                    "defaultValue": ""
                 }
             ]
         }
@@ -2254,18 +2218,6 @@
                     "commandKey": "CLUSTER_NAME",
                     "title": "Cluster Name",
                     "defaultValue": ""
-                },
-                {
-                    "inputType": "textInput",
-                    "commandKey": "REGION",
-                    "title": "Region",
-                    "defaultValue": ""
-                },
-                {
-                    "inputType": "textInput",
-                    "commandKey": "RANDOM_SUFFIX",
-                    "title": "Random Suffix",
-                    "defaultValue": ""
                 }
             ]
         }
@@ -2282,12 +2234,6 @@
         "configurations": {
             "permissions": [],
             "configurableParams": [
-                {
-                    "inputType": "textInput",
-                    "commandKey": "RANDOM_SUFFIX",
-                    "title": "Random Suffix",
-                    "defaultValue": ""
-                },
                 {
                     "inputType": "textInput",
                     "commandKey": "CLUSTER",
@@ -2366,8 +2312,8 @@
             "configurableParams": [
                 {
                     "inputType": "textInput",
-                    "commandKey": "cluster-fqdn",
-                    "title": "Cluster Fully Qualified Domain Name",
+                    "commandKey": "CLUSTER_NAME",
+                    "title": "AKS Cluster Name",
                     "defaultValue": ""
                 }
             ]
@@ -2452,12 +2398,6 @@
             "configurableParams": [
                 {
                     "inputType": "textInput",
-                    "commandKey": "RANDOM_SUFFIX",
-                    "title": "Random Suffix",
-                    "defaultValue": ""
-                },
-                {
-                    "inputType": "textInput",
                     "commandKey": "RESOURCE_GROUP",
                     "title": "Resource Group Name",
                     "defaultValue": ""
@@ -2483,12 +2423,6 @@
         "configurations": {
             "permissions": [],
             "configurableParams": [
-                {
-                    "inputType": "textInput",
-                    "commandKey": "RANDOM_SUFFIX",
-                    "title": "Random Suffix",
-                    "defaultValue": ""
-                },
                 {
                     "inputType": "textInput",
                     "commandKey": "RESOURCE_GROUP",
@@ -2626,12 +2560,6 @@
             "configurableParams": [
                 {
                     "inputType": "textInput",
-                    "commandKey": "RANDOM_SUFFIX",
-                    "title": "Random Suffix",
-                    "defaultValue": ""
-                },
-                {
-                    "inputType": "textInput",
                     "commandKey": "MY_RG",
                     "title": "Resource Group Name",
                     "defaultValue": ""
@@ -2657,63 +2585,6 @@
         "configurations": {
             "permissions": [],
             "configurableParams": []
-        }
-    },
-    {
-        "status": "active",
-        "key": "SpringBoot/spring-boot.md",
-        "title": "SpringBootDemo",
-        "description": "SpringBootDemo",
-        "stackDetails": "",
-        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/SpringBoot/spring-boot.md",
-        "documentationUrl": "",
-        "nextSteps": [],
-        "configurations": {
-            "permissions": [],
-            "configurableParams": [
-                {
-                    "inputType": "textInput",
-                    "commandKey": "RANDOM_ID",
-                    "title": "Random Id",
-                    "defaultValue": ""
-                },
-                {
-                    "inputType": "textInput",
-                    "commandKey": "RESOURCE_GROUP",
-                    "title": "Resource Group Name",
-                    "defaultValue": ""
-                },
-                {
-                    "inputType": "textInput",
-                    "commandKey": "REGION",
-                    "title": "Region",
-                    "defaultValue": ""
-                },
-                {
-                    "inputType": "textInput",
-                    "commandKey": "VM_NAME",
-                    "title": "VM Name",
-                    "defaultValue": ""
-                },
-                {
-                    "inputType": "textInput",
-                    "commandKey": "ADMIN_USERNAME",
-                    "title": "Admin Username",
-                    "defaultValue": ""
-                },
-                {
-                    "inputType": "textInput",
-                    "commandKey": "VM_IMAGE",
-                    "title": "VM Image",
-                    "defaultValue": ""
-                },
-                {
-                    "inputType": "textInput",
-                    "commandKey": "VM_IP_ADDRESS",
-                    "title": "VM IP Address",
-                    "defaultValue": ""
-                }
-            ]
         }
     },
     {
@@ -2828,12 +2699,6 @@
             "configurableParams": [
                 {
                     "inputType": "textInput",
-                    "commandKey": "RANDOM_SUFFIX",
-                    "title": "Random Suffix",
-                    "defaultValue": ""
-                },
-                {
-                    "inputType": "textInput",
                     "commandKey": "RESOURCE_GROUP",
                     "title": "Resource Group Name",
                     "defaultValue": ""
@@ -2848,69 +2713,6 @@
                     "inputType": "textInput",
                     "commandKey": "CLUSTER_FQDN",
                     "title": "Cluster FQDN",
-                    "defaultValue": ""
-                }
-            ]
-        }
-    },
-    {
-        "status": "active",
-        "key": "DeployHAPGOnARO/deploy-ha-pg-on-aro.md",
-        "title": "Create a Highly Available PostgreSQL Cluster on Azure Red Hat OpenShift",
-        "description": "This tutorial shows how to create a Highly Available PostgreSQL cluster on Azure Red Hat OpenShift (ARO) using the CloudNativePG operator",
-        "stackDetails": "",
-        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/DeployHAPGOnARO/deploy-ha-pg-on-aro.md",
-        "documentationUrl": "",
-        "nextSteps": [],
-        "configurations": {
-            "permissions": [],
-            "configurableParams": [
-                {
-                    "inputType": "textInput",
-                    "commandKey": "RGTAGS",
-                    "title": "Resource Group Tags",
-                    "defaultValue": ""
-                },
-                {
-                    "inputType": "textInput",
-                    "commandKey": "LOCATION",
-                    "title": "Location",
-                    "defaultValue": ""
-                },
-                {
-                    "inputType": "textInput",
-                    "commandKey": "LOCAL_NAME",
-                    "title": "Local Name",
-                    "defaultValue": ""
-                },
-                {
-                    "inputType": "textInput",
-                    "commandKey": "RG_NAME",
-                    "title": "Resource Group Name",
-                    "defaultValue": ""
-                },
-                {
-                    "inputType": "textInput",
-                    "commandKey": "VNET_NAME",
-                    "title": "Virtual Network Name",
-                    "defaultValue": ""
-                },
-                {
-                    "inputType": "textInput",
-                    "commandKey": "SUBNET1_NAME",
-                    "title": "Subnet 1 Name",
-                    "defaultValue": ""
-                },
-                {
-                    "inputType": "textInput",
-                    "commandKey": "SUBNET2_NAME",
-                    "title": "Subnet 2 Name",
-                    "defaultValue": ""
-                },
-                {
-                    "inputType": "textInput",
-                    "commandKey": "VNET_CIDR",
-                    "title": "Virtual Network CIDR",
                     "defaultValue": ""
                 }
             ]
@@ -2984,20 +2786,14 @@
             "configurableParams": [
                 {
                     "inputType": "textInput",
-                    "commandKey": "AksResourceGroupName",
+                    "commandKey": "AKS_RG_NAME",
                     "title": "AKS Resource Group Name",
                     "defaultValue": ""
                 },
                 {
                     "inputType": "textInput",
-                    "commandKey": "YourAksClusterName",
+                    "commandKey": "AKS_CLUSTER_NAME",
                     "title": "AKS Cluster Name",
-                    "defaultValue": ""
-                },
-                {
-                    "inputType": "textInput",
-                    "commandKey": "AksResourceLocation",
-                    "title": "AKS Resource Location",
                     "defaultValue": ""
                 }
             ]

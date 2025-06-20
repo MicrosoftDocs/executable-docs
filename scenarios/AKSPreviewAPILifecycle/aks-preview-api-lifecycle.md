@@ -37,14 +37,6 @@ export API_VERSION="2022-04-01-preview"
 az monitor activity-log list --offset 30d --max-events 10000 --namespace microsoft.containerservice --query "[?eventName.value == 'EndRequest' && contains(not_null(httpRequest.uri,''), '$API_VERSION')]"
 ```
 
-Results: 
-
-<!-- expected_similarity=0.3 --> 
-
-```output
-[]
-```
-
 ## How to update to a newer version of the API
 
 - For Azure SDKs: use a newer API version by updating to a [newer version of the SDK](https://azure.github.io/azure-sdk/releases/latest/index.html?search=containerservice).
