@@ -2,6 +2,7 @@
 import os
 import re
 import shutil
+import json
 from pathlib import Path
 import yaml
 from openai import AzureOpenAI
@@ -48,6 +49,85 @@ def extract_title_from_markdown(file_path):
     # Fallback to filename
     return Path(file_path).stem
 
+def extract_description_from_markdown(file_path):
+    """Extract description from markdown file metadata"""
+    with open(file_path, 'r', encoding='utf-8') as f:
+        content = f.read()
+    
+    # Try to extract YAML frontmatter
+    yaml_match = re.match(r'^---\s*\n(.*?)\n---', content, re.DOTALL)
+    if yaml_match:
+        try:
+            metadata = yaml.safe_load(yaml_match.group(1))
+            if metadata and 'description' in metadata:
+                return metadata['description']
+        except:
+            pass
+    
+    # Fallback to title
+    return extract_title_from_markdown(file_path)
+
+def extract_next_steps(client, file_content):
+    """Use Azure OpenAI to extract next steps from document"""
+    prompt = f"""From this document content, extract any "Next Steps" or related tutorial links mentioned.
+Return as a JSON array of objects with 'title' and 'url' fields.
+If no next steps are found, return an empty array.
+
+Document content:
+{file_content[:3000]}
+
+Return ONLY valid JSON array, nothing else."""
+
+    try:
+        response = client.chat.completions.create(
+            model=AZURE_OPENAI_DEPLOYMENT,
+            messages=[
+                {"role": "system", "content": "You are a helpful assistant that extracts structured data from documents."},
+                {"role": "user", "content": prompt}
+            ],
+            temperature=0.3,
+            max_tokens=500
+        )
+        result = response.choices[0].message.content.strip()
+        return json.loads(result)
+    except:
+        return []
+
+def extract_env_variables(client, file_content):
+    """Use Azure OpenAI to extract environment variables from document"""
+    prompt = f"""From this document content, identify all environment variables that need to be set before running the commands.
+Look for patterns like:
+- export VARIABLE_NAME=
+- $VARIABLE_NAME or ${{VARIABLE_NAME}}
+- Variables mentioned in instructions
+
+For each variable, provide a user-friendly title.
+Return as a JSON array of objects with these fields:
+- inputType: "textInput"
+- commandKey: the exact variable name
+- title: user-friendly title in Title Case (e.g., RESOURCE_GROUP -> "Resource Group Name")
+- defaultValue: ""
+
+Document content:
+{file_content[:3000]}
+
+Return ONLY valid JSON array, nothing else."""
+
+    try:
+        response = client.chat.completions.create(
+            model=AZURE_OPENAI_DEPLOYMENT,
+            messages=[
+                {"role": "system", "content": "You are a helpful assistant that extracts environment variables from technical documents."},
+                {"role": "user", "content": prompt}
+            ],
+            temperature=0.3,
+            max_tokens=500
+        )
+        result = response.choices[0].message.content.strip()
+        return json.loads(result)
+    except:
+        return []
+
 def generate_folder_name(client, title, file_content_snippet):
     """Use Azure OpenAI to generate an intuitive folder name"""
     prompt = f"""Given this document title: "{title}"
@@ -86,6 +166,96 @@ def pascal_to_kebab(name):
     # split on transitions from uppercase to lowercase or between acronyms
     tokens = re.findall(r'[A-Z](?:[a-z]+|[A-Z]*(?=[A-Z]|$))', name)
     return '-'.join(t.lower() for t in tokens)
+
+def update_metadata_json(scenarios_dir, client):
+    """Update metadata.json with missing scenario entries"""
+    metadata_file = Path(scenarios_dir) / "metadata.json"
+    
+    # Load existing metadata
+    if metadata_file.exists():
+        with open(metadata_file, 'r', encoding='utf-8') as f:
+            metadata = json.load(f)
+    else:
+        metadata = []
+    
+    # Get all existing keys
+    existing_keys = {entry['key'] for entry in metadata}
+    
+    # Check all subdirectories in scenarios folder
+    scenarios_path = Path(scenarios_dir)
+    new_entries = []
+    
+    for folder in scenarios_path.iterdir():
+        if folder.is_dir() and folder.name != "__pycache__":
+            # Find markdown files in the folder
+            md_files = list(folder.glob("*.md"))
+            
+            for md_file in md_files:
+                # Create the key
+                key = f"{folder.name}/{md_file.name}"
+                
+                # Check if this key exists in metadata
+                if not any(key in existing_key for existing_key in existing_keys):
+                    print(f"\nProcessing new metadata entry for: {key}")
+                    
+                    # Read file content
+                    with open(md_file, 'r', encoding='utf-8') as f:
+                        content = f.read()
+                    
+                    # Extract information
+                    title = extract_title_from_markdown(md_file)
+                    description = extract_description_from_markdown(md_file)
+                    
+                    # Use AI to extract next steps and env variables
+                    next_steps = extract_next_steps(client, content)
+                    configurable_params = extract_env_variables(client, content)
+                    
+                    # Create new entry
+                    new_entry = {
+                        "status": "active",
+                        "key": key,
+                        "title": title,
+                        "description": description,
+                        "stackDetails": "",
+                        "sourceUrl": f"https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/{key}",
+                        "documentationUrl": "",
+                        "nextSteps": next_steps,
+                        "configurations": {
+                            "permissions": [],
+                            "configurableParams": configurable_params
+                        }
+                    }
+                    
+                    new_entries.append(new_entry)
+                    print(f"  Added metadata for: {key}")
+    
+    # Append new entries to metadata
+    if new_entries:
+        metadata.extend(new_entries)
+        
+        # Write updated metadata back to file
+        with open(metadata_file, 'w', encoding='utf-8') as f:
+            json.dump(metadata, f, indent=4, ensure_ascii=False)
+        
+        print(f"\nAdded {len(new_entries)} new entries to metadata.json")
+    else:
+        print("\nNo new entries needed for metadata.json")
+
+source_dir = "tools/success"
+target_dir = "scenarios"
+# Setup Azure OpenAI
+try:
+    client = setup_azure_openai()
+    print("Azure OpenAI client initialized successfully")
+except Exception as e:
+    print(f"Warning: Could not initialize Azure OpenAI: {e}")
+    print("Will use fallback naming method")
+    client = None
+print("\n" + "="*60)
+print("Updating metadata.json...")
+update_metadata_json(target_dir, client)
+import sys
+sys.exit(0)
 
 def process_success_files(source_dir, target_dir, dry_run=False):
     """Process all markdown files with 'success' in filename"""
