@@ -2,8 +2,8 @@
 title: Use the cluster autoscaler in Azure Kubernetes Service (AKS)
 description: Learn how to use the cluster autoscaler to automatically scale your Azure Kubernetes Service (AKS) workloads to meet application demands.
 ms.topic: concept-article
-ms.custom: devx-track-azurecli
-ms.date: 01/11/2024
+ms.custom: devx-track-azurecli, innovation-engine
+ms.date: 06/13/2024
 author: schaffererin
 ms.author: schaffererin
 
@@ -28,16 +28,40 @@ This article requires Azure CLI version 2.0.76 or later. Run `az --version` to f
 
 1. Create a resource group using the [`az group create`][az-group-create] command.
 
-    ```azurecli-interactive
-    az group create --name myResourceGroup --location eastus
+    First, set your environment variables for resource group and location, using a random suffix to ensure name uniqueness.
+
+    ```shell
+    export RANDOM_SUFFIX=$(head -c 3 /dev/urandom | xxd -p)
+    export RG_NAME="myResourceGroup$RANDOM_SUFFIX"
+    export LOCATION="eastus"
+    az group create --name $RG_NAME --location $LOCATION
+    ```
+
+    Results: 
+
+    ```output
+    {
+      "id": "/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/myResourceGroupxxx",
+      "location": "eastus",
+      "managedBy": null,
+      "name": "myResourceGroupxxx",
+      "properties": {
+        "provisioningState": "Succeeded"
+      },
+      "tags": null,
+      "type": "Microsoft.Resources/resourceGroups"
+    }
     ```
 
 2. Create an AKS cluster using the [`az aks create`][az-aks-create] command and enable and configure the cluster autoscaler on the node pool for the cluster using the `--enable-cluster-autoscaler` parameter and specifying a node `--min-count` and `--max-count`. The following example command creates a cluster with a single node backed by a virtual machine scale set, enables the cluster autoscaler, sets a minimum of one and maximum of three nodes:
 
+    Define your AKS cluster name.
+
     ```shell
+    export AKS_CLUSTER="myAKSCluster$RANDOM_SUFFIX"
     az aks create \
-    --resource-group myResourceGroup \
-    --name myAKSCluster \
+    --resource-group $RG_NAME \
+    --name $AKS_CLUSTER \
     --node-count 1 \
     --vm-set-type VirtualMachineScaleSets \
     --load-balancer-sku standard \
@@ -51,31 +75,31 @@ This article requires Azure CLI version 2.0.76 or later. Run `az --version` to f
 
 ### Enable the cluster autoscaler on an existing cluster
 
-* Update an existing cluster using the [`az aks update`][az-aks-update] command and enable and configure the cluster autoscaler on the node pool using the `--enable-cluster-autoscaler` parameter and specifying a node `--min-count` and `--max-count`. The following example command updates an existing AKS cluster to enable the cluster autoscaler on the node pool for the cluster and sets a minimum of one and maximum of three nodes:
+Update an existing cluster using the [`az aks update`][az-aks-update] command and enable and configure the cluster autoscaler on the node pool using the `--enable-cluster-autoscaler` parameter and specifying a node `--min-count` and `--max-count`. The following example command updates an existing AKS cluster to enable the cluster autoscaler on the node pool for the cluster and sets a minimum of one and maximum of three nodes:
 
-    ```azurecli-interactive
-    az aks update \
-      --resource-group myResourceGroup \
-      --name myAKSCluster \
-      --enable-cluster-autoscaler \
-      --min-count 1 \
-      --max-count 3
-    ```
+```azurecli-interactive
+az aks update \
+  --resource-group $RG_NAME \
+  --name $AKS_CLUSTER \
+  --enable-cluster-autoscaler \
+  --min-count 1 \
+  --max-count 3
+```
 
-    It takes a few minutes to update the cluster and configure the cluster autoscaler settings.
+It takes a few minutes to update the cluster and configure the cluster autoscaler settings.
 
 ### Disable the cluster autoscaler on a cluster
 
-* Disable the cluster autoscaler using the [`az aks update`][az-aks-update-preview] command and the `--disable-cluster-autoscaler` parameter.
+Disable the cluster autoscaler using the [`az aks update`][az-aks-update-preview] command and the `--disable-cluster-autoscaler` parameter.
 
-    ```azurecli-interactive
-    az aks update \
-      --resource-group myResourceGroup \
-      --name myAKSCluster \
-      --disable-cluster-autoscaler
-    ```
+```shell
+az aks update \
+  --resource-group $RG_NAME \
+  --name $AKS_CLUSTER \
+  --disable-cluster-autoscaler
+```
 
-    Nodes aren't removed when the cluster autoscaler is disabled.
+Nodes aren't removed when the cluster autoscaler is disabled.
 
 > [!NOTE]
 > You can manually scale your cluster after disabling the cluster autoscaler using the [`az aks scale`][az-aks-scale] command. If you use the horizontal pod autoscaler, it continues to run with the cluster autoscaler disabled, but pods might end up unable to be scheduled if all node resources are in use.
@@ -90,29 +114,29 @@ You can re-enable the cluster autoscaler on an existing cluster using the [`az a
 
 You can use the cluster autoscaler with [multiple node pools][aks-multiple-node-pools] and can enable the cluster autoscaler on each individual node pool and pass unique autoscaling rules to them.
 
-* Update the settings on an existing node pool using the [`az aks nodepool update`][az-aks-nodepool-update] command.
+Update the settings on an existing node pool using the [`az aks nodepool update`][az-aks-nodepool-update] command.
 
-    ```azurecli-interactive
-    az aks nodepool update \
-      --resource-group myResourceGroup \
-      --cluster-name myAKSCluster \
-      --name nodepool1 \
-      --update-cluster-autoscaler \
-      --min-count 1 \
-      --max-count 5
-    ```
+```azurecli-interactive
+az aks nodepool update \
+  --resource-group $RG_NAME \
+  --cluster-name $AKS_CLUSTER \
+  --name nodepool1 \
+  --update-cluster-autoscaler \
+  --min-count 1 \
+  --max-count 5
+```
 
 ### Disable the cluster autoscaler on a node pool
 
-* Disable the cluster autoscaler on a node pool using the [`az aks nodepool update`][az-aks-nodepool-update] command and the `--disable-cluster-autoscaler` parameter.
+Disable the cluster autoscaler on a node pool using the [`az aks nodepool update`][az-aks-nodepool-update] command and the `--disable-cluster-autoscaler` parameter.
 
-    ```azurecli-interactive
-    az aks nodepool update \
-      --resource-group myResourceGroup \
-      --cluster-name myAKSCluster \
-      --name nodepool1 \
-      --disable-cluster-autoscaler
-    ```
+```shell
+az aks nodepool update \
+  --resource-group $RG_NAME \
+  --cluster-name $AKS_CLUSTER \
+  --name nodepool1 \
+  --disable-cluster-autoscaler
+```
 
 ### Re-enable the cluster autoscaler on a node pool
 
@@ -125,16 +149,16 @@ You can re-enable the cluster autoscaler on a node pool using the [`az aks nodep
 
 As your application demands change, you might need to adjust the cluster autoscaler node count to scale efficiently.
 
-* Change the node count using the [`az aks update`][az-aks-update] command and update the cluster autoscaler using the `--update-cluster-autoscaler` parameter and specifying your updated node `--min-count` and `--max-count`.
+Change the node count using the [`az aks update`][az-aks-update] command and update the cluster autoscaler using the `--update-cluster-autoscaler` parameter and specifying your updated node `--min-count` and `--max-count`.
 
-    ```azurecli-interactive
-    az aks update \
-      --resource-group myResourceGroup \
-      --name myAKSCluster \
-      --update-cluster-autoscaler \
-      --min-count 1 \
-      --max-count 5
-    ```
+```azurecli-interactive
+az aks update \
+  --resource-group $RG_NAME \
+  --name $AKS_CLUSTER \
+  --update-cluster-autoscaler \
+  --min-count 1 \
+  --max-count 5
+```
 
 > [!NOTE]
 > The cluster autoscaler enforces the minimum count in cases where the actual count drops below the minimum due to external factors, such as during a spot eviction or when changing the minimum count value from the AKS API.
@@ -178,59 +202,62 @@ The following table lists the available settings for the cluster autoscaler prof
 
 ### Set the cluster autoscaler profile on a new cluster
 
-* Create an AKS cluster using the [`az aks create`][az-aks-create] command and set the cluster autoscaler profile using the `cluster-autoscaler-profile` parameter.
+Create an AKS cluster using the [`az aks create`][az-aks-create] command and set the cluster autoscaler profile using the `cluster-autoscaler-profile` parameter.
 
-    ```azurecli-interactive
-    az aks create \
-        --resource-group myResourceGroup \
-        --name myAKSCluster \
-        --node-count 1 \
-        --enable-cluster-autoscaler \
-        --min-count 1 \
-        --max-count 3 \
-        --cluster-autoscaler-profile scan-interval=30s \
-        --generate-ssh-keys
-    ```
+```shell
+az aks create \
+    --resource-group $RG_NAME \
+    --name $AKS_CLUSTER \
+    --node-count 1 \
+    --enable-cluster-autoscaler \
+    --min-count 1 \
+    --max-count 3 \
+    --cluster-autoscaler-profile scan-interval=30s \
+    --generate-ssh-keys
+```
 
 ### Set the cluster autoscaler profile on an existing cluster
 
-* Set the cluster autoscaler on an existing cluster using the [`az aks update`][az-aks-update-preview] command and the `cluster-autoscaler-profile` parameter. The following example configures the scan interval setting as *30s*:
+Set the cluster autoscaler on an existing cluster using the [`az aks update`][az-aks-update-preview] command and the `cluster-autoscaler-profile` parameter. The following example configures the scan interval setting as *30s*:
 
-    ```azurecli-interactive
-    az aks update \
-      --resource-group myResourceGroup \
-      --name myAKSCluster \
-      --cluster-autoscaler-profile scan-interval=30s
-    ```
+```azurecli-interactive
+az aks update \
+  --resource-group $RG_NAME \
+  --name $AKS_CLUSTER \
+  --cluster-autoscaler-profile scan-interval=30s
+```
 
 ### Configure cluster autoscaler profile for aggressive scale down
+
 > [!NOTE]
 > Scaling down aggressively is not recommended for clusters experiencing frequent scale-outs and scale-ins within short intervals, as it could potentially result in extended node provisioning times under these circumstances. Increasing `scale-down-delay-after-add` can help in these circumstances by keeping the node around longer to handle incoming workloads.
 
-   ```azurecli-interactive
-    az aks update \
-        --resource-group myResourceGroup \
-        --name myAKSCluster \
-        --cluster-autoscaler-profile scan-interval=30s,scale-down-delay-after-add=0m,scale-down-delay-after-failure=1m,scale-down-unneeded-time=3m,scale-down-unready-time=3m,max-graceful-termination-sec=30,skip-nodes-with-local-storage=false,max-empty-bulk-delete=1000,max-total-unready-percentage=100,ok-total-unready-count=1000,max-node-provision-time=15m
-   ```
+```azurecli-interactive
+az aks update \
+    --resource-group $RG_NAME \
+    --name $AKS_CLUSTER \
+    --cluster-autoscaler-profile scan-interval=30s,scale-down-delay-after-add=0m,scale-down-delay-after-failure=1m,scale-down-unneeded-time=3m,scale-down-unready-time=3m,max-graceful-termination-sec=30,skip-nodes-with-local-storage=false,max-empty-bulk-delete=1000,max-total-unready-percentage=100,ok-total-unready-count=1000,max-node-provision-time=15m
+```
+
 ### Configure cluster autoscaler profile for bursty workloads
-   ```azurecli-interactive
-    az aks update \   
-        --resource-group "myResourceGroup" \
-        --name myAKSCluster \ 
-        --cluster-autoscaler-profile scan-interval=20s,scale-down-delay-after-add=10m,scale-down-delay-after-failure=1m,scale-down-unneeded-time=5m,scale-down-unready-time=5m,max-graceful-termination-sec=30,skip-nodes-with-local-storage=false,max-empty-bulk-delete=100,max-total-unready-percentage=100,ok-total-unready-count=1000,max-node-provision-time=15m
-   ```
+
+```azurecli-interactive
+az aks update \   
+    --resource-group $RG_NAME \
+    --name $AKS_CLUSTER \ 
+    --cluster-autoscaler-profile scan-interval=20s,scale-down-delay-after-add=10m,scale-down-delay-after-failure=1m,scale-down-unneeded-time=5m,scale-down-unready-time=5m,max-graceful-termination-sec=30,skip-nodes-with-local-storage=false,max-empty-bulk-delete=100,max-total-unready-percentage=100,ok-total-unready-count=1000,max-node-provision-time=15m
+```
 
 ### Reset cluster autoscaler profile to default values
 
-* Reset the cluster autoscaler profile using the [`az aks update`][az-aks-update-preview] command.
+Reset the cluster autoscaler profile using the [`az aks update`][az-aks-update-preview] command.
 
-    ```azurecli-interactive
-    az aks update \
-      --resource-group myResourceGroup \
-      --name myAKSCluster \
-      --cluster-autoscaler-profile ""
-    ```
+```azurecli-interactive
+az aks update \
+  --resource-group $RG_NAME \
+  --name $AKS_CLUSTER \
+  --cluster-autoscaler-profile ""
+```
 
 ## Retrieve cluster autoscaler logs and status 
 
@@ -303,4 +330,3 @@ To further help improve cluster resource utilization and free up CPU and memory 
 [az-aks-nodepool-update]: https://github.com/Azure/azure-cli-extensions/tree/master/src/aks-preview#enable-cluster-auto-scaler-for-a-node-pool
 [kubernetes-faq]: https://github.com/kubernetes/autoscaler/blob/master/cluster-autoscaler/FAQ.md#ca-doesnt-work-but-it-used-to-work-yesterday-why
 [kubernetes-cluster-autoscaler]: https://github.com/kubernetes/autoscaler/tree/master/cluster-autoscaler
-

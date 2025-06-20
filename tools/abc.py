@@ -55,8 +55,8 @@ def main():
             relative_path = os.path.relpath(file_path, untested_dir)
             file_stats.append((relative_path, count))
     
-    # Sort by code block count (ascending)
-    file_stats.sort(key=lambda x: x[1])
+    # Sort by code block count (ascending), then alphabetically by file path
+    file_stats.sort(key=lambda x: (x[1], x[0]))
     
     # Display all files ranked by code blocks
     print("All markdown files ranked by number of code blocks (lowest to highest):")
