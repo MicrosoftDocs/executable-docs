@@ -40,8 +40,8 @@ The issue that generates this service principal alert usually occurs for one of 
 Use the following commands to retrieve the service principal profile for your AKS cluster and check the expiration date of the service principal. Make sure to set the appropriate variables for your AKS resource group and cluster name.
 
 ```azurecli
-SP_ID=$(az aks show --resource-group RESOURCE_GROUP_NAME \
-    --name AKS_CLUSTER_NAME \
+SP_ID=$(az aks show --resource-group $RESOURCE_GROUP_NAME \
+    --name $AKS_CLUSTER_NAME \
     --query servicePrincipalProfile.clientId \
     --output tsv)
 az ad app credential list --id "$SP_ID"

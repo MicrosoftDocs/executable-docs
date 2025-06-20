@@ -44,13 +44,27 @@ az aks show -g $RESOURCE_GROUP -n $CLUSTER_NAME --query aadProfile.enableAzureRb
 
 Results:
 
-<!-- expected_similarity=0.3 -->
 ```output
 false
 ```
 
+- If the result is **null** or empty, the cluster doesn't have Azure AD integration enabled. See [Solving permission issues in local Kubernetes RBAC clusters](#solving-permissions-issues-in-local-kubernetes-rbac-clusters).
 - If the result is **false**, the cluster uses Kubernetes RBAC. See [Solving permission issues in Kubernetes RBAC-based AKS clusters](#solving-permissions-issues-in-kubernetes-rbac-based-aks-clusters).
 - If the result is **true**, the cluster uses Azure RBAC. See [Solving permission issues in Azure RBAC-based AKS clusters](#solving-permissions-issues-in-azure-rbac-based-aks-clusters).
+
+### Solving permissions issues in local Kubernetes RBAC clusters
+
+If your cluster doesn't have Azure AD integration (result was null), it uses cluster admin credentials:
+
+```bash
+# Get admin credentials for full access
+az aks get-credentials --resource-group $RESOURCE_GROUP --name $CLUSTER_NAME --admin
+
+# Verify access
+kubectl get nodes
+```
+
+**Warning**: Admin credentials provide full cluster access. Use carefully and consider enabling Azure AD integration for better security.
 
 ### Solving permissions issues in Kubernetes RBAC-based AKS clusters
 
@@ -74,7 +88,6 @@ You can create a custom RoleBinding or ClusterRoleBinding resource to grant the 
 
    Results:
 
-   <!-- expected_similarity=0.3 -->
    ```output
    [
      "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"

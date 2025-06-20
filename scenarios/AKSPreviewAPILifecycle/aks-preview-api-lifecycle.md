@@ -30,7 +30,7 @@ API version as deprecation approaches.
 If you're unsure what client or tool is using this API version, check the [activity logs](/azure/azure-monitor/essentials/activity-log)
 using the following command:
 
-Set the API version you want to inspect for recent usage in the activity log.
+Set the API version you want to inspect for recent usage in the activity log. In this example, we are checking for the `2022-04-01-preview` API version.
 
 ```bash
 export API_VERSION="2022-04-01-preview"

@@ -16,6 +16,17 @@ keywords:
 
 TCP timeouts can be caused by blockages of internal traffic that runs between nodes. To investigate TCP time-outs, verify that this traffic isn't being blocked, for example, by [network security groups](/azure/aks/concepts-security#azure-network-security-groups) (NSGs) on the subnet for your cluster nodes.
 
+## Connect to the cluster
+
+First, connect to your Azure Kubernetes Service (AKS) cluster by running the following command:
+
+```bash
+export RESOURCE_GROUP=<your-resource-group>
+export CLUSTER_NAME=<your-cluster-name>
+
+az aks get-credentials --resource-group $RESOURCE_GROUP --name $CLUSTER_NAME
+```
+
 ## Symptoms
 
 Tunnel functionalities, such as `kubectl logs` and code execution, work only for pods that are hosted on nodes on which tunnel service pods are deployed. Pods on other nodes that have no tunnel service pods cannot reach to the tunnel. When viewing the logs of these pods, you receive the following error message:

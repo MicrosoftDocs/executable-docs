@@ -23,6 +23,8 @@ Azure CNI Pod Subnet assigns IP addresses to pods from a separate subnet from yo
 - Azure CLI version `2.37.0` or later and the `aks-preview` extension version `2.0.0b2` or later.
 - Register the subscription-level feature flag for your subscription: 'Microsoft.ContainerService/AzureVnetScalePreview'.
 
+## Enable Container Insights (AKS monitoring)
+
 If you have an existing cluster, you can enable Container Insights (AKS monitoring) using the following command **only if your cluster was created with monitoring enabled or is associated with a valid Log Analytics Workspace in the same region**. Otherwise, refer to Microsoft Docs for additional workspace setup requirements.
 
 ```azurecli-interactive

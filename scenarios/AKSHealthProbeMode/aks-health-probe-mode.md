@@ -42,7 +42,7 @@ To troubleshoot these issues, follow these steps:
     ```azurecli
     export RESOURCE_GROUP="aks-rg"
     export AKS_CLUSTER_NAME="aks-cluster"
-    az aks show --resource-group $RESOURCE_GROUP --name $AKS_CLUSTER_NAME --query "loadBalancerProfile"
+    az aks show --resource-group $RESOURCE_GROUP --name $AKS_CLUSTER_NAME --query "networkProfile.loadBalancerProfile"
     ```
     Results:
 
@@ -66,24 +66,27 @@ To troubleshoot these issues, follow these steps:
     }
     ```
 
-2. Check the *overlaymgr* log to see if the cloud provider secret is updated. The keyword to look for is `cloudConfigSecretResolver`. Or check the contents of the cloud-provider-config secret in the `ccp` namespace. You can use the `kubectl get secret` command to view the secret. 
+2. Check the cloud provider configuration. In modern AKS clusters, the cloud provider configuration is managed internally and the `ccp` namespace doesn't exist. Instead, check for cloud provider related resources and verify the cloud-node-manager pods are running properly:
 
-    ```shell
-    kubectl get secret cloud-provider-config -n ccp -o yaml
+
+    ```bash
+    # Check for cloud provider related ConfigMaps in kube-system
+    kubectl get configmap -n kube-system | grep -i azure
+    
+    # Check if cloud-node-manager pods are running (indicates cloud provider integration is working)
+    kubectl get pods -n kube-system | grep cloud-node-manager
+    
+    # Check the azure-ip-masq-agent-config if it exists
+    kubectl get configmap azure-ip-masq-agent-config-reconciled -n kube-system -o yaml 2>/dev/null || echo "ConfigMap not found"
     ```
     Results:
 
     <!-- expected_similarity=0.3 -->
 
     ```output
-    apiVersion: v1
-    data:
-      cloud-config: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-    kind: Secret
-    metadata:
-      name: cloud-provider-config
-      namespace: ccp
-      ...
+    configmap/azure-ip-masq-agent-config-reconciled   1      11h
+    
+    cloud-node-manager-rfb2w                        2/2     Running   0          16m
     ```
 
 3. Check the chart or overlay daemonset cloud-node-manager to see if the health-probe-proxy sidecar container is enabled. You can use the `kubectl get ds` command to view the daemonset.

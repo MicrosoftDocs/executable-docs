@@ -1949,7 +1949,7 @@
                 },
                 {
                     "inputType": "textInput",
-                    "commandKey": "AKS_CLUSTER_NAME",
+                    "commandKey": "AKS_CLUSTER",
                     "title": "AKS Cluster Name",
                     "defaultValue": ""
                 }
@@ -1978,6 +1978,12 @@
                     "inputType": "textInput",
                     "commandKey": "CLUSTER_NAME",
                     "title": "Cluster Name",
+                    "defaultValue": ""
+                },
+                {
+                    "inputType": "textInput",
+                    "commandKey": "AVAILABILITY_SET_VM",
+                    "title": "Availability Set VM Name",
                     "defaultValue": ""
                 }
             ]
@@ -2026,6 +2032,18 @@
                     "inputType": "textInput",
                     "commandKey": "POD_NAME",
                     "title": "Pod Name",
+                    "defaultValue": ""
+                },
+                 {
+                    "inputType": "textInput",
+                    "commandKey": "RESOURCE_GROUP",
+                    "title": "Resource Group Name",
+                    "defaultValue": ""
+                },
+                {
+                    "inputType": "textInput",
+                    "commandKey": "CLUSTER_NAME",
+                    "title": "Aks Cluster Name",
                     "defaultValue": ""
                 }
             ]
@@ -2180,18 +2198,6 @@
         "configurations": {
             "permissions": [],
             "configurableParams": [
-                {
-                    "inputType": "textInput",
-                    "commandKey": "RESOURCE_GROUP",
-                    "title": "Resource Group Name",
-                    "defaultValue": ""
-                },
-                {
-                    "inputType": "textInput",
-                    "commandKey": "AKS_CLUSTER_NAME",
-                    "title": "AKS Cluster Name",
-                    "defaultValue": ""
-                }
             ]
         }
     },
@@ -2207,18 +2213,6 @@
         "configurations": {
             "permissions": [],
             "configurableParams": [
-                {
-                    "inputType": "textInput",
-                    "commandKey": "RG_NAME",
-                    "title": "Resource Group Name",
-                    "defaultValue": ""
-                },
-                {
-                    "inputType": "textInput",
-                    "commandKey": "CLUSTER_NAME",
-                    "title": "Cluster Name",
-                    "defaultValue": ""
-                }
             ]
         }
     },
@@ -2272,13 +2266,13 @@
             "configurableParams": [
                 {
                     "inputType": "textInput",
-                    "commandKey": "RESOURCE_GROUP",
+                    "commandKey": "AKS_RESOURCE_GROUP",
                     "title": "Resource Group Name",
                     "defaultValue": ""
                 },
                 {
                     "inputType": "textInput",
-                    "commandKey": "CLUSTER_NAME",
+                    "commandKey": "AKS_CLUSTER_NAME",
                     "title": "AKS Cluster Name",
                     "defaultValue": ""
                 }
@@ -2342,6 +2336,18 @@
                     "commandKey": "AKS_CLUSTER_NAME",
                     "title": "AKS Cluster Name",
                     "defaultValue": ""
+                },
+                {
+                    "inputType": "textInput",
+                    "commandKey": "NUM_NODES",
+                    "title": "Number of Nodes",
+                    "defaultValue": ""
+                },
+                {
+                    "inputType": "textInput",
+                    "commandKey": "NODE_POOL_NAME",
+                    "title": "Node Pool Name",
+                    "defaultValue": ""
                 }
             ]
         }
@@ -2375,12 +2381,6 @@
         "configurations": {
             "permissions": [],
             "configurableParams": [
-                {
-                    "inputType": "textInput",
-                    "commandKey": "API_VERSION",
-                    "title": "API Version",
-                    "defaultValue": ""
-                }
             ]
         }
     },
@@ -2396,18 +2396,6 @@
         "configurations": {
             "permissions": [],
             "configurableParams": [
-                {
-                    "inputType": "textInput",
-                    "commandKey": "RESOURCE_GROUP",
-                    "title": "Resource Group Name",
-                    "defaultValue": ""
-                },
-                {
-                    "inputType": "textInput",
-                    "commandKey": "AKS_CLUSTER_NAME",
-                    "title": "AKS Cluster Name",
-                    "defaultValue": ""
-                }
             ]
         }
     },
@@ -2533,13 +2521,13 @@
             "configurableParams": [
                 {
                     "inputType": "textInput",
-                    "commandKey": "AKS_CLUSTER_NAME",
+                    "commandKey": "MY_AKS_CLUSTER",
                     "title": "AKS Cluster Name",
                     "defaultValue": ""
                 },
                 {
                     "inputType": "textInput",
-                    "commandKey": "RESOURCE_GROUP",
+                    "commandKey": "MY_RESOURCE_GROUP",
                     "title": "Resource Group Name",
                     "defaultValue": ""
                 }
@@ -2707,12 +2695,6 @@
                     "inputType": "textInput",
                     "commandKey": "AKS_CLUSTER",
                     "title": "AKS Cluster Name",
-                    "defaultValue": ""
-                },
-                {
-                    "inputType": "textInput",
-                    "commandKey": "CLUSTER_FQDN",
-                    "title": "Cluster FQDN",
                     "defaultValue": ""
                 }
             ]

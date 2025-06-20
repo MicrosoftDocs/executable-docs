@@ -107,7 +107,8 @@ Set up your custom Domain Name System (DNS) server so that it can do name resolu
     > **Important:** You must specify the `--name` of a valid VM in an availability set in your resource group. Here is a template for running network checks.
 
     ```azurecli
-    export DNS_IP_ADDRESS="10.0.0.10"
+    export API_FQDN=$(az aks show --resource-group $RG_NAME --name $CLUSTER_NAME --query fqdn -o tsv)
+
     az vm run-command invoke \
         --resource-group $NODE_RESOURCE_GROUP \
         --name $AVAILABILITY_SET_VM \
@@ -121,7 +122,7 @@ Set up your custom Domain Name System (DNS) server so that it can do name resolu
         --command-id RunShellScript \
         --output tsv \
         --query "value[0].message" \
-        --scripts "nslookup <api-fqdn> $DNS_IP_ADDRESS"
+        --scripts "nslookup $API_FQDN $DNS_IP_ADDRESS"
     ```
 
 For more information, see [Name resolution for resources in Azure virtual networks](/azure/virtual-network/virtual-networks-name-resolution-for-vms-and-role-instances) and [Hub and spoke with custom DNS](/azure/aks/private-clusters#hub-and-spoke-with-custom-dns).

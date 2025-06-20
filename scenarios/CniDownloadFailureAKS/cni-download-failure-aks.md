@@ -18,6 +18,7 @@ This article discusses how to identify and resolve the `CniDownloadTimeoutVMExte
 ## Prerequisites
 
 - The [Curl](https://curl.se/download.html) command-line tool
+- Network access from the same environment where AKS nodes will be deployed (same VNet, firewall rules, etc.)
 
 ## Symptoms
 
@@ -52,7 +53,7 @@ Run a Curl command to verify that your nodes can download the binaries:
 First, attempt a test download of the Azure CNI package for Linux from the official mirror endpoint.
 
 ```bash
-curl https://acs-mirror.azureedge.net/cni/azure-vnet-cni-linux-amd64-v1.0.25.tgz
+curl -I https://acs-mirror.azureedge.net/cni/azure-vnet-cni-linux-amd64-v1.0.25.tgz
 ```
 
 Results:
@@ -72,12 +73,16 @@ accept-ranges: bytes
 date: Thu, 05 Jun 2025 00:00:00 GMT
 ```
 
-This command will display binary archive data in the terminal if the download succeeds.
+This command checks if the endpoint is reachable and returns the HTTP headers. If you see a `200 OK` response, it indicates that the endpoint is accessible.
 
 Next, attempt a download with validation and save the file locally for further troubleshooting. This will help determine if SSL or outbound connectivity is correctly configured.
 
 ```bash
-curl --fail --ssl https://acs-mirror.azureedge.net/cni/azure-vnet-cni-linux-amd64-v1.0.25.tgz  --output /opt/cni/downloads/azure-vnet-cni-linux-amd64-v1.0.25.tgz
+# Create a temporary directory for testing
+mkdir -p /tmp/cni-test
+
+# Download the CNI package to the temp directory
+curl -L --fail https://acs-mirror.azureedge.net/cni/azure-vnet-cni-linux-amd64-v1.0.25.tgz --output /tmp/cni-test/azure-vnet-cni-linux-amd64-v1.0.25.tgz && echo "Download successful" || echo "Download failed"
 ```
 
 Results:
@@ -85,12 +90,17 @@ Results:
 <!-- expected_similarity=0.3 -->
 
 ```output
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100 6495k  100 6495k    0     0  8234k      0 --:--:-- --:--:-- --:--:-- 8230k
+Download successful
 ```
 
-Or as an alternative with output to /tmp and success message for clarity:
+Verify the downloaded file:
 
 ```bash
-curl -L --fail https://acs-mirror.azureedge.net/cni/azure-vnet-cni-linux-amd64-v1.0.25.tgz --output /tmp/azure-vnet-cni-test.tgz && echo "Download successful" || echo "Download failed"
+ls -la /tmp/cni-test/
+file /tmp/cni-test/azure-vnet-cni-linux-amd64-v1.0.25.tgz
 ```
 
 Results:
@@ -98,7 +108,18 @@ Results:
 <!-- expected_similarity=0.3 -->
 
 ```output
-Download successful
+total 6500
+drwxr-xr-x 2 user user    4096 Jun 20 10:30 .
+drwxrwxrwt 8 root root    4096 Jun 20 10:30 ..
+-rw-r--r-- 1 user user 6651392 Jun 20 10:30 azure-vnet-cni-linux-amd64-v1.0.25.tgz
+
+/tmp/cni-test/azure-vnet-cni-linux-amd64-v1.0.25.tgz: gzip compressed data, from Unix, original size modulo 2^32 20070400
+```
+
+Clean up the test files:
+
+```bash
+rm -rf /tmp/cni-test/
 ```
 
 If you can't download these files, make sure that traffic is allowed to the downloading endpoint. For more information, see [Azure Global required FQDN/application rules](/azure/aks/outbound-rules-control-egress#azure-global-required-fqdn--application-rules).

@@ -51,12 +51,31 @@ The [kubelet](https://kubernetes.io/docs/reference/command-line-tools-reference/
 Examine the output of the `kubectl describe nodes` command to find the [Conditions](https://kubernetes.io/docs/reference/node/node-status/#condition) field and the [Capacity and Allocatable](https://kubernetes.io/docs/reference/node/node-status/#capacity) blocks. Do the content of these fields appear as expected? (For example, in the **Conditions** field, does the `message` property contain the "kubelet is posting ready status" string?) In this case, if you have direct Secure Shell (SSH) access to the node, check the recent events to understand the error. Look within the */var/log/syslog* file instead of */var/log/messages* (not available on all distributions). Or, generate the kubelet and container daemon log files by running the following shell commands:
 
 ```bash
-# To check syslog file (useful on Ubuntu-based AKS nodes),
-cat /var/log/syslog
+# First, identify the NotReady node
+export NODE_NAME=$(kubectl get nodes --no-headers | grep NotReady | awk '{print $1}' | head -1)
 
-# To check kubelet and containerd daemon logs,
-journalctl -u kubelet > kubelet.log
-journalctl -u containerd > containerd.log
+if [ -z "$NODE_NAME" ]; then
+    echo "No NotReady nodes found"
+    kubectl get nodes
+else
+    echo "Found NotReady node: $NODE_NAME"
+    
+    # Use kubectl debug to access the node
+    kubectl debug node/$NODE_NAME -it --image=mcr.microsoft.com/dotnet/runtime-deps:6.0 -- chroot /host bash -c "
+        echo '=== Checking syslog ==='
+        if [ -f /var/log/syslog ]; then
+            tail -100 /var/log/syslog
+        else
+            echo 'syslog not found'
+        fi
+        
+        echo '=== Checking kubelet logs ==='
+        journalctl -u kubelet --no-pager | tail -100
+        
+        echo '=== Checking containerd logs ==='
+        journalctl -u containerd --no-pager | tail -100
+    "
+fi
 ```
 
 After you run these commands, examine the syslog and daemon log files for more information about the error.
