@@ -40,8 +40,6 @@ az group create --name $MY_RG --location "eastus2"
 
 Results:
 
-<!-- expected_similarity=0.3 -->
-
 ```output
 {
   "id": "/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/myResourceGroupxxx",
@@ -150,8 +148,6 @@ This configuration requires bring-your-own networking (via [Kubenet][byo-vnet-ku
 
     Results:
 
-    <!-- expected_similarity=0.3 -->
-
     ```output
     {
       "id": "/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/myResourceGroupxxx",
@@ -180,8 +176,6 @@ This configuration requires bring-your-own networking (via [Kubenet][byo-vnet-ku
 
     Results:
 
-    <!-- expected_similarity=0.3 -->
-
     ```output
     /xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/myResourceGroupxxx/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myNatClusterIdxxx
     ```
@@ -198,8 +192,6 @@ This configuration requires bring-your-own networking (via [Kubenet][byo-vnet-ku
     ```
 
     Results:
-
-    <!-- expected_similarity=0.3 -->
 
     ```output
     {
@@ -238,8 +230,6 @@ This configuration requires bring-your-own networking (via [Kubenet][byo-vnet-ku
 
     Results:
 
-    <!-- expected_similarity=0.3 -->
-
     ```output
     {
       "etag": "W/\"xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx\"",
@@ -273,8 +263,6 @@ This configuration requires bring-your-own networking (via [Kubenet][byo-vnet-ku
     ```
 
     Results:
-
-    <!-- expected_similarity=0.3 -->
 
     ```output
     {
@@ -312,8 +300,6 @@ This configuration requires bring-your-own networking (via [Kubenet][byo-vnet-ku
 
     Results:
 
-    <!-- expected_similarity=0.3 -->
-
     ```output
     /xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/myResourceGroupxxx/providers/Microsoft.Network/virtualNetworks/myVnetxxx/subnets/myNatClusterxxx
     ```
@@ -334,8 +320,6 @@ This configuration requires bring-your-own networking (via [Kubenet][byo-vnet-ku
     ```
 
     Results:
-
-    <!-- expected_similarity=0.3 -->
 
     ```output
     {

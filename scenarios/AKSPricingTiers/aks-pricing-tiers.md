@@ -52,8 +52,6 @@ az group create --name $RESOURCE_GROUP --location $REGION
 
 Results: 
 
-<!-- expected_similarity=0.3 -->
-
 ```output
 {
   "id": "/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/aks-rg-xxx",
@@ -109,8 +107,6 @@ az aks create \
 
 Results:
 
-<!-- expected_similarity=0.3 -->
-
 ```output
 {
   ...
@@ -139,8 +135,6 @@ az aks create \
 ```
 
 Results:
-
-<!-- expected_similarity=0.3 -->
 
 ```output
 {
@@ -196,8 +190,6 @@ az aks update --resource-group $RESOURCE_GROUP --name $CLUSTER_NAME --tier free
 
 Results:
 
-<!-- expected_similarity=0.3 -->
-
 ```output
 {
   ...
@@ -218,8 +210,6 @@ az aks update --resource-group $RESOURCE_GROUP --name $CLUSTER_NAME --tier stand
 ```
 
 Results:
-
-<!-- expected_similarity=0.3 -->
 
 ```output
 {
@@ -243,8 +233,6 @@ az aks update --resource-group $RESOURCE_GROUP --name $CLUSTER_NAME --tier premi
 
 Results:
 
-<!-- expected_similarity=0.3 -->
-
 ```output
 {
   ...
@@ -267,8 +255,6 @@ az aks update --resource-group $RESOURCE_GROUP --name $CLUSTER_NAME --tier stand
 ```
 
 Results:
-
-<!-- expected_similarity=0.3 -->
 
 ```output
 {

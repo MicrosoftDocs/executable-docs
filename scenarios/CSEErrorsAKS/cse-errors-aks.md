@@ -110,14 +110,14 @@ Set up your custom Domain Name System (DNS) server so that it can do name resolu
     export API_FQDN=$(az aks show --resource-group $RG_NAME --name $CLUSTER_NAME --query fqdn -o tsv)
 
     az vm run-command invoke \
-        --resource-group $NODE_RESOURCE_GROUP \
+        --resource-group $RESOURCE_GROUP \
         --name $AVAILABILITY_SET_VM \
         --command-id RunShellScript \
         --output tsv \
         --query "value[0].message" \
         --scripts "telnet $DNS_IP_ADDRESS 53"
     az vm run-command invoke \
-        --resource-group $NODE_RESOURCE_GROUP \
+        --resource-group $RESOURCE_GROUP \
         --name $AVAILABILITY_SET_VM \
         --command-id RunShellScript \
         --output tsv \
