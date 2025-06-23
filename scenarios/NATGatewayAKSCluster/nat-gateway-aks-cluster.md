@@ -382,17 +382,8 @@ Windows enables OutboundNAT by default. You can now manually disable OutboundNAT
     The following command adds a Windows node pool to an existing AKS cluster, disabling OutboundNAT.
 
     ```azurecli-interactive
-    export RANDOM_SUFFIX=$(openssl rand -hex 3)
-    export MY_RG="myResourceGroup$RANDOM_SUFFIX"
-    export AKS_NAME="myNatCluster$RANDOM_SUFFIX"
-    export NODEPOOL_NAME="mynp$RANDOM_SUFFIX"
-    az group create --name $MY_RG --location "eastus2"
-    az aks create \
-        --resource-group $MY_RG \
-        --name $AKS_NAME \
-        --node-count 1 \
-        --generate-ssh-keys
-    az aks nodepool add \
+      export NODEPOOL_NAME=$(az aks nodepool list --resource-group $MY_RG --cluster-name $AKS_NAME --query '[0].name' --output tsv)
+      az aks nodepool add \
         --resource-group $MY_RG \
         --cluster-name $AKS_NAME \
         --name $NODEPOOL_NAME \
