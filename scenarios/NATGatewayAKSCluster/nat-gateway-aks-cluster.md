@@ -54,7 +54,7 @@ Results:
 }
 ```
 
-```azurecli-interactive
+```shell
 az aks create \
     --resource-group $MY_RG \
     --name $MY_AKS \
@@ -66,8 +66,6 @@ az aks create \
 ```
 
 Results:
-
-<!-- expected_similarity=0.3 -->
 
 ```output
 {

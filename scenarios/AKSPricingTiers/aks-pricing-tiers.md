@@ -80,8 +80,6 @@ az aks create \
 
 Results:
 
-<!-- expected_similarity=0.3 -->
-
 ```output
 {
   ...
@@ -188,6 +186,8 @@ The following example uses the [`az aks update`](/cli/azure/aks#az_aks_update) c
 az aks update --resource-group $RESOURCE_GROUP --name $CLUSTER_NAME --tier free
 ```
 
+<!-- expected_similarity=0.3 -->
+
 Results:
 
 ```output
@@ -208,6 +208,8 @@ Results:
 
 az aks update --resource-group $RESOURCE_GROUP --name $CLUSTER_NAME --tier standard
 ```
+
+<!-- expected_similarity=0.3 -->
 
 Results:
 
@@ -230,6 +232,8 @@ Results:
 # Update an existing cluster to the Premium tier
 az aks update --resource-group $RESOURCE_GROUP --name $CLUSTER_NAME --tier premium --k8s-support-plan AKSLongTermSupport
 ```
+
+<!-- expected_similarity=0.3 -->
 
 Results:
 
