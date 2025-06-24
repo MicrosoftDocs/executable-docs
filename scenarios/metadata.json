@@ -154,8 +154,7 @@
                 "url": "https://learn.microsoft.com/en-us/azure/static-web-apps/add-api"
             }
         ],
-        "configurations": {
-        }
+        "configurations": {}
     },
     {
         "status": "active",
@@ -179,8 +178,7 @@
                 "url": "https://learn.microsoft.com/en-us/azure/virtual-machine-scale-sets/tutorial-autoscale-cli"
             }
         ],
-        "configurations": {
-        }
+        "configurations": {}
     },
     {
         "status": "active",
@@ -249,10 +247,8 @@
                 "title": "Secure your Linux VM",
                 "url": "https://learn.microsoft.com/en-us/azure/virtual-machines/linux/tutorial-secure-vm"
             }
-            
         ],
-        "configurations": {
-        }
+        "configurations": {}
     },
     {
         "status": "active",
@@ -276,8 +272,7 @@
                 "url": "https://go.microsoft.com/fwlink/p/?linkid=2259865"
             }
         ],
-        "configurations": {
-        }
+        "configurations": {}
     },
     {
         "status": "active",
@@ -305,8 +300,7 @@
                 "url": "https://learn.microsoft.com/azure/aks/tutorial-kubernetes-app-update?tabs=azure-cli"
             }
         ],
-        "configurations": {
-        }
+        "configurations": {}
     },
     {
         "status": "active",
@@ -334,8 +328,7 @@
                 "url": "https://learn.microsoft.com/en-us/azure/load-balancer/quickstart-load-balancer-standard-public-cli"
             }
         ],
-        "configurations": {
-        }
+        "configurations": {}
     },
     {
         "status": "active",
@@ -402,19 +395,19 @@
         "configurations": {
             "permissions": [],
             "configurableParams": [
-                    {
-                        "inputType": "textInput",
-                        "commandKey": "MY_RESOURCE_GROUP_NAME",
-                        "title": "Resource Group Name",
-                        "defaultValue": ""
-                    },
-                    {
-                        "inputType": "textInput",
-                        "commandKey": "MY_VM_NAME",
-                        "title": "VM Name",
-                        "defaultValue": ""
-                    }
-                ]
+                {
+                    "inputType": "textInput",
+                    "commandKey": "MY_RESOURCE_GROUP_NAME",
+                    "title": "Resource Group Name",
+                    "defaultValue": ""
+                },
+                {
+                    "inputType": "textInput",
+                    "commandKey": "MY_VM_NAME",
+                    "title": "VM Name",
+                    "defaultValue": ""
+                }
+            ]
         }
     },
     {
@@ -430,10 +423,8 @@
                 "title": "Deploy a highly available PostgreSQL database on AKS with Azure CLI",
                 "url": "https://learn.microsoft.com/en-us/azure/aks/deploy-postgresql-ha?tabs=helm"
             }
-            
         ],
-        "configurations": {
-        }
+        "configurations": {}
     },
     {
         "status": "inactive",
@@ -448,10 +439,8 @@
                 "title": "Deploy a highly available PostgreSQL database on AKS with Azure CLI",
                 "url": "https://learn.microsoft.com/en-us/azure/aks/deploy-postgresql-ha?tabs=helm"
             }
-            
         ],
-        "configurations": {
-        }
+        "configurations": {}
     },
     {
         "status": "inactive",
@@ -479,12 +468,11 @@
                 "url": "https://learn.microsoft.com/azure/ai-services/computer-vision/"
             }
         ],
-        "configurations": {
-        }
+        "configurations": {}
     },
     {
         "status": "inactive",
-        "key": "DeployHAPGonARO/deploy-ha-pg-on-aro.md",
+        "key": "DeployHAPGOnARO/deploy-ha-pg-on-aro.md",
         "title": "Create a Highly Available PostgreSQL Cluster on Azure Red Hat OpenShift",
         "description": "This tutorial shows how to create a Highly Available PostgreSQL cluster on Azure Red Hat OpenShift (ARO) using the CloudNativePG operator",
         "stackDetails": "",
@@ -495,10 +483,8 @@
                 "title": "Deploy a highly available PostgreSQL database on AKS with Azure CLI",
                 "url": "https://learn.microsoft.com/en-us/azure/aks/deploy-postgresql-ha?tabs=helm"
             }
-            
         ],
-        "configurations": {
-        }
+        "configurations": {}
     },
     {
         "status": "inactive",
@@ -578,7 +564,6 @@
                 "title": "Deploy a Valkey cluster on Azure Kubernetes Service (AKS)",
                 "url": "https://learn.microsoft.com/en-us/azure/aks/valkey-overview"
             }
-
         ],
         "configurations": {
             "permissions": [],
@@ -692,8 +677,7 @@
             }
         ],
         "configurations": {
-            "permissions": [
-            ],
+            "permissions": [],
             "configurableParams": [
                 {
                     "inputType": "textInput",
@@ -715,8 +699,7 @@
         "key": "CreateLinuxVMSecureWebServer/create-linux-vm-secure-web-server.md",
         "title": "Create a NGINX Webserver Secured via HTTPS",
         "description": "This tutorial shows how to create a NGINX Webserver Secured via HTTPS.",
-        "stackDetails": [
-        ],
+        "stackDetails": [],
         "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/CreateLinuxVMSecureWebServer/create-linux-vm-secure-web-server.md",
         "documentationUrl": "",
         "nextSteps": [
@@ -733,8 +716,7 @@
                 "url": "https://learn.microsoft.com/en-us/azure/virtual-machines/linux/tutorial-secure-vm"
             }
         ],
-        "configurations": {
-        }
+        "configurations": {}
     },
     {
         "status": "active",
@@ -771,7 +753,6 @@
                 "title": "Azure Linux Container Host tutorial",
                 "url": "https://github.com/MicrosoftDocs/azure-management-docs/blob/main/articles/azure-linux/tutorial-azure-linux-create-cluster.md"
             }
-            
         ],
         "configurations": {
             "permissions": []
@@ -790,7 +771,6 @@
                 "title": "Deploy applications to your scale sets",
                 "url": "https://learn.microsoft.com/en-us/azure/virtual-machine-scale-sets/tutorial-install-apps-cli"
             }
-            
         ],
         "configurations": {
             "permissions": []
@@ -809,7 +789,6 @@
                 "title": "How Accelerated Networking works in Linux and FreeBSD VMs",
                 "url": "https://learn.microsoft.com/en-us/azure/virtual-network/accelerated-networking-how-it-works"
             }
-            
         ],
         "configurations": {
             "permissions": []
@@ -832,7 +811,6 @@
                 "title": "Deploy a highly available PostgreSQL database on AKS with Azure CLI",
                 "url": "https://learn.microsoft.com/en-us/azure/aks/deploy-postgresql-ha?tabs=helm"
             }
-            
         ],
         "configurations": {
             "permissions": []
@@ -851,7 +829,6 @@
                 "title": "Use Microsoft Entra Workload ID with Azure Kubernetes Service (AKS)",
                 "url": "https://learn.microsoft.com/en-us/azure/aks/workload-identity-overview"
             }
-            
         ],
         "configurations": {
             "permissions": [],
@@ -953,20 +930,20 @@
         "configurations": {
             "permissions": [],
             "configurableParams": [
-                    {
-                        "inputType": "textInput",
-                        "commandKey": "MY_RESOURCE_GROUP_NAME",
-                        "title": "Resource Group Name",
-                        "defaultValue": ""
-                    },
-                    {
-                        "inputType": "textInput",
-                        "commandKey": "MY_VM_NAME",
-                        "title": "VM Name",
-                        "defaultValue": ""
-                    }
-                ]
-        } 
+                {
+                    "inputType": "textInput",
+                    "commandKey": "MY_RESOURCE_GROUP_NAME",
+                    "title": "Resource Group Name",
+                    "defaultValue": ""
+                },
+                {
+                    "inputType": "textInput",
+                    "commandKey": "MY_VM_NAME",
+                    "title": "VM Name",
+                    "defaultValue": ""
+                }
+            ]
+        }
     },
     {
         "status": "active",
@@ -985,20 +962,20 @@
         "configurations": {
             "permissions": [],
             "configurableParams": [
-                    {
-                        "inputType": "textInput",
-                        "commandKey": "MY_RESOURCE_GROUP_NAME",
-                        "title": "Resource Group Name",
-                        "defaultValue": ""
-                    },
-                    {
-                        "inputType": "textInput",
-                        "commandKey": "MY_VM_NAME",
-                        "title": "VM Name",
-                        "defaultValue": ""
-                    }
-                ]
-        } 
+                {
+                    "inputType": "textInput",
+                    "commandKey": "MY_RESOURCE_GROUP_NAME",
+                    "title": "Resource Group Name",
+                    "defaultValue": ""
+                },
+                {
+                    "inputType": "textInput",
+                    "commandKey": "MY_VM_NAME",
+                    "title": "VM Name",
+                    "defaultValue": ""
+                }
+            ]
+        }
     },
     {
         "status": "active",
@@ -1017,28 +994,27 @@
         "configurations": {
             "permissions": [],
             "configurableParams": [
-                    {
-                        "inputType": "textInput",
-                        "commandKey": "MY_RESOURCE_GROUP_NAME",
-                        "title": "Resource Group Name",
-                        "defaultValue": ""
-                    },
-                    {
-                        "inputType": "textInput",
-                        "commandKey": "MY_VM_NAME",
-                        "title": "VM Name",
-                        "defaultValue": ""
-                    }
-                ]
-        } 
+                {
+                    "inputType": "textInput",
+                    "commandKey": "MY_RESOURCE_GROUP_NAME",
+                    "title": "Resource Group Name",
+                    "defaultValue": ""
+                },
+                {
+                    "inputType": "textInput",
+                    "commandKey": "MY_VM_NAME",
+                    "title": "VM Name",
+                    "defaultValue": ""
+                }
+            ]
+        }
     },
     {
         "status": "active",
         "key": "azure-docs/articles/batch/quick-create-cli.md",
         "title": "Quickstart: Use the Azure CLI to create a Batch account and run a job",
         "description": "Follow this quickstart to use the Azure CLI to create a Batch account, a pool of compute nodes, and a job that runs basic tasks on the pool.",
-        "stackDetails": [
-        ],
+        "stackDetails": [],
         "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-docs/articles/batch/quick-create-cli.md",
         "documentationUrl": "https://learn.microsoft.com/en-us/azure/batch/quick-create-cli",
         "nextSteps": [
@@ -1047,16 +1023,14 @@
                 "url": "https://learn.microsoft.com/en-us/azure/batch/tutorial-parallel-python"
             }
         ],
-        "configurations": {
-        }
+        "configurations": {}
     },
     {
         "status": "active",
         "key": "azure-compute-docs/articles/virtual-machines/linux/tutorial-manage-vm.md",
         "title": "Tutorial - Create and manage Linux VMs with the Azure CLI",
         "description": "In this tutorial, you learn how to use the Azure CLI to create and manage Linux VMs in Azure",
-        "stackDetails": [
-        ],
+        "stackDetails": [],
         "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-compute-docs/articles/virtual-machines/linux/tutorial-manage-vm.md",
         "documentationUrl": "https://learn.microsoft.com/en-us/azure/virtual-machines/linux/tutorial-manage-vm",
         "nextSteps": [
@@ -1065,30 +1039,25 @@
                 "url": "https://learn.microsoft.com/en-us/azure/virtual-machines/linux/tutorial-manage-disks"
             }
         ],
-        "configurations": {
-        }
+        "configurations": {}
     },
     {
         "status": "active",
         "key": "azure-compute-docs/articles/virtual-machine-scale-sets/tutorial-autoscale-cli.md",
         "title": "Tutorial - Autoscale a scale set with the Azure CLI",
         "description": "Learn how to use the Azure CLI to automatically scale a Virtual Machine Scale Set as CPU demands increases and decreases",
-        "stackDetails": [
-        ],
+        "stackDetails": [],
         "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-compute-docs/articles/virtual-machine-scale-sets/tutorial-autoscale-cli.md",
         "documentationUrl": "https://learn.microsoft.com/en-us/azure/virtual-machine-scale-sets/tutorial-autoscale-cli?tabs=Ubuntu",
-        "nextSteps": [
-        ],
-        "configurations": {
-        }
+        "nextSteps": [],
+        "configurations": {}
     },
     {
         "status": "active",
         "key": "azure-compute-docs/articles/virtual-machine-scale-sets/tutorial-modify-scale-sets-cli.md",
         "title": "Modify an Azure Virtual Machine Scale Set using Azure CLI",
         "description": "Learn how to modify and update an Azure Virtual Machine Scale Set using Azure CLI",
-        "stackDetails": [
-        ],
+        "stackDetails": [],
         "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-compute-docs/articles/virtual-machine-scale-sets/tutorial-modify-scale-sets-cli.md",
         "documentationUrl": "https://learn.microsoft.com/en-us/azure/virtual-machine-scale-sets/tutorial-modify-scale-sets-cli",
         "nextSteps": [
@@ -1097,16 +1066,14 @@
                 "url": "https://learn.microsoft.com/en-us/azure/virtual-machine-scale-sets/tutorial-use-disks-powershell"
             }
         ],
-        "configurations": {
-        }
+        "configurations": {}
     },
     {
         "status": "active",
         "key": "azure-compute-docs/articles/virtual-machines/disks-enable-performance.md",
         "title": "Preview - Increase performance of Premium SSDs and Standard SSD/HDDs",
         "description": "Increase the performance of Azure Premium SSDs and Standard SSD/HDDs using performance plus.",
-        "stackDetails": [
-        ],
+        "stackDetails": [],
         "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-compute-docs/articles/virtual-machines/disks-enable-performance.md",
         "documentationUrl": "https://learn.microsoft.com/en-us/azure/virtual-machines/disks-enable-performance?tabs=azure-cli",
         "nextSteps": [
@@ -1119,16 +1086,14 @@
                 "url": "https://learn.microsoft.com/en-us/azure/virtual-machines/linux/expand-disks"
             }
         ],
-        "configurations": {
-        }
+        "configurations": {}
     },
     {
         "status": "active",
         "key": "azure-compute-docs/articles/container-instances/container-instances-vnet.md",
         "title": "Deploy container group to Azure virtual network",
         "description": "Learn how to deploy a container group to a new or existing Azure virtual network via the Azure CLI.",
-        "stackDetails": [
-        ],
+        "stackDetails": [],
         "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-compute-docs/articles/container-instances/container-instances-vnet.md",
         "documentationUrl": "https://learn.microsoft.com/en-us/azure/container-instances/container-instances-vnet",
         "nextSteps": [
@@ -1141,16 +1106,14 @@
                 "url": "https://learn.microsoft.com/en-us/azure/container-instances/using-azure-container-registry-mi"
             }
         ],
-        "configurations": {
-        }
+        "configurations": {}
     },
     {
         "status": "active",
         "key": "azure-compute-docs/articles/virtual-machines/linux/multiple-nics.md",
         "title": "Create a Linux VM in Azure with multiple NICs",
         "description": "Learn how to create a Linux VM with multiple NICs attached to it using the Azure CLI or Resource Manager templates.",
-        "stackDetails": [
-        ],
+        "stackDetails": [],
         "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-compute-docs/articles/virtual-machines/linux/multiple-nics.md",
         "documentationUrl": "https://learn.microsoft.com/en-us/azure/virtual-machines/linux/multiple-nics",
         "nextSteps": [
@@ -1163,16 +1126,14 @@
                 "url": "https://learn.microsoft.com/en-us/azure/security-center/security-center-just-in-time"
             }
         ],
-        "configurations": {
-        }
+        "configurations": {}
     },
     {
         "status": "inactive",
         "key": "azure-compute-docs/articles/virtual-machines/linux/quick-create-terraform/quick-create-terraform.md",
         "title": "Quickstart: Use Terraform to create a Linux VM",
         "description": "In this quickstart, you learn how to use Terraform to create a Linux virtual machine.",
-        "stackDetails": [
-        ],
+        "stackDetails": [],
         "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-compute-docs/articles/virtual-machines/linux/quick-create-terraform/quick-create-terraform.md",
         "documentationUrl": "https://learn.microsoft.com/en-us/azure/virtual-machines/linux/quick-create-terraform?tabs=azure-cli",
         "nextSteps": [
@@ -1185,8 +1146,7 @@
                 "url": "https://learn.microsoft.com/en-us/azure/virtual-machines/linux/tutorial-manage-vm"
             }
         ],
-        "configurations": {
-        }
+        "configurations": {}
     },
     {
         "status": "inactive",
@@ -1206,12 +1166,10 @@
         "key": "upstream/FlatcarOnAzure/flatcar-on-azure.md",
         "title": "Running Flatcar Container Linux on Microsoft Azure",
         "description": "Deploy Flatcar Container Linux in Microsoft Azure by creating resource groups and using official marketplace images.",
-        "stackDetails": [
-        ],
+        "stackDetails": [],
         "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/upstream/FlatcarOnAzure/flatcar-on-azure.md",
         "documentationUrl": "https://www.flatcar.org/docs/latest/installing/cloud/azure/",
-        "configurations": {
-        }
+        "configurations": {}
     },
     {
         "status": "active",
@@ -1411,7 +1369,7 @@
             },
             {
                 "title": "Use an internal load balancer with Azure Container Service (AKS)",
-                "url": "https://learn.microsoft.com/en-us/azure/aks/internal-lb"  
+                "url": "https://learn.microsoft.com/en-us/azure/aks/internal-lb"
             },
             {
                 "title": "Create a basic ingress controller with external network connectivity",
@@ -1845,6 +1803,932 @@
                 {
                     "inputType": "textInput",
                     "commandKey": "CLUSTER",
+                    "title": "AKS Cluster Name",
+                    "defaultValue": ""
+                }
+            ]
+        }
+    },
+    {
+        "status": "inactive",
+        "key": "UseIGOnAKS/use-ig-on-aks.md",
+        "title": "Comprehensive Guide to Using Inspektor Gadget in Kubernetes",
+        "description": "This Exec Doc provides a detailed walkthrough of a shell script that demonstrates various operations with the Inspektor Gadget in a Kubernetes environment. It explains each functional block, how the gadget plugin is installed, deployed, and used to run examples, export metrics, and verify configurations.",
+        "stackDetails": "",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/UseIGOnAKS/use-ig-on-aks.md",
+        "documentationUrl": "",
+        "nextSteps": [
+            {
+                "title": "Real-world scenarios where Inspektor Gadget can help you",
+                "url": "https://go.microsoft.com/fwlink/p/?linkid=2260402#use-cases"
+            },
+            {
+                "title": "Explore the available gadgets",
+                "url": "https://go.microsoft.com/fwlink/p/?linkid=2260070"
+            },
+            {
+                "title": "Run your own eBPF program",
+                "url": "https://go.microsoft.com/fwlink/p/?linkid=2259865"
+            }
+        ],
+        "configurations": {
+            "permissions": [],
+            "configurableParams": [
+                {
+                    "inputType": "textInput",
+                    "commandKey": "RESOURCE_GROUP",
+                    "title": "Resource Group Name",
+                    "defaultValue": ""
+                },
+                {
+                    "inputType": "textInput",
+                    "commandKey": "CLUSTER_NAME",
+                    "title": "AKS Cluster Name",
+                    "defaultValue": ""
+                }
+            ]
+        }
+    },
+    {
+        "status": "inactive",
+        "key": "azure-docs/articles/iot-edge/quickstart-linux.md",
+        "title": "Quickstart: Create an Azure IoT Edge Device on Linux",
+        "description": "Learn to configure an Azure IoT Edge device on Linux. This guide walks you through creating an IoT Hub, registering a device, and deploying a simulated sensor module.",
+        "stackDetails": "",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-docs/articles/iot-edge/quickstart-linux.md",
+        "documentationUrl": "",
+        "nextSteps": [
+            {
+                "title": "Monitor IoT Edge Devices",
+                "url": "https://learn.microsoft.com/en-us/azure/iot-edge/tutorial-monitor-with-workbooks"
+            }
+        ],
+        "configurations": {
+            "permissions": [],
+            "configurableParams": []
+        }
+    },
+    {
+        "status": "inactive",
+        "key": "azure-dev-docs/articles/ansible/vm-configure.md",
+        "title": "Create a Linux virtual machines in Azure using Ansible",
+        "description": "Learn how to create a Linux virtual machine in Azure using Ansible",
+        "stackDetails": "",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-dev-docs/articles/ansible/vm-configure.md",
+        "documentationUrl": "",
+        "nextSteps": [
+            {
+                "title": "Manage a Linux virtual machine in Azure using Ansible",
+                "url": "https://learn.microsoft.com/en-us/azure/developer/ansible/vm-manage"
+            }
+        ],
+        "configurations": {
+            "permissions": [],
+            "configurableParams": []
+        }
+    },
+    {
+        "status": "active",
+        "key": "azure-aks-docs/articles/aks/istio-scale.md",
+        "title": "Istio service mesh Azure Kubernetes Service add-on performance and scaling",
+        "description": "Istio service mesh Azure Kubernetes Service add-on performance and scaling",
+        "stackDetails": "",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/IstioPerformanceAKS/istio-performance-aks.md",
+        "documentationUrl": "https://learn.microsoft.com/en-us/azure/aks/istio-scale",
+        "nextSteps": [],
+        "configurations": {
+            "permissions": [],
+            "configurableParams": [
+                {
+                    "inputType": "textInput",
+                    "commandKey": "RESOURCE_GROUP",
+                    "title": "Resource Group Name",
+                    "defaultValue": ""
+                },
+                {
+                    "inputType": "textInput",
+                    "commandKey": "AKS_CLUSTER",
+                    "title": "AKS Cluster Name",
+                    "defaultValue": ""
+                }
+            ]
+        }
+    },
+    {
+        "status": "active",
+        "key": "SupportArticles-docs/support/azure/azure-kubernetes/availability-performance/node-not-ready-custom-script-extension-errors.md",
+        "title": "Node Not Ready because of custom script extension (CSE) errors",
+        "description": "Troubleshoot scenarios in which custom script extension (CSE) errors cause Node Not Ready states in an Azure Kubernetes Service (AKS) cluster node pool.",
+        "stackDetails": "",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/CSEErrorsAKS/cse-errors-aks.md",
+        "documentationUrl": "https://learn.microsoft.com/en-us/troubleshoot/azure/azure-kubernetes/availability-performance/node-not-ready-custom-script-extension-errors",
+        "nextSteps": [],
+        "configurations": {
+            "permissions": [],
+            "configurableParams": [
+                {
+                    "inputType": "textInput",
+                    "commandKey": "RG_NAME",
+                    "title": "Resource Group Name",
+                    "defaultValue": ""
+                },
+                {
+                    "inputType": "textInput",
+                    "commandKey": "CLUSTER_NAME",
+                    "title": "Cluster Name",
+                    "defaultValue": ""
+                },
+                {
+                    "inputType": "textInput",
+                    "commandKey": "AVAILABILITY_SET_VM",
+                    "title": "Availability Set VM Name",
+                    "defaultValue": ""
+                }
+            ]
+        }
+    },
+    {
+        "status": "active",
+        "key": "SupportArticles-docs/support/azure/azure-kubernetes/availability-performance/node-not-ready-after-being-healthy.md",
+        "title": "Node Not Ready status after node is in a healthy state",
+        "description": "Troubleshoot scenarios in which an Azure Kubernetes Service (AKS) cluster node goes to a Not Ready status after is in a healthy state.",
+        "stackDetails": "",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/NodeNotReadyAKS/node-not-ready-aks.md",
+        "documentationUrl": "https://learn.microsoft.com/en-us/troubleshoot/azure/azure-kubernetes/availability-performance/node-not-ready-after-being-healthy",
+        "nextSteps": [],
+        "configurations": {
+            "permissions": [],
+            "configurableParams": [
+                {
+                    "inputType": "textInput",
+                    "commandKey": "RESOURCE_GROUP",
+                    "title": "Resource Group Name",
+                    "defaultValue": ""
+                },
+                {
+                    "inputType": "textInput",
+                    "commandKey": "AKS_CLUSTER",
+                    "title": "AKS Cluster Name",
+                    "defaultValue": ""
+                }
+            ]
+        }
+    },
+    {
+        "status": "active",
+        "key": "SupportArticles-docs/support/azure/azure-kubernetes/connectivity/tcp-timeouts-dial-tcp-nodeip-10250-io-timeout.md",
+        "title": "TCP 10250 I/O timeout errors when connecting to a node's Kubelet for log retrieval",
+        "description": "Learn how to troubleshoot TCP 10250 I/O timeout errors that occur when retrieving kubectl logs from a pod in an Azure Kubernetes Service (AKS) cluster.",
+        "stackDetails": "",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/KubeletIOTroubleshooting/kubelet-io-troubleshooting.md",
+        "documentationUrl": "https://learn.microsoft.com/en-us/troubleshoot/azure/azure-kubernetes/connectivity/tcp-timeouts-dial-tcp-nodeip-10250-io-timeout",
+        "nextSteps": [],
+        "configurations": {
+            "permissions": [],
+            "configurableParams": [
+                {
+                    "inputType": "textInput",
+                    "commandKey": "POD_NAME",
+                    "title": "Pod Name",
+                    "defaultValue": ""
+                },
+                {
+                    "inputType": "textInput",
+                    "commandKey": "RESOURCE_GROUP",
+                    "title": "Resource Group Name",
+                    "defaultValue": ""
+                },
+                {
+                    "inputType": "textInput",
+                    "commandKey": "CLUSTER_NAME",
+                    "title": "Aks Cluster Name",
+                    "defaultValue": ""
+                }
+            ]
+        }
+    },
+    {
+        "status": "active",
+        "key": "azure-aks-docs/articles/aks/kubelet-logs.md",
+        "title": "View kubelet logs in Azure Kubernetes Service (AKS)",
+        "description": "Learn how to view troubleshooting information in the kubelet logs from Azure Kubernetes Service (AKS) nodes",
+        "stackDetails": "",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/KubeletLogsAKS/kubelet-logs-aks.md",
+        "documentationUrl": "https://learn.microsoft.com/en-us/azure/aks/kubelet-logs",
+        "nextSteps": [
+            {
+                "title": "SSH into AKS cluster nodes",
+                "url": "https://learn.microsoft.com/azure/aks/ssh"
+            }
+        ],
+        "configurations": {
+            "permissions": [],
+            "configurableParams": [
+                {
+                    "inputType": "textInput",
+                    "commandKey": "RESOURCE_GROUP_NAME",
+                    "title": "Resource Group Name",
+                    "defaultValue": ""
+                },
+                {
+                    "inputType": "textInput",
+                    "commandKey": "AKS_CLUSTER_NAME",
+                    "title": "Aks Cluster Name",
+                    "defaultValue": ""
+                },
+                {
+                    "inputType": "textInput",
+                    "commandKey": "NODE_NAME",
+                    "title": "Node Name",
+                    "defaultValue": ""
+                }
+            ]
+        }
+    },
+    {
+        "status": "active",
+        "key": "azure-aks-docs/articles/aks/delete-cluster.md",
+        "title": "Delete an Azure Kubernetes Service (AKS) cluster",
+        "description": "Learn about deleting a cluster in Azure Kubernetes Service (AKS).",
+        "stackDetails": "",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/DeleteAKSCluster/delete-aks-cluster.md",
+        "documentationUrl": "https://learn.microsoft.com/en-us/azure/aks/delete-cluster",
+        "nextSteps": [
+            {
+                "title": "Stop an AKS cluster",
+                "url": "https://learn.microsoft.com/azure/aks/stop-start-cluster"
+            },
+            {
+                "title": "Upgrade an AKS cluster",
+                "url": "https://learn.microsoft.com/azure/aks/upgrade-cluster"
+            }
+        ],
+        "configurations": {
+            "permissions": [],
+            "configurableParams": [
+                {
+                    "inputType": "textInput",
+                    "commandKey": "AKS_CLUSTER_NAME",
+                    "title": "AKS Cluster Name",
+                    "defaultValue": ""
+                },
+                {
+                    "inputType": "textInput",
+                    "commandKey": "RESOURCE_GROUP_NAME",
+                    "title": "Resource Group Name",
+                    "defaultValue": ""
+                }
+            ]
+        }
+    },
+    {
+        "status": "active",
+        "key": "azure-aks-docs/articles/aks/access-control-managed-azure-ad.md",
+        "title": "Control cluster access using Conditional Access with AKS-managed Microsoft Entra integration",
+        "description": "Learn how to access clusters using Conditional Access when integrating Microsoft Entra ID in your Azure Kubernetes Service (AKS) clusters.",
+        "stackDetails": "",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/ConditionalAccessAKS/conditional-access-aks.md",
+        "documentationUrl": "https://learn.microsoft.com/en-us/azure/aks/access-control-managed-azure-ad",
+        "nextSteps": [],
+        "configurations": {
+            "permissions": [],
+            "configurableParams": [
+                {
+                    "inputType": "textInput",
+                    "commandKey": "RESOURCE_GROUP",
+                    "title": "Resource Group Name",
+                    "defaultValue": ""
+                },
+                {
+                    "inputType": "textInput",
+                    "commandKey": "AKS_CLUSTER",
+                    "title": "AKS Cluster Name",
+                    "defaultValue": ""
+                }
+            ]
+        }
+    },
+    {
+        "status": "active",
+        "key": "azure-aks-docs/articles/aks/concepts-network-azure-cni-pod-subnet.md",
+        "title": "Concepts - Azure CNI Pod Subnet networking in AKS",
+        "description": "Learn about Azure CNI Pod Subnet, dynamic IP allocation mode, and static block allocation mode in Azure Kubernetes Service (AKS).",
+        "stackDetails": "",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/AzureCNIPodSubnet/azure-cni-pod-subnet.md",
+        "documentationUrl": "https://learn.microsoft.com/en-us/azure/aks/concepts-network-azure-cni-pod-subnet",
+        "nextSteps": [],
+        "configurations": {
+            "permissions": [],
+            "configurableParams": [
+                {
+                    "inputType": "textInput",
+                    "commandKey": "CLUSTER_NAME",
+                    "title": "Cluster Name",
+                    "defaultValue": ""
+                },
+                {
+                    "inputType": "textInput",
+                    "commandKey": "RESOURCE_GROUP_NAME",
+                    "title": "Resource Group Name",
+                    "defaultValue": ""
+                }
+            ]
+        }
+    },
+    {
+        "status": "active",
+        "key": "azure-aks-docs/articles/aks/aks-migration.md",
+        "title": "Migrate to Azure Kubernetes Service (AKS)",
+        "description": "This article shows you how to migrate to Azure Kubernetes Service (AKS).",
+        "stackDetails": "",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/MigrateToAKS/migrate-to-aks.md",
+        "documentationUrl": "https://learn.microsoft.com/en-us/azure/aks/aks-migration",
+        "nextSteps": [
+            {
+                "title": "Containerizing ASP.NET applications and migrating to AKS",
+                "url": "/azure/migrate/tutorial-app-containerization-aspnet-kubernetes"
+            },
+            {
+                "title": "Containerizing Java web applications and migrating to AKS",
+                "url": "/azure/migrate/tutorial-app-containerization-java-kubernetes"
+            }
+        ],
+        "configurations": {
+            "permissions": [],
+            "configurableParams": []
+        }
+    },
+    {
+        "status": "active",
+        "key": "azure-aks-docs/articles/aks/use-etags.md",
+        "title": "Enhancing Concurrency Control with Entity Tags (eTags) in Azure Kubernetes Service",
+        "description": "Learn how to use eTags (Entity Tags) to enable concurrency control and avoid racing conditions or overwriting scenarios.",
+        "stackDetails": "",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/ETagConcurrencyAKS/e-tag-concurrency-aks.md",
+        "documentationUrl": "https://learn.microsoft.com/en-us/azure/aks/use-etags",
+        "nextSteps": [],
+        "configurations": {
+            "permissions": [],
+            "configurableParams": []
+        }
+    },
+    {
+        "status": "active",
+        "key": "azure-aks-docs/articles/aks/istio-meshconfig.md",
+        "title": "Configure Istio-based service mesh add-on for Azure Kubernetes Service",
+        "description": "Configure Istio-based service mesh add-on for Azure Kubernetes Service",
+        "stackDetails": "",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/IstioAddonAKS/istio-addon-aks.md",
+        "documentationUrl": "https://learn.microsoft.com/en-us/azure/aks/istio-meshconfig",
+        "nextSteps": [],
+        "configurations": {
+            "permissions": [],
+            "configurableParams": [
+                {
+                    "inputType": "textInput",
+                    "commandKey": "CLUSTER",
+                    "title": "Cluster Name",
+                    "defaultValue": ""
+                },
+                {
+                    "inputType": "textInput",
+                    "commandKey": "RESOURCE_GROUP",
+                    "title": "Resource Group Name",
+                    "defaultValue": ""
+                }
+            ]
+        }
+    },
+    {
+        "status": "active",
+        "key": "azure-aks-docs/articles/aks/access-private-cluster.md",
+        "title": "Access a private Azure Kubernetes Service (AKS) cluster using the command invoke or Run command feature",
+        "description": "Learn how to access a private Azure Kubernetes Service (AKS) cluster using the Azure CLI command invoke feature or the Azure portal Run command feature.",
+        "stackDetails": "",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/PrivateAKSAccess/private-aks-access.md",
+        "documentationUrl": "https://learn.microsoft.com/en-us/azure/aks/access-private-cluster",
+        "nextSteps": [
+            {
+                "title": "Create a private AKS cluster",
+                "url": "./private-clusters.md"
+            },
+            {
+                "title": "Install Azure CLI",
+                "url": "/cli/azure/install-azure-cli"
+            }
+        ],
+        "configurations": {
+            "permissions": [],
+            "configurableParams": [
+                {
+                    "inputType": "textInput",
+                    "commandKey": "AKS_RESOURCE_GROUP",
+                    "title": "Resource Group Name",
+                    "defaultValue": ""
+                },
+                {
+                    "inputType": "textInput",
+                    "commandKey": "AKS_CLUSTER_NAME",
+                    "title": "AKS Cluster Name",
+                    "defaultValue": ""
+                }
+            ]
+        }
+    },
+    {
+        "status": "active",
+        "key": "AKSDNSLookupFailError/aksdns-lookup-fail-error.md",
+        "title": "Troubleshoot the K8SAPIServerDNSLookupFailVMExtensionError error code (52)",
+        "description": "Learn how to troubleshoot the K8SAPIServerDNSLookupFailVMExtensionError error (52) when you try to start or create and deploy an Azure Kubernetes Service (AKS) cluster.",
+        "stackDetails": "https://learn.microsoft.com/en-us/troubleshoot/azure/azure-kubernetes/create-upgrade-delete/error-code-k8sapiserverdnslookupfailvmextensionerror",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/AKSDNSLookupFailError/aksdns-lookup-fail-error.md",
+        "documentationUrl": "",
+        "nextSteps": [
+            {
+                "title": "Create a private AKS cluster",
+                "url": "/azure/aks/private-clusters"
+            },
+            {
+                "title": "Private Azure Kubernetes service with custom DNS server",
+                "url": "https://github.com/Azure/terraform/tree/00d15e09c54f25fb6387330c36aa4366122c5aaa/quickstart/301-aks-private-cluster"
+            },
+            {
+                "title": "What is IP address 168.63.129.16?",
+                "url": "/azure/virtual-network/what"
+            }
+        ],
+        "configurations": {
+            "permissions": [],
+            "configurableParams": [
+                {
+                    "inputType": "textInput",
+                    "commandKey": "CLUSTER_NAME",
+                    "title": "AKS Cluster Name",
+                    "defaultValue": ""
+                }
+            ]
+        }
+    },
+    {
+        "status": "active",
+        "key": "azure-aks-docs/articles/aks/resize-cluster.md",
+        "title": "Resize Azure Kubernetes Service (AKS) clusters",
+        "description": "In this article, you learn about the importance of right-sizing your AKS clusters and how you can right-size them to optimize costs and performance.",
+        "stackDetails": "",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/ResizeAKSCluster/resize-aks-cluster.md",
+        "documentationUrl": "https://learn.microsoft.com/en-us/azure/aks/resize-cluster",
+        "nextSteps": [],
+        "configurations": {
+            "permissions": [],
+            "configurableParams": [
+                {
+                    "inputType": "textInput",
+                    "commandKey": "RESOURCE_GROUP",
+                    "title": "Resource Group Name",
+                    "defaultValue": ""
+                },
+                {
+                    "inputType": "textInput",
+                    "commandKey": "AKS_CLUSTER_NAME",
+                    "title": "AKS Cluster Name",
+                    "defaultValue": ""
+                },
+                {
+                    "inputType": "textInput",
+                    "commandKey": "NUM_NODES",
+                    "title": "Number of Nodes",
+                    "defaultValue": ""
+                },
+                {
+                    "inputType": "textInput",
+                    "commandKey": "NODE_POOL_NAME",
+                    "title": "Node Pool Name",
+                    "defaultValue": ""
+                }
+            ]
+        }
+    },
+    {
+        "status": "active",
+        "key": "azure-aks-docs/articles/aks/concepts-preview-api-life-cycle.md",
+        "title": "AKS Preview API life cycle",
+        "description": "Learn about the AKS preview API life cycle.",
+        "stackDetails": "",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/AKSPreviewAPILifecycle/aks-preview-api-lifecycle.md",
+        "documentationUrl": "https://learn.microsoft.com/en-us/azure/aks/concepts-preview-api-life-cycle",
+        "nextSteps": [
+            {
+                "title": "AKS Preview CLI Extension",
+                "url": "https://github.com/Azure/azure-cli-extensions/tree/main/src/aks-preview"
+            },
+            {
+                "title": "Newer version of the SDK",
+                "url": "https://azure.github.io/azure-sdk/releases/latest/index.html?search=containerservice"
+            },
+            {
+                "title": "Terraform release notes",
+                "url": "/azure/developer/terraform/provider-version-history-azurerm"
+            },
+            {
+                "title": "client.go in Terraform provider",
+                "url": "https://github.com/hashicorp/terraform-provider-azurerm/blob/main/internal/services/containers/client/client.go"
+            }
+        ],
+        "configurations": {
+            "permissions": [],
+            "configurableParams": []
+        }
+    },
+    {
+        "status": "active",
+        "key": "azure-aks-docs/articles/aks/use-labels.md",
+        "title": "Use labels in an Azure Kubernetes Service (AKS) cluster",
+        "description": "Learn how to use labels in an Azure Kubernetes Service (AKS) cluster.",
+        "stackDetails": "",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/AKSNodeLabels/aks-node-labels.md",
+        "documentationUrl": "https://learn.microsoft.com/en-us/azure/aks/use-labels",
+        "nextSteps": [],
+        "configurations": {
+            "permissions": [],
+            "configurableParams": []
+        }
+    },
+    {
+        "status": "active",
+        "key": "SupportArticles-docs/support/azure/azure-kubernetes/extensions/aks-cost-analysis-add-on-issues.md",
+        "title": "Azure Kubernetes Service Cost Analysis add-on issues",
+        "description": "Learn how to resolve issues that occur when you try to enable the Azure Kubernetes Service (AKS) Cost Analysis add-on.",
+        "stackDetails": "",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/AKSCostAnalysisIssues/aks-cost-analysis-issues.md",
+        "documentationUrl": "https://learn.microsoft.com/en-us/troubleshoot/azure/azure-kubernetes/extensions/aks-cost-analysis-add-on-issues",
+        "nextSteps": [],
+        "configurations": {
+            "permissions": [],
+            "configurableParams": [
+                {
+                    "inputType": "textInput",
+                    "commandKey": "RESOURCE_GROUP",
+                    "title": "Resource Group Name",
+                    "defaultValue": ""
+                },
+                {
+                    "inputType": "textInput",
+                    "commandKey": "AKS_CLUSTER",
+                    "title": "AKS Cluster Name",
+                    "defaultValue": ""
+                }
+            ]
+        }
+    },
+    {
+        "status": "active",
+        "key": "SupportArticles-docs/support/azure/azure-kubernetes/availability-performance/cluster-service-health-probe-mode-issues.md",
+        "title": "Troubleshoot the health probe mode for AKS cluster service load balancer",
+        "description": "Diagnoses and fixes common issues with the health probe mode feature.",
+        "stackDetails": "",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/AKSHealthProbeMode/aks-health-probe-mode.md",
+        "documentationUrl": "https://learn.microsoft.com/en-us/troubleshoot/azure/azure-kubernetes/availability-performance/cluster-service-health-probe-mode-issues",
+        "nextSteps": [],
+        "configurations": {
+            "permissions": [],
+            "configurableParams": [
+                {
+                    "inputType": "textInput",
+                    "commandKey": "RESOURCE_GROUP",
+                    "title": "Resource Group Name",
+                    "defaultValue": ""
+                },
+                {
+                    "inputType": "textInput",
+                    "commandKey": "AKS_CLUSTER_NAME",
+                    "title": "AKS Cluster Name",
+                    "defaultValue": ""
+                }
+            ]
+        }
+    },
+    {
+        "status": "active",
+        "key": "SupportArticles-docs/support/azure/azure-kubernetes/create-upgrade-delete/error-code-cnidownloadtimeoutvmextensionerror.md",
+        "title": "Troubleshoot Container Network Interface download failures",
+        "description": "Learn how to resolve Container Network Interface download failures when you try to create and deploy an Azure Kubernetes Service (AKS) cluster.",
+        "stackDetails": "",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/CniDownloadFailureAKS/cni-download-failure-aks.md",
+        "documentationUrl": "https://learn.microsoft.com/en-us/troubleshoot/azure/azure-kubernetes/create-upgrade-delete/error-code-cnidownloadtimeoutvmextensionerror",
+        "nextSteps": [],
+        "configurations": {
+            "permissions": [],
+            "configurableParams": [
+                {
+                    "inputType": "textInput",
+                    "commandKey": "RESOURCE_GROUP",
+                    "title": "Resource Group Name",
+                    "defaultValue": ""
+                },
+                {
+                    "inputType": "textInput",
+                    "commandKey": "AKS_CLUSTER_NAME",
+                    "title": "AKS Cluster Name",
+                    "defaultValue": ""
+                }
+            ]
+        }
+    },
+    {
+        "status": "active",
+        "key": "SupportArticles-docs/support/azure/azure-kubernetes/connectivity/tcp-timeouts-kubetctl-third-party-tools-connect-api-server.md",
+        "title": "TCP time-outs when kubectl or other 3rd-party tools connect to API",
+        "description": "Troubleshoot TCP time-outs that occur when kubectl or other third-party tools connect to the API server in Azure Kubernetes Service (AKS).",
+        "stackDetails": "",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/TCPTroubleshootAKS/tcp-troubleshoot-aks.md",
+        "documentationUrl": "https://learn.microsoft.com/en-us/troubleshoot/azure/azure-kubernetes/connectivity/tcp-timeouts-kubetctl-third-party-tools-connect-api-server",
+        "nextSteps": [],
+        "configurations": {
+            "permissions": [],
+            "configurableParams": [
+                {
+                    "inputType": "textInput",
+                    "commandKey": "ResourceGroupName",
+                    "title": "Resource Group Name",
+                    "defaultValue": ""
+                },
+                {
+                    "inputType": "textInput",
+                    "commandKey": "AKSClusterName",
+                    "title": "AKS Cluster Name",
+                    "defaultValue": ""
+                }
+            ]
+        }
+    },
+    {
+        "status": "active",
+        "key": "azure-aks-docs/articles/aks/enable-host-encryption.md",
+        "title": "Enable host-based encryption on Azure Kubernetes Service (AKS)",
+        "description": "Learn how to configure a host-based encryption in an Azure Kubernetes Service (AKS) cluster.",
+        "stackDetails": "",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/HostEncryptionAKS/host-encryption-aks.md",
+        "documentationUrl": "https://learn.microsoft.com/en-us/azure/aks/enable-host-encryption",
+        "nextSteps": [],
+        "configurations": {
+            "permissions": [],
+            "configurableParams": [
+                {
+                    "inputType": "textInput",
+                    "commandKey": "MY_AKS_CLUSTER",
+                    "title": "AKS Cluster Name",
+                    "defaultValue": ""
+                },
+                {
+                    "inputType": "textInput",
+                    "commandKey": "MY_RESOURCE_GROUP",
+                    "title": "Resource Group Name",
+                    "defaultValue": ""
+                }
+            ]
+        }
+    },
+    {
+        "status": "active",
+        "key": "azure-aks-docs/articles/aks/nat-gateway.md",
+        "title": "Create a managed or user-assigned NAT gateway for your Azure Kubernetes Service (AKS) cluster",
+        "description": "Learn how to create an AKS cluster with managed NAT integration and user-assigned NAT gateway.",
+        "stackDetails": "",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/NATGatewayAKSCluster/nat-gateway-aks-cluster.md",
+        "documentationUrl": "https://learn.microsoft.com/en-us/azure/aks/nat-gateway",
+        "nextSteps": [],
+        "configurations": {
+            "permissions": [],
+            "configurableParams": []
+        }
+    },
+    {
+        "status": "active",
+        "key": "azure-aks-docs/articles/aks/free-standard-pricing-tiers.md",
+        "title": "Azure Kubernetes Service (AKS) Free, Standard, and Premium pricing tiers for cluster management",
+        "description": "Learn about the Azure Kubernetes Service (AKS) Free, Standard, and Premium pricing plans and what features, deployment patterns, and recommendations to consider between each plan.",
+        "stackDetails": "",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/AKSPricingTiers/aks-pricing-tiers.md",
+        "documentationUrl": "https://learn.microsoft.com/en-us/azure/aks/free-standard-pricing-tiers",
+        "nextSteps": [],
+        "configurations": {
+            "permissions": [],
+            "configurableParams": [
+                {
+                    "inputType": "textInput",
+                    "commandKey": "RESOURCE_GROUP",
+                    "title": "Resource Group Name",
+                    "defaultValue": ""
+                },
+                {
+                    "inputType": "textInput",
+                    "commandKey": "CLUSTER_NAME",
+                    "title": "AKS Cluster Name",
+                    "defaultValue": ""
+                }
+            ]
+        }
+    },
+    {
+        "status": "active",
+        "key": "azure-aks-docs/articles/aks/events.md",
+        "title": "Use Kubernetes events for troubleshooting",
+        "description": "Learn about Kubernetes events, which provide details on pods, nodes, and other Kubernetes objects.",
+        "stackDetails": "",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/KubernetesEventsTroubleshooting/kubernetes-events-troubleshooting.md",
+        "documentationUrl": "https://learn.microsoft.com/en-us/azure/aks/events",
+        "nextSteps": [],
+        "configurations": {
+            "permissions": [],
+            "configurableParams": [
+                {
+                    "inputType": "textInput",
+                    "commandKey": "RESOURCE_GROUP",
+                    "title": "Resource Group Name",
+                    "defaultValue": ""
+                },
+                {
+                    "inputType": "textInput",
+                    "commandKey": "AKS_CLUSTER",
+                    "title": "AKS Cluster Name",
+                    "defaultValue": ""
+                }
+            ]
+        }
+    },
+    {
+        "status": "active",
+        "key": "SupportArticles-docs/support/azure/azure-kubernetes/create-upgrade-delete/upgrading-or-scaling-does-not-succeed.md",
+        "title": "Troubleshoot cluster upgrading and scaling errors",
+        "description": "Troubleshoot errors that occur when you try to upgrade or scale an Azure Kubernetes Service (AKS) cluster.",
+        "stackDetails": "",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/AKSUpgradeScalingErrors/aks-upgrade-scaling-errors.md",
+        "documentationUrl": "https://learn.microsoft.com/en-us/troubleshoot/azure/azure-kubernetes/create-upgrade-delete/upgrading-or-scaling-does-not-succeed",
+        "nextSteps": [
+            {
+                "title": "Request an increase in your resource quota",
+                "url": "/azure/azure-resource-manager/troubleshooting/error-resource-quota#solution"
+            },
+            {
+                "title": "Troubleshoot the SubnetIsFull error code",
+                "url": "error-code-subnetisfull.md"
+            },
+            {
+                "title": "Troubleshoot UpgradeFailed errors due to eviction failures caused by PDBs",
+                "url": "error-code-poddrainfailure.md"
+            },
+            {
+                "title": "How to mitigate stopped upgrade operations due to deprecated APIs",
+                "url": "/azure/aks/stop-cluster-upgrade-api-breaking-changes#mitigate-stopped-upgrade-operations"
+            }
+        ],
+        "configurations": {
+            "permissions": [],
+            "configurableParams": [
+                {
+                    "inputType": "textInput",
+                    "commandKey": "RESOURCE_GROUP",
+                    "title": "Resource Group Name",
+                    "defaultValue": ""
+                },
+                {
+                    "inputType": "textInput",
+                    "commandKey": "CLUSTER_NAME",
+                    "title": "Cluster Name",
+                    "defaultValue": ""
+                }
+            ]
+        }
+    },
+    {
+        "status": "active",
+        "key": "SupportArticles-docs/support/azure/azure-kubernetes/connectivity/user-cannot-get-cluster-resources.md",
+        "title": "Troubleshoot 'Forbidden' error when trying to access AKS cluster resources",
+        "description": "Troubleshoot 'Error from server (Forbidden)' RBAC-related errors that occur when you try to view Kubernetes resources in an AKS cluster.",
+        "stackDetails": "",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/ForbiddenErrorAKS/forbidden-error-aks.md",
+        "documentationUrl": "https://learn.microsoft.com/en-us/troubleshoot/azure/azure-kubernetes/connectivity/user-cannot-get-cluster-resources",
+        "nextSteps": [],
+        "configurations": {
+            "permissions": [],
+            "configurableParams": [
+                {
+                    "inputType": "textInput",
+                    "commandKey": "RESOURCE_GROUP",
+                    "title": "Resource Group Name",
+                    "defaultValue": ""
+                },
+                {
+                    "inputType": "textInput",
+                    "commandKey": "CLUSTER_NAME",
+                    "title": "Cluster Name",
+                    "defaultValue": ""
+                }
+            ]
+        }
+    },
+    {
+        "status": "active",
+        "key": "SupportArticles-docs/support/azure/azure-kubernetes/connectivity/troubleshoot-cluster-connection-issues-api-server.md",
+        "title": "Troubleshoot cluster connection issues with the API server",
+        "description": "Troubleshoot issues that occur when you attempt to connect to the API server of an Azure Kubernetes Service (AKS) cluster.",
+        "stackDetails": "",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/AKSApiServerTroubleshoot/aks-api-server-troubleshoot.md",
+        "documentationUrl": "https://learn.microsoft.com/en-us/troubleshoot/azure/azure-kubernetes/connectivity/troubleshoot-cluster-connection-issues-api-server",
+        "nextSteps": [],
+        "configurations": {
+            "permissions": [],
+            "configurableParams": [
+                {
+                    "inputType": "textInput",
+                    "commandKey": "RESOURCE_GROUP",
+                    "title": "Resource Group Name",
+                    "defaultValue": ""
+                },
+                {
+                    "inputType": "textInput",
+                    "commandKey": "AKS_CLUSTER",
+                    "title": "AKS Cluster Name",
+                    "defaultValue": ""
+                }
+            ]
+        }
+    },
+    {
+        "status": "active",
+        "key": "SupportArticles-docs/support/azure/azure-kubernetes/connectivity/client-ip-address-cannot-access-api-server.md",
+        "title": "Client IP address can't access the API server",
+        "description": "Troubleshoot issues caused when the client IP address can't access the API server on an Azure Kubernetes Service (AKS) cluster.",
+        "stackDetails": "",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/AksApiAccessIssue/aks-api-access-issue.md",
+        "documentationUrl": "https://learn.microsoft.com/en-us/troubleshoot/azure/azure-kubernetes/connectivity/client-ip-address-cannot-access-api-server",
+        "nextSteps": [],
+        "configurations": {
+            "permissions": [],
+            "configurableParams": [
+                {
+                    "inputType": "textInput",
+                    "commandKey": "RG_NAME",
+                    "title": "Resource Group Name",
+                    "defaultValue": ""
+                },
+                {
+                    "inputType": "textInput",
+                    "commandKey": "CLUSTER_NAME",
+                    "title": "Cluster Name",
+                    "defaultValue": ""
+                }
+            ]
+        }
+    },
+    {
+        "status": "active",
+        "key": "SupportArticles-docs/support/azure/azure-kubernetes/create-upgrade-delete/error-code-badrequest-or-invalidclientsecret.md",
+        "title": "AADSTS7000222 - BadRequest or InvalidClientSecret error",
+        "description": "Learn how to troubleshoot the BadRequest or InvalidClientSecret error when you try to create or upgrade an Azure Kubernetes Service (AKS) cluster.",
+        "stackDetails": "",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/AKSClientSecretError/aks-client-secret-error.md",
+        "documentationUrl": "https://learn.microsoft.com/en-us/troubleshoot/azure/azure-kubernetes/create-upgrade-delete/error-code-badrequest-or-invalidclientsecret",
+        "nextSteps": [],
+        "configurations": {
+            "permissions": [],
+            "configurableParams": [
+                {
+                    "inputType": "textInput",
+                    "commandKey": "RESOURCE_GROUP_NAME",
+                    "title": "Resource Group Name",
+                    "defaultValue": ""
+                },
+                {
+                    "inputType": "textInput",
+                    "commandKey": "AKS_CLUSTER_NAME",
+                    "title": "AKS Cluster Name",
+                    "defaultValue": ""
+                }
+            ]
+        }
+    },
+    {
+        "status": "active",
+        "key": "SupportArticles-docs/support/azure/azure-kubernetes/create-upgrade-delete/cannot-scale-cluster-autoscaler-enabled-node-pool.md",
+        "title": "Cluster autoscaler fails to scale with cannot scale cluster autoscaler enabled node pool error",
+        "description": "Learn how to troubleshoot the cannot scale cluster autoscaler enabled node pool error when your autoscaler isn't scaling up or down.",
+        "stackDetails": "",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/ClusterAutoscalerError/cluster-autoscaler-error.md",
+        "documentationUrl": "https://learn.microsoft.com/en-us/troubleshoot/azure/azure-kubernetes/create-upgrade-delete/cannot-scale-cluster-autoscaler-enabled-node-pool",
+        "nextSteps": [],
+        "configurations": {
+            "permissions": [],
+            "configurableParams": [
+                {
+                    "inputType": "textInput",
+                    "commandKey": "AKS_RG_NAME",
+                    "title": "AKS Resource Group Name",
+                    "defaultValue": ""
+                },
+                {
+                    "inputType": "textInput",
+                    "commandKey": "AKS_CLUSTER_NAME",
                     "title": "AKS Cluster Name",
                     "defaultValue": ""
                 }
