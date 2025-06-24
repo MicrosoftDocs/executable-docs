@@ -2572,18 +2572,6 @@
         "configurations": {
             "permissions": [],
             "configurableParams": [
-                {
-                    "inputType": "textInput",
-                    "commandKey": "MY_RG",
-                    "title": "Resource Group Name",
-                    "defaultValue": ""
-                },
-                {
-                    "inputType": "textInput",
-                    "commandKey": "MY_AKS",
-                    "title": "AKS Cluster Name",
-                    "defaultValue": ""
-                }
             ]
         }
     },

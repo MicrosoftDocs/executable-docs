@@ -151,7 +151,7 @@ kubectl get nodes --show-labels | grep -e "costcenter=5000" -e "dept=HR"
 
 You can update the labels on an existing node pool. Note: updating labels will overwrite the old labels.
 
-```shell
+```bash
 az aks nodepool update \
     --resource-group $RESOURCE_GROUP \
     --cluster-name $AKS_CLUSTER_NAME \

@@ -37,7 +37,15 @@ The following operations also happen:
 
 To troubleshoot these issues, follow these steps:
 
-1. Check the RP frontend log to see if the health probe mode in the LoadBalancerProfile is properly configured. You can use the `az aks show` command to view the LoadBalancerProfile property of your cluster. 
+0. First, connect to your AKS cluster using the Azure CLI:
+
+    ```azurecli
+    export RESOURCE_GROUP="aks-rg"
+    export AKS_CLUSTER_NAME="aks-cluster"
+    az aks get-credentials --resource-group $RESOURCE_GROUP --name $AKS_CLUSTER_NAME --overwrite-existing
+    ```
+
+1. Next, check the RP frontend log to see if the health probe mode in the LoadBalancerProfile is properly configured. You can use the `az aks show` command to view the LoadBalancerProfile property of your cluster. 
 
     ```azurecli
     export RESOURCE_GROUP="aks-rg"
@@ -149,7 +157,7 @@ The health probe mode feature requires you to register the feature on your subsc
 Make sure you register the feature for your subscription before creating or updating your cluster. You can use the `az feature register` command to register the feature. 
 
 ```azurecli
-export FEATURE_NAME="EnableAKSClusterServiceLoadBalancerHealthProbeMode"
+export FEATURE_NAME="EnableSLBSharedHealthProbePreview"
 export PROVIDER_NAMESPACE="Microsoft.ContainerService"
 az feature register --name $FEATURE_NAME --namespace $PROVIDER_NAMESPACE
 ```

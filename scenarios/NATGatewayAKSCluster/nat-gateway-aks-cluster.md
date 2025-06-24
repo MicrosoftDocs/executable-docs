@@ -31,7 +31,7 @@ This article shows you how to create an Azure Kubernetes Service (AKS) cluster w
 
 The following commands first create the required resource group, then the AKS cluster with a managed NAT gateway.
 
-```shell
+```azurecli-interactive
 export RANDOM_SUFFIX=$(openssl rand -hex 3)
 export MY_RG="myResourceGroup$RANDOM_SUFFIX"
 export MY_AKS="myNatCluster$RANDOM_SUFFIX"
@@ -54,7 +54,7 @@ Results:
 }
 ```
 
-```shell
+```azurecli-interactive
 az aks create \
     --resource-group $MY_RG \
     --name $MY_AKS \
@@ -66,6 +66,8 @@ az aks create \
 ```
 
 Results:
+
+<!-- expected_similarity=0.3 -->
 
 ```output
 {
@@ -94,7 +96,7 @@ Results:
 
 * Update the outbound IP address or idle timeout using the [`az aks update`][az-aks-update] command with the `--nat-gateway-managed-outbound-ip-count` or `--nat-gateway-idle-timeout` parameter.
 
-The following example updates the NAT gateway managed outbound IP count for the AKS cluster.
+The following example updates the NAT gateway managed outbound IP count for the AKS cluster to 5.
 
 ```azurecli-interactive
 az aks update \
@@ -379,12 +381,12 @@ Windows enables OutboundNAT by default. You can now manually disable OutboundNAT
 
     The following command adds a Windows node pool to an existing AKS cluster, disabling OutboundNAT.
 
-    ```azurecli-interactive
-      export NODEPOOL_NAME=$(az aks nodepool list --resource-group $MY_RG --cluster-name $AKS_NAME --query '[0].name' --output tsv)
+    ```shell
+      export WIN_NODEPOOL_NAME="win$(head -c 1 /dev/urandom | xxd -p)"
       az aks nodepool add \
         --resource-group $MY_RG \
-        --cluster-name $AKS_NAME \
-        --name $NODEPOOL_NAME \
+        --cluster-name $MY_AKS \
+        --name $WIN_NODEPOOL_NAME \
         --node-count 3 \
         --os-type Windows \
         --disable-windows-outbound-nat
