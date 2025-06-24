@@ -84,6 +84,8 @@ Set up your custom Domain Name System (DNS) server so that it can do name resolu
     export VMSS_NAME=$(az vmss list --resource-group $NODE_RESOURCE_GROUP --query "[0].name" -o tsv)
     export DNS_IP_ADDRESS="10.0.0.10"
     export INSTANCE_ID=$(az vmss list-instances --resource-group $NODE_RESOURCE_GROUP --name $VMSS_NAME --query "[0].instanceId" -o tsv)
+    export API_FQDN=$(az aks show --resource-group $RG_NAME --name $CLUSTER_NAME --query fqdn -o tsv)
+
     az vmss run-command invoke \
         --resource-group $NODE_RESOURCE_GROUP \
         --name $VMSS_NAME \
@@ -99,7 +101,7 @@ Set up your custom Domain Name System (DNS) server so that it can do name resolu
         --command-id RunShellScript \
         --output tsv \
         --query "value[0].message" \
-        --scripts "nslookup <api-fqdn> $DNS_IP_ADDRESS"
+        --scripts "nslookup $API_FQDN $DNS_IP_ADDRESS"
     ```
 
   - For VM availability set nodes, use the [az vm run-command invoke](/cli/azure/vm/run-command#az-vm-run-command-invoke) command:
@@ -107,8 +109,6 @@ Set up your custom Domain Name System (DNS) server so that it can do name resolu
     > **Important:** You must specify the `--name` of a valid VM in an availability set in your resource group. Here is a template for running network checks.
 
     ```azurecli
-    export API_FQDN=$(az aks show --resource-group $RG_NAME --name $CLUSTER_NAME --query fqdn -o tsv)
-
     az vm run-command invoke \
         --resource-group $RESOURCE_GROUP \
         --name $AVAILABILITY_SET_VM \

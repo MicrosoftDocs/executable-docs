@@ -194,14 +194,12 @@ To enable the health probe mode feature, run one of the following commands:
 
 Enable `ServiceNodePort` health probe mode (default) for a cluster:
 
-```azurecli
+```shell
 export RESOURCE_GROUP="aks-rg"
 export AKS_CLUSTER_NAME="aks-cluster"
 az aks update --resource-group $RESOURCE_GROUP --name $AKS_CLUSTER_NAME --cluster-service-load-balancer-health-probe-mode ServiceNodePort 
 ```
 Results:
-
-<!-- expected_similarity=0.3 -->
 
 ```output
 {
@@ -225,9 +223,8 @@ export RESOURCE_GROUP="MyAksResourceGroup"
 export AKS_CLUSTER_NAME="MyAksCluster"
 az aks update --resource-group $RESOURCE_GROUP --name $AKS_CLUSTER_NAME --cluster-service-load-balancer-health-probe-mode Shared
 ```
-Results:
 
-<!-- expected_similarity=0.3 -->
+Results:
 
 ```output
 {
