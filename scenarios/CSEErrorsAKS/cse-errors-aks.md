@@ -30,9 +30,8 @@ The node extension deployment fails and returns more than one error code when yo
     Set your environment variables and run the commands to view the cluster's status and debug information.
 
     ```azurecli
-    export RANDOM_SUFFIX=$(head -c 3 /dev/urandom | xxd -p)
-    export RG_NAME="my-aks-rg-$RANDOM_SUFFIX"
-    export CLUSTER_NAME="myakscluster$RANDOM_SUFFIX"
+    export RG_NAME="my-aks-rg"
+    export CLUSTER_NAME="myakscluster"
     clusterResourceId=$(az aks show \
         --resource-group $RG_NAME --name $CLUSTER_NAME --output tsv --query id)
     az resource update --debug --verbose --ids $clusterResourceId
