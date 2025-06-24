@@ -26,7 +26,7 @@ You can create an AKS cluster with node labels to set key/value metadata for wor
 export RANDOM_SUFFIX=$(openssl rand -hex 3)
 export RESOURCE_GROUP="myResourceGroup$RANDOM_SUFFIX"
 export AKS_CLUSTER_NAME="myAKSCluster$RANDOM_SUFFIX"
-az group create --name $RESOURCE_GROUP --location "eastus2"
+az group create --name $RESOURCE_GROUP --location $REGION
 ```
 
 Results:
