@@ -55,7 +55,7 @@ az aks create \
     --name $AKS_CLUSTER_NAME \
     --node-count 2 \
     --nodepool-labels dept=IT costcenter=9000 \
-    --generate-ssh-keys --location "eastus2"
+    --generate-ssh-keys --location $REGION
 ```
 
 Results:
