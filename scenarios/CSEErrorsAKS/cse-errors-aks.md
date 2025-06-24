@@ -109,14 +109,14 @@ Set up your custom Domain Name System (DNS) server so that it can do name resolu
 
     ```azurecli
     az vm run-command invoke \
-        --resource-group $RESOURCE_GROUP \
+        --resource-group $RG_NAME \
         --name $AVAILABILITY_SET_VM \
         --command-id RunShellScript \
         --output tsv \
         --query "value[0].message" \
         --scripts "telnet $DNS_IP_ADDRESS 53"
     az vm run-command invoke \
-        --resource-group $RESOURCE_GROUP \
+        --resource-group $RG_NAME \
         --name $AVAILABILITY_SET_VM \
         --command-id RunShellScript \
         --output tsv \
