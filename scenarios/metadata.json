@@ -751,7 +751,7 @@
         "nextSteps": [
             {
                 "title": "Azure Linux Container Host tutorial",
-                "url": "https://github.com/MicrosoftDocs/azure-management-docs/blob/main/articles/azure-linux/tutorial-azure-linux-create-cluster.md"
+                "url": "https://learn.microsoft.com/en-us/azure/azure-linux/tutorial-azure-linux-create-cluster"
             }
         ],
         "configurations": {
@@ -1182,7 +1182,7 @@
         "nextSteps": [
             {
                 "title": "Enable telemetry and monitoring",
-                "url": "https://github.com/MicrosoftDocs/azure-management-docs/blob/main/articles/azure-linux/tutorial-azure-linux-telemetry-monitor.md"
+                "url": "https://learn.microsoft.com/en-us/azure/azure-linux/tutorial-azure-linux-telemetry-monitor"
             }
         ],
         "configurations": {
@@ -1310,7 +1310,7 @@
         "nextSteps": [
             {
                 "title": "Upgrade Azure Linux Nodes",
-                "url": "https://github.com/MicrosoftDocs/azure-management-docs/blob/main/articles/azure-linux/tutorial-azure-linux-upgrade.md"
+                "url": "https://learn.microsoft.com/en-us/azure/azure-linux/tutorial-azure-linux-upgrade"
             }
         ],
         "configurations": {
@@ -1342,7 +1342,7 @@
         "nextSteps": [
             {
                 "title": "Considerations for virtual machines in Azure Stack Hub",
-                "url": "https://github.com/MicrosoftDocs/azure-stack-docs/blob/main/azure-stack/user/azure-stack-vm-considerations.md"
+                "url": "https://learn.microsoft.com/en-us/azure-stack/user/azure-stack-vm-considerations"
             }
         ],
         "configurations": {
@@ -1434,11 +1434,11 @@
         "nextSteps": [
             {
                 "title": "Create an incremental snapshot for managed disks",
-                "url": "https://github.com/MicrosoftDocs/azure-compute-docs/blob/main/articles/virtual-machines/disks-incremental-snapshots.md"
+                "url": "https://learn.microsoft.com/en-us/azure/virtual-machines/disks-incremental-snapshots"
             },
             {
                 "title": "Expand virtual hard disks on a Linux VM",
-                "url": "https://github.com/MicrosoftDocs/azure-compute-docs/blob/main/articles/virtual-machines/linux/expand-disks.md"
+                "url": "https://learn.microsoft.com/en-us/azure/virtual-machines/linux/expand-disks"
             },
             {
                 "title": "How to expand virtual hard disks attached to a Windows virtual machine",
@@ -1499,7 +1499,7 @@
         "nextSteps": [
             {
                 "title": "Create and Manage VM Disks",
-                "url": "https://github.com/MicrosoftDocs/azure-compute-docs/blob/main/articles/virtual-machines/linux/tutorial-manage-disks.md"
+                "url": "https://learn.microsoft.com/en-us/azure/virtual-machines/linux/tutorial-manage-disks"
             }
         ],
         "configurations": {
@@ -1780,15 +1780,15 @@
         "nextSteps": [
             {
                 "title": "Deploy external or internal ingresses for Istio service mesh add-on",
-                "url": "https://github.com/MicrosoftDocs/azure-aks-docs/blob/main/articles/aks/istio-deploy-ingress.md"
+                "url": "https://learn.microsoft.com/en-us/azure/aks/istio-deploy-ingress"
             },
             {
                 "title": "Scale istiod and ingress gateway HPA",
-                "url": "https://github.com/MicrosoftDocs/azure-aks-docs/blob/main/articles/aks/istio-scale.md#scaling"
+                "url": "https://learn.microsoft.com/en-us/azure/aks/istio-scale#scaling"
             },
             {
                 "title": "Collect metrics for Istio service mesh add-on workloads in Azure Managed Prometheus",
-                "url": "https://github.com/MicrosoftDocs/azure-aks-docs/blob/main/articles/aks/istio-metrics-managed-prometheus.md"
+                "url": "https://learn.microsoft.com/en-us/azure/aks/istio-metrics-managed-prometheus"
             }
         ],
         "configurations": {
