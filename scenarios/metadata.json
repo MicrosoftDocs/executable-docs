@@ -245,7 +245,7 @@
             },
             {
                 "title": "Secure your Linux VM",
-                "url": "https://learn.microsoft.com/en-us/azure/virtual-machines/linux/tutorial-secure-vm"
+                "url": "https://learn.microsoft.com/en-us/azure/virtual-machines/linux/tutorial-secure-web-server"
             }
         ],
         "configurations": {}
@@ -256,7 +256,7 @@
         "title": "Deploy Inspektor Gadget in an Azure Kubernetes Service cluster",
         "description": "This tutorial shows how to deploy Inspektor Gadget in an AKS cluster",
         "stackDetails": "",
-        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/DeployIGonAKS/deploy-ig-on-aks.md",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/DeployIGonAKS/README.md",
         "documentationUrl": "https://learn.microsoft.com/en-us/troubleshoot/azure/azure-kubernetes/logs/capture-system-insights-from-aks",
         "nextSteps": [
             {
@@ -476,7 +476,7 @@
         "title": "Create a Highly Available PostgreSQL Cluster on Azure Red Hat OpenShift",
         "description": "This tutorial shows how to create a Highly Available PostgreSQL cluster on Azure Red Hat OpenShift (ARO) using the CloudNativePG operator",
         "stackDetails": "",
-        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/DeployHAPGonARO/deploy-ha-pg-aro.md",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/DeployHAPGOnARO/deploy-ha-pg-on-aro.md",
         "documentationUrl": "",
         "nextSteps": [
             {
@@ -664,7 +664,7 @@
                 "url": "https://learn.microsoft.com/en-us/azure/aks/cluster-extensions"
             },
             {
-                "title": "Deploy the Azure Machine Learning extension on an AKS or Azure Arc–enabled Kubernetes cluster",
+                "title": "Deploy the Azure Machine Learning extension on an AKS or Azure Arc enabled Kubernetes cluster",
                 "url": "https://learn.microsoft.com/en-us/azure/machine-learning/how-to-deploy-kubernetes-extension"
             },
             {
@@ -713,7 +713,7 @@
             },
             {
                 "title": "Secure your Linux VM",
-                "url": "https://learn.microsoft.com/en-us/azure/virtual-machines/linux/tutorial-secure-vm"
+                "url": "https://learn.microsoft.com/en-us/azure/virtual-machines/linux/tutorial-secure-web-server"
             }
         ],
         "configurations": {}
@@ -1411,11 +1411,11 @@
         "nextSteps": [
             {
                 "title": "Review Linux VM Sizes",
-                "url": "https://github.com/MicrosoftDocs/azure-compute-docs/blob/main/articles/virtual-machines/sizes.md"
+                "url": "https://learn.microsoft.com/en-us/azure/virtual-machines/sizes"
             },
             {
                 "title": " Manage virtual machine access using just in time",
-                "url": "https://github.com/MicrosoftDocs/azure-compute-docs/blob/main/azure/security-center/security-center-just-in-time"
+                "url": "https://learn.microsoft.com/en-us/azure/defender-for-cloud/just-in-time-access-usage"
             }
         ],
         "configurations": {
@@ -1442,7 +1442,7 @@
             },
             {
                 "title": "How to expand virtual hard disks attached to a Windows virtual machine",
-                "url": "https://github.com/MicrosoftDocs/azure-compute-docs/blob/main/articles/virtual-machines/windows/expand-os-disk.md"
+                "url": "https://learn.microsoft.com/en-us/azure/virtual-machines/windows/expand-os-disk"
             }
         ],
         "configurations": {
@@ -1893,7 +1893,7 @@
         "title": "Istio service mesh Azure Kubernetes Service add-on performance and scaling",
         "description": "Istio service mesh Azure Kubernetes Service add-on performance and scaling",
         "stackDetails": "",
-        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/IstioPerformanceAKS/istio-performance-aks.md",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-aks-docs/articles/aks/istio-scale.md",
         "documentationUrl": "https://learn.microsoft.com/en-us/azure/aks/istio-scale",
         "nextSteps": [],
         "configurations": {
@@ -1920,7 +1920,7 @@
         "title": "Node Not Ready because of custom script extension (CSE) errors",
         "description": "Troubleshoot scenarios in which custom script extension (CSE) errors cause Node Not Ready states in an Azure Kubernetes Service (AKS) cluster node pool.",
         "stackDetails": "",
-        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/CSEErrorsAKS/cse-errors-aks.md",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/SupportArticles-docs/support/azure/azure-kubernetes/availability-performance/node-not-ready-custom-script-extension-errors.md",
         "documentationUrl": "https://learn.microsoft.com/en-us/troubleshoot/azure/azure-kubernetes/availability-performance/node-not-ready-custom-script-extension-errors",
         "nextSteps": [],
         "configurations": {
@@ -1953,7 +1953,7 @@
         "title": "Node Not Ready status after node is in a healthy state",
         "description": "Troubleshoot scenarios in which an Azure Kubernetes Service (AKS) cluster node goes to a Not Ready status after is in a healthy state.",
         "stackDetails": "",
-        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/NodeNotReadyAKS/node-not-ready-aks.md",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/SupportArticles-docs/support/azure/azure-kubernetes/availability-performance/node-not-ready-after-being-healthy.md",
         "documentationUrl": "https://learn.microsoft.com/en-us/troubleshoot/azure/azure-kubernetes/availability-performance/node-not-ready-after-being-healthy",
         "nextSteps": [],
         "configurations": {
@@ -1980,7 +1980,7 @@
         "title": "TCP 10250 I/O timeout errors when connecting to a node's Kubelet for log retrieval",
         "description": "Learn how to troubleshoot TCP 10250 I/O timeout errors that occur when retrieving kubectl logs from a pod in an Azure Kubernetes Service (AKS) cluster.",
         "stackDetails": "",
-        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/KubeletIOTroubleshooting/kubelet-io-troubleshooting.md",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/SupportArticles-docs/support/azure/azure-kubernetes/connectivity/tcp-timeouts-dial-tcp-nodeip-10250-io-timeout.md",
         "documentationUrl": "https://learn.microsoft.com/en-us/troubleshoot/azure/azure-kubernetes/connectivity/tcp-timeouts-dial-tcp-nodeip-10250-io-timeout",
         "nextSteps": [],
         "configurations": {
@@ -2013,7 +2013,7 @@
         "title": "View kubelet logs in Azure Kubernetes Service (AKS)",
         "description": "Learn how to view troubleshooting information in the kubelet logs from Azure Kubernetes Service (AKS) nodes",
         "stackDetails": "",
-        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/KubeletLogsAKS/kubelet-logs-aks.md",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-aks-docs/articles/aks/kubelet-logs.md",
         "documentationUrl": "https://learn.microsoft.com/en-us/azure/aks/kubelet-logs",
         "nextSteps": [
             {
@@ -2051,12 +2051,12 @@
         "title": "Delete an Azure Kubernetes Service (AKS) cluster",
         "description": "Learn about deleting a cluster in Azure Kubernetes Service (AKS).",
         "stackDetails": "",
-        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/DeleteAKSCluster/delete-aks-cluster.md",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-aks-docs/articles/aks/delete-cluster.md",
         "documentationUrl": "https://learn.microsoft.com/en-us/azure/aks/delete-cluster",
         "nextSteps": [
             {
                 "title": "Stop an AKS cluster",
-                "url": "https://learn.microsoft.com/azure/aks/stop-start-cluster"
+                "url": "https://learn.microsoft.com/en-us/azure/aks/start-stop-cluster?tabs=azure-cli"
             },
             {
                 "title": "Upgrade an AKS cluster",
@@ -2087,7 +2087,7 @@
         "title": "Control cluster access using Conditional Access with AKS-managed Microsoft Entra integration",
         "description": "Learn how to access clusters using Conditional Access when integrating Microsoft Entra ID in your Azure Kubernetes Service (AKS) clusters.",
         "stackDetails": "",
-        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/ConditionalAccessAKS/conditional-access-aks.md",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-aks-docs/articles/aks/access-control-managed-azure-ad.md",
         "documentationUrl": "https://learn.microsoft.com/en-us/azure/aks/access-control-managed-azure-ad",
         "nextSteps": [],
         "configurations": {
@@ -2114,7 +2114,7 @@
         "title": "Concepts - Azure CNI Pod Subnet networking in AKS",
         "description": "Learn about Azure CNI Pod Subnet, dynamic IP allocation mode, and static block allocation mode in Azure Kubernetes Service (AKS).",
         "stackDetails": "",
-        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/AzureCNIPodSubnet/azure-cni-pod-subnet.md",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-aks-docs/articles/aks/concepts-network-azure-cni-pod-subnet.md",
         "documentationUrl": "https://learn.microsoft.com/en-us/azure/aks/concepts-network-azure-cni-pod-subnet",
         "nextSteps": [],
         "configurations": {
@@ -2141,7 +2141,7 @@
         "title": "Migrate to Azure Kubernetes Service (AKS)",
         "description": "This article shows you how to migrate to Azure Kubernetes Service (AKS).",
         "stackDetails": "",
-        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/MigrateToAKS/migrate-to-aks.md",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-aks-docs/articles/aks/aks-migration.md",
         "documentationUrl": "https://learn.microsoft.com/en-us/azure/aks/aks-migration",
         "nextSteps": [
             {
@@ -2164,7 +2164,7 @@
         "title": "Enhancing Concurrency Control with Entity Tags (eTags) in Azure Kubernetes Service",
         "description": "Learn how to use eTags (Entity Tags) to enable concurrency control and avoid racing conditions or overwriting scenarios.",
         "stackDetails": "",
-        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/ETagConcurrencyAKS/e-tag-concurrency-aks.md",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-aks-docs/articles/aks/use-etags.md",
         "documentationUrl": "https://learn.microsoft.com/en-us/azure/aks/use-etags",
         "nextSteps": [],
         "configurations": {
@@ -2178,7 +2178,7 @@
         "title": "Configure Istio-based service mesh add-on for Azure Kubernetes Service",
         "description": "Configure Istio-based service mesh add-on for Azure Kubernetes Service",
         "stackDetails": "",
-        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/IstioAddonAKS/istio-addon-aks.md",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-aks-docs/articles/aks/istio-meshconfig.md",
         "documentationUrl": "https://learn.microsoft.com/en-us/azure/aks/istio-meshconfig",
         "nextSteps": [],
         "configurations": {
@@ -2205,7 +2205,7 @@
         "title": "Access a private Azure Kubernetes Service (AKS) cluster using the command invoke or Run command feature",
         "description": "Learn how to access a private Azure Kubernetes Service (AKS) cluster using the Azure CLI command invoke feature or the Azure portal Run command feature.",
         "stackDetails": "",
-        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/PrivateAKSAccess/private-aks-access.md",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-aks-docs/articles/aks/access-private-cluster.md",
         "documentationUrl": "https://learn.microsoft.com/en-us/azure/aks/access-private-cluster",
         "nextSteps": [
             {
@@ -2275,7 +2275,7 @@
         "title": "Resize Azure Kubernetes Service (AKS) clusters",
         "description": "In this article, you learn about the importance of right-sizing your AKS clusters and how you can right-size them to optimize costs and performance.",
         "stackDetails": "",
-        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/ResizeAKSCluster/resize-aks-cluster.md",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-aks-docs/articles/aks/resize-cluster.md",
         "documentationUrl": "https://learn.microsoft.com/en-us/azure/aks/resize-cluster",
         "nextSteps": [],
         "configurations": {
@@ -2314,7 +2314,7 @@
         "title": "AKS Preview API life cycle",
         "description": "Learn about the AKS preview API life cycle.",
         "stackDetails": "",
-        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/AKSPreviewAPILifecycle/aks-preview-api-lifecycle.md",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-aks-docs/articles/aks/concepts-preview-api-life-cycle.md",
         "documentationUrl": "https://learn.microsoft.com/en-us/azure/aks/concepts-preview-api-life-cycle",
         "nextSteps": [
             {
@@ -2345,7 +2345,7 @@
         "title": "Use labels in an Azure Kubernetes Service (AKS) cluster",
         "description": "Learn how to use labels in an Azure Kubernetes Service (AKS) cluster.",
         "stackDetails": "",
-        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/AKSNodeLabels/aks-node-labels.md",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-aks-docs/articles/aks/use-labels.md",
         "documentationUrl": "https://learn.microsoft.com/en-us/azure/aks/use-labels",
         "nextSteps": [],
         "configurations": {
@@ -2359,7 +2359,7 @@
         "title": "Azure Kubernetes Service Cost Analysis add-on issues",
         "description": "Learn how to resolve issues that occur when you try to enable the Azure Kubernetes Service (AKS) Cost Analysis add-on.",
         "stackDetails": "",
-        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/AKSCostAnalysisIssues/aks-cost-analysis-issues.md",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/SupportArticles-docs/support/azure/azure-kubernetes/extensions/aks-cost-analysis-add-on-issues.md",
         "documentationUrl": "https://learn.microsoft.com/en-us/troubleshoot/azure/azure-kubernetes/extensions/aks-cost-analysis-add-on-issues",
         "nextSteps": [],
         "configurations": {
@@ -2386,7 +2386,7 @@
         "title": "Troubleshoot the health probe mode for AKS cluster service load balancer",
         "description": "Diagnoses and fixes common issues with the health probe mode feature.",
         "stackDetails": "",
-        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/AKSHealthProbeMode/aks-health-probe-mode.md",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/SupportArticles-docs/support/azure/azure-kubernetes/availability-performance/cluster-service-health-probe-mode-issues.md",
         "documentationUrl": "https://learn.microsoft.com/en-us/troubleshoot/azure/azure-kubernetes/availability-performance/cluster-service-health-probe-mode-issues",
         "nextSteps": [],
         "configurations": {
@@ -2413,7 +2413,7 @@
         "title": "Troubleshoot Container Network Interface download failures",
         "description": "Learn how to resolve Container Network Interface download failures when you try to create and deploy an Azure Kubernetes Service (AKS) cluster.",
         "stackDetails": "",
-        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/CniDownloadFailureAKS/cni-download-failure-aks.md",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/SupportArticles-docs/support/azure/azure-kubernetes/create-upgrade-delete/error-code-cnidownloadtimeoutvmextensionerror.md",
         "documentationUrl": "https://learn.microsoft.com/en-us/troubleshoot/azure/azure-kubernetes/create-upgrade-delete/error-code-cnidownloadtimeoutvmextensionerror",
         "nextSteps": [],
         "configurations": {
@@ -2440,7 +2440,7 @@
         "title": "TCP time-outs when kubectl or other 3rd-party tools connect to API",
         "description": "Troubleshoot TCP time-outs that occur when kubectl or other third-party tools connect to the API server in Azure Kubernetes Service (AKS).",
         "stackDetails": "",
-        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/TCPTroubleshootAKS/tcp-troubleshoot-aks.md",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/SupportArticles-docs/support/azure/azure-kubernetes/connectivity/tcp-timeouts-kubetctl-third-party-tools-connect-api-server.md",
         "documentationUrl": "https://learn.microsoft.com/en-us/troubleshoot/azure/azure-kubernetes/connectivity/tcp-timeouts-kubetctl-third-party-tools-connect-api-server",
         "nextSteps": [],
         "configurations": {
@@ -2467,7 +2467,7 @@
         "title": "Enable host-based encryption on Azure Kubernetes Service (AKS)",
         "description": "Learn how to configure a host-based encryption in an Azure Kubernetes Service (AKS) cluster.",
         "stackDetails": "",
-        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/HostEncryptionAKS/host-encryption-aks.md",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-aks-docs/articles/aks/enable-host-encryption.md",
         "documentationUrl": "https://learn.microsoft.com/en-us/azure/aks/enable-host-encryption",
         "nextSteps": [],
         "configurations": {
@@ -2494,7 +2494,7 @@
         "title": "Create a managed or user-assigned NAT gateway for your Azure Kubernetes Service (AKS) cluster",
         "description": "Learn how to create an AKS cluster with managed NAT integration and user-assigned NAT gateway.",
         "stackDetails": "",
-        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/NATGatewayAKSCluster/nat-gateway-aks-cluster.md",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-aks-docs/articles/aks/nat-gateway.md",
         "documentationUrl": "https://learn.microsoft.com/en-us/azure/aks/nat-gateway",
         "nextSteps": [],
         "configurations": {
@@ -2508,7 +2508,7 @@
         "title": "Azure Kubernetes Service (AKS) Free, Standard, and Premium pricing tiers for cluster management",
         "description": "Learn about the Azure Kubernetes Service (AKS) Free, Standard, and Premium pricing plans and what features, deployment patterns, and recommendations to consider between each plan.",
         "stackDetails": "",
-        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/AKSPricingTiers/aks-pricing-tiers.md",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-aks-docs/articles/aks/free-standard-pricing-tiers.md",
         "documentationUrl": "https://learn.microsoft.com/en-us/azure/aks/free-standard-pricing-tiers",
         "nextSteps": [],
         "configurations": {
@@ -2535,7 +2535,7 @@
         "title": "Use Kubernetes events for troubleshooting",
         "description": "Learn about Kubernetes events, which provide details on pods, nodes, and other Kubernetes objects.",
         "stackDetails": "",
-        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/KubernetesEventsTroubleshooting/kubernetes-events-troubleshooting.md",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/azure-aks-docs/articles/aks/events.md",
         "documentationUrl": "https://learn.microsoft.com/en-us/azure/aks/events",
         "nextSteps": [],
         "configurations": {
@@ -2562,7 +2562,7 @@
         "title": "Troubleshoot cluster upgrading and scaling errors",
         "description": "Troubleshoot errors that occur when you try to upgrade or scale an Azure Kubernetes Service (AKS) cluster.",
         "stackDetails": "",
-        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/AKSUpgradeScalingErrors/aks-upgrade-scaling-errors.md",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/SupportArticles-docs/support/azure/azure-kubernetes/create-upgrade-delete/upgrading-or-scaling-does-not-succeed.md",
         "documentationUrl": "https://learn.microsoft.com/en-us/troubleshoot/azure/azure-kubernetes/create-upgrade-delete/upgrading-or-scaling-does-not-succeed",
         "nextSteps": [
             {
@@ -2606,7 +2606,7 @@
         "title": "Troubleshoot 'Forbidden' error when trying to access AKS cluster resources",
         "description": "Troubleshoot 'Error from server (Forbidden)' RBAC-related errors that occur when you try to view Kubernetes resources in an AKS cluster.",
         "stackDetails": "",
-        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/ForbiddenErrorAKS/forbidden-error-aks.md",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/SupportArticles-docs/support/azure/azure-kubernetes/connectivity/user-cannot-get-cluster-resources.md",
         "documentationUrl": "https://learn.microsoft.com/en-us/troubleshoot/azure/azure-kubernetes/connectivity/user-cannot-get-cluster-resources",
         "nextSteps": [],
         "configurations": {
@@ -2633,7 +2633,7 @@
         "title": "Troubleshoot cluster connection issues with the API server",
         "description": "Troubleshoot issues that occur when you attempt to connect to the API server of an Azure Kubernetes Service (AKS) cluster.",
         "stackDetails": "",
-        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/AKSApiServerTroubleshoot/aks-api-server-troubleshoot.md",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/SupportArticles-docs/support/azure/azure-kubernetes/connectivity/troubleshoot-cluster-connection-issues-api-server.md",
         "documentationUrl": "https://learn.microsoft.com/en-us/troubleshoot/azure/azure-kubernetes/connectivity/troubleshoot-cluster-connection-issues-api-server",
         "nextSteps": [],
         "configurations": {
@@ -2660,7 +2660,7 @@
         "title": "Client IP address can't access the API server",
         "description": "Troubleshoot issues caused when the client IP address can't access the API server on an Azure Kubernetes Service (AKS) cluster.",
         "stackDetails": "",
-        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/AksApiAccessIssue/aks-api-access-issue.md",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/SupportArticles-docs/support/azure/azure-kubernetes/connectivity/client-ip-address-cannot-access-api-server.md",
         "documentationUrl": "https://learn.microsoft.com/en-us/troubleshoot/azure/azure-kubernetes/connectivity/client-ip-address-cannot-access-api-server",
         "nextSteps": [],
         "configurations": {
@@ -2687,7 +2687,7 @@
         "title": "AADSTS7000222 - BadRequest or InvalidClientSecret error",
         "description": "Learn how to troubleshoot the BadRequest or InvalidClientSecret error when you try to create or upgrade an Azure Kubernetes Service (AKS) cluster.",
         "stackDetails": "",
-        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/AKSClientSecretError/aks-client-secret-error.md",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/SupportArticles-docs/support/azure/azure-kubernetes/create-upgrade-delete/error-code-badrequest-or-invalidclientsecret.md",
         "documentationUrl": "https://learn.microsoft.com/en-us/troubleshoot/azure/azure-kubernetes/create-upgrade-delete/error-code-badrequest-or-invalidclientsecret",
         "nextSteps": [],
         "configurations": {
@@ -2714,7 +2714,7 @@
         "title": "Cluster autoscaler fails to scale with cannot scale cluster autoscaler enabled node pool error",
         "description": "Learn how to troubleshoot the cannot scale cluster autoscaler enabled node pool error when your autoscaler isn't scaling up or down.",
         "stackDetails": "",
-        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/ClusterAutoscalerError/cluster-autoscaler-error.md",
+        "sourceUrl": "https://raw.githubusercontent.com/MicrosoftDocs/executable-docs/main/scenarios/SupportArticles-docs/support/azure/azure-kubernetes/create-upgrade-delete/cannot-scale-cluster-autoscaler-enabled-node-pool.md",
         "documentationUrl": "https://learn.microsoft.com/en-us/troubleshoot/azure/azure-kubernetes/create-upgrade-delete/cannot-scale-cluster-autoscaler-enabled-node-pool",
         "nextSteps": [],
         "configurations": {
