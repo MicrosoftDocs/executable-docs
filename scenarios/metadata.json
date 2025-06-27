@@ -2250,7 +2250,7 @@
             },
             {
                 "title": "Private Azure Kubernetes service with custom DNS server",
-                "url": "https://github.com/Azure/terraform/tree/00d15e09c54f25fb6387330c36aa4366122c5aaa/quickstart/301-aks-private-cluster"
+                "url": "https://github.com/Azure/terraform/tree/master/quickstart/301-aks-private-cluster"
             },
             {
                 "title": "What is IP address 168.63.129.16?",
