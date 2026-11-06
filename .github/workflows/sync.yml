@@ -16,20 +16,20 @@ jobs:
     environment: ScenarioTesting
     steps:
     - name: Checkout executable-docs
-      uses: actions/checkout@v2
+      uses: actions/checkout@0717577d45739eb3c851188b29f50ed6c0b2194e # v2.8.0
       with:
         repository: 'MicrosoftDocs/executable-docs'
         token: ${{ secrets.PAT }} # This line is added
 
     - name: 'Az CLI login'
-      uses: azure/login@v1
+      uses: azure/login@cb79c773a3cfa27f31f25eb3f677781210c9ce3d # v1.6.1
       with:
           client-id: ${{ secrets.AZURE_CLIENT_ID }}
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
     - name: Setup Python environment
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@e9aba2c848f5ebd159c070c61ea2c4e2b122355e # v2.3.4
       with:
         python-version: '3.10'
 
